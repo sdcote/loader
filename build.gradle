@@ -1,0 +1,107 @@
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+
+defaultTasks 'clean', 'build', 'publish'
+group = 'coyote'
+version = '1.1'
+
+ext {
+	title = 'Coyote Loader Framework'
+	provider = 'Coyote Codeworks'
+	mainClass = 'coyote.loader.Loader'
+}
+jar {
+    manifest {
+		attributes  'Implementation-Title' : "$title",
+		'Provider' : "$provider",
+		'Main-Class' : "$mainClass",
+		'Implementation-Version' : version
+	}
+}
+task fatJar(type: Jar) {
+	manifest {
+		attributes  'Implementation-Title' : "$title",
+		'Provider' : "$provider",
+		'Main-Class' : "$mainClass",
+		'Implementation-Version' : version
+	}
+	baseName = project.name + '-all'
+	from {
+		configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } 
+	}{
+		exclude "META-INF/*.RSA"
+	}
+	with jar
+}
+
+repositories {
+
+	mavenLocal()
+
+	mavenCentral()
+		
+}
+
+
+ext {
+	junitVersion = '4.11'
+	dataFrameVersion = '0.3'
+}
+dependencies {
+
+	// Abstract Data Type
+	compile "coyote:DataFrame:$dataFrameVersion"
+
+	// UnitTesting
+	testCompile "junit:junit:$junitVersion"	
+
+}
+
+
+
+// custom tasks for creating source/javadoc jars
+task sourcesJar(type: Jar, dependsOn: classes) {
+	classifier = 'sources'
+	from sourceSets.main.allSource
+}
+
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+	classifier = 'javadoc'
+	from javadoc.destinationDir
+}
+
+
+// add javadoc/source jar tasks as artifacts
+artifacts {
+	archives sourcesJar, javadocJar
+}
+
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+
+			artifact sourcesJar {
+				classifier "sources"
+			}
+
+			artifact javadocJar {
+				classifier "javadoc"
+			}
+		}
+	}
+	
+	repositories {
+		mavenLocal()
+	}
+}
+
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.12'
+}

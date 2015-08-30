@@ -1,0 +1,470 @@
+/*
+ * $Id: Scheduler.java,v 1.2 2004/01/02 15:10:16 cotes Exp $
+ *
+ * Copyright (C) 2003 Stephan D. Cote' - All rights reserved.
+ */
+package coyote.loader.thread;
+
+import java.util.Calendar;
+import java.util.Date;
+
+import coyote.commons.ExceptionUtil;
+import coyote.loader.cfg.Config;
+import coyote.loader.log.Log;
+
+
+/**
+ * Run a task repeatedly pausing a specified amount of time before each
+ * execution cycle.
+ *
+ * <p>This is used when it is desired to execute a thread at regular intervals
+ * as in system clean-up, log file rotation, and the like.</p>
+ *
+ * <p>This class is often used with the coyote.commons.util.thread.ThreadBatch
+ * class. The ThreadBatch class is a ThreadJob class that holds an array of
+ * ThreadJobs and runs them each in the order in which they were added.</p>
+ *
+ * @author Stephan D. Cote' - Enterprise Architecture
+ * @version $Revision: 1.2 $
+ */
+public class Scheduler extends ThreadJob {
+  /** Tag used in various class identifying locations like DataCapsule nodes */
+  public static final String CLASS_TAG = "Scheduler";
+
+  /** The object we use to hold our configuration */
+  private Config configuration = null;
+
+  private ScheduledJob nextJob = null;
+  private ScheduledJob lastJob = null;
+  private static final Object mutex = new Object();
+  private ThreadPool threadpool = null;
+  private long WAIT_TIME = 50;
+  private static final long SCHED = Log.getCode( "SCHEDULER" );
+
+  /** Field SECOND_INTERVAL */
+  public static final long SECOND_INTERVAL = 1000l;
+
+  /** Field MINUTE_INTERVAL */
+  public static final long MINUTE_INTERVAL = SECOND_INTERVAL * 60;
+
+  /** Field HOUR_INTERVAL */
+  public static final long HOUR_INTERVAL = MINUTE_INTERVAL * 60;
+
+  /** Field DAY_INTERVAL */
+  public static final long DAY_INTERVAL = HOUR_INTERVAL * 24;
+
+
+
+
+  /**
+   * Constructor Scheduler
+   */
+  public Scheduler() {
+    configuration = new Config();
+
+    //configuration.setType( CLASS_TAG );
+  }
+
+
+
+
+  /**
+   * Method getJobCount
+   *
+   * @return
+   */
+  public int getJobCount() {
+    int count = 0;
+
+    synchronized( mutex ) {
+      if ( this.nextJob != null ) {
+        ScheduledJob job = nextJob;
+
+        for ( count = 0; job != null; count++ ) {
+          if ( job == job.getNextJob() ) {
+            break;
+          }
+
+          job = job.getNextJob();
+        }
+      }
+    }
+
+    return count;
+  }
+
+
+
+
+  /**
+   * Method initialize
+   */
+  public void initialize() {
+    if ( threadpool == null ) {
+      threadpool = new ThreadPool( CLASS_TAG );
+    }
+
+    threadpool.start();
+
+    setIdleWait( WAIT_TIME );
+  }
+
+
+
+
+  /**
+   * Keep cycling through the sorted list of scheduled jobs and place the next
+   * job in the threadpool when it's execution time has arrived.
+   *
+   * <p>If the time we execute the next job is farther in the future than our
+   * idleWaitInterval, then just just exit the method. Otherwise go into a wait
+   * state here until the execution time arrives.</p>
+   *
+   * <p>Whenever a new ScheduledJob is added, the scheduler should be
+   * interrupted from any waiting or idling and a fresh check should be made of
+   * the next job in the queue.</p>
+   */
+  public void doWork() {
+    synchronized( mutex ) {
+      if ( nextJob != null ) {
+        long executionTime = System.currentTimeMillis();
+
+        // Check to see if it is time to run this job
+        // If it is really close, wait around
+        long millis = nextJob.getExecutionTime() - executionTime;
+
+        if ( millis <= WAIT_TIME ) {
+          // If it is in the future, wait around for it, otherwise run it
+          if ( millis > 0 ) {
+            try {
+              mutex.wait( millis );
+            } catch ( Exception ex ) {
+              // Exit the routine, the next time we enter, we'll recheck the
+              // job list and process the possibly new nextJob reference
+              return;
+            }
+          }
+
+          // If we got here, it is time (or past the time) to execute the next
+          // ScheduledJob referenced by nextJob
+          try {
+            Log.append( SCHED, nextJob + " enabled=" + nextJob.isEnabled() + " cancelled=" + nextJob.isCancelled() + " && limit=" + nextJob.getExecutionLimit() + " && count=" + nextJob.getExecutionCount() );
+
+            if ( !nextJob.isCancelled() && ( ( nextJob.getExecutionLimit() < 1 ) || ( nextJob.getExecutionLimit() > 0 ) && ( nextJob.getExecutionCount() < nextJob.getExecutionLimit() ) ) ) {
+
+              if ( nextJob.isEnabled() ) {
+                Log.append( SCHED, "Running " + nextJob + " in threadpool" );
+
+                // Run the Scheduled Job in the threadpool
+                threadpool.handle( (ThreadJob)nextJob );
+
+                // / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
+                // We should check that the threadpool does not get too full...
+                // ...but if it does, there is not a lot we can do about it.
+                // / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
+
+                // Increment the execution counter
+                nextJob.incrementExecutionCount();
+              } else {
+                Log.append( SCHED, "Did not run disabled job " + nextJob + " in threadpool" );
+              }
+
+              // Remove the job from the list
+              ScheduledJob target = remove( nextJob );
+
+              // If the ScheduledJob is set for repetition
+              if ( target.isRepeatable() ) {
+                Log.append( SCHED, "Repeating job " + target );
+
+                // If we have no limit or have not exceeded our limit...
+                if ( ( target.getExecutionLimit() == 0 ) || ( target.getExecutionLimit() > 0 ) && ( target.getExecutionCount() < target.getExecutionLimit() ) ) {
+                  // ...reschedule the job
+                  target.setExecutionTime( executionTime + target.getExecutionInterval() );
+                  schedule( target );
+                  Log.append( SCHED, "Repeating job " + target + " (runs=" + target.getExecutionCount() + " interval=" + target.getExecutionInterval() + ") will run again at " + new Date( target.getExecutionTime() ) );
+                }
+              }
+            } else {
+              // ...remove the job from the joblist
+              remove( nextJob );
+            }
+
+          } catch ( Exception ex ) {
+            Log.warn( ex.getClass().getName() + " thrown in scheduler loop\r\n" + ExceptionUtil.stackTrace( ex ) );
+          }
+        } else {
+          // It is not time to execute the the next job yet
+          return;
+        }
+
+      } // nextJob !null
+
+    } // sync
+
+  }
+
+
+
+
+  /**
+   * Method terminate
+   */
+  public void terminate() {
+    Log.append( SCHED, getClass().getName() + " is terminating" );
+
+    // Stop the threadpool
+    threadpool.stop();
+
+    // Do our superclass termination
+    super.terminate();
+  }
+
+
+
+
+  /**
+   * Method reschedule
+   *
+   * @param job
+   */
+  protected void reschedule( ScheduledJob job ) {
+    // Remove the job from the list
+    ScheduledJob target = remove( job );
+
+    if ( target != null ) {
+      Log.append( SCHED, "Rescheduling job " + target + " on request - was to run at " + new Date( target.getExecutionTime() ) );
+      target.setExecutionTime( System.currentTimeMillis() + target.getExecutionInterval() );
+      schedule( target );
+      Log.append( SCHED, "Rescheduled job " + target + " - will now run at " + new Date( target.getExecutionTime() ) );
+    }
+  }
+
+
+
+
+  /**
+   * Run the given runnable task as soon as possible and only once.
+   *
+   * @param task The task to run right now.
+   */
+  public void schedule( Runnable task ) {
+    schedule( task, System.currentTimeMillis(), 0, 0, 0 );
+  }
+
+
+
+
+  /**
+   * Method schedule
+   *
+   * @param task
+   * @param starts
+   */
+  public void schedule( Runnable task, long starts ) {
+    schedule( task, System.currentTimeMillis(), starts, 0, 0 );
+  }
+
+
+
+
+  /**
+   * Method schedule
+   *
+   * @param task
+   * @param starts
+   */
+  public void schedule( Runnable task, Date starts ) {
+    schedule( task, System.currentTimeMillis(), starts.getTime(), 0, 0 );
+  }
+
+
+
+
+  /**
+   * Method schedule
+   *
+   * @param task
+   * @param starts
+   */
+  public void schedule( Runnable task, Calendar starts ) {
+    schedule( task, System.currentTimeMillis(), starts.getTime().getTime(), 0, 0 );
+  }
+
+
+
+
+  /**
+   * Method schedule
+   *
+   * @param task
+   * @param starts
+   * @param interval
+   * @param ends
+   * @param limit
+   */
+  public void schedule( Runnable task, long starts, long interval, long ends, long limit ) {
+    ScheduledJob job = new ScheduledJob( task );
+    job.setExecutionTime( starts );
+    job.setExecutionInterval( interval );
+    job.setExpirationTime( ends );
+    job.setExecutionLimit( limit );
+
+    if ( ( interval > 0 ) || ( limit > 0 ) ) {
+      job.setRepeatable( true );
+    }
+
+    schedule( job );
+  }
+
+
+
+
+  /**
+   * Place the job in the joblist.
+   *
+   * <p>This will place the given scheduled job into the joblist sorted by
+   * execution time. If the given jobs execution time matches another in the
+   * list, it will be placed behind the job in the list with the matching time.
+   * This results in jobs being executed in the order in which they were placed
+   * in the joblist if all the execution times match.</p>
+   *
+   * @param job The ScheduledJob to place in the scheduler's joblist
+   */
+  public void schedule( ScheduledJob job ) {
+    if ( job != null ) {
+      job.setScheduler( this );
+
+      synchronized( mutex ) {
+        // Start at the begining
+        ScheduledJob current = nextJob;
+        ScheduledJob previous = null;
+
+        // Loop through all the job references and find where the job belongs
+        while ( current != null ) {
+          if ( current.getExecutionTime() > job.getExecutionTime() ) {
+            break;
+          }
+
+          previous = current;
+          current = current.getNextJob();
+        }
+
+        // //////////////////////////////////////////////////////////////////////
+        if ( ( job != current ) && ( job != previous ) ) {
+          job.setPreviousJob( previous );
+          job.setNextJob( current );
+
+          if ( current != null ) {
+            current.setPreviousJob( job );
+          } else {
+            lastJob = job;
+          }
+
+          if ( previous != null ) {
+            previous.setNextJob( job );
+          } else {
+            nextJob = job;
+          }
+        } else {
+          Log.append( SCHED, "Aaaakkk! Circular Job reference" );
+        }
+
+        // //////////////////////////////////////////////////////////////////////
+
+        // Let everyone know there is a new Job in the scheduler
+        mutex.notifyAll();
+      }
+    }
+  }
+
+
+
+
+  /**
+   * Method remove
+   *
+   * @param job
+   *
+   * @return
+   */
+  public ScheduledJob remove( ScheduledJob job ) {
+    if ( job == null ) {
+      return null;
+    }
+
+    synchronized( mutex ) {
+      if ( this.nextJob != null ) {
+        ScheduledJob test = nextJob;
+
+        while ( test != null ) {
+          if ( job == test ) {
+            if ( test.getPreviousJob() != null ) {
+              test.getPreviousJob().setNextJob( test.getNextJob() );
+            } else {
+              nextJob = test.getNextJob();
+            }
+
+            if ( test.getNextJob() != null ) {
+              test.getNextJob().setPreviousJob( test.getPreviousJob() );
+            } else {
+              lastJob = test.getPreviousJob();
+            }
+
+            break; // We found a match, we can exit
+          }
+
+          test = test.getNextJob();
+        }
+      }
+    }
+
+    return job;
+  }
+
+
+
+
+  /**
+   * Method getNextJob
+   *
+   * @return
+   */
+  public ScheduledJob getNextJob() {
+    return nextJob;
+  }
+
+
+
+
+  /**
+   * Method dump
+   *
+   * @return
+   */
+  public String dump() {
+    StringBuffer retval = new StringBuffer( "--[ JobList ]------------------------------------------------\r\n" );
+    retval.append( "Next: " + nextJob + "\r\n" );
+    retval.append( "Last: " + lastJob + "\r\n" );
+    retval.append( "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\r\n" );
+
+    synchronized( mutex ) {
+      long i = 0;
+
+      if ( this.nextJob != null ) {
+        ScheduledJob test = nextJob;
+
+        while ( test != null ) {
+          retval.append( "Job#" + i + " " + test.getExecutionTime() + " - " + test + "\r\n" );
+
+          test = test.getNextJob();
+
+          i++;
+        }
+      }
+    }
+
+    retval.append( "-------------------------------------------------------------\r\n" );
+
+    return retval.toString();
+  }
+}
