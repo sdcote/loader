@@ -1,5 +1,13 @@
 /*
- * Copyright Stephan D. Cote' 2008 - All rights reserved.
+ * Copyright (c) 2007 Stephan D. Cote' - All rights reserved.
+ * 
+ * This program and the accompanying materials are made available under the 
+ * terms of the MIT License which accompanies this distribution, and is 
+ * available at http://creativecommons.org/licenses/MIT/
+ *
+ * Contributors:
+ *   Stephan D. Cote 
+ *      - Initial concept and initial implementation
  */
 package coyote.loader.log;
 
@@ -10,8 +18,15 @@ import java.util.Vector;
 
 
 /**
- * Log defines static methods for maintaining a collection of ILoggers and
+ * Log defines static methods for maintaining a collection of Loggers and
  * sending an event to all of them.
+ * 
+ * <p>This is an implementation of a category based logger, where all messages 
+ * of a category are logged. There are no concepts of levels in this logger.  
+ * This means if you turn on the logging of one category, all the other 
+ * categories remain unaffected. This allows your tur turn on and off all 
+ * "security" messages for example whitle the "protocol" messages remain 
+ * unaffected.</p>
  *
  * <p>The collection is initialized to a single default logger that logs INFO,
  * WARN, ERROR and FATAL events to System.out through the ConsoleAppender
@@ -26,7 +41,7 @@ public final class Log {
   static final Hashtable codeToString = new Hashtable();
 
   /** Map of all the loggers in the fixture keyed by their name. */
-  static final Hashtable nameToLogger = new Hashtable();
+  static final Hashtable<String,Logger> nameToLogger = new Hashtable<String,Logger>();
 
   /**
    * The name of the category of events where an expected event has occurred 
@@ -92,7 +107,7 @@ public final class Log {
    * If a loggers name appears in this list, it will NOT be removed from the
    * logger collection.
    */
-  private static final HashSet permanentLoggers = new HashSet();
+  private static final HashSet<String> permanentLoggers = new HashSet<String>();
 
   static {
     try {

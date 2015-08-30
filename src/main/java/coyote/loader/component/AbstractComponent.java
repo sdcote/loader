@@ -15,7 +15,7 @@ import coyote.dataframe.DataFrame;
 
 
 /**
- * The BaseComponent class models a starting point for components.
+ * The AbstractComponent class models a starting point for components.
  */
 public abstract class AbstractComponent implements Component {
   public static final String UNKNOWN = "Unknown";

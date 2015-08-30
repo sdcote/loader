@@ -1,5 +1,13 @@
 /*
- * Copyright Stephan D. Cote' 2008 - All rights reserved.
+ * Copyright (c) 2007 Stephan D. Cote' - All rights reserved.
+ * 
+ * This program and the accompanying materials are made available under the 
+ * terms of the MIT License which accompanies this distribution, and is 
+ * available at http://creativecommons.org/licenses/MIT/
+ *
+ * Contributors:
+ *   Stephan D. Cote 
+ *      - Initial concept and initial implementation
  */
 package coyote.loader.log;
 
@@ -20,7 +28,7 @@ import coyote.commons.UriUtil;
  *
  * @version $Revision: 1.3 $
  */
-public class FileAppender extends LoggerBase {
+public class FileAppender extends AbstractLogger {
 
   /** Field log_writer */
   protected Writer log_writer;

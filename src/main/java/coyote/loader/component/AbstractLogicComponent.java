@@ -21,7 +21,7 @@ import coyote.loader.thread.ThreadJob;
 
 
 /**
- * The LogicComponentBase class models a base clas of logic components which 
+ * The AbstractComponent class models a base class of logic components which 
  * are created and managed by the Loader.
  */
 public abstract class AbstractLogicComponent extends ThreadJob implements LogicComponent {

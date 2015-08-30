@@ -1,5 +1,13 @@
 /*
- * Copyright Stephan D. Cote' 2008 - All rights reserved.
+ * Copyright (c) 2007 Stephan D. Cote' - All rights reserved.
+ * 
+ * This program and the accompanying materials are made available under the 
+ * terms of the MIT License which accompanies this distribution, and is 
+ * available at http://creativecommons.org/licenses/MIT/
+ *
+ * Contributors:
+ *   Stephan D. Cote 
+ *      - Initial concept and initial implementation
  */
 package coyote.loader.log;
 
@@ -14,7 +22,7 @@ import coyote.loader.cfg.Config;
  * LoggerBase is an abstract class that implements everything about an Logger 
  * except for a concrete implementation of append().
  */
-public abstract class LoggerBase implements Logger {
+public abstract class AbstractLogger implements Logger {
   protected boolean initialized = false;
 
   private volatile long mask;
@@ -36,7 +44,7 @@ public abstract class LoggerBase implements Logger {
   /**
    *
    */
-  public LoggerBase() {
+  public AbstractLogger() {
     this( 0 );
   }
 
@@ -46,7 +54,7 @@ public abstract class LoggerBase implements Logger {
   /**
    * @param mask
    */
-  public LoggerBase( final long mask ) {
+  public AbstractLogger( final long mask ) {
     this.mask = mask;
     formatter = new DefaultFormatter();
     config = null;
@@ -201,7 +209,7 @@ public abstract class LoggerBase implements Logger {
   public URI getTarget() {
     if ( target == null ) {
       try {
-        target = new URI( config.getAsString( LoggerBase.TARGET_TAG ) );
+        target = new URI( config.getAsString( AbstractLogger.TARGET_TAG ) );
       } catch ( final URISyntaxException e ) {}
     }
     return target;

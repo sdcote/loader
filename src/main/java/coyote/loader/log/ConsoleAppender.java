@@ -1,5 +1,13 @@
 /*
- * $Id: ConsoleAppender.java,v 1.3 2007/03/16 14:09:20 scote Exp $
+ * Copyright (c) 2007 Stephan D. Cote' - All rights reserved.
+ * 
+ * This program and the accompanying materials are made available under the 
+ * terms of the MIT License which accompanies this distribution, and is 
+ * available at http://creativecommons.org/licenses/MIT/
+ *
+ * Contributors:
+ *   Stephan D. Cote 
+ *      - Initial concept and initial implementation
  */
 package coyote.loader.log;
 
@@ -15,7 +23,7 @@ import coyote.commons.StringUtil;
  * ConsoleAppender is an implementation of Logger that extends LoggerBase and
  * defines event() to write the event to a Writer.
  */
-public class ConsoleAppender extends LoggerBase {
+public class ConsoleAppender extends AbstractLogger {
 
   /** Field log_writer */
   Writer log_writer;

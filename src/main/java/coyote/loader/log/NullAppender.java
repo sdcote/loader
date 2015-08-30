@@ -1,5 +1,13 @@
 /*
- * $Id: ConsoleAppender.java,v 1.3 2007/03/16 14:09:20 scote Exp $
+ * Copyright (c) 2007 Stephan D. Cote' - All rights reserved.
+ * 
+ * This program and the accompanying materials are made available under the 
+ * terms of the MIT License which accompanies this distribution, and is 
+ * available at http://creativecommons.org/licenses/MIT/
+ *
+ * Contributors:
+ *   Stephan D. Cote 
+ *      - Initial concept and initial implementation
  */
 package coyote.loader.log;
 
@@ -13,7 +21,7 @@ import java.io.Writer;
  * (Refactoring: Improving the Design of Existing Code) for details on using 
  * Null Objects in software.</p>
  */
-public class NullAppender extends LoggerBase {
+public class NullAppender extends AbstractLogger {
 
   /**
    * Constructor ConsoleAppender

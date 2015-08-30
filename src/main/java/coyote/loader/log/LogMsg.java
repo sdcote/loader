@@ -1,5 +1,13 @@
 /*
- * $Id:$
+ * Copyright (c) 2007 Stephan D. Cote' - All rights reserved.
+ * 
+ * This program and the accompanying materials are made available under the 
+ * terms of the MIT License which accompanies this distribution, and is 
+ * available at http://creativecommons.org/licenses/MIT/
+ *
+ * Contributors:
+ *   Stephan D. Cote 
+ *      - Initial concept and initial implementation
  */
 package coyote.loader.log;
 
@@ -40,7 +48,6 @@ import java.util.ResourceBundle;
  * is specified before those parameters. Again, this is consistent both in this 
  * class and the localized exception classes.</p>
  *
- * @version $Revision: 1.3 $
  * @see LocalizedException
  * @see LocalizedRuntimeException
  */
