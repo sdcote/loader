@@ -1,7 +1,13 @@
 /*
- * $Id: LogicComponent.java,v 1.8 2007/03/21 21:21:56 scote Exp $
+ * Copyright (c) 2007 Stephan D. Cote' - All rights reserved.
+ * 
+ * This program and the accompanying materials are made available under the 
+ * terms of the MIT License which accompanies this distribution, and is 
+ * available at http://creativecommons.org/licenses/MIT/
  *
- * Copyright Stephan D. Cote' 2008 - All rights reserved.
+ * Contributors:
+ *   Stephan D. Cote 
+ *      - Initial concept and initial implementation
  */
 package coyote.loader.component;
 
@@ -9,8 +15,7 @@ import coyote.dataframe.DataFrame;
 import coyote.loader.cfg.Config;
 
 
-public interface LogicComponent extends Component
-{
+public interface LogicComponent extends Component {
   /** Tag used in various class identifying locations */
   public static final String CLASS_TAG = "LogicComponent";
   public static final String LOG_TAG = "Log";
@@ -32,6 +37,15 @@ public interface LogicComponent extends Component
 
 
   /**
+   * Perform work related to communicating with the physical device and any 
+   * other house keeping required.
+   */
+  public void doWork();
+
+
+
+
+  /**
    * Get the reference to the actual configuration object.
    * 
    * <p>This is useful when a managing component wants to access configuration
@@ -42,6 +56,45 @@ public interface LogicComponent extends Component
    * @return The configuration object currently set in the component.
    */
   public Config getConfiguration();
+
+
+
+
+  /**
+   * @return The identifier of this component used in monitoring and management.
+   */
+  @Override
+  public String getId();
+
+
+
+
+  /**
+   * @return the name of the component.
+   */
+  @Override
+  public String getName();
+
+
+
+
+  /**
+   * Access to when the component was started.
+   * 
+   * @return The time when the component was started, 0 if the component is not
+   *         yet started.
+   */
+  public long getStartTime();
+
+
+
+
+  /**
+   * @return The operational state of this component instance as an abstract 
+   *         data type.
+   */
+  @Override
+  public DataFrame getStatus();
 
 
 
@@ -74,10 +127,23 @@ public interface LogicComponent extends Component
 
 
   /**
-   * Perform work related to communicating with the physical device and any 
-   * other house keeping required.
+   * Indicate if the component is currently enabled.
+   * 
+   * @return True if the component is eligible for processing, False if 
+   *         disabled.
    */
-  public void doWork();
+  public boolean isEnabled();
+
+
+
+
+  /**
+   * Determines if the component requires a license to operate.
+   * 
+   * @return True if the component requires a license to operate, false if the
+   *         component is unrestricted.
+   */
+  public boolean isLicensed();
 
 
 
@@ -88,25 +154,6 @@ public interface LogicComponent extends Component
    * presently.
    */
   public void quiesce();
-
-
-
-
-  /**
-   * Signal the component to stop processing;
-   */
-  public void shutdown();
-
-
-
-
-  /**
-   * Indicate if the component is currently enabled.
-   * 
-   * @return True if the component is eligible for processing, False if 
-   *         disabled.
-   */
-  public boolean isEnabled();
 
 
 
@@ -134,58 +181,19 @@ public interface LogicComponent extends Component
 
 
   /**
-   * @return The identifier of this component used in monitoring and management.
-   */
-  public String getId();
-
-
-
-
-  /**
-   * @return the name of the component.
-   */
-  public String getName();
-
-
-
-
-  /**
-   * @return The operational state of this component instance as an abstract 
-   *         data type.
-   */
-  public DataFrame getStatus();
-
-
-
-
-  /**
-   * Determines if the component requires a license to operate.
-   * 
-   * @return True if the component requires a license to operate, false if the
-   *         component is unrestricted.
-   */
-  public boolean isLicensed();
-
-
-
-
-  /**
-   * Access to when the component was started.
-   * 
-   * @return The time when the component was started, 0 if the component is not
-   *         yet started.
-   */
-  public long getStartTime();
-
-
-
-
-  /**
    * Allows the framework to set the time the component was started.
    *
    * @param millis Epoch time in milliseconds as is reported by 
    *        System.currentTimeMillis()
    */
   public void setStartTime( long millis );
+
+
+
+
+  /**
+   * Signal the component to stop processing;
+   */
+  public void shutdown();
 
 }

@@ -24,18 +24,18 @@ import coyote.loader.thread.ThreadJob;
  * The LogicComponentBase class models a base clas of logic components which 
  * are created and managed by the Loader.
  */
-public abstract class LogicComponentBase extends ThreadJob implements LogicComponent {
+public abstract class AbstractLogicComponent extends ThreadJob implements LogicComponent {
 
   private static final String CLASS = "Component";
   private static final String UNKNOWN = "Unknown";
-  
+
   protected coyote.loader.cfg.Config configuration = null;
   protected volatile boolean logging = false;
   protected volatile boolean enabled = true;
   protected volatile boolean licensed = false;
   protected long startTime;
   protected String identifier = new GUID().toString();
-  protected String componentName = LogicComponentBase.CLASS_TAG;
+  protected String componentName = AbstractLogicComponent.CLASS_TAG;
   protected Logger lcb_logr = new NullLogger();
 
 
@@ -44,7 +44,7 @@ public abstract class LogicComponentBase extends ThreadJob implements LogicCompo
   /**
    * 
    */
-  public LogicComponentBase() {
+  public AbstractLogicComponent() {
     super();
   }
 
@@ -56,13 +56,14 @@ public abstract class LogicComponentBase extends ThreadJob implements LogicCompo
    * 
    * @param config The object containing the configuration attributes.
    */
+  @Override
   public void configure( final Config config ) {
     configuration = config;
 
-//    if ( configuration != null && configuration.getId() != null && configuration.getId().trim().length() > 0 ) {
-//      identifier = configuration.getId().trim();
-//      componentName = componentName + "." + identifier;
-//    }
+    //    if ( configuration != null && configuration.getId() != null && configuration.getId().trim().length() > 0 ) {
+    //      identifier = configuration.getId().trim();
+    //      componentName = componentName + "." + identifier;
+    //    }
 
     // TODO good place to setup a platform logger
   }
@@ -70,6 +71,10 @@ public abstract class LogicComponentBase extends ThreadJob implements LogicCompo
 
 
 
+  /**
+   * @see coyote.loader.component.Component#getApplicationId()
+   */
+  @Override
   public String getApplicationId() {
     return UNKNOWN;
   }
@@ -78,8 +83,9 @@ public abstract class LogicComponentBase extends ThreadJob implements LogicCompo
 
 
   /**
-   * @see net.smartforge.oam.Component#getCategory()
+   * @see coyote.loader.component.Component#getCategory()
    */
+  @Override
   public String getCategory() {
     return UNKNOWN;
   }
@@ -88,8 +94,9 @@ public abstract class LogicComponentBase extends ThreadJob implements LogicCompo
 
 
   /**
-   * @see net.smartforge.LogicComponent#getConfiguration()
+   * @see coyote.loader.component.LogicComponent#getConfiguration()
    */
+  @Override
   public Config getConfiguration() {
     return configuration;
   }
@@ -98,8 +105,9 @@ public abstract class LogicComponentBase extends ThreadJob implements LogicCompo
 
 
   /**
-   * @see net.smartforge.oam.Component#getDescription()
+   * @see coyote.loader.component.Component#getDescription()
    */
+  @Override
   public String getDescription() {
     return null;
   }
@@ -108,8 +116,9 @@ public abstract class LogicComponentBase extends ThreadJob implements LogicCompo
 
 
   /**
-   * @see net.smartforge.oam.Component#getId()
+   * @see coyote.loader.component.LogicComponent#getId()
    */
+  @Override
   public String getId() {
     return identifier;
   }
@@ -118,8 +127,9 @@ public abstract class LogicComponentBase extends ThreadJob implements LogicCompo
 
 
   /**
-   * @see net.smartforge.oam.Component#getName()
+   * @see coyote.loader.component.LogicComponent#getName()
    */
+  @Override
   public String getName() {
     return componentName;
   }
@@ -142,11 +152,12 @@ public abstract class LogicComponentBase extends ThreadJob implements LogicCompo
 
 
   /**
-   * @see net.smartforge.oam.Component#getProfile()
+   * @see coyote.loader.component.Component#getProfile()
    */
+  @Override
   public DataFrame getProfile() {
     final DataFrame retval = new DataFrame();
-    retval.put(CLASS_TAG, CLASS );
+    retval.put( CLASS_TAG, CLASS );
     retval.put( "ID", identifier );
 
     return retval;
@@ -156,8 +167,9 @@ public abstract class LogicComponentBase extends ThreadJob implements LogicCompo
 
 
   /**
-   * @return the startTime
+   * @see coyote.loader.component.LogicComponent#getStartTime()
    */
+  @Override
   public long getStartTime() {
     return startTime;
   }
@@ -165,6 +177,10 @@ public abstract class LogicComponentBase extends ThreadJob implements LogicCompo
 
 
 
+  /**
+   * @see coyote.loader.component.LogicComponent#getStatus()
+   */
+  @Override
   public DataFrame getStatus() {
     return getProfile();
   }
@@ -173,8 +189,9 @@ public abstract class LogicComponentBase extends ThreadJob implements LogicCompo
 
 
   /**
-   * @see net.smartforge.oam.Component#getSystemId()
+   * @see coyote.loader.component.Component#getSystemId()
    */
+  @Override
   public String getSystemId() {
     return LogicComponent.CLASS_TAG;
   }
@@ -187,7 +204,10 @@ public abstract class LogicComponentBase extends ThreadJob implements LogicCompo
    * of this component.
    *
    * @return a configuration that can be used as a template
+   * 
+   * @see coyote.loader.component.LogicComponent#getTemplate()
    */
+  @Override
   public Config getTemplate() {
     final Config template = new Config();
 
@@ -207,20 +227,11 @@ public abstract class LogicComponentBase extends ThreadJob implements LogicCompo
 
 
   /**
-   * @see net.smartforge.Driver#isEnabled()
+   * @see coyote.loader.component.LogicComponent#isEnabled()
    */
+  @Override
   public boolean isEnabled() {
     return enabled;
-  }
-
-
-
-
-  /**
-   * @return the licensed
-   */
-  public boolean isLicensed() {
-    return licensed;
   }
 
 
@@ -235,7 +246,7 @@ public abstract class LogicComponentBase extends ThreadJob implements LogicCompo
    *
    * @param mask The mask.
    *
-   * @return TODO Complete Documentation
+   * @return true if the component is logging this category of messages
    */
   public boolean isLogging( final long mask ) {
     return ( ( lcb_logr.getMask() & mask ) != 0 );
@@ -343,8 +354,9 @@ public abstract class LogicComponentBase extends ThreadJob implements LogicCompo
 
 
   /**
-   * @see net.smartforge.Driver#setEnabled(boolean)
+   * @see coyote.loader.component.LogicComponent#setEnabled(boolean)
    */
+  @Override
   public void setEnabled( final boolean flag ) {
     enabled = flag;
   }
@@ -353,8 +365,9 @@ public abstract class LogicComponentBase extends ThreadJob implements LogicCompo
 
 
   /**
-   * @see net.smartforge.Driver#setId(java.lang.String)
+   * @see coyote.loader.component.LogicComponent#setId(java.lang.String)
    */
+  @Override
   public void setId( final String id ) {
     if ( ( id != null ) && ( id.length() > 0 ) ) {
       identifier = id;
@@ -371,7 +384,7 @@ public abstract class LogicComponentBase extends ThreadJob implements LogicCompo
     if ( lgr == null ) {
       lcb_logr = new NullLogger();
     } else {
-      this.lcb_logr = lgr;
+      lcb_logr = lgr;
     }
   }
 
@@ -379,8 +392,9 @@ public abstract class LogicComponentBase extends ThreadJob implements LogicCompo
 
 
   /**
-   * @see net.smartforge.LogicComponent#setStartTime(long)
+   * @see coyote.loader.component.LogicComponent#setStartTime(long)
    */
+  @Override
   public void setStartTime( final long millis ) {
     startTime = millis;
   }

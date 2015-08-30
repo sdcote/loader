@@ -1,7 +1,13 @@
 /*
- * $Id: Component.java,v 1.2 2007/01/10 20:47:20 scote Exp $
+ * Copyright (c) 2007 Stephan D. Cote' - All rights reserved.
+ * 
+ * This program and the accompanying materials are made available under the 
+ * terms of the MIT License which accompanies this distribution, and is 
+ * available at http://creativecommons.org/licenses/MIT/
  *
- * Copyright Stephan D. Cote' 2008 - All rights reserved.
+ * Contributors:
+ *   Stephan D. Cote 
+ *      - Initial concept and initial implementation
  */
 package coyote.loader.component;
 
@@ -40,14 +46,6 @@ public interface Component {
 
 
   /**
-   * @return the name of this component within this loader.
-   */
-  public String getName();
-
-
-
-
-  /**
    * 
    * @return a description of this component
    */
@@ -60,6 +58,14 @@ public interface Component {
    * @return the unique identifier of this component
    */
   public String getId();
+
+
+
+
+  /**
+   * @return the name of this component within this loader.
+   */
+  public String getName();
 
 
 
