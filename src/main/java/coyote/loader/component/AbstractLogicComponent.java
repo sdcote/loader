@@ -26,16 +26,15 @@ import coyote.loader.thread.ThreadJob;
  */
 public abstract class AbstractLogicComponent extends ThreadJob implements LogicComponent {
 
-  private static final String CLASS = "Component";
   private static final String UNKNOWN = "Unknown";
 
-  protected coyote.loader.cfg.Config configuration = null;
+  protected Config configuration = null;
   protected volatile boolean logging = false;
   protected volatile boolean enabled = true;
   protected volatile boolean licensed = false;
   protected long startTime;
   protected String identifier = new GUID().toString();
-  protected String componentName = AbstractLogicComponent.CLASS_TAG;
+  protected String componentName = AbstractLogicComponent.CLASS;
   protected Logger lcb_logr = new NullLogger();
 
 
@@ -157,7 +156,7 @@ public abstract class AbstractLogicComponent extends ThreadJob implements LogicC
   @Override
   public DataFrame getProfile() {
     final DataFrame retval = new DataFrame();
-    retval.put( CLASS_TAG, CLASS );
+    retval.put( CLASS, CLASS );
     retval.put( "ID", identifier );
 
     return retval;
@@ -193,7 +192,7 @@ public abstract class AbstractLogicComponent extends ThreadJob implements LogicC
    */
   @Override
   public String getSystemId() {
-    return LogicComponent.CLASS_TAG;
+    return LogicComponent.CLASS;
   }
 
 
@@ -212,7 +211,7 @@ public abstract class AbstractLogicComponent extends ThreadJob implements LogicC
     final Config template = new Config();
 
     try {
-      template.setName( LogicComponent.CLASS_TAG );
+      template.setName( LogicComponent.CLASS );
 
       // define the slots
       // template.addConfigSlot( new ConfigSlot( LogicComponent.ENABLED_TAG, "Flag indicating the component is enabled to run.", new Boolean( true ) ).toString() );
