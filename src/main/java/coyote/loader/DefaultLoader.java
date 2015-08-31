@@ -13,7 +13,6 @@ package coyote.loader;
 
 import java.util.Iterator;
 
-import coyote.commons.ExceptionUtil;
 import coyote.loader.cfg.Config;
 import coyote.loader.log.Log;
 import coyote.loader.log.LogMsg;
@@ -34,57 +33,6 @@ public class DefaultLoader extends AbstractLoader implements Loader {
 
 
   public DefaultLoader() {
-
-  }
-
-
-
-
-  /**
-   * Constructor called from {@code main(String[])} method to initialize the 
-   * platform from the command line.
-   * 
-   * @param args the command line arguments passed via the {@code main(String[])} method. 
-   */
-  public DefaultLoader( final String[] args ) {
-    this();
-
-    // Now parse the command-line arguments
-    parseArgs( args );
-
-    // We must configure ourselves here to determine how we should run.
-    loadConfig();
-
-    // TODO PID file management?
-    // java -Ddaemon.pidfile=mydaemon.pid -cp your_class_path com.domain.main_class <&- &
-    //getPidFile().deleteOnExit();
-
-    // The effectively disconnects the loader form the console allowing it run 
-    // in the background after the console is closed
-    System.out.close();
-    System.err.close();
-
-  }
-
-
-
-
-  /**
-   * 
-   */
-  private void loadConfig() {
-    // TODO Auto-generated method stub
-
-  }
-
-
-
-
-  /**
-   * @param args
-   */
-  private void parseArgs( String[] args ) {
-    // TODO Auto-generated method stub
 
   }
 
@@ -149,7 +97,7 @@ public class DefaultLoader extends AbstractLoader implements Loader {
    */
   private void initComponents() {
     // TODO Auto-generated method stub
-    
+
   }
 
 
@@ -224,26 +172,7 @@ public class DefaultLoader extends AbstractLoader implements Loader {
    */
   private void loadComponent( Config config ) {
     // TODO Auto-generated method stub
-    
-  }
 
-
-
-
-  /**
-   * Called via the command-line loading of the JRE to start an instance of our 
-   * platform component.
-   * 
-   * @param args Command line arguments.
-   */
-  public static void main( final String[] args ) {
-    try {
-      new DefaultLoader( args ).run();
-    } catch ( Throwable t ) {
-      System.err.println( ExceptionUtil.stackTrace( t ) );
-    }
-
-    System.exit( 0 );
   }
 
 }
