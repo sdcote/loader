@@ -44,6 +44,11 @@ public class BootStrap extends AbstractLoader {
 
 
 
+  /**
+   * Use the first command line argument as the URI to the configuration file
+   * 
+   * @param args The command line arguments passed to the main method
+   */
   private static void parseArgs( String[] args ) {
     String cfgLoc = null;
 
@@ -64,18 +69,31 @@ public class BootStrap extends AbstractLoader {
 
 
 
+  /**
+   * Generate a configuration from the file read-in.
+   */
   private static void readConfig() {
     try {
       configuration = Config.read( cfgUri );
     } catch ( IOException | ConfigurationException e ) {
       System.err.println( LogMsg.createMsg( "Loader.error_reading_configuration", cfgUri, e.getLocalizedMessage(), ExceptionUtil.stackTrace( e ) ) );
-      System.exit( 6 );
+      System.exit( 7 );
     }
   }
 
 
 
 
+  /**
+   * Determine the loader to use from the given configuration and create an 
+   * instance of it.
+   * 
+   * <p>Once created, the loader will be passed the configuration resulting in 
+   * a configured loader</p>
+   *  
+   * @return a configured loader or null if there was not "CLASS" attribute in 
+   *         the root of the configuration indicating was not found.
+   */
   private static Loader buildLoader() {
     //System.out.println(JSONMarshaler.toFormattedString( configuration ));
     Loader retval = null;
@@ -99,7 +117,7 @@ public class BootStrap extends AbstractLoader {
               retval.configure( configuration );
             } catch ( ConfigurationException e ) {
               System.err.println( LogMsg.createMsg( "Loader.could_not_config_loader", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage() ) );
-              System.exit( 4 );
+              System.exit( 6 );
             }
           } else {
             System.err.println( LogMsg.createMsg( "Loader.class_is_not_loader", className ) );
@@ -107,9 +125,8 @@ public class BootStrap extends AbstractLoader {
           }
         } catch ( ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e ) {
           System.err.println( LogMsg.createMsg( "Loader.instantiation_error", className, e.getClass().getName(), e.getMessage() ) );
-          System.exit( 6 );
+          System.exit( 4 );
         }
-
       }
     }
 
@@ -120,6 +137,8 @@ public class BootStrap extends AbstractLoader {
 
 
   /**
+   * Use the first argument in the command line (or the 'cfg.uri' system 
+   * property) to specify a URI of a configuration file to load.
    * 
    * @param args command line arguments.
    */
