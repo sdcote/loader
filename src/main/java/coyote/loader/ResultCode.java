@@ -59,7 +59,7 @@ public class ResultCode
 
 
 
-  public static final HashMap message = new HashMap();
+  public static final HashMap<Integer,String> message = new HashMap<Integer,String>();
 
   private static final ResourceBundle resbundle = ResourceBundle.getBundle( "ResultCodes", Locale.getDefault() );
 
