@@ -38,6 +38,6 @@ public interface Loader {
    * <p>This is a blocking call. The thread will remain in this method until 
    * the loader terminates or an exception is thrown.</p>
    */
-  void run();
+  public void run();
 
 }
