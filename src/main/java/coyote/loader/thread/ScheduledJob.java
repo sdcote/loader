@@ -1,7 +1,13 @@
 /*
- * $Id: ScheduledJob.java,v 1.3 2004/04/16 12:18:44 cotes Exp $
+ * Copyright (c) 2004 Stephan D. Cote' - All rights reserved.
+ * 
+ * This program and the accompanying materials are made available under the 
+ * terms of the MIT License which accompanies this distribution, and is 
+ * available at http://creativecommons.org/licenses/MIT/
  *
- * Copyright (C) 2003 Stephan D. Cote' - All rights reserved.
+ * Contributors:
+ *   Stephan D. Cote 
+ *      - Initial concept and initial implementation
  */
 package coyote.loader.thread;
 
@@ -15,10 +21,7 @@ import coyote.commons.INamable;
 /**
  * Class ScheduledJob
  *
- * @todo Add support for IScheduledJobListeners to be notified when jobs are completed, and to provide reference to exceptions that may have occurred during execution
- *
- * @author Stephan D. Cote' - Enterprise Architecture
- * @version $Revision: 1.3 $
+ * TODO Add support for IScheduledJobListeners to be notified when jobs are completed, and to provide reference to exceptions that may have occurred during execution
  */
 public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 

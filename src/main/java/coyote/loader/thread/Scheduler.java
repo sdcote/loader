@@ -1,7 +1,13 @@
 /*
- * $Id: Scheduler.java,v 1.2 2004/01/02 15:10:16 cotes Exp $
+ * Copyright (c) 2004 Stephan D. Cote' - All rights reserved.
+ * 
+ * This program and the accompanying materials are made available under the 
+ * terms of the MIT License which accompanies this distribution, and is 
+ * available at http://creativecommons.org/licenses/MIT/
  *
- * Copyright (C) 2003 Stephan D. Cote' - All rights reserved.
+ * Contributors:
+ *   Stephan D. Cote 
+ *      - Initial concept and initial implementation
  */
 package coyote.loader.thread;
 
@@ -23,9 +29,6 @@ import coyote.loader.log.Log;
  * <p>This class is often used with the coyote.commons.util.thread.ThreadBatch
  * class. The ThreadBatch class is a ThreadJob class that holds an array of
  * ThreadJobs and runs them each in the order in which they were added.</p>
- *
- * @author Stephan D. Cote' - Enterprise Architecture
- * @version $Revision: 1.2 $
  */
 public class Scheduler extends ThreadJob {
   /** Tag used in various class identifying locations like DataCapsule nodes */

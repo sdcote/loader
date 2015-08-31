@@ -1,7 +1,13 @@
 /*
- * $Id: ThreadPool.java,v 1.5 2005/04/12 17:05:48 cotes Exp $
+ * Copyright (c) 2003 Stephan D. Cote' - All rights reserved.
+ * 
+ * This program and the accompanying materials are made available under the 
+ * terms of the MIT License which accompanies this distribution, and is 
+ * available at http://creativecommons.org/licenses/MIT/
  *
- * Copyright (C) 2003 Stephan D. Cote' - All rights reserved.
+ * Contributors:
+ *   Stephan D. Cote 
+ *      - Initial concept and initial implementation
  */
 package coyote.loader.thread;
 
@@ -37,9 +43,6 @@ import coyote.loader.log.Log;
  * TODO Rethink "job_wait_time: specifically all threads and and below the
  *       minimum should have a job_wait_time of 0 while the rest should have a
  *       time-out so they can shutdown if necessary.
- *
- * @author Stephan D. Cote' - Enterprise Architecture
- * @version $Revision: 1.5 $
  */
 public class ThreadPool {
   private int maximum_workers = 128;
@@ -155,8 +158,7 @@ public class ThreadPool {
     if ( cfg.contains( JOBWAIT_TAG ) ) {
       try {
         setJobWaitTime( cfg.getAsInt( JOBWAIT_TAG ) );
-      } catch ( DataFrameException e ) {
-      }
+      } catch ( DataFrameException e ) {}
     }
 
     // Set the time the threadpool will wait for all the threads to stop on
@@ -164,24 +166,21 @@ public class ThreadPool {
     if ( cfg.contains( STOPWAIT_TAG ) ) {
       try {
         setStopWaitTime( cfg.getAsInt( STOPWAIT_TAG ) );
-      } catch ( DataFrameException e ) {
-      }
+      } catch ( DataFrameException e ) {}
     }
 
     // Set the maximum number of workers to have active at any one time
     if ( cfg.contains( MAXWORKERS_TAG ) ) {
       try {
         setMaxThreadCount( cfg.getAsInt( MAXWORKERS_TAG ) );
-      } catch ( DataFrameException e ) {
-      }
+      } catch ( DataFrameException e ) {}
     }
 
     // Set the minimum number of workers to have active at any one time
     if ( cfg.contains( MINWORKERS_TAG ) ) {
       try {
         setMinThreadCount( cfg.getAsInt( MINWORKERS_TAG ) );
-      } catch ( DataFrameException e ) {
-      }
+      } catch ( DataFrameException e ) {}
     }
   }
 

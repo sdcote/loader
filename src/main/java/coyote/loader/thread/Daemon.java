@@ -1,21 +1,25 @@
 /*
- * $Id: Daemon.java,v 1.6 2007/03/21 23:32:43 scote Exp $
+ * Copyright (c) 2006 Stephan D. Cote' - All rights reserved.
+ * 
+ * This program and the accompanying materials are made available under the 
+ * terms of the MIT License which accompanies this distribution, and is 
+ * available at http://creativecommons.org/licenses/MIT/
  *
- * Copyright Stephan D. Cote' 2008 - All rights reserved.
+ * Contributors:
+ *   Stephan D. Cote 
+ *      - Initial concept and initial implementation
  */
 package coyote.loader.thread;
 
 import coyote.loader.cfg.Config;
 
+
 /**
- * The Daemon class models...
- * 
- * @author Stephan D. Cote'
- * @version $Revision: 1.6 $
+ * The Daemon class models a component which runs in the background.
  */
 public interface Daemon {
-  /** Tag used in various class identifying locations */
-  public static final String CLASS_TAG = "Daemon";
+  /** Token used in various class identifying locations */
+  public static final String CLASS = "Daemon";
   public static final String INTERVAL_TAG = "CycleInterval";
 
 
