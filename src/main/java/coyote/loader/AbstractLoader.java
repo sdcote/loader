@@ -13,6 +13,8 @@ package coyote.loader;
 
 import java.util.HashMap;
 
+import coyote.loader.cfg.Config;
+import coyote.loader.cfg.ConfigurationException;
 import coyote.loader.thread.Daemon;
 import coyote.loader.thread.ThreadJob;
 
@@ -27,6 +29,20 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
   /** The time to pause (sleep) between idle loop cycles (dflt=3000ms) */
   protected long parkTime = 3000;
+
+  /** Our configuration */
+  protected Config configuration = new Config();
+
+
+
+
+  /**
+   * @see coyote.loader.Loader#configure(coyote.loader.cfg.Config)
+   */
+  @Override
+  public void configure( Config cfg ) throws ConfigurationException {
+    configuration = cfg;
+  }
 
 
 
@@ -72,4 +88,5 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
     return closer;
   }
+
 }

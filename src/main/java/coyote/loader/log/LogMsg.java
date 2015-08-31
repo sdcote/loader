@@ -41,15 +41,10 @@ import java.util.ResourceBundle;
  *
  * <p>You always specify the base bundle name first, followed by the locale, 
  * the bundle key and the variable list of arguments that go with the keyed 
- * message (all in that order). Bundle name and locale are both optional. This 
- * is consistent with the way localized messages are specified in constructors 
- * for {@link LocalizedException} and {@link LocalizedRuntimeException}. When 
+ * message (all in that order). Bundle name and locale are both optional. When 
  * you need to specify a <code>Throwable</code> with your localized message, it 
  * is specified before those parameters. Again, this is consistent both in this 
  * class and the localized exception classes.</p>
- *
- * @see LocalizedException
- * @see LocalizedRuntimeException
  */
 public class LogMsg implements Serializable {
   /**
@@ -103,7 +98,7 @@ public class LogMsg implements Serializable {
 
   /**
    * Default resource bundle base name. This is not final - you can change this 
-   * via {@link #setBundleBaseNameDefault(LogMsg.BundleBaseName)}. Because it 
+   * via {@link LogMsg#setBundleBaseNameDefault(BundleBaseName)}. Because it 
    * is static, this value is not serialized when the object is serialized. 
    * This is probably OK; we can assume if we move over to another VM, we 
    * probably will want to go back to the original bundle name default.
@@ -418,7 +413,7 @@ public class LogMsg implements Serializable {
    *
    * @param locale locale used to determine proper resource bundle to use
    *
-   * @see LogMsg#LogMsg(net.bplg.util.LogMsg.BundleBaseName, Locale)
+   * @see LogMsg#LogMsg(BundleBaseName, Locale)
    */
   public LogMsg( final Locale locale ) {
     this( LogMsg.bundleBasenameDefault, locale );
@@ -494,7 +489,7 @@ public class LogMsg implements Serializable {
   /**
    * Returns the message string identified with the given key. 
    * 
-   * <p>The additional arguments replace any placeholders found in the message. 
+   * <p>The additional arguments replace any placeholder found in the message. 
    * This sets the {@link #getLastMessage()} when it returns.</p>
    *
    * @param key identifies the message to be retrieved
@@ -502,7 +497,7 @@ public class LogMsg implements Serializable {
    *
    * @return localized and formatted message
    *
-   * @see    java.text.MessageFormat
+   * @see java.text.MessageFormat
    */
   public String getMsg( final String key, final Object[] args ) {
     String retval = null;

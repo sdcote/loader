@@ -158,7 +158,7 @@ public interface Logger {
    * @param event The event, which is often just a simple string.
    * @param cause The exception that caused the log entry. Can be null.
    * 
-   * @see net.smartforge.log.Formatter
+   * @see coyote.loader.log.Formatter
    */
   public abstract void append( String category, Object event, Throwable cause );
 

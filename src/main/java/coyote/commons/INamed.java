@@ -1,22 +1,23 @@
 /*
- * $Id:$
+ * Copyright (c) 2005 Stephan D. Cote' - All rights reserved.
+ * 
+ * This program and the accompanying materials are made available under the 
+ * terms of the MIT License which accompanies this distribution, and is 
+ * available at http://creativecommons.org/licenses/MIT/
  *
- * Copyright (C) 2003 Stephan D. Cote' - All rights reserved.
+ * Contributors:
+ *   Stephan D. Cote 
+ *      - Initial concept and initial implementation
  */
 package coyote.commons;
 
 /**
  * Interface INamed
- * 
- * @author Stephan D. Cote' - Enterprise Architecture
- * @version $Revision:$
  */
 public interface INamed {
 
   /**
-   * Method getName
-   * 
-   * @return
+   * @return the name of this component instance.
    */
   public abstract String getName();
 }

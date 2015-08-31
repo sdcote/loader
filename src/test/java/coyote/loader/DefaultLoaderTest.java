@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2005 Stephan D. Cote' - All rights reserved.
+ * Copyright (c) 2015 Stephan D. Cote' - All rights reserved.
  * 
  * This program and the accompanying materials are made available under the 
  * terms of the MIT License which accompanies this distribution, and is 
@@ -9,18 +9,20 @@
  *   Stephan D. Cote 
  *      - Initial concept and initial implementation
  */
-package coyote.commons;
+package coyote.loader;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
 
 /**
- * Interface INamable
+ * 
  */
-public interface INamable extends INamed {
+public class DefaultLoaderTest {
 
-  /**
-   *Set the name of this component instance.
-   *
-   * @param name the name of the component
-   */
-  public abstract void setName( String name );
+  @Test
+  public void test() {
+    
+  }
 
 }

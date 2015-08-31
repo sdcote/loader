@@ -11,9 +11,33 @@
  */
 package coyote.loader;
 
+import coyote.loader.cfg.Config;
+import coyote.loader.cfg.ConfigurationException;
+
+
 /**
  * 
  */
 public interface Loader {
+
+  /**
+   * Configure this loader with the given Config data.
+   * 
+   * @param cfg the configuration to apply to this loader.
+   * 
+   * @throws ConfigurationException if there were problems configuring the loader.
+   */
+  public void configure( Config cfg ) throws ConfigurationException;
+
+
+
+
+  /**
+   * Start the loader running.
+   * 
+   * <p>This is a blocking call. The thread will remain in this method until 
+   * the loader terminates or an exception is thrown.</p>
+   */
+  void run();
 
 }

@@ -313,7 +313,7 @@ public abstract class AbstractLogger implements Logger {
 
 
   /**
-   * @see  net.smartforge.log.Logger#isLocked()
+   * @see coyote.loader.log.Logger#isLocked()
    */
   public boolean isLocked() {
     return locked;
@@ -323,7 +323,7 @@ public abstract class AbstractLogger implements Logger {
 
 
   /**
-   * @see  net.smartforge.log.Logger#setLocked(boolean)
+   * @see coyote.loader.log.Logger#setLocked(boolean)
    */
   public void setLocked( final boolean flag ) {
     locked = flag;

@@ -11,7 +11,7 @@ package coyote.loader.cfg;
  * @author Stephan D. Cote'
  * @version $Revision:$
  */
-public class ConfigException extends Exception {
+public class ConfigurationException extends Exception {
 
   /**
    * 
@@ -24,7 +24,7 @@ public class ConfigException extends Exception {
   /**
    * 
    */
-  public ConfigException() {
+  public ConfigurationException() {
     super();
   }
 
@@ -34,7 +34,7 @@ public class ConfigException extends Exception {
   /**
    * @param message
    */
-  public ConfigException( final String message ) {
+  public ConfigurationException( final String message ) {
     super( message );
   }
 
@@ -45,7 +45,7 @@ public class ConfigException extends Exception {
    * @param message
    * @param newNested
    */
-  public ConfigException( final String message, final Throwable newNested ) {
+  public ConfigurationException( final String message, final Throwable newNested ) {
     super( message, newNested );
   }
 
@@ -55,7 +55,7 @@ public class ConfigException extends Exception {
   /**
    * @param newNested
    */
-  public ConfigException( final Throwable newNested ) {
+  public ConfigurationException( final Throwable newNested ) {
     super( newNested );
   }
 

@@ -1,21 +1,32 @@
 /*
- * $Id:$
+ * Copyright (c) 2006 Stephan D. Cote' - All rights reserved.
+ * 
+ * This program and the accompanying materials are made available under the 
+ * terms of the MIT License which accompanies this distribution, and is 
+ * available at http://creativecommons.org/licenses/MIT/
  *
- * Copyright Stephan D. Cote' 2008 - All rights reserved.
+ * Contributors:
+ *   Stephan D. Cote 
+ *      - Initial concept and initial implementation
  */
 package coyote.loader.cfg;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
+import coyote.commons.UriUtil;
 import coyote.dataframe.DataFrame;
+import coyote.dataframe.marshal.JSONMarshaler;
 
 
 /**
@@ -48,9 +59,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
 
 
 
-  public Config() {
-    super.put( NAME_TAG, CLASS );
-  }
+  public Config() {}
 
 
 
@@ -62,9 +71,9 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    * @return TODO Complete Documentation
    * 
    * @throws IOException
-   * @throws ConfigException
+   * @throws ConfigurationException
    */
-  public static Config read( final File file ) throws IOException, ConfigException {
+  public static Config read( final File file ) throws IOException, ConfigurationException {
     return Config.read( new FileInputStream( file ) );
   }
 
@@ -72,15 +81,44 @@ public class Config extends DataFrame implements Cloneable, Serializable {
 
 
   /**
+   * Read the data from the given input stream and create an object from the 
+   * data read.
    * 
-   * @param configStream
+   * <p>This assumes a UTF-8 JSON formatted stream of bytes.</p>
    * 
-   * @return TODO Complete Documentation
+   * @param configStream the input stream from which to read
    * 
-   * @throws ConfigException
+   * @return a configuration filled with the 
+   * 
+   * @throws ConfigurationException if there were issues creating a configuration object from the data read in from the stream.
    */
-  public static Config read( final InputStream configStream ) throws ConfigException {
+  public static Config read( final InputStream configStream ) throws ConfigurationException {
     final Config retval = new Config();
+
+    byte[] buffer = new byte[8192];
+    int bytesRead;
+    ByteArrayOutputStream output = new ByteArrayOutputStream();
+    try {
+      while ( ( bytesRead = configStream.read( buffer ) ) != -1 ) {
+        output.write( buffer, 0, bytesRead );
+      }
+    } catch ( IOException e ) {
+      throw new ConfigurationException( "Could not read configuration stream", e );
+    }
+
+    String data = null;
+    try {
+      data = new String( output.toByteArray(), "UTF-8" );
+    } catch ( UnsupportedEncodingException e ) {
+      throw new ConfigurationException( "Could not read UTF-8", e );
+    }
+
+    if ( data != null ) {
+      List<DataFrame> config = JSONMarshaler.marshal( data );
+      if ( config.get( 0 ) != null ) {
+        retval.merge( config.get( 0 ) );
+      }
+    }
 
     return retval;
   }
@@ -95,9 +133,9 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    * @return TODO Complete Documentation
    * 
    * @throws IOException
-   * @throws ConfigException
+   * @throws ConfigurationException
    */
-  public static Config read( final String filename ) throws IOException, ConfigException {
+  public static Config read( final String filename ) throws IOException, ConfigurationException {
     return Config.read( new FileInputStream( filename ) );
   }
 
@@ -111,11 +149,11 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    * @return TODO Complete Documentation
    * 
    * @throws IOException
-   * @throws ConfigException
+   * @throws ConfigurationException
    */
-  public static Config read( final URI uri ) throws IOException, ConfigException {
+  public static Config read( final URI uri ) throws IOException, ConfigurationException {
     if ( uri.getScheme().toLowerCase().startsWith( "file" ) ) {
-      return Config.read( new FileInputStream( uri.getAuthority() ) );
+      return Config.read( new FileInputStream( UriUtil.getFile( uri ) ) );
     } else {
       return Config.read( uri.toURL().openStream() );
     }

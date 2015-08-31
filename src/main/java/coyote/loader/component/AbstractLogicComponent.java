@@ -398,4 +398,33 @@ public abstract class AbstractLogicComponent extends ThreadJob implements LogicC
     startTime = millis;
   }
 
+
+
+
+  /**
+   * @see coyote.loader.component.LogicComponent#isLicensed()
+   */
+  @Override
+  public boolean isLicensed() {
+    return false;
+  }
+
+
+
+
+  /**
+   * @see coyote.loader.component.LogicComponent#quiesce()
+   */
+  @Override
+  public void quiesce() {}
+
+
+
+
+  /**
+   * @see coyote.loader.component.Component#shutdown(coyote.dataframe.DataFrame)
+   */
+  @Override
+  public void shutdown( DataFrame params ) {}
+
 }

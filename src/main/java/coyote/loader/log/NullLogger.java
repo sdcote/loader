@@ -39,7 +39,7 @@ public class NullLogger implements Logger {
 
 
   /**
-   * @see net.smartforge.log.Logger#append(java.lang.String, java.lang.Object, java.lang.Throwable)
+   * @see coyote.loader.log.Logger#append(java.lang.String, java.lang.Object, java.lang.Throwable)
    */
   public void append( final String category, final Object event, final Throwable cause ) {}
 
@@ -47,7 +47,7 @@ public class NullLogger implements Logger {
 
 
   /**
-   * @see net.smartforge.log.Logger#disable()
+   * @see coyote.loader.log.Logger#disable()
    */
   public void disable() {}
 
@@ -55,7 +55,7 @@ public class NullLogger implements Logger {
 
 
   /**
-   * @see net.smartforge.log.Logger#enable()
+   * @see coyote.loader.log.Logger#enable()
    */
   public void enable() {}
 
@@ -63,7 +63,7 @@ public class NullLogger implements Logger {
 
 
   /**
-   * @see net.smartforge.log.Logger#getConfig()
+   * @see coyote.loader.log.Logger#getConfig()
    */
   public Config getConfig() {
     return null;
@@ -73,7 +73,7 @@ public class NullLogger implements Logger {
 
 
   /**
-   * @see net.smartforge.log.Logger#getMask()
+   * @see coyote.loader.log.Logger#getMask()
    */
   public long getMask() {
     return 0;
@@ -83,7 +83,7 @@ public class NullLogger implements Logger {
 
 
   /**
-   * @see net.smartforge.log.Logger#getTarget()
+   * @see coyote.loader.log.Logger#getTarget()
    */
   public URI getTarget() {
     try {
@@ -98,7 +98,7 @@ public class NullLogger implements Logger {
 
 
   /**
-   * @see net.smartforge.log.Logger#initialize()
+   * @see coyote.loader.log.Logger#initialize()
    */
   public void initialize() {}
 
@@ -106,7 +106,7 @@ public class NullLogger implements Logger {
 
 
   /**
-   * @see net.smartforge.log.Logger#isLocked()
+   * @see coyote.loader.log.Logger#isLocked()
    */
   public boolean isLocked() {
     return false;
@@ -116,7 +116,7 @@ public class NullLogger implements Logger {
 
 
   /**
-   * @see net.smartforge.log.Logger#setConfig(net.smartforge.util.Config)
+   * @see coyote.loader.log.Logger#setConfig(coyote.loader.cfg.Config)
    */
   public void setConfig( final Config cfg ) {}
 
@@ -124,7 +124,7 @@ public class NullLogger implements Logger {
 
 
   /**
-   * @see net.smartforge.log.Logger#setLocked(boolean)
+   * @see coyote.loader.log.Logger#setLocked(boolean)
    */
   public void setLocked( final boolean flag ) {}
 
@@ -132,7 +132,7 @@ public class NullLogger implements Logger {
 
 
   /**
-   * @see net.smartforge.log.Logger#setMask(long)
+   * @see coyote.loader.log.Logger#setMask(long)
    */
   public void setMask( final long mask ) {}
 
@@ -140,7 +140,7 @@ public class NullLogger implements Logger {
 
 
   /**
-   * @see net.smartforge.log.Logger#setTarget(java.net.URI)
+   * @see coyote.loader.log.Logger#setTarget(java.net.URI)
    */
   public void setTarget( final URI uri ) {}
 
@@ -148,7 +148,7 @@ public class NullLogger implements Logger {
 
 
   /**
-   * @see net.smartforge.log.Logger#startLogging(java.lang.String)
+   * @see coyote.loader.log.Logger#startLogging(java.lang.String)
    */
   public void startLogging( final String category ) {}
 
@@ -156,7 +156,7 @@ public class NullLogger implements Logger {
 
 
   /**
-   * @see net.smartforge.log.Logger#stopLogging(java.lang.String)
+   * @see coyote.loader.log.Logger#stopLogging(java.lang.String)
    */
   public void stopLogging( final String category ) {}
 
@@ -164,7 +164,7 @@ public class NullLogger implements Logger {
 
 
   /**
-   * @see net.smartforge.log.Logger#terminate()
+   * @see coyote.loader.log.Logger#terminate()
    */
   public void terminate() {}
 

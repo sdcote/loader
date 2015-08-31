@@ -44,7 +44,7 @@ public class DefaultLoader extends AbstractLoader implements Loader {
    * Constructor called from {@code main(String[])} method to initialize the 
    * platform from the command line.
    * 
-   * @param the command line arguments passed via the <code>main(String[])</code> method 
+   * @param args the command line arguments passed via the {@code main(String[])} method. 
    */
   public DefaultLoader( final String[] args ) {
     this();

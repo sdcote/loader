@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Stephan D. Cote' - All rights reserved.
+ * Copyright (c) 2003 Stephan D. Cote' - All rights reserved.
  * 
  * This program and the accompanying materials are made available under the 
  * terms of the MIT License which accompanies this distribution, and is 
@@ -165,6 +165,21 @@ public class GUID {
     sb.append( raw.substring( 20 ) );
 
     return sb.toString();
+  }
+
+
+
+
+  /**
+   * Create a new GUID.
+   * 
+   * <p>This is to match the new UUID class and its approach to generating 
+   * random UIDs.</p>
+   * 
+   * @return a new GUID
+   */
+  public static Object randomGUID() {
+    return new GUID();
   }
 
 }
