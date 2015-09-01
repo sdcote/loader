@@ -59,7 +59,7 @@ public class CyclingFileAppender extends FileAppender {
 
 
   /**
-   * @see net.smartforge.log.Logger#append(java.lang.String, java.lang.Object)
+   * @see coyote.loader.log.Logger#append(java.lang.String, java.lang.Object)
    *
    * @param category
    * @param event

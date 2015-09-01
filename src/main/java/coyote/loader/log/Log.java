@@ -35,10 +35,10 @@ import java.util.Vector;
 public final class Log {
 
   /** Map of all the known logging category codes keyed by their name. */
-  static final Hashtable stringToCode = new Hashtable();
+  static final Hashtable<String,Long> stringToCode = new Hashtable<String,Long>();
 
   /** Map of all the category names keyed by their category code. */
-  static final Hashtable codeToString = new Hashtable();
+  static final Hashtable<Long,String> codeToString = new Hashtable<Long,String>();
 
   /** Map of all the loggers in the fixture keyed by their name. */
   static final Hashtable<String,Logger> nameToLogger = new Hashtable<String,Logger>();
@@ -113,8 +113,8 @@ public final class Log {
     try {
       Runtime.getRuntime().addShutdownHook( new Thread( "LogShutdown" ) {
         public void run() {
-          for ( final Enumeration en = Log.nameToLogger.elements(); en.hasMoreElements(); ) {
-            ( (Logger)en.nextElement() ).terminate();
+          for ( final Enumeration<Logger> en = Log.nameToLogger.elements(); en.hasMoreElements(); ) {
+            en.nextElement().terminate();
           }
         }
       } );
@@ -165,8 +165,8 @@ public final class Log {
   public synchronized static void append( final long code, final Object event, final Throwable cause ) {
     final String category = Log.getCategory( code );
 
-    for ( final Enumeration en = Log.nameToLogger.elements(); en.hasMoreElements(); ) {
-      final Logger logger = (Logger)en.nextElement();
+    for ( final Enumeration<Logger> en = Log.nameToLogger.elements(); en.hasMoreElements(); ) {
+      final Logger logger = en.nextElement();
 
       if ( ( logger.getMask() & code ) != 0 ) {
         logger.append( category, event, cause );
@@ -265,7 +265,7 @@ public final class Log {
    */
   public static synchronized void disableLogger( final String name ) {
     if ( !Log.permanentLoggers.contains( name ) ) {
-      final Logger ilogger = (Logger)Log.nameToLogger.get( name );
+      final Logger ilogger = Log.nameToLogger.get( name );
 
       if ( ilogger != null ) {
         ilogger.disable();
@@ -287,7 +287,7 @@ public final class Log {
    * @see #disableLogger(String)
    */
   public static synchronized void enableLogger( final String name ) {
-    final Logger ilogger = (Logger)Log.nameToLogger.get( name );
+    final Logger ilogger = Log.nameToLogger.get( name );
 
     if ( ilogger != null ) {
       ilogger.enable();
@@ -369,7 +369,7 @@ public final class Log {
    * @return The category associated with the specified code.
    */
   public synchronized static String getCategory( final long code ) {
-    return (String)Log.codeToString.get( new Long( code ) );
+    return Log.codeToString.get( new Long( code ) );
   }
 
 
@@ -393,8 +393,8 @@ public final class Log {
 
     int i = 0;
 
-    for ( final Enumeration en = Log.stringToCode.keys(); en.hasMoreElements(); i++ ) {
-      retval[i] = (String)en.nextElement();
+    for ( final Enumeration<String> en = Log.stringToCode.keys(); en.hasMoreElements(); i++ ) {
+      retval[i] = en.nextElement();
     }
 
     return retval;
@@ -415,7 +415,7 @@ public final class Log {
    */
   public static synchronized long getCode( final String category ) {
     if ( Log.stringToCode.size() < 64 ) {
-      Long code = (Long)Log.stringToCode.get( category );
+      Long code = Log.stringToCode.get( category );
 
       if ( code == null ) {
         code = new Long( 1L << Log.stringToCode.size() );
@@ -439,7 +439,7 @@ public final class Log {
    * @return The default logger, or null if there is no logger named "default".
    */
   public synchronized static Logger getDefaultLogger() {
-    return (Logger)Log.nameToLogger.get( Log.DEFAULT_LOGGER_NAME );
+    return Log.nameToLogger.get( Log.DEFAULT_LOGGER_NAME );
   }
 
 
@@ -468,7 +468,7 @@ public final class Log {
    */
   public synchronized static Logger getLogger( final String name ) {
     if ( name != null ) {
-      return (Logger)Log.nameToLogger.get( name );
+      return Log.nameToLogger.get( name );
     } else {
       return null;
     }
@@ -494,10 +494,10 @@ public final class Log {
    *
    * @return TODO Complete Documentation
    */
-  public synchronized static Enumeration getLoggerNames() {
-    final Vector names = new Vector();
+  public synchronized static Enumeration<String> getLoggerNames() {
+    final Vector<String> names = new Vector<String>();
 
-    for ( final Enumeration en = Log.nameToLogger.keys(); en.hasMoreElements(); ) {
+    for ( final Enumeration<String> en = Log.nameToLogger.keys(); en.hasMoreElements(); ) {
       names.addElement( en.nextElement() );
     }
 
@@ -512,10 +512,10 @@ public final class Log {
    *
    * @return an enumeration over all the current loggers.
    */
-  public synchronized static Enumeration getLoggers() {
-    final Vector loggers = new Vector();
+  public synchronized static Enumeration<Logger> getLoggers() {
+    final Vector<Logger> loggers = new Vector<Logger>();
 
-    for ( final Enumeration en = Log.nameToLogger.elements(); en.hasMoreElements(); ) {
+    for ( final Enumeration<Logger> en = Log.nameToLogger.elements(); en.hasMoreElements(); ) {
       loggers.addElement( en.nextElement() );
     }
 
@@ -631,8 +631,8 @@ public final class Log {
   static synchronized void recalcMasks() {
     Log.masks = 0L;
 
-    for ( final Enumeration enumeration = Log.nameToLogger.elements(); enumeration.hasMoreElements(); ) {
-      Log.masks |= ( (Logger)enumeration.nextElement() ).getMask();
+    for ( final Enumeration<Logger> enumeration = Log.nameToLogger.elements(); enumeration.hasMoreElements(); ) {
+      Log.masks |= enumeration.nextElement().getMask();
     }
 
   }
@@ -665,7 +665,7 @@ public final class Log {
    */
   public static synchronized void removeLogger( final String name ) {
     if ( !Log.permanentLoggers.contains( name ) ) {
-      final Logger logger = (Logger)Log.nameToLogger.get( name );
+      final Logger logger = Log.nameToLogger.get( name );
 
       if ( logger != null ) {
         logger.terminate();
@@ -686,8 +686,8 @@ public final class Log {
    */
   public static synchronized void setMask( final long mask ) {
     Logger lgr = null;
-    for ( final Enumeration en = Log.nameToLogger.elements(); en.hasMoreElements(); ) {
-      lgr = (Logger)en.nextElement();
+    for ( final Enumeration<Logger> en = Log.nameToLogger.elements(); en.hasMoreElements(); ) {
+      lgr = en.nextElement();
       if ( !lgr.isLocked() ) {
         lgr.setMask( mask );
       }
@@ -704,8 +704,8 @@ public final class Log {
    */
   public synchronized static void startLogging( final String category ) {
     Logger lgr = null;
-    for ( final Enumeration en = Log.nameToLogger.elements(); en.hasMoreElements(); ) {
-      lgr = (Logger)en.nextElement();
+    for ( final Enumeration<Logger> en = Log.nameToLogger.elements(); en.hasMoreElements(); ) {
+      lgr = en.nextElement();
       if ( !lgr.isLocked() ) {
         lgr.startLogging( category );
       }
@@ -722,8 +722,8 @@ public final class Log {
    */
   public synchronized static void stopLogging( final String category ) {
     Logger lgr = null;
-    for ( final Enumeration en = Log.nameToLogger.elements(); en.hasMoreElements(); ) {
-      lgr = (Logger)en.nextElement();
+    for ( final Enumeration<Logger> en = Log.nameToLogger.elements(); en.hasMoreElements(); ) {
+      lgr = en.nextElement();
       if ( !lgr.isLocked() ) {
         lgr.stopLogging( category );
       }

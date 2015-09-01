@@ -25,8 +25,6 @@ import coyote.commons.UriUtil;
 /**
  * FileAppender is an implementation of Logger that extends LoggerBase and defines
  * event() to write the event to a Writer.
- *
- * @version $Revision: 1.3 $
  */
 public class FileAppender extends AbstractLogger {
 

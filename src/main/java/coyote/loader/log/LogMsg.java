@@ -23,11 +23,10 @@ import java.util.ResourceBundle;
 
 
 /**
- * Retrieves messages from a message {@link ResourceBundle} and 
- * formats them as appropriate using {@link java.text.MessageFormat}. Instances 
- * of this object are mostly read-only - the only thing you can change is the 
- * locale. Changing the locale will attempt to convert the message to that new 
- * locale's format.
+ * Retrieves messages from a message {@link ResourceBundle} and formats them as 
+ * appropriate using {@link java.text.MessageFormat}. Instances of this object 
+ * are mostly read-only - the only thing you can change is the locale. Changing 
+ * the locale will attempt to convert the message to that new locale's format.
  *
  * <p><code>LogMsg</code> objects are serializable and will be re-translated 
  * once it is deserialized. This means that a message could be localized in the 
@@ -225,6 +224,20 @@ public class LogMsg implements Serializable {
 
 
 
+  /**
+   * Creates a {@link LogMsg message} object and automatically looks up the 
+   * given resource bundle message. 
+   * 
+   * <p>The caller need only call {@link LogMsg#toString()} to get the resource 
+   * bundle message after this method returns. A default basename and the 
+   * default locale is used to determine what resource bundle to use.</p>
+   *
+   * @param key the resource bundle key name
+   * @param arg argument to help fill in the resource bundle message
+   *
+   * @return if the message was logged, a non-<code>null</code> LogMsg object 
+   *         is returned
+   */
   public static LogMsg createMsg( final String key, final Object arg ) {
     return createMsg( key, new Object[] { arg } );
   }

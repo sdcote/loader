@@ -21,7 +21,7 @@ import coyote.loader.cfg.Config;
  */
 public interface Logger {
   /** The name of the configuration attribute containing the URI to the target location of the log. */
-  public static final String TARGET_TAG = "TargetURI";
+  public static final String TARGET_TAG = "Target";
 
   /** The name of the configuration attribute containing the categories this logger should log. */
   public static final String CATEGORY_TAG = "Categories";

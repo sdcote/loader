@@ -20,9 +20,6 @@ import coyote.commons.StringUtil;
 
 /**
  * Class DefaultFormatter
- *
- * @author Stephan D. Cote' - Enterprise Architecture
- * @version $Revision: 1.5 $
  */
 public class DefaultFormatter implements Formatter {
   private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS" );

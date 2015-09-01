@@ -14,8 +14,6 @@ package coyote.loader.log;
 /**
  * The Formatter class models object which creates strings suitable for entries
  * in logs.
- *
- * @author Stephan D. Cote' - Enterprise Architecture
  */
 public interface Formatter {
 
