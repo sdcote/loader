@@ -18,7 +18,7 @@ import coyote.loader.cfg.ConfigurationException;
 /**
  * 
  */
-public interface Loader {
+public interface Loader extends WatchDog {
 
   /**
    * Configure this loader with the given Config data.
@@ -39,16 +39,5 @@ public interface Loader {
    * the loader terminates or an exception is thrown.</p>
    */
   public void run();
-
-
-
-
-  /**
-   * Components desiring to refresh the loader with its activity status can use 
-   * this method to check in with the loader.
-   * 
-   * @param component the component to check-in (refresh the last check-in time) 
-   */
-  public void checkIn( Object component );
 
 }

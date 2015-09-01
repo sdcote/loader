@@ -19,4 +19,6 @@ import coyote.loader.component.AbstractLogicComponent;
  */
 public class SimpleComponent extends AbstractLogicComponent {
 
+ 
+
 }

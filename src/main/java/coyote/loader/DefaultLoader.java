@@ -57,6 +57,9 @@ public class DefaultLoader extends AbstractLoader implements Loader {
     // Rename this thread to the name of this class
     Thread.currentThread().setName( CLASS );
 
+    // very important to get park(millis) to operate
+    current_thread = Thread.currentThread();
+
     // Parse through the configuration and start setting up the component(s)
     initComponents();
 
@@ -83,6 +86,7 @@ public class DefaultLoader extends AbstractLoader implements Loader {
     watchdog();
 
     // The watchdog loop has exited, so we are done processing
+    Log.info( "Loader terminating" );
 
     // Rename the thread back to what it was called before we were being run
     Thread.currentThread().setName( oldName );

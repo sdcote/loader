@@ -41,4 +41,10 @@ public class ConfigTag {
   /** Name ({@value}) of the configuration attribute specifying an identifier. */
   public static final String ID = "ID";
 
+  /** Name ({@value}) of the configuration attribute specifying the components to load. */
+  public static final String COMPONENTS = "Components";
+
+  /** Name ({@value}) of the configuration attribute specifying the component to load. */
+  public static final String COMPONENT = "Component";
+
 }

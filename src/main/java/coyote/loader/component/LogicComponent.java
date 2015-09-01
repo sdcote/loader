@@ -12,6 +12,7 @@
 package coyote.loader.component;
 
 import coyote.dataframe.DataFrame;
+import coyote.loader.WatchDog;
 import coyote.loader.cfg.Config;
 
 
@@ -35,6 +36,16 @@ public interface LogicComponent extends Component {
    * @param config The object containing the configuration attributes.
    */
   public void configure( Config config );
+
+
+
+
+  /**
+   * Set the watchdog for this component.
+   * 
+   * @param watchdog the watchdog to set.
+   */
+  public void setWatchDog( WatchDog watchdog );
 
 
 

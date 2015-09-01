@@ -22,6 +22,7 @@ import coyote.commons.StringUtil;
 import coyote.dataframe.DataField;
 import coyote.loader.cfg.Config;
 import coyote.loader.cfg.ConfigurationException;
+import coyote.loader.component.LogicComponent;
 import coyote.loader.log.Log;
 import coyote.loader.log.LogMsg;
 import coyote.loader.log.Logger;
@@ -59,8 +60,8 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   public void configure( Config cfg ) throws ConfigurationException {
     configuration = cfg;
 
+    // setup logging as soon as we can
     initLogging();
-    Log.info( "Logging Initialized" );
   }
 
 
@@ -93,7 +94,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
               String name = cfg.getString( ConfigTag.NAME );
 
               // If there is no name, try looking for an ID
-              if ( Log.isBlank( name ) ) {
+              if ( StringUtil.isBlank( name ) ) {
                 name = cfg.getString( ConfigTag.ID );
               }
 
@@ -107,15 +108,94 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
             } else {
               System.err.println( LogMsg.createMsg( "Loader.class_is_not_logger", className ) );
-              System.exit( 5 );
+              System.exit( 11 );
             }
           } catch ( ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e ) {
             System.err.println( LogMsg.createMsg( "Loader.logger_instantiation_error", className, e.getClass().getName(), e.getMessage() ) );
-            System.exit( 4 );
+            System.exit( 10 );
           }
         }
       }
 
+    }
+
+  }
+
+
+
+
+  /**
+   * Cycle through the configuration and load all the components defined 
+   * therein.
+   * 
+   * <p>This looks for a section named {@code Components} or {@code Component} 
+   * and treat each section as a component configuration. This will of course 
+   * require at least one attribute ({@code Class}) which defines the class of 
+   * the object to load and configure.</p>
+   */
+  protected void initComponents() {
+    List<Config> sections = configuration.getSections( ConfigTag.COMPONENTS );
+
+    // Look for the COMPONENTS section
+    for ( Config section : sections ) {
+      // get each of the configurations
+      for ( Config cfg : section.getSections() ) {
+        loadComponent( cfg );
+      }
+    }
+
+    // Look for the singular version of the attribute
+    sections = configuration.getSections( ConfigTag.COMPONENT );
+    for ( Config section : sections ) {
+      for ( Config cfg : section.getSections() ) {
+        loadComponent( cfg );
+      }
+    }
+  }
+
+
+
+
+  /**
+   * This will use the configuration to load the component and start it running
+   * 
+   * <p>This is normally called in two locations: when the loader first runs 
+   * (from {@link #initComponents()}) and in the {@link #watchdog()} method 
+   * which will shutdown an inactive / hung component and restart a fresh one 
+   * in its place.</p>
+   *   
+   * @param config The configuration of the component to load
+   */
+  private void loadComponent( Config config ) {
+
+    String className = config.getString( ConfigTag.CLASS );
+
+    // Create the component
+    if ( StringUtil.isNotBlank( className ) ) {
+
+      try {
+        Class<?> clazz = Class.forName( className );
+        Constructor<?> ctor = clazz.getConstructor();
+        Object object = ctor.newInstance();
+
+        if ( object instanceof LogicComponent ) {
+          LogicComponent retval = (LogicComponent)object;
+          retval.configure( config );
+
+          // Set this loader as the watchdog if the component is interested 
+          retval.setWatchDog( this );
+
+          // Add it to the components map
+          components.put( object, config );
+
+        } else {
+          System.err.println( LogMsg.createMsg( "Loader.class_is_not_logic_component", className ) );
+          System.exit( 9 );
+        }
+      } catch ( ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e ) {
+        System.err.println( LogMsg.createMsg( "Loader.component_instantiation_error", className, e.getClass().getName(), e.getMessage() ) );
+        System.exit( 8 );
+      }
     }
 
   }
@@ -184,6 +264,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
     Log.info( LogMsg.createMsg( "Loader.operational" ) );
 
     while ( !isShutdown() ) {
+      Log.info( LogMsg.createMsg( "Loader.operational" ) );
 
       // Make sure that all this loaders are active, otherwise remove the
       // reference to them and allow GC to remove them from memory
@@ -212,6 +293,11 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
       // check-in time. If expired, log the event and restart them like the 
       // above active check
 
+      // Monitor check-in map size; if it is too large, we have a problem
+      if ( checkin.size() > components.size() ) {
+        Log.fatal( LogMsg.createMsg( "Loader.check_in_map_size", checkin.size(), components.size() ) );
+      }
+
       // If we have no components which are active, there is not need for this
       // loader to remain running
       if ( components.size() == 0 ) {
@@ -237,59 +323,22 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
 
   /**
-   * Cycle through the configuration and load all the components defined 
-   * therein.
-   * 
-   * <p>This looks for a section named {@code Components} or {@code Component} 
-   * and treat each section as a component configuration. This will of course 
-   * require at least one attribute ({@code Class}) which defines the class of 
-   * the object to load and configure.</p>
-   */
-  protected void initComponents() {
-    // TODO Auto-generated method stub
-
-  }
-
-
-
-
-  /**
-   * This will use the configuration to load the component and start it running
-   * 
-   * <p>This is normally called in two locations: when the loader first runs 
-   * (from {@link #initComponents()}) and in the {@link #watchdog()} method 
-   * which will shutdown an inactive / hung component and restart a fresh one 
-   * in its place.</p>
-   *   
-   * @param config The configuration of the component to load
-   */
-  private void loadComponent( Config config ) {
-
-    // TODO Create the component
-
-    // Configure the component
-
-    // Add it to the components map
-
-    // if the components have a hang time specified...
-    // Add it to the hang time map
-    // Add it to the check in map
-
-    // Monitor check-in map size; if it is too large, we have a problem
-    if ( checkin.size() > components.size() ) {
-      Log.fatal( LogMsg.createMsg( "Loader.check_in_map_size", checkin.size(), components.size() ) );
-    }
-
-  }
-
-
-
-
-  /**
    * @see coyote.loader.Loader#checkIn(java.lang.Object)
    */
   @Override
   public void checkIn( Object component ) {
     checkin.put( component, new Long( System.currentTimeMillis() ) );
+  }
+
+
+
+
+  /**
+   * @see coyote.loader.WatchDog#setHangTime(long, java.lang.Object, coyote.loader.cfg.Config)
+   */
+  @Override
+  public void setHangTime( long millis, Object component, Config cfg ) {
+    // TODO Auto-generated method stub
+
   }
 }

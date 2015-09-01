@@ -22,7 +22,7 @@ import coyote.commons.StringUtil;
  * Class DefaultFormatter
  */
 public class DefaultFormatter implements Formatter {
-  private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS" );
+  private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS zzz" );
   private volatile long lastevent = 0;
 
 

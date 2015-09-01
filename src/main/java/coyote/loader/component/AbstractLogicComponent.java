@@ -13,6 +13,7 @@ package coyote.loader.component;
 
 import coyote.commons.GUID;
 import coyote.dataframe.DataFrame;
+import coyote.loader.WatchDog;
 import coyote.loader.cfg.Config;
 import coyote.loader.log.Log;
 import coyote.loader.log.Logger;
@@ -36,6 +37,7 @@ public abstract class AbstractLogicComponent extends ThreadJob implements LogicC
   protected String identifier = new GUID().toString();
   protected String componentName = AbstractLogicComponent.CLASS;
   protected Logger lcb_logr = new NullLogger();
+  protected WatchDog watchdog = null;
 
 
 
@@ -58,13 +60,6 @@ public abstract class AbstractLogicComponent extends ThreadJob implements LogicC
   @Override
   public void configure( final Config config ) {
     configuration = config;
-
-    //    if ( configuration != null && configuration.getId() != null && configuration.getId().trim().length() > 0 ) {
-    //      identifier = configuration.getId().trim();
-    //      componentName = componentName + "." + identifier;
-    //    }
-
-    // TODO good place to setup a platform logger
   }
 
 
@@ -426,5 +421,16 @@ public abstract class AbstractLogicComponent extends ThreadJob implements LogicC
    */
   @Override
   public void shutdown( DataFrame params ) {}
+
+
+
+
+  /**
+   * @see coyote.loader.component.LogicComponent#setWatchDog(coyote.loader.WatchDog)
+   */
+  @Override
+  public void setWatchDog( WatchDog watchdog ) {
+    this.watchdog  = watchdog;
+  }
 
 }
