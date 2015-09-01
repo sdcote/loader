@@ -15,7 +15,6 @@ public class ConfigTest {
     config.setName( "Loader" );
     config.setClassName( coyote.loader.DefaultLoader.class.getName() );
     config.setId( GUID.randomGUID().toString() );
-    
 
     // The configuration section of all the components this loader is to load
     Config componentCfg = new Config();
@@ -41,10 +40,9 @@ public class ConfigTest {
 
     // Add the component configuration to the main Loader config
     config.add( "Components", componentCfg );
-    
-    
+
     // This is a standard configuration for a loader
-    System.out.println(JSONMarshaler.toFormattedString( config ));
+    System.out.println( JSONMarshaler.toFormattedString( config ) );
 
   }
 

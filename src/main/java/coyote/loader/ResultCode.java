@@ -25,8 +25,7 @@ import java.util.ResourceBundle;
  * bundles. If no resources are defined for that key, the returned string will
  * be the generic message in US English.</p>
  */
-public class ResultCode
-{
+public class ResultCode {
   public static final int UNKNOWN = -1;
   public static final int RESERVED = 0; // 0 is often used to indicate success
   public static final int SUCCESS = 0; // 0 is often used to indicate success
@@ -57,14 +56,11 @@ public class ResultCode
   public static final int ALREADY_EXISTS = 1005;
   public static final int WORKFLOW_VARIABLES_DONT_MATCH = 1006;
 
-
-
-  public static final HashMap<Integer,String> message = new HashMap<Integer,String>();
+  public static final HashMap<Integer, String> message = new HashMap<Integer, String>();
 
   private static final ResourceBundle resbundle = ResourceBundle.getBundle( "ResultCodes", Locale.getDefault() );
 
-  static
-  {
+  static {
     ResultCode.message.put( new Integer( ResultCode.UNKNOWN ), "The API could not determine the problem" );
     ResultCode.message.put( new Integer( ResultCode.NAK ), "The event was negatively acknowledged" );
     ResultCode.message.put( new Integer( ResultCode.SHUTDOWN ), "PowerSG API is in a shutdown state" );
@@ -92,9 +88,7 @@ public class ResultCode
   /**
    * 
    */
-  private ResultCode()
-  {
-  }
+  private ResultCode() {}
 
 
 
@@ -112,19 +106,13 @@ public class ResultCode
    * @return A string representing the message for the result code. Will not 
    *         return a null or empty string even if the code is not known.
    */
-  public static final String getLocalizedMessage( final int code )
-  {
+  public static final String getLocalizedMessage( final int code ) {
     String retval = null;
-    try
-    {
+    try {
       retval = ResultCode.resbundle.getString( Integer.toString( code ) );
-    }
-    catch( final Exception e )
-    {
-    }
+    } catch ( final Exception e ) {}
 
-    if( ( retval != null ) && ( retval.length() > 0 ) )
-    {
+    if ( ( retval != null ) && ( retval.length() > 0 ) ) {
       return retval;
     }
 
@@ -142,16 +130,11 @@ public class ResultCode
    * @return A string representing the message for the result code. Will not 
    *         return a null or empty string even if the code is not known.
    */
-  public static final String getMessage( final int code )
-  {
-    if( ( code > -1 ) && ( code <= ResultCode.message.size() ) )
-    {
-      try
-      {
+  public static final String getMessage( final int code ) {
+    if ( ( code > -1 ) && ( code <= ResultCode.message.size() ) ) {
+      try {
         return (String)ResultCode.message.get( new Integer( code ) );
-      }
-      catch( final Exception e )
-      {
+      } catch ( final Exception e ) {
         return new String( "Message code " + code + " is unknown" );
       }
     }

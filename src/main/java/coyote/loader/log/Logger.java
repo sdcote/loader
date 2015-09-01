@@ -14,6 +14,7 @@ package coyote.loader.log;
 import java.net.URI;
 
 import coyote.loader.cfg.Config;
+import coyote.loader.cfg.ConfigurationException;
 
 
 /**
@@ -135,7 +136,14 @@ public interface Logger {
   /**
    * Configure the operation of this logger by setting its config.
    * 
-   * @param cfg  The config from which to read the logger configuration.
+   * <p>This only set the reference to the configuration. These values are not 
+   * accessed until the logger is initialized. It is at that time any problems 
+   * with the configuration will be realized.</p>
+   * 
+   * <p>Initialization occurs when the {@code Logger} is added to the main 
+   * {@link Log} fixture.</p>
+   * 
+   * @param cfg The config from which to read the logger configuration.
    */
   public void setConfig( Config cfg );
 

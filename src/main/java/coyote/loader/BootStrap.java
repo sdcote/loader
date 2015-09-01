@@ -35,7 +35,6 @@ import coyote.loader.log.LogMsg;
  */
 public class BootStrap extends AbstractLoader {
 
-  private static final String CLASS_TAG = "Class";
   private static Config configuration = null;
   private static URI cfgUri = null;
 
@@ -100,7 +99,7 @@ public class BootStrap extends AbstractLoader {
 
     // Look for the class to load
     for ( DataField field : configuration.getFields() ) {
-      if ( CLASS_TAG.equalsIgnoreCase( field.getName() ) ) {
+      if ( ConfigTag.CLASS.equalsIgnoreCase( field.getName() ) ) {
         String className = field.getStringValue();
         if ( className != null && StringUtil.countOccurrencesOf( className, "." ) < 1 ) {
           className = BootStrap.class.getPackage().getName() + "." + className;

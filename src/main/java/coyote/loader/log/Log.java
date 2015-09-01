@@ -35,13 +35,13 @@ import java.util.Vector;
 public final class Log {
 
   /** Map of all the known logging category codes keyed by their name. */
-  static final Hashtable<String,Long> stringToCode = new Hashtable<String,Long>();
+  static final Hashtable<String, Long> stringToCode = new Hashtable<String, Long>();
 
   /** Map of all the category names keyed by their category code. */
-  static final Hashtable<Long,String> codeToString = new Hashtable<Long,String>();
+  static final Hashtable<Long, String> codeToString = new Hashtable<Long, String>();
 
   /** Map of all the loggers in the fixture keyed by their name. */
-  static final Hashtable<String,Logger> nameToLogger = new Hashtable<String,Logger>();
+  static final Hashtable<String, Logger> nameToLogger = new Hashtable<String, Logger>();
 
   /**
    * The name of the category of events where an expected event has occurred 
@@ -127,15 +127,44 @@ public final class Log {
 
 
   /**
+   * Checks if a string is not null, empty ("") and not only whitespace.
+   * 
+   * @param str the String to check, may be null
+   * 
+   * @return <code>true</code> if the String is not empty and not null and not
+   *         whitespace
+   */
+  public static boolean isBlank( String str ) {
+    int strLen;
+    if ( str == null || ( strLen = str.length() ) == 0 ) {
+      return true;
+    }
+    for ( int i = 0; i < strLen; i++ ) {
+      if ( ( Character.isWhitespace( str.charAt( i ) ) == false ) ) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+
+
+
+  /**
    * Add the specified logger to the static collection of loggers.
    *
    * @param name The name of the logger.
    * @param logger The logger to add.
    */
   public synchronized static void addLogger( final String name, final Logger logger ) {
-    Log.nameToLogger.put( name, logger );
-    logger.initialize();
-    Log.recalcMasks();
+    if ( isBlank( name ) )
+      throw new IllegalArgumentException( "Logger name cannot be blank" );
+
+    if ( logger != null ) {
+      Log.nameToLogger.put( name, logger );
+      logger.initialize();
+      Log.recalcMasks();
+    }
   }
 
 

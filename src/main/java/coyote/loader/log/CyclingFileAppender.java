@@ -175,7 +175,7 @@ public class CyclingFileAppender extends FileAppender {
 
 
   /**
-   * @see net.smartforge.log.Logger#initialize()
+   * @see coyote.loader.log.FileAppender#initialize()
    */
   public void initialize() {
     // super class stuff
@@ -414,7 +414,7 @@ public class CyclingFileAppender extends FileAppender {
 
 
   /**
-   * @see net.smartforge.log.Logger#terminate()
+   * @see coyote.loader.log.FileAppender#terminate()
    */
   public void terminate() {
     // our stuff

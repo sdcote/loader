@@ -19,7 +19,7 @@ public interface LogicComponent extends Component {
 
   /** Name used in various class identifying locations */
   public static final String CLASS = "LogicComponent";
-  
+
   // Tags are the name of configuration elements
   public static final String LOG_TAG = "Log";
   public static final String ENABLED_TAG = "Enabled";

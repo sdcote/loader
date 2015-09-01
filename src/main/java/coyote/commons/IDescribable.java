@@ -16,10 +16,6 @@ package coyote.commons;
  */
 public interface IDescribable {
 
-  
-
-
-
   /**
    * Method setDescription
    * 

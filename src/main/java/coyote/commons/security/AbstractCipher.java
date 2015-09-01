@@ -16,6 +16,4 @@ package coyote.commons.security;
  */
 public abstract class AbstractCipher implements Cipher {
 
- 
-
 }

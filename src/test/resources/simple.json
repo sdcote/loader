@@ -18,5 +18,13 @@
       "Class": "coyote.loader.SimpleComponent",
       "ID": "8A0A"
     }
-  ]
+  ],
+  "Logger" : {
+    "Class": "ConsoleAppender",
+    "Categories": "TRACE,DEBUG,INFO,LOADER"
+  },
+  "Logger" : {
+    "Class": "SysErrAppender",
+    "Categories": "WARN,ERROR,FATAL"
+  }
 }

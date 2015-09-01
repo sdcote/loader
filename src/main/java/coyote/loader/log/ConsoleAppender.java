@@ -14,6 +14,7 @@ package coyote.loader.log;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.StringTokenizer;
 
 import coyote.commons.ExceptionUtil;
 import coyote.commons.StringUtil;
@@ -124,6 +125,9 @@ public class ConsoleAppender extends AbstractLogger {
    * Initialize the logger.
    */
   public void initialize() {
+    if ( config.contains( Logger.CATEGORY_TAG ) ) {
+      for ( final StringTokenizer st = new StringTokenizer( config.getAsString( Logger.CATEGORY_TAG ), Logger.CATEGORY_DELIMS ); st.hasMoreTokens(); startLogging( st.nextToken() ) );
+    }
     // System.out is already initialized
   }
 

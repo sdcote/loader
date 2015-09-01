@@ -16,6 +16,7 @@ import java.net.URISyntaxException;
 import java.util.StringTokenizer;
 
 import coyote.loader.cfg.Config;
+import coyote.loader.cfg.ConfigurationException;
 
 
 /**
@@ -229,9 +230,9 @@ public abstract class AbstractLogger implements Logger {
 
 
   /**
-   * Configure the operation of this logger by setting its properties.
+   * Configure the operation of this logger by setting its configuration.
    * 
-   * @param props  The properties from which to read the logger configuration.
+   * @param cfg The configuration from which to read the logger configuration.
    */
   public void setConfig( final Config cfg ) {
     this.config = cfg;

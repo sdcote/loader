@@ -146,7 +146,7 @@ public class FileAppender extends AbstractLogger {
   /**
    * Return the writer.
    *
-   * @return TODO Complete Documentation
+   * @return the writer used by this logger
    */
   public Writer getWriter() {
     return log_writer;
@@ -157,6 +157,8 @@ public class FileAppender extends AbstractLogger {
 
   /**
    * Initialize the logger.
+   * 
+   * @see coyote.loader.log.AbstractLogger#initialize()
    */
   public void initialize() {
     if ( !initialized ) {
@@ -218,6 +220,8 @@ public class FileAppender extends AbstractLogger {
 
   /**
    * Terminate the logger.
+   * 
+   * @see coyote.loader.log.Logger#terminate()
    */
   public void terminate() {
     try {

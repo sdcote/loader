@@ -182,4 +182,19 @@ public class GUID {
     return new GUID();
   }
 
+
+
+
+  /**
+   * Create a new GUID which is more cryptographically strong.
+   * 
+   * <p>This is to match the new UUID class and its approach to generating 
+   * random UIDs.</p>
+   * 
+   * @return a new, harder to predict GUID
+   */
+  public static Object randomSecureGUID() {
+    return new GUID( true );
+  }
+
 }

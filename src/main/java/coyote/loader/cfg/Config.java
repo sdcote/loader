@@ -19,12 +19,15 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import coyote.commons.StringUtil;
 import coyote.commons.UriUtil;
+import coyote.dataframe.DataField;
 import coyote.dataframe.DataFrame;
 import coyote.dataframe.marshal.JSONMarshaler;
 
@@ -116,7 +119,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
     if ( data != null ) {
       List<DataFrame> config = JSONMarshaler.marshal( data );
       if ( config.get( 0 ) != null ) {
-        retval.merge( config.get( 0 ) );
+        retval.populate( config.get( 0 ) );
       }
     }
 
@@ -330,6 +333,64 @@ public class Config extends DataFrame implements Cloneable, Serializable {
       }
     }
 
+  }
+
+
+
+
+  /**
+   * Return all the configuration sections with the given name.
+   * 
+   * <p>This performs a case-insensitive search for the sections.</p>
+   * 
+   * @param tag The name of the section for which to search
+   * 
+   * @return The list of sections with a matching name. May be empty, but never null;
+   */
+  public List<Config> getSections( String tag ) {
+    List<Config> retval = new ArrayList<Config>();
+
+    // If we have a tag for which to search...
+    if ( StringUtil.isNotBlank( tag ) ) {
+      // Look for the class to load
+      for ( DataField field : getFields() ) {
+        if ( tag.equalsIgnoreCase( field.getName() ) && field.isFrame() ) {
+          Config cfg = new Config();
+          cfg.populate( (DataFrame)field.getObjectValue() );
+          retval.add( cfg );
+        } // name match && a frame
+      } // for
+    } // tag != null
+
+    // return what we have found
+    return retval;
+  }
+
+
+
+
+  /**
+   * Perform a case insensitive search for the first value with the given name.
+   * 
+   * @param tag the name of the configuration attribute for which to search
+   * 
+   * @return the first value with the given name as a string or null if not 
+   *         configuration field with that name was found, or if the found 
+   *         field contained a null value.
+   */
+  public String getString( String tag ) {
+    // If we have a tag for which to search...
+    if ( StringUtil.isNotBlank( tag ) ) {
+      // Look for the class to load
+      for ( DataField field : getFields() ) {
+        if ( tag.equalsIgnoreCase( field.getName() ) ) {
+          return field.getStringValue();
+        } // name match && a frame
+      } // for
+    } // tag != null
+
+    // If we got here, there was nothing which matched the given tag
+    return null;
   }
 
 }
