@@ -430,7 +430,7 @@ public abstract class AbstractLogicComponent extends ThreadJob implements LogicC
    */
   @Override
   public void setWatchDog( WatchDog watchdog ) {
-    this.watchdog  = watchdog;
+    this.watchdog = watchdog;
   }
 
 }

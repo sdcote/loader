@@ -157,7 +157,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
 
   /**
-   * This will use the configuration to load the component and start it running
+   * This will use the configuration to load and configure the component
    * 
    * <p>This is normally called in two locations: when the loader first runs 
    * (from {@link #initComponents()}) and in the {@link #watchdog()} method 

@@ -11,12 +11,7 @@
  */
 package coyote.loader;
 
-import java.util.Iterator;
-
-import coyote.loader.cfg.Config;
 import coyote.loader.log.Log;
-import coyote.loader.log.LogMsg;
-import coyote.loader.thread.Daemon;
 
 
 /**
