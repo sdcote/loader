@@ -24,9 +24,9 @@ import coyote.loader.log.Log;
  * A pool of worker threads.
  *
  * <p>This class can be specialized to handle a variety of jobs, but is designed
- * to handle objects that extend net.bralyn.util.thread.ThreadJob. The reason for this
- * is that ThreadJob will respond to suspend(), resume() and shutdown() without
- * using deprecated methods of the java.lang.Thread class.</p>
+ * to handle objects that extend ThreadJob. The reason for this is that 
+ * ThreadJob will respond to suspend(), resume() and shutdown() without using 
+ * deprecated methods of the java.lang.Thread class.</p>
  *
  * <p>Avoids the expense of thread creation by pooling threads after their run
  * methods exit for reuse.</p>
