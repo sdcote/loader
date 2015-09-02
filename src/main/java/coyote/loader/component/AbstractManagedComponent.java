@@ -15,9 +15,6 @@ import coyote.commons.GUID;
 import coyote.dataframe.DataFrame;
 import coyote.loader.WatchDog;
 import coyote.loader.cfg.Config;
-import coyote.loader.log.Log;
-import coyote.loader.log.Logger;
-import coyote.loader.log.NullLogger;
 import coyote.loader.thread.ThreadJob;
 
 
@@ -36,7 +33,6 @@ public abstract class AbstractManagedComponent extends ThreadJob implements Mana
   protected long startTime;
   protected String identifier = new GUID().toString();
   protected String componentName = AbstractManagedComponent.CLASS;
-  protected Logger lcb_logr = new NullLogger();
   protected WatchDog watchdog = null;
 
 
@@ -58,7 +54,7 @@ public abstract class AbstractManagedComponent extends ThreadJob implements Mana
    * @param config The object containing the configuration attributes.
    */
   @Override
-  public void configure( final Config config ) {
+  public void setConfiguration( final Config config ) {
     configuration = config;
   }
 
@@ -126,20 +122,6 @@ public abstract class AbstractManagedComponent extends ThreadJob implements Mana
   @Override
   public String getName() {
     return componentName;
-  }
-
-
-
-
-  /**
-   * @return The platform logger assigned to this component. Will never return null.
-   */
-  public Logger getPlatformLogger() {
-    if ( lcb_logr == null ) {
-      lcb_logr = new NullLogger();
-    }
-
-    return lcb_logr;
   }
 
 
@@ -232,122 +214,6 @@ public abstract class AbstractManagedComponent extends ThreadJob implements Mana
 
 
   /**
-   * Return true if our personal platform logger is logging a category defined 
-   * by the given mask.
-   * 
-   * <p>This is the fastest way to determine if it is worth the time and effort 
-   * to construct a message before the append method is called.</p> 
-   *
-   * @param mask The mask.
-   *
-   * @return true if the component is logging this category of messages
-   */
-  public boolean isLogging( final long mask ) {
-    return ( ( lcb_logr.getMask() & mask ) != 0 );
-  }
-
-
-
-
-  protected void logCustom( final String category, final Object entry ) {
-    lcb_logr.append( category, entry, null );
-  }
-
-
-
-
-  protected void logCustom( final String category, final Object entry, final Throwable cause ) {
-    lcb_logr.append( category, entry, cause );
-  }
-
-
-
-
-  protected void logDebug( final Object entry ) {
-    lcb_logr.append( Log.DEBUG, entry, null );
-  }
-
-
-
-
-  protected void logDebug( final Object entry, final Throwable cause ) {
-    lcb_logr.append( Log.DEBUG, entry, cause );
-  }
-
-
-
-
-  protected void logError( final Object entry ) {
-    lcb_logr.append( Log.ERROR, entry, null );
-  }
-
-
-
-
-  protected void logError( final Object entry, final Throwable cause ) {
-    lcb_logr.append( Log.ERROR, entry, cause );
-  }
-
-
-
-
-  protected void logFatal( final Object entry ) {
-    lcb_logr.append( Log.FATAL, entry, null );
-  }
-
-
-
-
-  protected void logFatal( final Object entry, final Throwable cause ) {
-    lcb_logr.append( Log.FATAL, entry, cause );
-  }
-
-
-
-
-  protected void logInfo( final Object entry ) {
-    lcb_logr.append( Log.INFO, entry, null );
-  }
-
-
-
-
-  protected void logInfo( final Object entry, final Throwable cause ) {
-    lcb_logr.append( Log.INFO, entry, cause );
-  }
-
-
-
-
-  protected void logTrace( final Object entry ) {
-    lcb_logr.append( Log.TRACE, entry, null );
-  }
-
-
-
-
-  protected void logTrace( final Object entry, final Throwable cause ) {
-    lcb_logr.append( Log.TRACE, entry, cause );
-  }
-
-
-
-
-  protected void logWarn( final Object entry ) {
-    lcb_logr.append( Log.WARN, entry, null );
-  }
-
-
-
-
-  protected void logWarn( final Object entry, final Throwable cause ) {
-    lcb_logr.append( Log.WARN, entry, cause );
-  }
-
-
-
-
-  /**
    * @see coyote.loader.component.ManagedComponent#setEnabled(boolean)
    */
   @Override
@@ -365,20 +231,6 @@ public abstract class AbstractManagedComponent extends ThreadJob implements Mana
   public void setId( final String id ) {
     if ( ( id != null ) && ( id.length() > 0 ) ) {
       identifier = id;
-    }
-  }
-
-
-
-
-  /**
-   * @param lgr the platform logger to set in this component.
-   */
-  public void setPlatformLogger( final Logger lgr ) {
-    if ( lgr == null ) {
-      lcb_logr = new NullLogger();
-    } else {
-      lcb_logr = lgr;
     }
   }
 

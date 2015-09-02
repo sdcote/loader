@@ -180,7 +180,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
         if ( object instanceof ManagedComponent ) {
           ManagedComponent retval = (ManagedComponent)object;
-          retval.configure( config );
+          retval.setConfiguration( config );
 
           // Set this loader as the watchdog if the component is interested 
           retval.setWatchDog( this );

@@ -21,12 +21,6 @@ public interface ManagedComponent extends Component {
   /** Name used in various class identifying locations */
   public static final String CLASS = "LogicComponent";
 
-  // Tags are the name of configuration elements
-  public static final String LOG_TAG = "Log";
-  public static final String ENABLED_TAG = "Enabled";
-  public static final String DESCRIPTION_TAG = "Description";
-  public static final String ACTIVATION_TOKEN_TAG = "ActivationToken";
-
 
 
 
@@ -35,13 +29,16 @@ public interface ManagedComponent extends Component {
    * 
    * @param config The object containing the configuration attributes.
    */
-  public void configure( Config config );
+  public void setConfiguration( Config config );
 
 
 
 
   /**
    * Set the watchdog for this component.
+   * 
+   * <p>The component may want to register with the watchdog, but it is not 
+   * necessary.</p>
    * 
    * @param watchdog the watchdog to set.
    */
@@ -60,12 +57,12 @@ public interface ManagedComponent extends Component {
 
 
   /**
-   * Gives the component instance a change to prepare before doing work.
+   * Gives the component instance a chance to prepare before doing work.
    * 
-   * <p>This method is called after <code>configure(Config)</code> and
-   * before <code>doWork()</code> is called.</p>
+   * <p>This method is called after {@link #setConfiguration(Config)} and
+   * before {@link #doWork()} is called.</p>
    * 
-   * <p>A component will have its <code>initialize()</code> method called to 
+   * <p>A component will have its {@code initialize()} method called to 
    * perform initialization even if the component is not enabled. This is 
    * because it is possible that a component may be disabled and re-enabled 
    * during its operational lifecycle.</p>
