@@ -12,7 +12,7 @@
 package coyote.loader.component;
 
 import coyote.dataframe.DataFrame;
-import coyote.loader.WatchDog;
+import coyote.loader.Loader;
 import coyote.loader.cfg.Config;
 
 
@@ -35,14 +35,11 @@ public interface ManagedComponent extends Component {
 
 
   /**
-   * Set the watchdog for this component.
+   * Set the Loader for this component.
    * 
-   * <p>The component may want to register with the watchdog, but it is not 
-   * necessary.</p>
-   * 
-   * @param watchdog the watchdog to set.
+   * @param loader the Loader managing this component.
    */
-  public void setWatchDog( WatchDog watchdog );
+  public void setLoader( Loader loader );
 
 
 

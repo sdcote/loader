@@ -157,7 +157,8 @@ public class BootStrap extends AbstractLoader {
       // If we have a loader
       if ( loader != null ) {
         try {
-          loader.run();
+          // Start it running
+          loader.start();
         } catch ( Throwable t ) {
           System.err.println( LogMsg.createMsg( "Loader.logic_error_from_loader", t.getLocalizedMessage(), ExceptionUtil.stackTrace( t ) ) );
           System.exit( 3 );

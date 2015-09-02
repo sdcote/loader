@@ -36,10 +36,8 @@ public class DefaultLoader extends AbstractLoader implements Loader {
 
   /**
    * Start the components running.
-   * 
-   * @see java.lang.Runnable#run()
    */
-  public void run() {
+  public void start() {
     // only run once, this is not foolproof as the active flag is set only when 
     // the watchdog loop is entered
     if ( isActive() ) {

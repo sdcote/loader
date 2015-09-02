@@ -46,14 +46,11 @@ public class ConfigTag {
 
   /** Name ({@value}) of the configuration attribute specifying the component to load. */
   public static final String COMPONENT = "Component";
-  
-  
-  
+
   // These tags are legacy configuration elements -- may be deprecated
   public static final String LOG_TAG = "Log";
   public static final String ENABLED_TAG = "Enabled";
   public static final String DESCRIPTION_TAG = "Description";
   public static final String ACTIVATION_TOKEN_TAG = "ActivationToken";
-
 
 }

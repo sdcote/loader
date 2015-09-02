@@ -304,8 +304,10 @@ public class Scheduler extends ThreadJob {
    * @param interval
    * @param ends
    * @param limit
+   * 
+   * @return a reference to the job placed in the scheduler
    */
-  public void schedule( Runnable task, long starts, long interval, long ends, long limit ) {
+  public ScheduledJob schedule( Runnable task, long starts, long interval, long ends, long limit ) {
     ScheduledJob job = new ScheduledJob( task );
     job.setExecutionTime( starts );
     job.setExecutionInterval( interval );
@@ -317,28 +319,30 @@ public class Scheduler extends ThreadJob {
     }
 
     schedule( job );
+    
+    return job;
   }
 
 
 
 
   /**
-   * Place the job in the joblist.
+   * Place the job in the job list.
    *
-   * <p>This will place the given scheduled job into the joblist sorted by
+   * <p>This will place the given scheduled job into the job list sorted by
    * execution time. If the given jobs execution time matches another in the
    * list, it will be placed behind the job in the list with the matching time.
    * This results in jobs being executed in the order in which they were placed
-   * in the joblist if all the execution times match.</p>
+   * in the job list if all the execution times match.</p>
    *
-   * @param job The ScheduledJob to place in the scheduler's joblist
+   * @param job The ScheduledJob to place in the scheduler's job list
    */
   public void schedule( ScheduledJob job ) {
     if ( job != null ) {
       job.setScheduler( this );
 
       synchronized( mutex ) {
-        // Start at the begining
+        // Start at the beginning
         ScheduledJob current = nextJob;
         ScheduledJob previous = null;
 

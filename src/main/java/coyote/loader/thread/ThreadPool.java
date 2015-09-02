@@ -68,10 +68,10 @@ public class ThreadPool {
   private BlockingQueue jobqueue;
 
   /** This holds the references to threads that are idle */
-  private HashSet idle_set = new HashSet();
+  private HashSet<Thread> idle_set = new HashSet<Thread>();
 
   /** This holds the references to threads that are participating in the pool */
-  private HashSet worker_set;
+  private HashSet<ThreadWorker> worker_set;
 
   /** The time when we start idling due to inactivity */
   protected long idle_timeout = 30000;
@@ -470,7 +470,7 @@ public class ThreadPool {
     jobqueue = new BlockingQueue( maximum_workers * 5 );
 
     // Create a set large enough to hold the maximum number of workers/2 +5
-    worker_set = new HashSet( maximum_workers + maximum_workers / 2 + 5 );
+    worker_set = new HashSet<ThreadWorker>( maximum_workers + maximum_workers / 2 + 5 );
 
     // Start the threads
     for ( int i = 0; i < minimum_workers; i++ ) {
@@ -583,7 +583,7 @@ public class ThreadPool {
    */
   private synchronized void newWorker() {
     try {
-      ThreadWorker worker = new ThreadWorker( pool_name + ".wkr." + ( thread_identifier++ ) );
+      new ThreadWorker( pool_name + ".wkr." + ( thread_identifier++ ) );
     } catch ( Exception e ) {
       if ( Log.isLogging( THREAD ) ) {
         Log.append( THREAD, "ThreadPool.newWorker() exception: " + e.toString() );
@@ -605,10 +605,10 @@ public class ThreadPool {
       ThreadWorker worker = null;
 
       synchronized( this ) {
-        Iterator iter = worker_set.iterator();
+        Iterator<ThreadWorker> iter = worker_set.iterator();
 
         while ( iter.hasNext() ) {
-          worker = (ThreadWorker)iter.next();
+          worker = iter.next();
         }
       }
 

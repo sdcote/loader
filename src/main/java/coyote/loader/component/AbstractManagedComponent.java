@@ -13,7 +13,7 @@ package coyote.loader.component;
 
 import coyote.commons.GUID;
 import coyote.dataframe.DataFrame;
-import coyote.loader.WatchDog;
+import coyote.loader.Loader;
 import coyote.loader.cfg.Config;
 import coyote.loader.thread.ThreadJob;
 
@@ -33,7 +33,7 @@ public abstract class AbstractManagedComponent extends ThreadJob implements Mana
   protected long startTime;
   protected String identifier = new GUID().toString();
   protected String componentName = AbstractManagedComponent.CLASS;
-  protected WatchDog watchdog = null;
+  protected Loader loader = null;
 
 
 
@@ -278,11 +278,11 @@ public abstract class AbstractManagedComponent extends ThreadJob implements Mana
 
 
   /**
-   * @see coyote.loader.component.ManagedComponent#setWatchDog(coyote.loader.WatchDog)
+   * @see coyote.loader.component.ManagedComponent#setLoader(coyote.loader.Loader)
    */
   @Override
-  public void setWatchDog( WatchDog watchdog ) {
-    this.watchdog = watchdog;
+  public void setLoader( Loader loader ) {
+    this.loader = loader;
   }
 
 }

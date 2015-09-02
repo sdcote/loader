@@ -27,7 +27,9 @@ import coyote.loader.log.Log;
 import coyote.loader.log.LogMsg;
 import coyote.loader.log.Logger;
 import coyote.loader.thread.Daemon;
+import coyote.loader.thread.Scheduler;
 import coyote.loader.thread.ThreadJob;
+import coyote.loader.thread.ThreadPool;
 
 
 /**
@@ -49,6 +51,11 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
   /** Our configuration */
   protected Config configuration = new Config();
+
+  /** Our very simple thread pool */
+  protected final ThreadPool threadpool = new ThreadPool();
+
+  protected Scheduler scheduler = null;
 
 
 
@@ -151,6 +158,9 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
         loadComponent( cfg );
       }
     }
+
+    // For each of the components, check to see if it is to be run in the threadpool
+
   }
 
 
@@ -183,7 +193,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
           retval.setConfiguration( config );
 
           // Set this loader as the watchdog if the component is interested 
-          retval.setWatchDog( this );
+          retval.setLoader( this );
 
           // Add it to the components map
           components.put( object, config );
@@ -268,14 +278,14 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
       // Make sure that all this loaders are active, otherwise remove the
       // reference to them and allow GC to remove them from memory
-      for ( final Iterator it = components.keySet().iterator(); it.hasNext(); ) {
+      for ( final Iterator<Object> it = components.keySet().iterator(); it.hasNext(); ) {
         final Object cmpnt = it.next();
         if ( cmpnt instanceof Daemon ) {
           if ( !( (Daemon)cmpnt ).isActive() ) {
             Log.info( LogMsg.createMsg( "Loader.removing_inactive_cmpnt", cmpnt.toString() ) );
 
             // get a reference to the components configuration
-            final Config config = (Config)components.get( cmpnt );
+            final Config config = components.get( cmpnt );
 
             // try to shut it down properly
             safeShutdown( (Daemon)cmpnt );
@@ -339,6 +349,48 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   @Override
   public void setHangTime( long millis, Object component, Config cfg ) {
     // TODO Auto-generated method stub
-
   }
+
+
+
+
+  /**
+   * @see coyote.loader.Loader#getWatchdog()
+   */
+  @Override
+  public WatchDog getWatchdog() {
+    return this;
+  }
+
+
+
+
+  /**
+   * @see coyote.loader.Loader#getScheduler()
+   */
+  @Override
+  public synchronized Scheduler getScheduler() {
+    if ( scheduler == null ) {
+      scheduler = new Scheduler();
+      try {
+        threadpool.handle( scheduler );
+      } catch ( InterruptedException e ) {
+        Log.append( Log.WARN, LogMsg.createMsg( "Loader.scheduler_creation_error", e.getClass().getName(), e.getMessage() ) );
+        scheduler = null;
+      }
+    }
+    return scheduler;
+  }
+
+
+
+
+  /**
+   * @see coyote.loader.Loader#start()
+   */
+  @Override
+  public void start() {
+    // do-nothing implementation
+  }
+
 }

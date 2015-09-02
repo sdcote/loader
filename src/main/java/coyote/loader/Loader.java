@@ -13,6 +13,7 @@ package coyote.loader;
 
 import coyote.loader.cfg.Config;
 import coyote.loader.cfg.ConfigurationException;
+import coyote.loader.thread.Scheduler;
 
 
 /**
@@ -36,8 +37,34 @@ public interface Loader extends WatchDog {
    * Start the loader running.
    * 
    * <p>This is a blocking call. The thread will remain in this method until 
-   * the loader terminates or an exception is thrown.</p>
+   * the loader terminates or an exception is thrown. Keep in mind that some 
+   * loaders will daemonize and this call will return immediately. In such 
+   * cases, the loader will terminate when the JVM terminates.</p>
    */
-  public void run();
+  public void start();
+
+
+
+
+  /**
+   * This allows the component to access the watchdog thread which runs 
+   * continually to keep components running and detect when components become 
+   * hung.
+   * 
+   * @return Return the watchdog component.
+   */
+  public WatchDog getWatchdog();
+
+
+
+
+  /**
+   * This allows components to access the scheduler which runs job on a 
+   * re-occurring schedule; something like cron but limited to the runtime 
+   * instance.
+   * 
+   * @return the Scheduler for this loader.
+   */
+  public Scheduler getScheduler();
 
 }
