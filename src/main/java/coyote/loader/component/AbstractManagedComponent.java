@@ -25,7 +25,7 @@ import coyote.loader.thread.ThreadJob;
  * The AbstractComponent class models a base class of logic components which 
  * are created and managed by the Loader.
  */
-public abstract class AbstractLogicComponent extends ThreadJob implements LogicComponent {
+public abstract class AbstractManagedComponent extends ThreadJob implements ManagedComponent {
 
   private static final String UNKNOWN = "Unknown";
 
@@ -35,7 +35,7 @@ public abstract class AbstractLogicComponent extends ThreadJob implements LogicC
   protected volatile boolean licensed = false;
   protected long startTime;
   protected String identifier = new GUID().toString();
-  protected String componentName = AbstractLogicComponent.CLASS;
+  protected String componentName = AbstractManagedComponent.CLASS;
   protected Logger lcb_logr = new NullLogger();
   protected WatchDog watchdog = null;
 
@@ -45,7 +45,7 @@ public abstract class AbstractLogicComponent extends ThreadJob implements LogicC
   /**
    * 
    */
-  public AbstractLogicComponent() {
+  public AbstractManagedComponent() {
     super();
   }
 
@@ -88,7 +88,7 @@ public abstract class AbstractLogicComponent extends ThreadJob implements LogicC
 
 
   /**
-   * @see coyote.loader.component.LogicComponent#getConfiguration()
+   * @see coyote.loader.component.ManagedComponent#getConfiguration()
    */
   @Override
   public Config getConfiguration() {
@@ -110,7 +110,7 @@ public abstract class AbstractLogicComponent extends ThreadJob implements LogicC
 
 
   /**
-   * @see coyote.loader.component.LogicComponent#getId()
+   * @see coyote.loader.component.ManagedComponent#getId()
    */
   @Override
   public String getId() {
@@ -121,7 +121,7 @@ public abstract class AbstractLogicComponent extends ThreadJob implements LogicC
 
 
   /**
-   * @see coyote.loader.component.LogicComponent#getName()
+   * @see coyote.loader.component.ManagedComponent#getName()
    */
   @Override
   public String getName() {
@@ -161,7 +161,7 @@ public abstract class AbstractLogicComponent extends ThreadJob implements LogicC
 
 
   /**
-   * @see coyote.loader.component.LogicComponent#getStartTime()
+   * @see coyote.loader.component.ManagedComponent#getStartTime()
    */
   @Override
   public long getStartTime() {
@@ -172,7 +172,7 @@ public abstract class AbstractLogicComponent extends ThreadJob implements LogicC
 
 
   /**
-   * @see coyote.loader.component.LogicComponent#getStatus()
+   * @see coyote.loader.component.ManagedComponent#getStatus()
    */
   @Override
   public DataFrame getStatus() {
@@ -187,7 +187,7 @@ public abstract class AbstractLogicComponent extends ThreadJob implements LogicC
    */
   @Override
   public String getSystemId() {
-    return LogicComponent.CLASS;
+    return ManagedComponent.CLASS;
   }
 
 
@@ -199,14 +199,14 @@ public abstract class AbstractLogicComponent extends ThreadJob implements LogicC
    *
    * @return a configuration that can be used as a template
    * 
-   * @see coyote.loader.component.LogicComponent#getTemplate()
+   * @see coyote.loader.component.ManagedComponent#getTemplate()
    */
   @Override
   public Config getTemplate() {
     final Config template = new Config();
 
     try {
-      template.setName( LogicComponent.CLASS );
+      template.setName( ManagedComponent.CLASS );
 
       // define the slots
       // template.addConfigSlot( new ConfigSlot( LogicComponent.ENABLED_TAG, "Flag indicating the component is enabled to run.", new Boolean( true ) ).toString() );
@@ -221,7 +221,7 @@ public abstract class AbstractLogicComponent extends ThreadJob implements LogicC
 
 
   /**
-   * @see coyote.loader.component.LogicComponent#isEnabled()
+   * @see coyote.loader.component.ManagedComponent#isEnabled()
    */
   @Override
   public boolean isEnabled() {
@@ -348,7 +348,7 @@ public abstract class AbstractLogicComponent extends ThreadJob implements LogicC
 
 
   /**
-   * @see coyote.loader.component.LogicComponent#setEnabled(boolean)
+   * @see coyote.loader.component.ManagedComponent#setEnabled(boolean)
    */
   @Override
   public void setEnabled( final boolean flag ) {
@@ -359,7 +359,7 @@ public abstract class AbstractLogicComponent extends ThreadJob implements LogicC
 
 
   /**
-   * @see coyote.loader.component.LogicComponent#setId(java.lang.String)
+   * @see coyote.loader.component.ManagedComponent#setId(java.lang.String)
    */
   @Override
   public void setId( final String id ) {
@@ -386,7 +386,7 @@ public abstract class AbstractLogicComponent extends ThreadJob implements LogicC
 
 
   /**
-   * @see coyote.loader.component.LogicComponent#setStartTime(long)
+   * @see coyote.loader.component.ManagedComponent#setStartTime(long)
    */
   @Override
   public void setStartTime( final long millis ) {
@@ -397,7 +397,7 @@ public abstract class AbstractLogicComponent extends ThreadJob implements LogicC
 
 
   /**
-   * @see coyote.loader.component.LogicComponent#isLicensed()
+   * @see coyote.loader.component.ManagedComponent#isLicensed()
    */
   @Override
   public boolean isLicensed() {
@@ -408,7 +408,7 @@ public abstract class AbstractLogicComponent extends ThreadJob implements LogicC
 
 
   /**
-   * @see coyote.loader.component.LogicComponent#quiesce()
+   * @see coyote.loader.component.ManagedComponent#quiesce()
    */
   @Override
   public void quiesce() {}
@@ -417,7 +417,7 @@ public abstract class AbstractLogicComponent extends ThreadJob implements LogicC
 
 
   /**
-   * @see coyote.loader.component.Component#shutdown(coyote.dataframe.DataFrame)
+   * @see coyote.loader.component.ManagedComponent#shutdown(coyote.dataframe.DataFrame)
    */
   @Override
   public void shutdown( DataFrame params ) {}
@@ -426,7 +426,7 @@ public abstract class AbstractLogicComponent extends ThreadJob implements LogicC
 
 
   /**
-   * @see coyote.loader.component.LogicComponent#setWatchDog(coyote.loader.WatchDog)
+   * @see coyote.loader.component.ManagedComponent#setWatchDog(coyote.loader.WatchDog)
    */
   @Override
   public void setWatchDog( WatchDog watchdog ) {

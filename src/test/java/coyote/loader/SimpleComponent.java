@@ -11,12 +11,12 @@
  */
 package coyote.loader;
 
-import coyote.loader.component.AbstractLogicComponent;
+import coyote.loader.component.AbstractManagedComponent;
 
 
 /**
  * 
  */
-public class SimpleComponent extends AbstractLogicComponent {
+public class SimpleComponent extends AbstractManagedComponent {
 
 }

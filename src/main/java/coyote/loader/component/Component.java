@@ -12,10 +12,15 @@
 package coyote.loader.component;
 
 import coyote.dataframe.DataFrame;
+import coyote.loader.cfg.Config;
 
 
 /**
- * The Component class models...
+ * The Component class models a type which can be queried for a varity of 
+ * information to aid in the management of a runtime.
+ * 
+ * <p>Components provide data to the environment in which they run, but do not 
+ * expose any methods which allow them to be managed.</p>
  */
 public interface Component {
 
@@ -41,6 +46,21 @@ public interface Component {
    * @return The category of this component.
    */
   public String getCategory();
+
+
+
+
+  /**
+   * Get the reference to the actual configuration object.
+   * 
+   * <p>This is useful when a managing component wants to access configuration
+   * attributes within the component or wants to make a comparison with a newly
+   * received configuration and the current configuration to determine if a 
+   * restart is necessary.</p> 
+   * 
+   * @return The configuration object currently set in the component.
+   */
+  public Config getConfiguration();
 
 
 
@@ -84,6 +104,17 @@ public interface Component {
 
 
   /**
+   * Access to when the component was started.
+   * 
+   * @return The time when the component was started, 0 if the component is not
+   *         yet started.
+   */
+  public long getStartTime();
+
+
+
+
+  /**
    * Access a detailed status of this component.
    * 
    * <p>This method is called as a part of a Loaders status reporting, the 
@@ -93,7 +124,7 @@ public interface Component {
    * component to spend significant resources in collecting data to represent 
    * its current operation status.</p>
    * 
-   * @return Detailed set of attributes describing the operational details of
+   * @return Detailed set of attributes describing the operational state of 
    *         this component.
    */
   public DataFrame getStatus();
@@ -111,10 +142,38 @@ public interface Component {
 
 
   /**
-   * Shut this component down using the given DataFrame as a set of parameters.
+   * Return a Config object that can be used as a template for configuring new 
+   * or existings instances of this component.
    * 
-   * @param params
+   * <p>A template is a default configuration for a component. Using this 
+   * template, the system can create an instance of a component from the 
+   * default constructor and set the configuration with this template and have 
+   * a fully operational component set to the defaults.</p>
+   *
+   * @return a object that can be used as a configuration template.
    */
-  public void shutdown( final DataFrame params );
+  public Config getTemplate();
+
+
+
+
+  /**
+   * Indicate if the component is currently enabled.
+   * 
+   * @return True if the component is eligible for processing, False if 
+   *         disabled.
+   */
+  public boolean isEnabled();
+
+
+
+
+  /**
+   * Determines if the component requires a license to operate.
+   * 
+   * @return True if the component requires a license to operate, false if the
+   *         component is unrestricted.
+   */
+  public boolean isLicensed();
 
 }

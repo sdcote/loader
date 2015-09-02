@@ -22,7 +22,7 @@ import coyote.commons.StringUtil;
 import coyote.dataframe.DataField;
 import coyote.loader.cfg.Config;
 import coyote.loader.cfg.ConfigurationException;
-import coyote.loader.component.LogicComponent;
+import coyote.loader.component.ManagedComponent;
 import coyote.loader.log.Log;
 import coyote.loader.log.LogMsg;
 import coyote.loader.log.Logger;
@@ -178,8 +178,8 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
         Constructor<?> ctor = clazz.getConstructor();
         Object object = ctor.newInstance();
 
-        if ( object instanceof LogicComponent ) {
-          LogicComponent retval = (LogicComponent)object;
+        if ( object instanceof ManagedComponent ) {
+          ManagedComponent retval = (ManagedComponent)object;
           retval.configure( config );
 
           // Set this loader as the watchdog if the component is interested 

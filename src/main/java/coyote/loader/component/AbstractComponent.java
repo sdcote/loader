@@ -108,13 +108,4 @@ public abstract class AbstractComponent implements Component {
     return AbstractComponent.UNKNOWN;
   }
 
-
-
-
-  /**
-   * @see coyote.loader.component.Component#shutdown(coyote.dataframe.DataFrame)
-   */
-  @Override
-  public void shutdown( final DataFrame command ) {}
-
 }

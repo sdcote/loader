@@ -16,7 +16,7 @@ import coyote.loader.WatchDog;
 import coyote.loader.cfg.Config;
 
 
-public interface LogicComponent extends Component {
+public interface ManagedComponent extends Component {
 
   /** Name used in various class identifying locations */
   public static final String CLASS = "LogicComponent";
@@ -60,71 +60,6 @@ public interface LogicComponent extends Component {
 
 
   /**
-   * Get the reference to the actual configuration object.
-   * 
-   * <p>This is useful when a managing component wants to access configuration
-   * attributes within the component or wants to make a comparison with a newly
-   * received configuration and the current configuration to determine if a 
-   * restart is necessary.</p> 
-   * 
-   * @return The configuration object currently set in the component.
-   */
-  public Config getConfiguration();
-
-
-
-
-  /**
-   * @return The identifier of this component used in monitoring and management.
-   */
-  @Override
-  public String getId();
-
-
-
-
-  /**
-   * @return the name of the component.
-   */
-  @Override
-  public String getName();
-
-
-
-
-  /**
-   * Access to when the component was started.
-   * 
-   * @return The time when the component was started, 0 if the component is not
-   *         yet started.
-   */
-  public long getStartTime();
-
-
-
-
-  /**
-   * @return The operational state of this component instance as an abstract 
-   *         data type.
-   */
-  @Override
-  public DataFrame getStatus();
-
-
-
-
-  /**
-   * Return a Config that can be used as a template for defining instances
-   * of this component.
-   *
-   * @return a object that can be used as a configuration template.
-   */
-  public Config getTemplate();
-
-
-
-
-  /**
    * Gives the component instance a change to prepare before doing work.
    * 
    * <p>This method is called after <code>configure(Config)</code> and
@@ -136,28 +71,6 @@ public interface LogicComponent extends Component {
    * during its operational lifecycle.</p>
    */
   public void initialize();
-
-
-
-
-  /**
-   * Indicate if the component is currently enabled.
-   * 
-   * @return True if the component is eligible for processing, False if 
-   *         disabled.
-   */
-  public boolean isEnabled();
-
-
-
-
-  /**
-   * Determines if the component requires a license to operate.
-   * 
-   * @return True if the component requires a license to operate, false if the
-   *         component is unrestricted.
-   */
-  public boolean isLicensed();
 
 
 
@@ -207,7 +120,11 @@ public interface LogicComponent extends Component {
 
   /**
    * Signal the component to stop processing;
+   * 
+   * <p>Shut this component down using the given DataFrame as a set of parameters.</p>
+   * 
+   * @param params
    */
-  public void shutdown();
+  public void shutdown( final DataFrame params );
 
 }
