@@ -224,7 +224,6 @@ public final class Log {
    *
    * @param category The category of the desired log operation 
    * @param event The event to log.
-   * @param cause The exception that caused the log entry. Can be null.
    */
   public synchronized static void append( final String category, final Object event ) {
     Log.append( category, event, null );

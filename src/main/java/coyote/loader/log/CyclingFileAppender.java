@@ -59,10 +59,10 @@ public class CyclingFileAppender extends FileAppender {
 
 
   /**
-   * @see coyote.loader.log.Logger#append(java.lang.String, java.lang.Object)
+   * @see coyote.loader.log.Logger#append(String, Object, Throwable)
    *
-   * @param category
-   * @param event
+   * @param category the category to log
+   * @param event the event to log
    * @param cause The exception that caused the log entry. Can be null.
    */
   public void append( final String category, final Object event, final Throwable cause ) {

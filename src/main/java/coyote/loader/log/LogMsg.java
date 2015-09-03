@@ -187,7 +187,6 @@ public class LogMsg implements Serializable {
    * default locale is used to determine what resource bundle to use.</p>
    *
    * @param key the resource bundle key name
-   * @param args arguments to help fill in the resource bundle message
    *
    * @return if the message was logged, a non-<code>null</code> LogMsg object 
    *         is returned
@@ -380,7 +379,7 @@ public class LogMsg implements Serializable {
    *
    * @param basename resource bundle to use
    *
-   * @see   LogMsg#LogMsg(net.bplg.util.LogMsg.BundleBaseName, Locale)
+   * @see LogMsg#LogMsg(BundleBaseName, Locale)
    */
   public LogMsg( final BundleBaseName basename ) {
     this( basename, Locale.getDefault() );
