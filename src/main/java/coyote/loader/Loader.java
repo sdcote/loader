@@ -67,4 +67,12 @@ public interface Loader extends WatchDog {
    */
   public Scheduler getScheduler();
 
+
+
+
+  /**
+   * Called by the shutdownhook when the JVM terminates.
+   */
+  public void shutdown();
+
 }

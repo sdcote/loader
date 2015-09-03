@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
+import java.util.Date;
 
 import coyote.commons.ExceptionUtil;
 import coyote.commons.StringUtil;
@@ -22,6 +23,7 @@ import coyote.commons.UriUtil;
 import coyote.dataframe.DataField;
 import coyote.loader.cfg.Config;
 import coyote.loader.cfg.ConfigurationException;
+import coyote.loader.log.Log;
 import coyote.loader.log.LogMsg;
 
 
@@ -136,6 +138,37 @@ public class BootStrap extends AbstractLoader {
 
 
   /**
+   * Add a shutdown hook into the JVM to help us shut everything down nicely.
+   * 
+   * @param loader The loader to terminate
+   */
+  private static void registerShutdownHook( final Loader loader ) {
+    try {
+      Runtime.getRuntime().addShutdownHook( new Thread( "LoaderHook" ) {
+        public void run() {
+          System.out.println( LogMsg.createMsg( "Loader.runtime_terminating", new Date() ) );
+          Log.info( LogMsg.createMsg( "Loader.runtime_terminating", new Date() ) );
+
+          if ( loader != null ) {
+            loader.shutdown();
+          }
+
+          Log.info( LogMsg.createMsg( "Loader.runtime_terminated", new Date() ) );
+          System.out.println( LogMsg.createMsg( "Loader.runtime_terminated", new Date() ) );
+          System.out.flush();
+        }
+      } );
+    } catch ( java.lang.NoSuchMethodError nsme ) {
+      // Ignore
+    } catch ( Throwable e ) {
+      // Ignore
+    }
+  }
+
+
+
+
+  /**
    * Use the first argument in the command line (or the 'cfg.uri' system 
    * property) to specify a URI of a configuration file to load.
    * 
@@ -156,8 +189,12 @@ public class BootStrap extends AbstractLoader {
 
       // If we have a loader
       if ( loader != null ) {
+
+        // Register a shutdown method to terminate cleanly when the JVM exit
+        registerShutdownHook( loader );
+
+        // Start the loader running in the current thread
         try {
-          // Start it running
           loader.start();
         } catch ( Throwable t ) {
           System.err.println( LogMsg.createMsg( "Loader.logic_error_from_loader", t.getLocalizedMessage(), ExceptionUtil.stackTrace( t ) ) );
