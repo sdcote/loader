@@ -214,6 +214,26 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
 
   /**
+   * 
+   */
+  protected void terminateComponents() {
+    for ( final Iterator<Object> it = components.keySet().iterator(); it.hasNext(); ) {
+      final Object cmpnt = it.next();
+      if ( cmpnt instanceof Daemon ) {
+        safeShutdown( (Daemon)cmpnt );
+      } else if ( cmpnt instanceof ThreadJob ) {
+        ( (ThreadJob)cmpnt ).shutdown(); // May not work as expected
+      }
+
+      // remove the component
+      it.remove();
+    }
+  }
+
+
+
+
+  /**
    * @return the parkTime
    */
   public long getParkTime() {
@@ -274,7 +294,6 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
     Log.info( LogMsg.createMsg( "Loader.operational" ) );
 
     while ( !isShutdown() ) {
-      Log.info( LogMsg.createMsg( "Loader.operational" ) );
 
       // Make sure that all this loaders are active, otherwise remove the
       // reference to them and allow GC to remove them from memory
