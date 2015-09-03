@@ -12,6 +12,7 @@
 package coyote.loader;
 
 import coyote.loader.log.Log;
+import coyote.loader.log.LogMsg;
 
 
 /**
@@ -20,9 +21,7 @@ import coyote.loader.log.Log;
 public class DefaultLoader extends AbstractLoader implements Loader {
 
   /** Tag used in various class identifying locations. */
-  public static final String CLASS = "Loader";
-
-  public static final String DEFAULT_DESCRIPTION = "Default component loader";
+  public static final String CLASS = "DefaultLoader";
 
 
 
@@ -38,7 +37,7 @@ public class DefaultLoader extends AbstractLoader implements Loader {
    * Start the components running.
    */
   public void start() {
-    // only run once, this is not foolproof as the active flag is set only when 
+    // only start once, this is not foolproof as the active flag is set only when 
     // the watchdog loop is entered
     if ( isActive() ) {
       return;
@@ -53,10 +52,10 @@ public class DefaultLoader extends AbstractLoader implements Loader {
     // very important to get park(millis) to operate
     current_thread = Thread.currentThread();
 
-    // Parse through the configuration and start setting up the component(s)
+    // Parse through the configuration and initialize all the components
     initComponents();
 
-    Log.info( "Components initialized" );
+    Log.info( LogMsg.createMsg( "Loader.components_initialized" ) );
 
     // By this time all loggers (including the catch-all logger) should be open
     final StringBuffer b = new StringBuffer( CLASS );
@@ -78,7 +77,9 @@ public class DefaultLoader extends AbstractLoader implements Loader {
     watchdog();
 
     // The watchdog loop has exited, so we are done processing
-    Log.info( "Loader terminating" );
+    terminateComponents();
+
+    Log.info( LogMsg.createMsg( "Loader.terminated" ) );
 
     // Rename the thread back to what it was called before we were being run
     Thread.currentThread().setName( oldName );
