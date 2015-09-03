@@ -1,0 +1,90 @@
+/*
+ * $Id:$
+ *
+ * Copyright (C) 2003 Stephan D. Cote' - All rights reserved.
+ */
+package coyote.loader.thread;
+
+/**
+ * Class Stepper
+ * 
+ * @author Stephan D. Cote' - Enterprise Architecture
+ * @version $Revision:$
+ */
+public class Stepper {
+  private static Scheduler scheduler = new Scheduler();
+
+
+
+
+  /**
+   * Constructor Stepper
+   */
+  Stepper() {}
+
+
+
+
+  /**
+   * Method testMethod
+   */
+  public void testMethod() {
+    // long startTime = System.currentTimeMillis() + 3000;
+    long startTime = System.currentTimeMillis();
+
+    ScheduledJob task0 = new ScheduledTest( "------------------->Repeater" );
+    task0.setExecutionTime( startTime );
+    task0.setRepeatable( true );
+    task0.setExecutionInterval( 1000 );
+    task0.setExecutionLimit( 3 );
+
+    ScheduledJob task1 = new ScheduledTest( "===================>Repeater" );
+    task1.setExecutionTime( startTime + 500 );
+    task1.setRepeatable( true );
+    task1.setExecutionInterval( 1000 );
+    task1.setExecutionLimit( 3 );
+
+    scheduler.schedule( task1 );
+    scheduler.schedule( task0 );
+
+    System.out.println( "Scheduler has " + scheduler.getJobCount() + " jobs scheduled" );
+
+    Thread thread = scheduler.daemonize();
+
+    System.out.println( "Scheduler is running in thread " + thread );
+
+    try {
+      Thread.sleep( 20000 );
+    } catch ( Exception ex ) {}
+
+    System.out.println( "Scheduler has " + scheduler.getJobCount() + " jobs scheduled" );
+
+    scheduler.shutdown();
+    Thread.yield();
+
+    while ( scheduler.isActive() ) {
+      try {
+        Thread.sleep( 1000 );
+
+        if ( scheduler.isActive() ) {
+          System.out.println( "Scheduler is still active" );
+        }
+      } catch ( Exception ex ) {}
+    }
+
+    System.out.println( "Scheduler has shutdown" );
+  }
+
+
+
+
+  /**
+   * Method main
+   * 
+   * @param args
+   */
+  public static void main( String[] args ) {
+    Stepper test = new Stepper();
+    test.testMethod();
+  }
+}
