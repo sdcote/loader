@@ -305,27 +305,29 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
       // Make sure that all this loaders are active, otherwise remove the
       // reference to them and allow GC to remove them from memory
-      for ( final Iterator<Object> it = components.keySet().iterator(); it.hasNext(); ) {
-        final Object cmpnt = it.next();
-        if ( cmpnt instanceof ManagedComponent ) {
-          if ( !( (ManagedComponent)cmpnt ).isActive() ) {
-            Log.info( LogMsg.createMsg( "Loader.removing_inactive_cmpnt", cmpnt.toString() ) );
+      synchronized( components ) {
+        for ( final Iterator<Object> it = components.keySet().iterator(); it.hasNext(); ) {
+          final Object cmpnt = it.next();
+          if ( cmpnt instanceof ManagedComponent ) {
+            if ( !( (ManagedComponent)cmpnt ).isActive() ) {
+              Log.info( LogMsg.createMsg( "Loader.removing_inactive_cmpnt", cmpnt.toString() ) );
 
-            // get a reference to the components configuration
-            final Config config = components.get( cmpnt );
+              // get a reference to the components configuration
+              final Config config = components.get( cmpnt );
 
-            // communicate the reason for the shutdown
-            DataFrame frame = new DataFrame();
-            frame.put( "Message", "Terminating due to inactivity" );
+              // communicate the reason for the shutdown
+              DataFrame frame = new DataFrame();
+              frame.put( "Message", "Terminating due to inactivity" );
 
-            // try to shut it down properly
-            safeShutdown( (ManagedComponent)cmpnt, frame );
+              // try to shut it down properly
+              safeShutdown( (ManagedComponent)cmpnt, frame );
 
-            // remove the component
-            it.remove();
+              // remove the component
+              it.remove();
 
-            // re-load the component
-            loadComponent( config );
+              // re-load the component
+              loadComponent( config );
+            }
           }
         }
       }
