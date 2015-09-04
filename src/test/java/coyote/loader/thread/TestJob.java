@@ -19,9 +19,6 @@ public class TestJob extends ThreadJob {
    * @param text
    */
   public TestJob( String text ) {
-    // Always a good practice
-    super();
-
     if ( text != null ) {
       display = text;
     }
@@ -31,7 +28,7 @@ public class TestJob extends ThreadJob {
 
 
   /**
-   * Method initialize
+   * Setup anything we want prior to doing our work
    */
   public void initialize() {
     // Always!
@@ -49,18 +46,9 @@ public class TestJob extends ThreadJob {
 
 
   /**
-   *
-   */
-  public void terminate() {
-    super.terminate(); // habit
-    System.out.println( display + " Ran for " + ( System.currentTimeMillis() - started_time ) + " milliseconds" );
-  }
-
-
-
-
-  /**
-   *
+   * This is where we do our work.
+   * 
+   *  This method will be called continually until shutdown.
    */
   public void doWork() {
     // System.out.print(display);
@@ -72,4 +60,22 @@ public class TestJob extends ThreadJob {
       shutdown();
     }
   }
+  
+  
+  /**
+   * Clean up our resources allocated during initialization and operation
+   */
+  public void terminate() {
+    
+    // Always do our termination logic before calling super class termination
+    
+    super.terminate();
+    
+    System.out.println( display + " Ran for " + ( System.currentTimeMillis() - started_time ) + " milliseconds" );
+  }
+
+
+
+
+
 }

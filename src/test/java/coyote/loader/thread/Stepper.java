@@ -49,6 +49,7 @@ public class Stepper {
 
     System.out.println( "Scheduler has " + scheduler.getJobCount() + " jobs scheduled" );
 
+    // run the scheduler in a background thread
     Thread thread = scheduler.daemonize();
 
     System.out.println( "Scheduler is running in thread " + thread );
