@@ -25,6 +25,7 @@ import coyote.loader.cfg.Config;
 import coyote.loader.cfg.ConfigurationException;
 import coyote.loader.log.Log;
 import coyote.loader.log.LogMsg;
+import coyote.loader.log.LogMsg.BundleBaseName;
 
 
 /**
@@ -41,6 +42,10 @@ public class BootStrap extends AbstractLoader {
   private static URI cfgUri = null;
 
   private static final String CFG_PROPERTY = "cfg.uri";
+
+  static {
+    LogMsg.setBundleBaseNameDefault( new BundleBaseName( "LoaderMsg" ) );
+  }
 
 
 
