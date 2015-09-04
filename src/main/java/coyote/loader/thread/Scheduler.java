@@ -72,9 +72,7 @@ public class Scheduler extends ThreadJob {
 
 
   /**
-   * Method getJobCount
-   *
-   * @return
+   * @return the number of jobs currently in the scheduler
    */
   public int getJobCount() {
     int count = 0;
@@ -226,9 +224,9 @@ public class Scheduler extends ThreadJob {
 
 
   /**
-   * Method reschedule
+   * Reschedule the given job
    *
-   * @param job
+   * @param job the job to be rescheduled
    */
   protected void reschedule( ScheduledJob job ) {
     // Remove the job from the list
@@ -258,10 +256,10 @@ public class Scheduler extends ThreadJob {
 
 
   /**
-   * Method schedule
+   * Add the given job to the list of scheduled jobs
    *
-   * @param task
-   * @param starts
+   * @param task the task to schedule
+   * @param starts when the job is to next run
    */
   public void schedule( Runnable task, long starts ) {
     schedule( task, System.currentTimeMillis(), starts, 0, 0 );
@@ -271,10 +269,10 @@ public class Scheduler extends ThreadJob {
 
 
   /**
-   * Method schedule
+   * Add the given job to the list of scheduled jobs
    *
-   * @param task
-   * @param starts
+   * @param task the task to schedule
+   * @param starts when the job is to next run
    */
   public void schedule( Runnable task, Date starts ) {
     schedule( task, System.currentTimeMillis(), starts.getTime(), 0, 0 );
@@ -284,10 +282,10 @@ public class Scheduler extends ThreadJob {
 
 
   /**
-   * Method schedule
+   * Add the given job to the list of scheduled jobs
    *
-   * @param task
-   * @param starts
+   * @param task the task to schedule
+   * @param starts when the job is to next run
    */
   public void schedule( Runnable task, Calendar starts ) {
     schedule( task, System.currentTimeMillis(), starts.getTime().getTime(), 0, 0 );
@@ -297,13 +295,18 @@ public class Scheduler extends ThreadJob {
 
 
   /**
-   * Method schedule
+   * Add the given job to the list of scheduled jobs.
+   * 
+   * <p>This creates a ScheduledJob which wraps the runnable task and sets 
+   * several key attributes controlling how that task is run. The returned 
+   * {@link ScheduledJob} reference can then be used to control how the job is
+   * managed by the scheduler.</p>
    *
-   * @param task
-   * @param starts
-   * @param interval
-   * @param ends
-   * @param limit
+   * @param task the task to schedule
+   * @param starts when the job is to next run
+   * @param interval number of milliseconds between runs
+   * @param ends the expiration time
+   * @param limit to maximum number of times the task is to run
    * 
    * @return a reference to the job placed in the scheduler
    */
@@ -388,11 +391,11 @@ public class Scheduler extends ThreadJob {
 
 
   /**
-   * Method remove
+   * Remove a particular instance of a {@link ScheduledJob} from the scheduler.
    *
-   * @param job
+   * @param job the job to remove
    *
-   * @return
+   * @return the removed job
    */
   public ScheduledJob remove( ScheduledJob job ) {
     if ( job == null ) {
@@ -432,9 +435,7 @@ public class Scheduler extends ThreadJob {
 
 
   /**
-   * Method getNextJob
-   *
-   * @return
+   * @return the next job scheduled for execution
    */
   public ScheduledJob getNextJob() {
     return nextJob;
@@ -444,9 +445,7 @@ public class Scheduler extends ThreadJob {
 
 
   /**
-   * Method dump
-   *
-   * @return
+   * @return a string representation of the state of the scheduler
    */
   public String dump() {
     StringBuffer retval = new StringBuffer( "--[ JobList ]------------------------------------------------\r\n" );

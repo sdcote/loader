@@ -71,7 +71,7 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Constructor ScheduledJob
+   * Default Constructor 
    */
   public ScheduledJob() {}
 
@@ -79,9 +79,9 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Constructor ScheduledJob
+   * Constructor setting a runnable task
    *
-   * @param task
+   * @param task The task to run when the time comes
    */
   public ScheduledJob( Runnable task ) {
     super.work = task;
@@ -91,9 +91,7 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method getDescription
-   *
-   * @return
+   * @return the description of this job.
    */
   public String getDescription() {
     return description;
@@ -103,9 +101,9 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method setDescription
+   * Set the description of this job.
    *
-   * @param description
+   * @param description the description of this job.
    */
   public void setDescription( String description ) {
     this.description = description;
@@ -115,9 +113,7 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method getName
-   *
-   * @return
+   * @return the name of this job
    */
   public String getName() {
     return name;
@@ -127,9 +123,9 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method setName
+   * Set the name of this job
    *
-   * @param name
+   * @param name the name of this job
    */
   public void setName( String name ) {
     this.name = name;
@@ -139,9 +135,7 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method getExecutionInterval
-   *
-   * @return
+   * @return the number of milliseconds between executions of this job
    */
   public long getExecutionInterval() {
     return executionInterval;
@@ -151,9 +145,9 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method setExecutionInterval
+   * Set the number of milliseconds between executions of this job
    *
-   * @param executionInterval
+   * @param executionInterval the number of milliseconds between executions of this job
    */
   public void setExecutionInterval( long executionInterval ) {
     this.executionInterval = executionInterval;
@@ -163,9 +157,7 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method getExecutionLimit
-   *
-   * @return
+   * @return the maximum number of times this job is to run
    */
   public long getExecutionLimit() {
     return executionLimit;
@@ -175,9 +167,9 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method setExecutionLimit
+   * Set the maximum number of times this job is to run
    *
-   * @param executionLimit
+   * @param executionLimit the maximum number of times this job is to run
    */
   public void setExecutionLimit( long executionLimit ) {
     this.executionLimit = executionLimit;
@@ -187,9 +179,7 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method getExecutionTime
-   *
-   * @return
+   * @return the epoch time (in milliseconds) when this job is to run
    */
   public long getExecutionTime() {
     return executionTime;
@@ -199,9 +189,9 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method setExecutionTime
+   * Set the time when this job is to run.
    *
-   * @param date
+   * @param date when this job is to run
    */
   public void setExecutionTime( Date date ) {
     if ( date != null ) {
@@ -213,9 +203,9 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method setExecutionTime
+   * Set the time when this job is to run.
    *
-   * @param cal
+   * @param cal when this job is supposed to run
    */
   public void setExecutionTime( Calendar cal ) {
     if ( cal != null ) {
@@ -227,9 +217,9 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method setExecutionTime
+   * Set the epoch time (in milliseconds) when this job is to run
    *
-   * @param millis
+   * @param millis the epoch time (in milliseconds) when this job is to run
    */
   public void setExecutionTime( long millis ) {
     executionTime = millis;
@@ -239,9 +229,7 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method getExpirationTime
-   *
-   * @return
+   * @return the epoch time (in milliseconds) when this job is no longer needed
    */
   public long getExpirationTime() {
     return expirationTime;
@@ -251,9 +239,9 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method setExpirationTime
+   * Set the date/time which this job is considered too old to run.
    *
-   * @param date
+   * @param date the date/time which this job is considered too old to run.
    */
   public void setExpirationTime( Date date ) {
     if ( date != null ) {
@@ -265,9 +253,9 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method setExpirationTime
+   * Set the date/time which this job is considered too old to run.
    *
-   * @param cal
+   * @param cal the date/time which this job is considered too old to run.
    */
   public void setExpirationTime( Calendar cal ) {
     if ( cal != null ) {
@@ -279,9 +267,11 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method setExpirationTime
+   * Set the epoch time (in milliseconds) which this job is considered too old 
+   * to run
    *
-   * @param millis
+   * @param millis the epoch time (in milliseconds) which this job is 
+   * considered too old to run
    */
   public void setExpirationTime( long millis ) {
     expirationTime = millis;
@@ -295,7 +285,7 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
    * supposed.
    *
    * @return True if the expiration time has elapsed, false if the expiration
-   *         time has not passed ot if no expiration time has been set.
+   *         time has not passed or if no expiration time has been set.
    */
   public boolean isExpired() {
     if ( ( expirationTime > 0 ) && ( System.currentTimeMillis() - this.started_time > expirationTime ) ) {
@@ -309,9 +299,8 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method isCancelled
-   *
-   * @return
+   * @return true if this job has been cancelled (do not run) false if this job 
+   *         is otherwise approved to run.
    */
   public boolean isCancelled() {
     return cancelled;
@@ -321,9 +310,10 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method setCancelled
+   * Set this job's cancelled state
    *
-   * @param cancelled
+   * @param cancelled true if this job has been cancelled (do not run) false if 
+   *        this job is otherwise approved to run.
    */
   public void setCancelled( boolean cancelled ) {
     this.cancelled = cancelled;
@@ -333,9 +323,7 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method getNextJob
-   *
-   * @return
+   * @return the next job to be run after this one 
    */
   public ScheduledJob getNextJob() {
     return nextJob;
@@ -345,9 +333,9 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method setNextJob
+   * Set  the next job to be run after this one
    *
-   * @param nextJob
+   * @param nextJob  the next job to be run after this one
    */
   public void setNextJob( ScheduledJob nextJob ) {
     this.nextJob = nextJob;
@@ -357,9 +345,7 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method getPreviousJob
-   *
-   * @return
+   * @return the next job to be run before this job
    */
   public ScheduledJob getPreviousJob() {
     return previousJob;
@@ -369,9 +355,9 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method setPreviousJob
+   * et the next job to be run before this job
    *
-   * @param previousJob
+   * @param previousJob the next job to be run before this job
    */
   public void setPreviousJob( ScheduledJob previousJob ) {
     this.previousJob = previousJob;
@@ -381,9 +367,7 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method getChainedJob
-   *
-   * @return
+   * @return the job linked to this job
    */
   public ScheduledJob getChainedJob() {
     return chainedJob;
@@ -393,9 +377,15 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method setChainedJob
+   * It is possible to set a change of jobs together. This method allows the 
+   * setting of a sub job.
+   * 
+   * <p>This is different from {@link #getNextJob()} in that this has nothing 
+   * to do with linking all the job together. This is only allowing the 
+   * attachment of another job to run immediately after this job, without 
+   * respect to a time.</p>
    *
-   * @param chainedJob
+   * @param chainedJob the job to executed immediately after this job completes
    */
   public void setChainedJob( ScheduledJob chainedJob ) {
     this.chainedJob = chainedJob;
@@ -405,9 +395,7 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method getExecutionCount
-   *
-   * @return
+   * @return the number of times this job has been executed
    */
   public long getExecutionCount() {
     return executionCount;
@@ -417,7 +405,7 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method incrementExecutionCount
+   * Increment the job execution counter by 1 (one).
    */
   public void incrementExecutionCount() {
     this.executionCount++;
@@ -427,9 +415,8 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method isRepeatable
-   *
-   * @return
+   * @return true if this job is a recurring job, false if it is to be run only 
+   *         once.
    */
   public boolean isRepeatable() {
     return repeatable;
@@ -439,9 +426,10 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method setRepeatable
+   * Set this job to be a recurring job.
    *
-   * @param repeatable
+   * @param repeatable true if this job is a recurring job, false if it is to 
+   *        be run only once.
    */
   public void setRepeatable( boolean repeatable ) {
     this.repeatable = repeatable;
@@ -451,9 +439,8 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method isEnabled
-   *
-   * @return
+   * @return true if this job is eligible for scheduling, false if it is not to 
+   *         be (re) added to the scheduler.
    */
   public boolean isEnabled() {
     return enabled;
@@ -463,9 +450,10 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method setEnabled
+   * Set if this job is to be (re)scheduled in the scheduler
    *
-   * @param enabled
+   * @param enabled true if this job is eligible for scheduling, false if it is 
+   *        not to be (re) added to the scheduler.
    */
   public void setEnabled( boolean enabled ) {
     this.enabled = enabled;
@@ -475,7 +463,7 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method reschedule
+   * Place this job back in the currently set scheduler.
    */
   public void reschedule() {
     if ( scheduler != null ) {
@@ -487,9 +475,7 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method getScheduler
-   *
-   * @return
+   * @return the scheduler currently managing this job.
    */
   public Scheduler getScheduler() {
     return scheduler;
@@ -499,9 +485,9 @@ public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
 
 
   /**
-   * Method setScheduler
+   * Set the scheduler currently managing this job.
    *
-   * @param scheduler
+   * @param scheduler the scheduler currently managing this job.
    */
   public void setScheduler( Scheduler scheduler ) {
     this.scheduler = scheduler;
