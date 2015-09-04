@@ -98,7 +98,13 @@ public class ThreadJob implements Runnable {
 
   /**
    * Creates a thread, runs this job in that thread and exits leaving that
-   * thread (and the JVM) running in memory.
+   * thread (and the JRE) running in memory.
+   *
+   * <p><strong>Note</strong> that this does not create a Java {@code daemon} 
+   * thread as "daemon" threads will be terminated automatically when the JRE 
+   * terminates. Only a {@code user} thread will keep the JRE running. The 
+   * naming of the method is to characterize the "background process" nature of 
+   * a daemon.</p>
    *
    * @return the thread in which this job is running.
    */
@@ -111,7 +117,13 @@ public class ThreadJob implements Runnable {
 
   /**
    * Creates a thread, runs this job in that thread and exits leaving that
-   * thread (and the JVM) running in memory with the given name.
+   * thread (and the JRE) running in memory with the given name.
+   *
+   * <p><strong>Note</strong> that this does not create a Java {@code daemon} 
+   * thread as "daemon" threads will be terminated automatically when the JRE 
+   * terminates. Only a {@code user} thread will keep the JRE running. The 
+   * naming of the method is to characterize the "background process" nature of 
+   * a daemon.</p>
    *
    * @param name The name to give the thread
    *
@@ -132,6 +144,12 @@ public class ThreadJob implements Runnable {
 
   /**
    * Run the job in a background user thread.
+   *
+   * <p><strong>Note</strong> that this does not create a Java {@code daemon} 
+   * thread as "daemon" threads will be terminated automatically when the JRE 
+   * terminates. Only a {@code user} thread will keep the JRE running. The 
+   * naming of the method is to characterize the "background process" nature of 
+   * a daemon.</p>
    *
    * @param thread the thread in which to run this job.
    *
