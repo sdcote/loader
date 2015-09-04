@@ -115,10 +115,33 @@ public interface ManagedComponent extends Component {
   /**
    * Signal the component to stop processing;
    * 
-   * <p>Shut this component down using the given DataFrame as a set of parameters.</p>
+   * <p>Shut this component down using the given DataFrame as a set of 
+   * parameters.</p>
    * 
-   * @param params
+   * @param params Shutdown arguments, can be null.
    */
   public void shutdown( final DataFrame params );
+
+
+
+
+  /**
+   * Creates a thread, runs this job in that thread and exits leaving that
+   * thread running.
+   *
+   * @return the thread in which this managed component is running.
+   */
+  public Thread daemonize();
+
+
+
+
+  /**
+   * Wait for the managed component to go active.
+   *
+   * @param timeout The number of milliseconds to wait for the main run loop to
+   *        be entered.
+   */
+  public void waitForActive( long timeout );
 
 }

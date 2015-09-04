@@ -52,5 +52,6 @@ public class ConfigTag {
   public static final String ENABLED_TAG = "Enabled";
   public static final String DESCRIPTION_TAG = "Description";
   public static final String ACTIVATION_TOKEN_TAG = "ActivationToken";
+  public static final String INTERVAL_TAG = "CycleInterval";
 
 }

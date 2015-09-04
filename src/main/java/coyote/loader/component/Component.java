@@ -16,7 +16,7 @@ import coyote.loader.cfg.Config;
 
 
 /**
- * The Component class models a type which can be queried for a varity of 
+ * The Component class models a type which can be queried for a variety of 
  * information to aid in the management of a runtime.
  * 
  * <p>Components provide data to the environment in which they run, but do not 
@@ -143,7 +143,7 @@ public interface Component {
 
   /**
    * Return a Config object that can be used as a template for configuring new 
-   * or existings instances of this component.
+   * or existing instances of this component.
    * 
    * <p>A template is a default configuration for a component. Using this 
    * template, the system can create an instance of a component from the 
@@ -153,6 +153,23 @@ public interface Component {
    * @return a object that can be used as a configuration template.
    */
   public Config getTemplate();
+
+
+
+
+  /**
+   * Determine if the Component is active.
+   * 
+   * <p>This is a way for a component to report to the loader that it should be 
+   * terminated and removed from the system. If the component becomes unstable 
+   * or unusable, it should set it active flag fo false and cease processing. 
+   * The loader can then remove the component from the system when it is 
+   * convenient.</p>
+   * 
+   * @return True if the component is active and ready for processing, False if 
+   *         it has failed or is otherwise inoperable.
+   */
+  public boolean isActive();
 
 
 

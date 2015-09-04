@@ -20,13 +20,13 @@ import java.util.List;
 import coyote.commons.GUID;
 import coyote.commons.StringUtil;
 import coyote.dataframe.DataField;
+import coyote.dataframe.DataFrame;
 import coyote.loader.cfg.Config;
 import coyote.loader.cfg.ConfigurationException;
 import coyote.loader.component.ManagedComponent;
 import coyote.loader.log.Log;
 import coyote.loader.log.LogMsg;
 import coyote.loader.log.Logger;
-import coyote.loader.thread.Daemon;
 import coyote.loader.thread.Scheduler;
 import coyote.loader.thread.ThreadJob;
 import coyote.loader.thread.ThreadPool;
@@ -217,10 +217,13 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
    * 
    */
   protected void terminateComponents() {
+    DataFrame frame = new DataFrame();
+    frame.put( "Message", "Normal termination" );
+
     for ( final Iterator<Object> it = components.keySet().iterator(); it.hasNext(); ) {
       final Object cmpnt = it.next();
-      if ( cmpnt instanceof Daemon ) {
-        safeShutdown( (Daemon)cmpnt );
+      if ( cmpnt instanceof ManagedComponent ) {
+        safeShutdown( (ManagedComponent)cmpnt, frame );
       } else if ( cmpnt instanceof ThreadJob ) {
         ( (ThreadJob)cmpnt ).shutdown(); // May not work as expected
       }
@@ -254,16 +257,21 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
 
   /**
-   * Try to shut the component down in a separate thread.
+   * Shut the component down in a separate thread.
    * 
    * <p>This is a way to ensure that the calling thread does not get hung in a
    * deadlocked component while trying to shutdown a component.</p>
-   * @param cmpnt
+   * 
+   * @param cmpnt the managed component to terminate
+   * @param frame the dataframe which contains any additional information 
+   *        relating to the shutdown request. This may be null.
+   *
+   * @return the Thread in which the shutdown is occurring.
    */
-  protected Thread safeShutdown( final Daemon cmpnt ) {
+  protected Thread safeShutdown( final ManagedComponent cmpnt, final DataFrame frame ) {
     final Thread closer = new Thread( new Runnable() {
       public void run() {
-        cmpnt.shutdown();
+        cmpnt.shutdown( frame );
       }
     } );
 
@@ -299,15 +307,19 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
       // reference to them and allow GC to remove them from memory
       for ( final Iterator<Object> it = components.keySet().iterator(); it.hasNext(); ) {
         final Object cmpnt = it.next();
-        if ( cmpnt instanceof Daemon ) {
-          if ( !( (Daemon)cmpnt ).isActive() ) {
+        if ( cmpnt instanceof ManagedComponent ) {
+          if ( !( (ManagedComponent)cmpnt ).isActive() ) {
             Log.info( LogMsg.createMsg( "Loader.removing_inactive_cmpnt", cmpnt.toString() ) );
 
             // get a reference to the components configuration
             final Config config = components.get( cmpnt );
 
+            // communicate the reason for the shutdown
+            DataFrame frame = new DataFrame();
+            frame.put( "Message", "Terminating due to inactivity" );
+
             // try to shut it down properly
-            safeShutdown( (Daemon)cmpnt );
+            safeShutdown( (ManagedComponent)cmpnt, frame );
 
             // remove the component
             it.remove();
