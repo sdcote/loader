@@ -17,9 +17,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.Date;
 
+import coyote.commons.CipherUtil;
 import coyote.commons.ExceptionUtil;
 import coyote.commons.StringUtil;
 import coyote.commons.UriUtil;
+import coyote.commons.security.BlowfishCipher;
 import coyote.dataframe.DataField;
 import coyote.loader.cfg.Config;
 import coyote.loader.cfg.ConfigurationException;
@@ -38,13 +40,68 @@ import coyote.loader.log.LogMsg.BundleBaseName;
  */
 public class BootStrap extends AbstractLoader {
 
+  private static final String CFG_PROPERTY = "cfg.uri";
+  private static final String ENCRYPT = "encrypt";
+  private static final String CIPHER_KEY = "CoyoteLoader";
+  private static final String CIPHER_NAME = BlowfishCipher.CIPHER_NAME;
+
   private static Config configuration = null;
   private static URI cfgUri = null;
 
-  private static final String CFG_PROPERTY = "cfg.uri";
-
   static {
     LogMsg.setBundleBaseNameDefault( new BundleBaseName( "LoaderMsg" ) );
+  }
+
+
+
+
+  /**
+   * Performs encryption operation from the command line arguments.
+   * 
+   * <p>The loader provides a way for the operator to generate encrypted values 
+   * which can be placed in configuration files. This allows user names and 
+   * passwords to be hidden from those with access to the files but who do not 
+   * have access to the encryption keys.</p>
+   * 
+   * @param args the entire command line arguments to parse for encryption details
+   */
+  private static void encrypt( String[] args ) {
+    String token = null;
+    String key = System.getProperty( ConfigTag.CIPHER_KEY, CipherUtil.getKey( CIPHER_KEY ) );
+    String cipherName = System.getProperty( ConfigTag.CIPHER_NAME, CIPHER_NAME );
+    if ( args.length < 2 ) {
+      System.err.println( "Nothing to encrypt" );
+      return;
+    } else {
+      token = args[1];
+      if ( args.length > 2 ) {
+        String rawkey = args[2];
+        // make sure is it base64 encoded or make it so
+        try {
+          CipherUtil.decode( rawkey );
+          key = rawkey;
+        } catch ( Exception e ) {
+          System.out.println( "User-specified key did not appear to be Base64 encoded, encoding it." );
+          key = CipherUtil.getKey( rawkey );
+        }
+
+        if ( args.length > 3 ) {
+          cipherName = args[3];
+        }
+
+      }
+    }
+    System.out.println( "Encrypting '" + token + "'" );
+    System.out.println( "with a key of '" + key + "'" );
+    System.out.println( "using a '" + cipherName + "' cipher" );
+
+    if ( CipherUtil.getCipher( cipherName ) != null ) {
+      String ciphertext = CipherUtil.encipher( token, cipherName, key );
+      System.out.println( ciphertext );
+    } else {
+      System.err.println( "Cipher '" + cipherName + "' is not supported" );
+    }
+
   }
 
 
@@ -60,7 +117,15 @@ public class BootStrap extends AbstractLoader {
 
     // Get the URI to our configuration from either the command line or the system properties
     if ( args != null && args.length > 0 ) {
-      cfgLoc = args[0];
+
+      // if the first argument is "encrypt" perform an encryption operation 
+      // using the rest of the command line arguments
+      if ( ENCRYPT.equalsIgnoreCase( args[0] ) ) {
+        encrypt( args );
+        System.exit( 0 );
+      } else {
+        cfgLoc = args[0];
+      }
     } else {
       cfgLoc = System.getProperties().getProperty( CFG_PROPERTY );
     }
