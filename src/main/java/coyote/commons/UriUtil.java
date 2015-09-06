@@ -12,6 +12,7 @@
 package coyote.commons;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -19,6 +20,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.StringTokenizer;
 
 
@@ -656,6 +658,118 @@ public class UriUtil {
           return retval;
         }
       }
+    }
+
+    return retval;
+  }
+
+
+
+
+  /**
+   * Returns a Hashtable of name-value pairs from the query portion of the
+   * given URI.
+   *
+   * <p>This method will always return a hashtable even if the URI does not
+   * contain a query string. In such cases, the Hashtable will be empty.</p>
+   *
+   * @param uri The HTTP query string to parse
+   *
+   * @return a hashtable whose values are String[]s and keys are parameter name
+   *         Strings.
+   */
+  public static Hashtable getParametersAsHashtable( URI uri ) {
+    if ( uri.getQuery() != null ) {
+      return getParametersAsHashtable( uri.getQuery() );
+    }
+
+    return new Hashtable();
+  }
+
+
+
+
+  /**
+   * Read a query string and return a hashtable containing an array of value
+   * strings keyed by parameter name.
+   *
+   * <p>This method will always return a hashtable even if the URI does not
+   * contain a query string. In such cases, the Hashtable will be empty.</p>
+   *
+   * <p>Before parsing the query string, a check is made to determine if the
+   * query delimiter exists in the string. If one does, only the data after the
+   * LAST occurence of the '?' is parsed.</p>
+   *
+   * @param query The HTTP query string to parse
+   *
+   * @return a hashtable whose values are String[]s and keys are parameter name
+   *         Strings.
+   */
+  public static Hashtable getParametersAsHashtable( String query ) {
+    String data = query;
+
+    // Make sure the data does not contain the Question mark
+    if ( data.indexOf( '?' ) > -1 ) {
+      // Just use the last query string
+      data = query.substring( query.lastIndexOf( '?' ) + 1 );
+    }
+
+    // Create a new String parser
+    StringParser parser = new StringParser( data, "=&" );
+
+    Hashtable retval = new Hashtable();
+
+    String name = null;
+    String value = null;
+
+    try {
+      while ( !parser.eof() ) {
+        name = decodeString( parser.readToken() ).trim();
+
+        // Handle ?name where there is no value for the named parameter
+        if ( !parser.eof() ) {
+          int i = parser.readChar();
+
+          if ( i == '=' ) {
+            // check for null value
+            int next = parser.peek();
+
+            if ( next == '&' ) {
+              // apparently we read PARAMETER=& so "PARAMETER" has been defined,
+              // but there is no value as the next character is a name-value
+              // delimiter. Assume an empty value and not a null value as the
+              // name would not be given unless some kind of value is implied.
+              value = "";
+            } else {
+              // Decode everything until the next name-value delimiter or EOF
+              value = decodeString( parser.readToDelimiter( "&" ) ).trim();
+            }
+
+            // as long as we are not at the end of out data stream...
+            if ( !parser.eof() ) {
+              // ...read past(consume) the name-value delimiter
+              parser.read();
+            }
+          }
+        } else {
+          // Oops! parameter ended prematurely, assigning empty string ''
+          value = "";
+        }
+
+        // Add it to our array
+        String array[] = (String[])retval.get( name );
+
+        if ( array == null ) {
+          // This is the first occurence of the named parameter
+          retval.put( name, new String[] { value } );
+        } else {
+          // This is a subsequent occurence of the named parameter
+          retval.put( name, ArrayUtil.addElement( array, value ) );
+        }
+      }
+    } catch ( IOException ioe ) {
+      // Log.warn( "Error parsing query parameters: " + ioe.getMessage() );
+      // Log.debug( "Error parsing query parameters at " + parser.getPosition() );
     }
 
     return retval;

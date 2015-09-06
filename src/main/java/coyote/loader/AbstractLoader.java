@@ -13,6 +13,7 @@ package coyote.loader;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -125,6 +126,8 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
       }
 
     }
+    
+    Log.info(LogMsg.createMsg( "Loader.logging_initiated", new Date() ) );
 
   }
 

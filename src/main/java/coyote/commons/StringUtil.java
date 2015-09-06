@@ -25,20 +25,26 @@ public class StringUtil {
   /** CarriageReturn string */
   public static final String CR = "\r";
 
-  /** NewLine string */
-  public static final String NL = "\n";
+  /** The space string */
+  public static final String SP = " ";
 
   /** Hard tab string */
   public static final String HT = "\t";
+
+  /** NewLine string */
+  public static final String NL = "\n";
+
+  /** Platform specific line separator (default = CRLF) */
+  public static final String LINE_FEED = System.getProperty( "line.separator", "\r\n" );
+
+  /** Length of the platform specific LineFeed sequence */
+  public static final int LINE_FEED_LEN = StringUtil.LINE_FEED.length();
 
   /** Platform specific path separator (default = "/") */
   public static final String PATH_SEPARATOR = System.getProperty( "path.separator", "/" );
 
   /** Platform specific path separator (default = ":") */
   public static final String FILE_SEPARATOR = System.getProperty( "file.separator", ":" );
-
-  /** Platform specific line separator (default = CRLF) */
-  public static final String LINE_FEED = System.getProperty( "line.separator", "\r\n" );
 
   /** CharEncodingISO Latin Alphabet No. 1, a.k.a. ISO-LATIN-1. */
   public static final String ISO_8859_1 = "ISO-8859-1";
