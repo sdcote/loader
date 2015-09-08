@@ -14,6 +14,7 @@ package coyote.loader;
 import coyote.loader.cfg.Config;
 import coyote.loader.cfg.ConfigurationException;
 import coyote.loader.thread.Scheduler;
+import coyote.loader.thread.ThreadPool;
 
 
 /**
@@ -71,7 +72,17 @@ public interface Loader extends WatchDog {
 
 
   /**
-   * Called by the shutdownhook when the JVM terminates.
+   * This allows components to run simple components in a pool of threads.
+   * 
+   * @return The ThreadPool object used by this loader.
+   */
+  public ThreadPool getThreadPool();
+
+
+
+
+  /**
+   * Called by the shutdown hook when the JVM terminates.
    */
   public void shutdown();
 

@@ -126,8 +126,8 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
       }
 
     }
-    
-    Log.info(LogMsg.createMsg( "Loader.logging_initiated", new Date() ) );
+
+    Log.info( LogMsg.createMsg( "Loader.logging_initiated", new Date() ) );
 
   }
 
@@ -427,6 +427,17 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   @Override
   public void start() {
     // do-nothing implementation
+  }
+
+
+
+
+  /**
+   * @see coyote.loader.Loader#getThreadPool()
+   */
+  @Override
+  public ThreadPool getThreadPool() {
+    return threadpool;
   }
 
 }
