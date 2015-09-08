@@ -155,10 +155,15 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    * @throws ConfigurationException
    */
   public static Config read( final URI uri ) throws IOException, ConfigurationException {
-    if ( uri.getScheme().toLowerCase().startsWith( "file" ) ) {
-      return Config.read( new FileInputStream( UriUtil.getFile( uri ) ) );
+    if ( StringUtil.isNotBlank( uri.getScheme() ) ) {
+      if ( uri.getScheme().toLowerCase().startsWith( "file" ) ) {
+        return Config.read( new FileInputStream( UriUtil.getFile( uri ) ) );
+      } else {
+        return Config.read( uri.toURL().openStream() );
+      }
     } else {
-      return Config.read( uri.toURL().openStream() );
+      // Assume this is a file path
+      return Config.read( new FileInputStream(  uri.toString() ) );
     }
   }
 
