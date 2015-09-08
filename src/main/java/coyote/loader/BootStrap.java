@@ -216,7 +216,6 @@ public class BootStrap extends AbstractLoader {
     try {
       Runtime.getRuntime().addShutdownHook( new Thread( "LoaderHook" ) {
         public void run() {
-          System.out.println( LogMsg.createMsg( "Loader.runtime_terminating", new Date() ) );
           Log.info( LogMsg.createMsg( "Loader.runtime_terminating", new Date() ) );
 
           if ( loader != null ) {
@@ -224,8 +223,6 @@ public class BootStrap extends AbstractLoader {
           }
 
           Log.info( LogMsg.createMsg( "Loader.runtime_terminated", new Date() ) );
-          System.out.println( LogMsg.createMsg( "Loader.runtime_terminated", new Date() ) );
-          System.out.flush();
         }
       } );
     } catch ( java.lang.NoSuchMethodError nsme ) {
