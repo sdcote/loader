@@ -15,9 +15,9 @@ package coyote.loader.thread;
  * A class designed to be run in a ThreadPool of worker threads.
  *
  * <p>This class can be specialized to handle a variety of jobs, but is designed
- * to handle objects that implement java.lang.runnable interface. In general, if
- * the class may need to run in a multi-threaded environment, this class defines
- * several utility methods to make life easier.</p>
+ * to handle objects that implement the java.lang.runnable interface. In 
+ * general, if the class may need to run in a multi-threaded environment, this 
+ * class defines several utility methods to make life easier.</p>
  */
 public class ThreadJob implements Runnable {
 
@@ -517,7 +517,7 @@ public class ThreadJob implements Runnable {
   /**
    * Set all our flags and get ready to run.
    */
-  public void initialize() {
+  private void init() {
     // Set all our flags
     restart = false;
     shutdown = false;
@@ -531,6 +531,14 @@ public class ThreadJob implements Runnable {
     // Set the thread to time to go inactive at deactivate_time
     idle_time = started_time + idle_timeout;
   }
+
+
+
+
+  /**
+   * Perform any sub-class initialization.
+   */
+  public void initialize() {}
 
 
 
@@ -658,6 +666,9 @@ public class ThreadJob implements Runnable {
     current_thread = Thread.currentThread();
 
     do {
+      // perform our own initialization
+      init();
+
       // Setup everything we need to run
       initialize();
 
