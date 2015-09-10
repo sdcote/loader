@@ -26,16 +26,13 @@ import coyote.loader.log.Log;
  * <p>This is used when it is desired to execute a thread at regular intervals
  * as in system clean-up, log file rotation, and the like.</p>
  *
- * <p>This class is often used with the coyote.commons.util.thread.ThreadBatch
- * class. The ThreadBatch class is a ThreadJob class that holds an array of
- * ThreadJobs and runs them each in the order in which they were added.</p>
+ * <p>This class is often used with the coyote.loader.thread.ThreadBatch class. 
+ * The ThreadBatch class is a ThreadJob class that holds an array of ThreadJobs 
+ * and runs them each in the order in which they were added.</p>
  */
 public class Scheduler extends ThreadJob {
   /** Tag used in various class identifying locations like DataCapsule nodes */
   public static final String CLASS_TAG = "Scheduler";
-
-  /** The object we use to hold our configuration */
-  private Config configuration = null;
 
   private ScheduledJob nextJob = null;
   private ScheduledJob lastJob = null;
@@ -44,16 +41,9 @@ public class Scheduler extends ThreadJob {
   private long WAIT_TIME = 50;
   private static final long SCHED = Log.getCode( "SCHEDULER" );
 
-  /** Field SECOND_INTERVAL */
   public static final long SECOND_INTERVAL = 1000l;
-
-  /** Field MINUTE_INTERVAL */
   public static final long MINUTE_INTERVAL = SECOND_INTERVAL * 60;
-
-  /** Field HOUR_INTERVAL */
   public static final long HOUR_INTERVAL = MINUTE_INTERVAL * 60;
-
-  /** Field DAY_INTERVAL */
   public static final long DAY_INTERVAL = HOUR_INTERVAL * 24;
 
 
@@ -63,9 +53,7 @@ public class Scheduler extends ThreadJob {
    * Constructor Scheduler
    */
   public Scheduler() {
-    configuration = new Config();
 
-    //configuration.setType( CLASS_TAG );
   }
 
 
