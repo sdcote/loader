@@ -5,6 +5,9 @@
  */
 package coyote.loader.cfg;
 
+import coyote.dataframe.DataField;
+
+
 /**
  * Class ConfigSlot
  *
@@ -15,7 +18,7 @@ public class ConfigSlot {
   protected String name = null;
   protected String description = null;
   protected int type = 0;
-  protected String defaultValue = null;
+  protected Object defaultValue = null;
   protected String message = null;
 
 
@@ -36,11 +39,16 @@ public class ConfigSlot {
    * @param description A string of descriptive text for the use/meaning of this attribute
    * @param dflt the default object value of this attribute
    */
-  public ConfigSlot( final String name, final String description, final String dflt ) {
+  public ConfigSlot( final String name, final String description, final Object dflt ) {
     if ( name != null ) {
       this.setName( name );
       this.setDescription( description );
-      this.setDefaultValue( dflt );
+      try {
+        new DataField( dflt );
+        this.setDefaultValue( dflt );
+      } catch ( Exception e ) {
+        throw new IllegalArgumentException( "Unsupported default value type: " + e.getMessage() );
+      }
     } else {
       throw new IllegalArgumentException( "ConfigSlot name is null" );
     }
@@ -121,7 +129,7 @@ public class ConfigSlot {
    *
    * @return TODO Complete Documentation
    */
-  public String getDefaultValue() {
+  public Object getDefaultValue() {
     return defaultValue;
   }
 
@@ -133,7 +141,7 @@ public class ConfigSlot {
    *
    * @param val
    */
-  public void setDefaultValue( final String val ) {
+  public void setDefaultValue( final Object val ) {
     this.defaultValue = val;
   }
 
@@ -155,7 +163,7 @@ public class ConfigSlot {
   /**
    * Set a user-defined message for this slot.
    *
-   * <p>Many times, the ConfigSlot is uset to represent a mutable Attribute
+   * <p>Many times, the ConfigSlot is used to represent a mutable Attribute
    * instance, as in GUIs, where using an Attribute instance can be prohibitive
    * in its type checking. In such cases, it is useful to be able to pass an
    * ConfigSlot instead and then create an Attribute after all edits are

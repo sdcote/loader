@@ -163,7 +163,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
       }
     } else {
       // Assume this is a file path
-      return Config.read( new FileInputStream(  uri.toString() ) );
+      return Config.read( new FileInputStream( uri.toString() ) );
     }
   }
 
@@ -330,7 +330,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
       final ConfigSlot slot = (ConfigSlot)it.next();
 
       if ( slot != null ) {
-        final String defaultValue = slot.getDefaultValue();
+        final Object defaultValue = slot.getDefaultValue();
 
         if ( defaultValue != null ) {
           put( slot.getName(), defaultValue );
@@ -422,6 +422,16 @@ public class Config extends DataFrame implements Cloneable, Serializable {
 
     // If we got here, there was nothing which matched the given tag
     return null;
+  }
+
+
+
+
+  /**
+   * @return Formatted, multi-line JSON string representing the record.
+   */
+  public String toFormattedString() {
+    return JSONMarshaler.toFormattedString( this );
   }
 
 }
