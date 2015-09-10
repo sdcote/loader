@@ -46,4 +46,9 @@ public class ConfigTest {
 
   }
 
+
+  @Test
+  public void testDefaults() {
+    
+  }
 }

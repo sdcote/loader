@@ -12,9 +12,9 @@
 package coyote.commons;
 
 /**
- * Interface INamable
+ * Interface Namable
  */
-public interface INamable extends INamed {
+public interface Namable  {
 
   /**
    *Set the name of this component instance.

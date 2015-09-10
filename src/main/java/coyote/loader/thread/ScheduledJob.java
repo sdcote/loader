@@ -14,8 +14,8 @@ package coyote.loader.thread;
 import java.util.Calendar;
 import java.util.Date;
 
-import coyote.commons.IDescribable;
-import coyote.commons.INamable;
+import coyote.commons.Describable;
+import coyote.commons.Namable;
 
 
 /**
@@ -23,7 +23,7 @@ import coyote.commons.INamable;
  *
  * TODO Add support for IScheduledJobListeners to be notified when jobs are completed, and to provide reference to exceptions that may have occurred during execution
  */
-public class ScheduledJob extends ThreadJob implements INamable, IDescribable {
+public class ScheduledJob extends ThreadJob implements Namable, Describable {
 
   /** The name of this job for easy reporting */
   protected String name = null;

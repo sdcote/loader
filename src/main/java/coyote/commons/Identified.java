@@ -14,8 +14,7 @@ package coyote.commons;
 /**
  * 
  */
-public interface IDescribed {
+public interface Identified {
 
-  public String getDescription();
-
+  public String getIdentifier();
 }

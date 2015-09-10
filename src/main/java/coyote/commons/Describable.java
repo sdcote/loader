@@ -12,9 +12,14 @@
 package coyote.commons;
 
 /**
- * 
+ * Interface Describable
  */
-public interface IIdentified {
+public interface Describable {
 
-  public String getIdentifier();
+  /**
+   * Method setDescription
+   * 
+   * @param desc
+   */
+  public void setDescription( String desc );
 }
