@@ -473,4 +473,52 @@ public class StringUtil {
     return b.toString();
   }
 
+
+
+
+  /**
+   * Strip off the namespace from a fully qualified class name.
+   *
+   * @param classname the fully qualified class name name to parse (without the ".class"
+   *
+   * @return just the local portion of the class name (everything after the last '.'.
+   */
+  public static String getLocalJavaName( String classname ) {
+    return tail( classname, '.' );
+  }
+
+
+
+
+  /**
+   * Strip off the path from a fully qualified file name.
+   *
+   * @param file the fully qualified file name to parse
+   *
+   * @return just the local portion of the file name (everything after the last '/'.
+   */
+  public static String getLocalFileName( String file ) {
+    return tail( file, '/' );
+  }
+
+
+
+
+  /**
+   * Return the string after the last occurance of the given character in the
+   * given string.
+   *
+   * <p>Useful for getting extensions from filenames. Also used to retrieve the
+   * last segment of an IP address.</p>
+   *
+   * @param text
+   * @param ch
+   *
+   * @return
+   */
+  public static String tail( String text, char ch ) {
+    int indx = text.lastIndexOf( ch );
+    return ( indx != -1 ) ? text.substring( indx + 1 ) : text;
+  }
+
 }
