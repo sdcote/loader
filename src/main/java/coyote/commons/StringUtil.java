@@ -522,4 +522,24 @@ public class StringUtil {
     return ( indx != -1 ) ? text.substring( indx + 1 ) : text;
   }
 
+
+
+
+  /**
+   * Return the string before the last occurrence of the given character in
+   * the given string.
+   * 
+   * <p> Useful for getting the body of a filename. </p>
+   * 
+   * @param text the string to parse
+   * @param ch the sentinel character
+   * 
+   * @return the string before the last occurrence of the given character in
+   * the given string.
+   */
+  public static String head( final String text, final char ch ) {
+    final int indx = text.lastIndexOf( ch );
+    return ( indx != -1 ) ? text.substring( 0, indx ) : text;
+  }
+
 }
