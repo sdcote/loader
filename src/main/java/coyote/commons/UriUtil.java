@@ -444,7 +444,7 @@ public class UriUtil {
    * @return the integer representing to port number for the protocol scheme
    */
   public static int getPort( final String scheme ) {
-    if ( UriUtil.portMap.containsKey( scheme.toLowerCase() ) ) {
+    if ( scheme != null && scheme.trim().length() > 0 && UriUtil.portMap.containsKey( scheme.toLowerCase() ) ) {
       return ( (Integer)UriUtil.portMap.get( scheme.toLowerCase() ) ).intValue();
     }
 
