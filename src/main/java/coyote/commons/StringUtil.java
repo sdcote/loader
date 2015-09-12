@@ -511,10 +511,11 @@ public class StringUtil {
    * <p>Useful for getting extensions from filenames. Also used to retrieve the
    * last segment of an IP address.</p>
    *
-   * @param text
-   * @param ch
+   * @param text the string to parse
+   * @param ch the sentinel character
    *
-   * @return
+   * @return the string after the last occurance of the given character in the
+   * given string
    */
   public static String tail( String text, char ch ) {
     int indx = text.lastIndexOf( ch );
