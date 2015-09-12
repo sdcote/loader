@@ -448,7 +448,7 @@ public class UriUtil {
       return ( (Integer)UriUtil.portMap.get( scheme.toLowerCase() ) ).intValue();
     }
 
-    return 0;
+    return -1;
   }
 
 
