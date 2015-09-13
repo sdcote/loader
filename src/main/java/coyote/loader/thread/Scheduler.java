@@ -15,7 +15,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 import coyote.commons.ExceptionUtil;
-import coyote.loader.cfg.Config;
 import coyote.loader.log.Log;
 
 
@@ -137,7 +136,7 @@ public class Scheduler extends ThreadJob {
           // If we got here, it is time (or past the time) to execute the next
           // ScheduledJob referenced by nextJob
           try {
-            Log.append( SCHED, nextJob + " enabled=" + nextJob.isEnabled() + " cancelled=" + nextJob.isCancelled() + " && limit=" + nextJob.getExecutionLimit() + " && count=" + nextJob.getExecutionCount() );
+            Log.append( SCHED, nextJob + " enabled=" + nextJob.isEnabled() + " cancelled=" + nextJob.isCancelled() + " limit=" + nextJob.getExecutionLimit() + " count=" + nextJob.getExecutionCount() + " repeat=" + nextJob.isRepeatable() );
 
             if ( !nextJob.isCancelled() && ( ( nextJob.getExecutionLimit() < 1 ) || ( nextJob.getExecutionLimit() > 0 ) && ( nextJob.getExecutionCount() < nextJob.getExecutionLimit() ) ) ) {
 
@@ -172,6 +171,8 @@ public class Scheduler extends ThreadJob {
                   schedule( target );
                   Log.append( SCHED, "Repeating job " + target + " (runs=" + target.getExecutionCount() + " interval=" + target.getExecutionInterval() + ") will run again at " + new Date( target.getExecutionTime() ) );
                 }
+              } else {
+                Log.append( SCHED, "Job " + target + " is not flagged to be repeated, removed from execution list" );
               }
             } else {
               // ...remove the job from the joblist
@@ -310,7 +311,7 @@ public class Scheduler extends ThreadJob {
     }
 
     schedule( job );
-    
+
     return job;
   }
 

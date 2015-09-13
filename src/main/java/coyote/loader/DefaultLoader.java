@@ -72,6 +72,11 @@ public class DefaultLoader extends AbstractLoader implements Loader {
     b.append( System.getProperty( "os.version" ) );
     b.append( ")" );
     Log.info( b );
+    
+    // Start our scheduled jobs running
+    if(scheduler != null){
+      scheduler.daemonize();
+    }
 
     // enter a loop performing watchdog and maintenance functions
     watchdog();

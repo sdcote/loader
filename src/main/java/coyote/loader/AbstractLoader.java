@@ -178,7 +178,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
    *   
    * @param config The configuration of the component to load
    */
-  private void loadComponent( Config config ) {
+  protected void loadComponent( Config config ) {
 
     String className = config.getString( ConfigTag.CLASS );
 
@@ -485,7 +485,6 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
     if ( scheduler == null ) {
       try {
         scheduler = new Scheduler();
-        scheduler.daemonize( "LoaderScheduler" );
       } catch ( Exception e ) {
         Log.append( Log.WARN, LogMsg.createMsg( "Loader.scheduler_creation_error", e.getClass().getName(), e.getMessage() ) );
         scheduler = null;

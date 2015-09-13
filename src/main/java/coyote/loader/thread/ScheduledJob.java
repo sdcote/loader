@@ -24,6 +24,7 @@ import coyote.commons.Namable;
  * TODO Add support for IScheduledJobListeners to be notified when jobs are completed, and to provide reference to exceptions that may have occurred during execution
  */
 public class ScheduledJob extends ThreadJob implements Namable, Describable {
+  private static final Object mutex = new Object();
 
   /** The name of this job for easy reporting */
   protected String name = null;
@@ -182,7 +183,9 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    * @return the epoch time (in milliseconds) when this job is to run
    */
   public long getExecutionTime() {
-    return executionTime;
+    synchronized( mutex ) {
+      return executionTime;
+    }
   }
 
 
@@ -195,7 +198,9 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    */
   public void setExecutionTime( Date date ) {
     if ( date != null ) {
-      executionTime = date.getTime();
+      synchronized( mutex ) {
+        executionTime = date.getTime();
+      }
     }
   }
 
@@ -209,7 +214,9 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    */
   public void setExecutionTime( Calendar cal ) {
     if ( cal != null ) {
-      executionTime = cal.getTime().getTime();
+      synchronized( mutex ) {
+        executionTime = cal.getTime().getTime();
+      }
     }
   }
 
@@ -222,7 +229,9 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    * @param millis the epoch time (in milliseconds) when this job is to run
    */
   public void setExecutionTime( long millis ) {
-    executionTime = millis;
+    synchronized( mutex ) {
+      executionTime = millis;
+    }
   }
 
 
