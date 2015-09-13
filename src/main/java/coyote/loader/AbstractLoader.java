@@ -28,6 +28,7 @@ import coyote.loader.component.ManagedComponent;
 import coyote.loader.log.Log;
 import coyote.loader.log.LogMsg;
 import coyote.loader.log.Logger;
+import coyote.loader.thread.ScheduledJob;
 import coyote.loader.thread.Scheduler;
 import coyote.loader.thread.ThreadJob;
 import coyote.loader.thread.ThreadPool;
@@ -162,8 +163,6 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
       }
     }
 
-    // For each of the components, check to see if it is to be run in the threadpool
-
   }
 
 
@@ -203,14 +202,91 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
         } else {
           System.err.println( LogMsg.createMsg( "Loader.class_is_not_logic_component", className ) );
-          System.exit( 9 );
         }
+
+        // activate (start, run, whatever) this component
+        activate( object, config );
+
       } catch ( ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e ) {
         System.err.println( LogMsg.createMsg( "Loader.component_instantiation_error", className, e.getClass().getName(), e.getMessage() ) );
         System.exit( 8 );
       }
     }
 
+  }
+
+
+
+
+  /**
+   * Activate (start, run, whatever) this component as is appropriate for the
+   * Loader and ithe instance of the object.
+   * 
+   * <p>It is expected that specialized Loaders will override this method and 
+   * activate the component based on the needs of the application and the type 
+   * of object it is.</p>
+   * 
+   * <p>In some cases, the Loader may need to check the configuration for 
+   * licensing data to determine if the object is allowed to run. If not, the 
+   * component may be removed from the Loader instance.
+   * 
+   * <p>The default behaviour of this class is to check to see if it is a 
+   * {@code ScheduledJob} and if so, place it in the scheduler. Otherwise, the 
+   * object is run in the thread pool if it is a {@code ThreadJob} or 
+   * implements {@code Runnable}.</p>
+   *  
+   * @param component the component to activate
+   * @param config the Configuration used to create and configure the object.
+   */
+  protected void activate( Object component, Config config ) {
+    if ( component != null ) {
+      if ( component instanceof ScheduledJob ) {
+        Log.debug( "Loading " + component.getClass().getName() + " in the scheduler" );
+        getScheduler().schedule( (ScheduledJob)component );
+      } else if ( component instanceof ThreadJob ) {
+        try {
+          Log.debug( "Loading " + component.getClass().getName() + " in the threadpool" );
+          getThreadPool().handle( (ThreadJob)component );
+        } catch ( InterruptedException e ) {
+          Log.error( LogMsg.createMsg( "Loader.activation_threadjob_error", e.getMessage() ) );
+        }
+      } else if ( component instanceof Runnable ) {
+        Log.debug( "Running " + component.getClass().getName() + " in the threadpool" );
+        getThreadPool().run( (Runnable)component );
+      } else {
+        Log.error( LogMsg.createMsg( "Loader.activation_unrecognized_error", component.getClass().getName() ) );
+      }
+    }
+  }
+
+
+
+
+  /**
+   * Terminate/shutdown the given component and remove it from the loader.
+   * 
+   * <p>This method will attempt to shutdown the component and then remove it 
+   * from the list of managed components.</p>
+   * 
+   * @param component The component to terminate and remove from the list of managed components. 
+   */
+  protected void removeComponent( Object component ) {
+    if ( component != null ) {
+      Log.debug( "Removing " + component.getClass().getName() + " from loader" );
+
+      DataFrame frame = new DataFrame();
+      frame.put( "Message", "Managed Removal" );
+      if ( component instanceof ManagedComponent ) {
+        safeShutdown( (ManagedComponent)component, frame );
+      } else if ( component instanceof ThreadJob ) {
+        ( (ThreadJob)component ).shutdown(); // May not work as expected
+      }
+      if ( components.remove( component ) != null ) {
+        Log.debug( "Successfully removed " + component.getClass().getName() + " from loader" );
+      } else {
+        Log.warn( "Component " + component.getClass().getName() + " did not apper to be tracked by loader" );
+      }
+    }
   }
 
 
@@ -407,10 +483,10 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   @Override
   public synchronized Scheduler getScheduler() {
     if ( scheduler == null ) {
-      scheduler = new Scheduler();
       try {
-        threadpool.handle( scheduler );
-      } catch ( InterruptedException e ) {
+        scheduler = new Scheduler();
+        scheduler.daemonize( "LoaderScheduler" );
+      } catch ( Exception e ) {
         Log.append( Log.WARN, LogMsg.createMsg( "Loader.scheduler_creation_error", e.getClass().getName(), e.getMessage() ) );
         scheduler = null;
       }
