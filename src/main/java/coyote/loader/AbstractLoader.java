@@ -485,11 +485,14 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
     if ( scheduler == null ) {
       try {
         scheduler = new Scheduler();
+        scheduler.daemonize( Scheduler.CLASS );
       } catch ( Exception e ) {
         Log.append( Log.WARN, LogMsg.createMsg( "Loader.scheduler_creation_error", e.getClass().getName(), e.getMessage() ) );
         scheduler = null;
       }
     }
+    
+    // return a reference to the running scheduler
     return scheduler;
   }
 

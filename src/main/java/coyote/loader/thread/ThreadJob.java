@@ -633,7 +633,7 @@ public class ThreadJob implements Runnable {
 
 
   /**
-   * Set the number of milliseconds of we wait when idling.
+   * Set the number of milliseconds we wait when idling.
    *
    * @param millis the number of milliseconds.
    */

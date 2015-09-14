@@ -28,14 +28,17 @@ import coyote.loader.log.Log;
  * <p>This class is often used with the coyote.loader.thread.ThreadBatch class. 
  * The ThreadBatch class is a ThreadJob class that holds an array of ThreadJobs 
  * and runs them each in the order in which they were added.</p>
+ * 
+ * <p>The best way to use this is to create an instance of it and call the 
+ * {@link #daemonize()} method to start it running in the background.</p>
  */
 public class Scheduler extends ThreadJob {
   /** Tag used in various class identifying locations like DataCapsule nodes */
-  public static final String CLASS_TAG = "Scheduler";
+  public static final String CLASS = "Scheduler";
 
   private ScheduledJob nextJob = null;
   private ScheduledJob lastJob = null;
-  private static final Object mutex = new Object();
+  private final Object mutex = new Object();
   private ThreadPool threadpool = null;
   private long WAIT_TIME = 50;
   private static final long SCHED = Log.getCode( "SCHEDULER" );
@@ -89,7 +92,7 @@ public class Scheduler extends ThreadJob {
    */
   public void initialize() {
     if ( threadpool == null ) {
-      threadpool = new ThreadPool( CLASS_TAG );
+      threadpool = new ThreadPool( CLASS + "Pool" );
     }
 
     threadpool.start();
