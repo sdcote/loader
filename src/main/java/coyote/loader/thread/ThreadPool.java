@@ -76,22 +76,18 @@ public class ThreadPool {
   /** The time when we start idling due to inactivity */
   protected long idle_timeout = 30000;
 
-  /** The DataCapsule we use to store and output our configuration */
+  /** The data frame we use to store and output our configuration */
   protected Config configuration = new Config();
 
   /** Counter of threadpools */
   private static long poolcount = 0;
 
-  /** Field JOBWAIT_TAG */
   public static final String JOBWAIT_TAG = "ThreadJobWait";
 
-  /** Field STOPWAIT_TAG */
   public static final String STOPWAIT_TAG = "ThreadStopWait";
 
-  /** Field MINWORKERS_TAG */
   public static final String MINWORKERS_TAG = "ThreadMinWorkers";
 
-  /** Field MAXWORKERS_TAG */
   public static final String MAXWORKERS_TAG = "ThreadMaxWorkers";
 
   private static final long THREAD = Log.getCode( "THREAD" );
