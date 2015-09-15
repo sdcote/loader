@@ -124,6 +124,9 @@ public class Scheduler extends ThreadJob {
         // If it is really close, wait around
         long millis = nextJob.getExecutionTime() - executionTime;
 
+        // if the time we have to wait is less than or equal to the time we 
+        // wait between calls to the doWork() method, wait for the time to 
+        // elapse
         if ( millis <= WAIT_TIME ) {
           // If it is in the future, wait around for it, otherwise run it
           if ( millis > 0 ) {
@@ -143,11 +146,16 @@ public class Scheduler extends ThreadJob {
 
             if ( !nextJob.isCancelled() && ( ( nextJob.getExecutionLimit() < 1 ) || ( nextJob.getExecutionLimit() > 0 ) && ( nextJob.getExecutionCount() < nextJob.getExecutionLimit() ) ) ) {
 
-              if ( nextJob.isEnabled() ) {
-                Log.append( SCHED, "Running " + nextJob + " in threadpool" );
+              // Remove the job from the list
+              ScheduledJob target = remove( nextJob );
+
+              // Only run jobs which are enabled, otherwise reschedule them if 
+              // necessary
+              if ( target.isEnabled() ) {
+                Log.append( SCHED, "Running " + target + " in threadpool" );
 
                 // Run the Scheduled Job in the threadpool
-                threadpool.handle( (ThreadJob)nextJob );
+                threadpool.handle( (ThreadJob)target );
 
                 // / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
                 // We should check that the threadpool does not get too full...
@@ -155,22 +163,20 @@ public class Scheduler extends ThreadJob {
                 // / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
 
                 // Increment the execution counter
-                nextJob.incrementExecutionCount();
+                target.incrementExecutionCount();
               } else {
-                Log.append( SCHED, "Did not run disabled job " + nextJob + " in threadpool" );
+                Log.append( SCHED, "Did not run disabled job " + target + " in threadpool" );
               }
-
-              // Remove the job from the list
-              ScheduledJob target = remove( nextJob );
 
               // If the ScheduledJob is set for repetition
               if ( target.isRepeatable() ) {
-                Log.append( SCHED, "Repeating job " + target );
+                Log.append( SCHED, "Repeating job " + target + " execution time = " + executionTime + ",  target interval = " + target.getExecutionInterval() );
 
                 // If we have no limit or have not exceeded our limit...
                 if ( ( target.getExecutionLimit() == 0 ) || ( target.getExecutionLimit() > 0 ) && ( target.getExecutionCount() < target.getExecutionLimit() ) ) {
                   // ...reschedule the job
                   target.setExecutionTime( executionTime + target.getExecutionInterval() );
+                  Log.append( SCHED, "Set execution time to " + new Date( target.getExecutionTime() ) + " execution time = " + executionTime + ",  target interval = " + target.getExecutionInterval() );
                   schedule( target );
                   Log.append( SCHED, "Repeating job " + target + " (runs=" + target.getExecutionCount() + " interval=" + target.getExecutionInterval() + ") will run again at " + new Date( target.getExecutionTime() ) );
                 }
@@ -186,7 +192,8 @@ public class Scheduler extends ThreadJob {
             Log.warn( ex.getClass().getName() + " thrown in scheduler loop\r\n" + ExceptionUtil.stackTrace( ex ) );
           }
         } else {
-          // It is not time to execute the the next job yet
+          // It is not time to execute the the next job yet, so exit the method
+          // and let the threadjob check to see if we should shutdown
           return;
         }
 
@@ -335,6 +342,8 @@ public class Scheduler extends ThreadJob {
   public void schedule( ScheduledJob job ) {
     if ( job != null ) {
       job.setScheduler( this );
+
+      Log.append( SCHED, "Scheduling job " + job + " to run at " + new Date( job.getExecutionTime() ) );
 
       synchronized( mutex ) {
         // Start at the beginning
