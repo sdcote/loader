@@ -24,7 +24,7 @@ import coyote.commons.Namable;
  * TODO Add support for IScheduledJobListeners to be notified when jobs are completed, and to provide reference to exceptions that may have occurred during execution
  */
 public class ScheduledJob extends ThreadJob implements Namable, Describable {
-  private static final Object mutex = new Object();
+  private final Object mutex = new Object();
 
   /** The name of this job for easy reporting */
   protected String name = null;
@@ -33,28 +33,28 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
   protected String description = null;
 
   /** When we are supposed to start running */
-  protected long executionTime = 0;
+  protected volatile long executionTime = 0;
 
   /** When we are supposed to stop running */
-  protected long expirationTime = 0;
+  protected volatile long expirationTime = 0;
 
   /** How long between executions we should wait */
-  protected long executionInterval = 0;
+  protected volatile long executionInterval = 0;
 
   /** How many times we are allowed to execute */
-  protected long executionLimit = 0;
+  protected volatile long executionLimit = 0;
 
   /** How many times we have executed */
-  protected long executionCount = 0;
+  protected volatile long executionCount = 0;
 
   /** The next job that we should run when we finish */
-  protected ScheduledJob chainedJob = null;
+  protected volatile ScheduledJob chainedJob = null;
 
   /** Used to implement a doubly-linked list in the Scheduler */
-  protected ScheduledJob nextJob = null;
+  protected volatile ScheduledJob nextJob = null;
 
   /** Used to implement a doubly-linked list in the Scheduler */
-  protected ScheduledJob previousJob = null;
+  protected volatile ScheduledJob previousJob = null;
 
   /** Indicates this job has been cancelled */
   protected volatile boolean cancelled = false;
