@@ -92,7 +92,7 @@ public class Scheduler extends ThreadJob {
    */
   public void initialize() {
     if ( threadpool == null ) {
-      threadpool = new ThreadPool( CLASS + "Pool" );
+      threadpool = new ThreadPool( CLASS );
     }
 
     threadpool.start();
@@ -123,6 +123,7 @@ public class Scheduler extends ThreadJob {
         // Check to see if it is time to run this job
         // If it is really close, wait around
         long millis = nextJob.getExecutionTime() - executionTime;
+        //Log.append( SCHED, nextJob + " to run at " + new Date( nextJob.getExecutionTime() ) );
 
         // if the time we have to wait is less than or equal to the time we 
         // wait between calls to the doWork() method, wait for the time to 
@@ -133,7 +134,7 @@ public class Scheduler extends ThreadJob {
             try {
               mutex.wait( millis );
             } catch ( Exception ex ) {
-              // Exit the routine, the next time we enter, we'll recheck the
+              // Exit the routine, the next time we enter, we'll re-check the
               // job list and process the possibly new nextJob reference
               return;
             }
@@ -142,19 +143,20 @@ public class Scheduler extends ThreadJob {
           // If we got here, it is time (or past the time) to execute the next
           // ScheduledJob referenced by nextJob
           try {
-            Log.append( SCHED, nextJob + " enabled=" + nextJob.isEnabled() + " cancelled=" + nextJob.isCancelled() + " limit=" + nextJob.getExecutionLimit() + " count=" + nextJob.getExecutionCount() + " repeat=" + nextJob.isRepeatable() );
+            Log.append( SCHED, "Execution Time: " + new Date( executionTime ) );
 
-            if ( !nextJob.isCancelled() && ( ( nextJob.getExecutionLimit() < 1 ) || ( nextJob.getExecutionLimit() > 0 ) && ( nextJob.getExecutionCount() < nextJob.getExecutionLimit() ) ) ) {
+            // Remove the job from the list and only work with the job which was removed
+            ScheduledJob target = remove( nextJob );
 
-              // Remove the job from the list
-              ScheduledJob target = remove( nextJob );
+            Log.append( SCHED, target + " enabled=" + target.isEnabled() + " cancelled=" + target.isCancelled() + " limit=" + target.getExecutionLimit() + " count=" + target.getExecutionCount() + " repeat=" + target.isRepeatable() );
+            if ( !target.isCancelled() && ( ( target.getExecutionLimit() < 1 ) || ( target.getExecutionLimit() > 0 ) && ( target.getExecutionCount() < target.getExecutionLimit() ) ) ) {
 
               // Only run jobs which are enabled, otherwise reschedule them if 
               // necessary
               if ( target.isEnabled() ) {
                 Log.append( SCHED, "Running " + target + " in threadpool" );
 
-                // Run the Scheduled Job in the threadpool
+                // Run the Scheduled Job in the thread pool
                 threadpool.handle( (ThreadJob)target );
 
                 // / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
@@ -178,28 +180,25 @@ public class Scheduler extends ThreadJob {
                   target.setExecutionTime( executionTime + target.getExecutionInterval() );
                   Log.append( SCHED, "Set execution time to " + new Date( target.getExecutionTime() ) + " execution time = " + executionTime + ",  target interval = " + target.getExecutionInterval() );
                   schedule( target );
-                  Log.append( SCHED, "Repeating job " + target + " (runs=" + target.getExecutionCount() + " interval=" + target.getExecutionInterval() + ") will run again at " + new Date( target.getExecutionTime() ) );
+                  Log.append( SCHED, "Scheduled repeating job " + target + " (runs=" + target.getExecutionCount() + " interval=" + target.getExecutionInterval() + ") will run again at " + new Date( target.getExecutionTime() ) );
                 }
               } else {
                 Log.append( SCHED, "Job " + target + " is not flagged to be repeated, removed from execution list" );
               }
-            } else {
-              // ...remove the job from the joblist
-              remove( nextJob );
             }
 
           } catch ( Exception ex ) {
             Log.warn( ex.getClass().getName() + " thrown in scheduler loop\r\n" + ExceptionUtil.stackTrace( ex ) );
           }
-        } else {
-          // It is not time to execute the the next job yet, so exit the method
-          // and let the threadjob check to see if we should shutdown
-          return;
         }
+        // It is not time to execute the the next job yet, so exit the method
+        // and let the threadjob check to see if we should shutdown
 
       } // nextJob !null
 
     } // sync
+
+    //Log.append( SCHED, "Completed running job" );
 
   }
 
