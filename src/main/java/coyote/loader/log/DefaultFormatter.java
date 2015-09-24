@@ -39,13 +39,13 @@ public class DefaultFormatter implements Formatter {
 
 
   /**
-   * Method format
+   * Format the event into a string to be placed in the log.
    *
-   * @param event
-   * @param category
+   * @param event the thing to be logged
+   * @param category the type of log entry it is
    * @param cause The exception that caused the log entry. Can be null.
    *
-   * @return TODO Complete Documentation
+   * @return a string representing the line to place in the log
    */
   public String format( final Object event, final String category, final Throwable cause ) {
     final long now = System.currentTimeMillis();
@@ -71,8 +71,8 @@ public class DefaultFormatter implements Formatter {
     if ( Log.TRACE.equals( category ) ) {
       final StackTraceElement[] stack = new Exception().fillInStackTrace().getStackTrace();
 
-      // get the 5th element, 1=DefaultFormatter.format(), 2=ConsoleAppender.event(),
-      // 3=Log.log(), 4=Log.trace(), 5=the source method call
+      // get the 4th element, 1=DefaultFormatter.format(), 2=Appender.append(),
+      // 3=Log.append(), 4=the source method call
       final StackTraceElement elem = stack[4];
 
       buffer.append( ExceptionUtil.getLocalJavaName( elem.getClassName() ) );

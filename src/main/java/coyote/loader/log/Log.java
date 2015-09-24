@@ -24,8 +24,8 @@ import java.util.Vector;
  * <p>This is an implementation of a category based logger, where all messages 
  * of a category are logged. There are no concepts of levels in this logger.  
  * This means if you turn on the logging of one category, all the other 
- * categories remain unaffected. This allows your tur turn on and off all 
- * "security" messages for example whitle the "protocol" messages remain 
+ * categories remain unaffected. This allows your to turn on and off all 
+ * "security" messages for example while the "protocol" messages remain 
  * unaffected.</p>
  *
  * <p>The collection is initialized to a single default logger that logs INFO,
