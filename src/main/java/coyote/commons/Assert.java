@@ -20,6 +20,24 @@ import java.util.Map;
  */
 public final class Assert {
 
+  public static void check( final boolean expression, final String message ) {
+    if ( !expression ) {
+      throw new IllegalArgumentException( message );
+    }
+  }
+
+
+
+
+  public static void check( final boolean expression, final String message, final Object... args ) {
+    if ( !expression ) {
+      throw new IllegalArgumentException( String.format( message, args ) );
+    }
+  }
+
+
+
+
   /**
    * Assert that the given text does not contain the given substring.
    * 
@@ -160,6 +178,72 @@ public final class Assert {
 
 
 
+  private static boolean isBlank( final CharSequence s ) {
+    if ( s == null ) {
+      return true;
+    }
+    for ( int i = 0; i < s.length(); i++ ) {
+      if ( !Character.isWhitespace( s.charAt( i ) ) ) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+
+
+
+  /**
+   * Asserts a string is null, empty ("") or composed entirely of whitespace.
+   * 
+   * @param str the String to check
+   * 
+   * @throws IllegalArgumentException if the argument is not null, empty or 
+   * composed entirely of whitespace
+   */
+  public static void isBlank( final String str ) {
+    if ( !isBlankString( str ) ) {
+      throw new IllegalArgumentException( "[Assertion Failure] - this value must not contain a value" );
+    }
+  }
+
+
+
+
+  /**
+   * Checks if a string is not null, empty ("") and not only whitespace.
+   * 
+   * @param str the String to check, may be null
+   * 
+   * @return <code>true</code> if the String is not empty and not null and not
+   *         whitespace
+   */
+  private static boolean isBlankString( final String str ) {
+    int strLen;
+    if ( ( str == null ) || ( ( strLen = str.length() ) == 0 ) ) {
+      return true;
+    }
+    for ( int i = 0; i < strLen; i++ ) {
+      if ( ( Character.isWhitespace( str.charAt( i ) ) == false ) ) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+
+
+
+  private static boolean isEmpty( final CharSequence s ) {
+    if ( s == null ) {
+      return true;
+    }
+    return s.length() == 0;
+  }
+
+
+
+
   /**
    * Assert that the provided object is an instance of the provided class.
    * 
@@ -195,6 +279,23 @@ public final class Assert {
     notNull( type, "Type to check against must not be null" );
     if ( !type.isInstance( obj ) ) {
       throw new IllegalArgumentException( msg + "Object of class [" + ( obj != null ? obj.getClass().getName() : "null" ) + "] must be an instance of " + type );
+    }
+  }
+
+
+
+
+  /**
+   * Asserts a string is not null, empty ("") and not only whitespace.
+   * 
+   * @param str the String to check
+   * 
+   * @throws IllegalArgumentException if the argument is null, empty or 
+   * composed entirely of whitespace
+   */
+  public static void isNotBlank( final String str ) {
+    if ( isBlankString( str ) ) {
+      throw new IllegalArgumentException( "[Assertion Failure] - this value must not be blank" );
     }
   }
 
@@ -430,6 +531,26 @@ public final class Assert {
 
 
   /**
+   * Throws an IllegalArgumentException with the given message if null or
+   * blank.
+   * 
+   * @param arg the string to test
+   * @param message the message to send back if the string is null or empty
+   */
+  public static final void notBlank( final String arg, final String message ) {
+    if ( arg == null ) {
+      throw new IllegalArgumentException( "Null argument not allowed: " + message );
+    }
+
+    if ( arg.trim().equals( "" ) ) {
+      throw new IllegalArgumentException( "Blank argument not allowed: " + message );
+    }
+  }
+
+
+
+
+  /**
    * Assert that a collection has elements; it must not be {@code null} and 
    * must have at least one element.
    * 
@@ -542,6 +663,26 @@ public final class Assert {
 
 
 
+  public static int notNegative( final int n, final String name ) {
+    if ( n < 0 ) {
+      throw new IllegalArgumentException( name + " may not be negative" );
+    }
+    return n;
+  }
+
+
+
+
+  public static long notNegative( final long n, final String name ) {
+    if ( n < 0 ) {
+      throw new IllegalArgumentException( name + " may not be negative" );
+    }
+    return n;
+  }
+
+
+
+
   /**
    * Assert that an object is not {@code null}.
    * 
@@ -572,6 +713,36 @@ public final class Assert {
     if ( object == null ) {
       throw new IllegalArgumentException( msg );
     }
+  }
+
+
+
+
+  public static <T> T notNull2( final T argument, final String name ) {
+    if ( argument == null ) {
+      throw new IllegalArgumentException( name + " may not be null" );
+    }
+    return argument;
+  }
+
+
+
+
+  public static int positive( final int n, final String name ) {
+    if ( n <= 0 ) {
+      throw new IllegalArgumentException( name + " may not be negative or zero" );
+    }
+    return n;
+  }
+
+
+
+
+  public static long positive( final long n, final String name ) {
+    if ( n <= 0 ) {
+      throw new IllegalArgumentException( name + " may not be negative or zero" );
+    }
+    return n;
   }
 
 
@@ -614,84 +785,6 @@ public final class Assert {
   public static void state( final boolean expression, final String msg ) {
     if ( !expression ) {
       throw new IllegalStateException( msg );
-    }
-  }
-
-
-
-
-  /**
-   * Asserts a string is not null, empty ("") and not only whitespace.
-   * 
-   * @param str the String to check
-   * 
-   * @throws IllegalArgumentException if the argument is null, empty or 
-   * composed entirely of whitespace
-   */
-  public static void isNotBlank( String str ) {
-    if ( isBlankString( str ) ) {
-      throw new IllegalArgumentException( "[Assertion Failure] - this value must not be blank" );
-    }
-  }
-
-
-
-
-  /**
-   * Asserts a string is null, empty ("") or composed entirely of whitespace.
-   * 
-   * @param str the String to check
-   * 
-   * @throws IllegalArgumentException if the argument is not null, empty or 
-   * composed entirely of whitespace
-   */
-  public static void isBlank( String str ) {
-    if ( !isBlankString( str ) ) {
-      throw new IllegalArgumentException( "[Assertion Failure] - this value must not contain a value" );
-    }
-  }
-
-
-
-
-  /**
-   * Checks if a string is not null, empty ("") and not only whitespace.
-   * 
-   * @param str the String to check, may be null
-   * 
-   * @return <code>true</code> if the String is not empty and not null and not
-   *         whitespace
-   */
-  private static boolean isBlankString( String str ) {
-    int strLen;
-    if ( str == null || ( strLen = str.length() ) == 0 ) {
-      return true;
-    }
-    for ( int i = 0; i < strLen; i++ ) {
-      if ( ( Character.isWhitespace( str.charAt( i ) ) == false ) ) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-
-
-
-  /**
-   * Throws an IllegalArgumentException with the given message if null or
-   * blank.
-   * 
-   * @param arg the string to test
-   * @param message the message to send back if the string is null or empty
-   */
-  public static final void notBlank( final String arg, final String message ) {
-    if ( arg == null ) {
-      throw new IllegalArgumentException( "Null argument not allowed: " + message );
-    }
-
-    if ( arg.trim().equals( "" ) ) {
-      throw new IllegalArgumentException( "Blank argument not allowed: " + message );
     }
   }
 
