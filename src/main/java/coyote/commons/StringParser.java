@@ -60,7 +60,7 @@ public class StringParser {
 
 
   /**
-   * Creat a parser out of a string
+   * Create a parser out of a string
    *
    * @param string the string to parse
    */
@@ -262,8 +262,11 @@ public class StringParser {
     // mark our position; readAheadLimit does not matter to our simple reader 
     reader.mark( 1 );
 
+    // move past any whitespace
+    skipWhitespace();
+    
     // read to the next delimiter
-    String retval = this.readToDelimiter( defaultDelimiters );
+    String retval = readToDelimiter( defaultDelimiters );
 
     // reset the reader
     reader.reset();
@@ -402,7 +405,6 @@ public class StringParser {
    * to its starting point.  Not all character-input streams support the
    * reset() operation, and some support reset() without supporting mark().<p>
    *
-
    * @throws IOException If the stream has not been marked, or if the mark
    *         has been invalidated, or if the stream does not support 
    *         reset(), or if some other I/O error occurs.
@@ -556,13 +558,14 @@ public class StringParser {
 
 
   /**
-   * read the next token, or grouping of non-whitespace characters.
+   * Read the next token, or grouping of non-whitespace characters.
    *
    * @return a grouping of non-whitespace characters
    *
    * @throws IOException if life is bad at the moment.
    */
   public String readToken() throws IOException {
+    skipWhitespace();
     return readToDelimiter( defaultDelimiters );
   }
 
@@ -602,7 +605,6 @@ public class StringParser {
    * @throws IOException
    */
   public String readToDelimiter( String delimiters ) throws IOException {
-    skipWhitespace();
 
     StringBuffer buffer = new StringBuffer();
 

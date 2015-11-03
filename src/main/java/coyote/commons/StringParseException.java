@@ -14,7 +14,7 @@ package coyote.commons;
 /**
  * Exception thrown when there is a problem with parsing a string.
  */
-public final class StringParseException extends Exception {
+public class StringParseException extends Exception {
   /** */
   private static final long serialVersionUID = -7397711944655415190L;
   private String context = null;
