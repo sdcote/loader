@@ -38,7 +38,10 @@ import coyote.loader.thread.ThreadPool;
  * 
  */
 public abstract class AbstractLoader extends ThreadJob implements Loader, Runnable {
-
+  
+  /** The command line arguments used to invoke the loader */
+  protected String[] commandLineArguments = null;
+  
   /** A map of all the component configurations keyed by their instance */
   protected final HashMap<Object, Config> components = new HashMap<Object, Config>();
 
@@ -516,6 +519,26 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   @Override
   public ThreadPool getThreadPool() {
     return threadpool;
+  }
+
+
+
+
+  /**
+   * @return the command line arguments used to invoke this loader
+   */
+  public String[] getCommandLineArguments() {
+    return commandLineArguments;
+  }
+
+
+
+
+  /**
+   * @param args the command line arguments to set
+   */
+  public void setCommandLineArguments( String[] args ) {
+    commandLineArguments = args;
   }
 
 }

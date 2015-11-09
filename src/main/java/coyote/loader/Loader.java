@@ -86,4 +86,14 @@ public interface Loader extends WatchDog {
    */
   public void shutdown();
 
+
+
+
+  /**
+   * Set the command line arguments read in from the bootstrap loader
+   * 
+   * @param args command line arguments
+   */
+  public void setCommandLineArguments( String[] args );
+
 }

@@ -161,11 +161,13 @@ public class BootStrap extends AbstractLoader {
    * 
    * <p>Once created, the loader will be passed the configuration resulting in 
    * a configured loader</p>
+   * 
+   * @param args the command line arguments passed to this bootstrap loader
    *  
    * @return a configured loader or null if there was not "CLASS" attribute in 
    *         the root of the configuration indicating was not found.
    */
-  private static Loader buildLoader() {
+  private static Loader buildLoader( String[] args) {
     //System.out.println(JSONMarshaler.toFormattedString( configuration ));
     Loader retval = null;
 
@@ -185,6 +187,7 @@ public class BootStrap extends AbstractLoader {
           if ( object instanceof Loader ) {
             retval = (Loader)object;
             try {
+              retval.setCommandLineArguments(args);
               retval.configure( configuration );
             } catch ( ConfigurationException e ) {
               System.err.println( LogMsg.createMsg( "Loader.could_not_config_loader", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage() ) );
@@ -252,7 +255,7 @@ public class BootStrap extends AbstractLoader {
       readConfig();
 
       // Create a loader from the configuration
-      Loader loader = buildLoader();
+      Loader loader = buildLoader(args);
 
       // If we have a loader
       if ( loader != null ) {
