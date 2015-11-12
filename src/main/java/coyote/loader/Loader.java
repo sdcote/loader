@@ -11,6 +11,7 @@
  */
 package coyote.loader;
 
+import coyote.commons.security.BlowfishCipher;
 import coyote.loader.cfg.Config;
 import coyote.loader.cfg.ConfigurationException;
 import coyote.loader.thread.Scheduler;
@@ -21,6 +22,14 @@ import coyote.loader.thread.ThreadPool;
  * 
  */
 public interface Loader extends WatchDog {
+
+  public static final String CFG_PROPERTY = "cfg.uri";
+  public static final String ENCRYPT = "encrypt";
+  public static final String CIPHER_KEY = "CoyoteLoader";
+  public static final String CIPHER_NAME = BlowfishCipher.CIPHER_NAME;
+
+
+
 
   /**
    * Configure this loader with the given Config data.

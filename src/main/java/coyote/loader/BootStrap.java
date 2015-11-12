@@ -21,7 +21,6 @@ import coyote.commons.CipherUtil;
 import coyote.commons.ExceptionUtil;
 import coyote.commons.StringUtil;
 import coyote.commons.UriUtil;
-import coyote.commons.security.BlowfishCipher;
 import coyote.dataframe.DataField;
 import coyote.loader.cfg.Config;
 import coyote.loader.cfg.ConfigurationException;
@@ -39,11 +38,6 @@ import coyote.loader.log.LogMsg.BundleBaseName;
  * configuration to determine which loader to use.</p>
  */
 public class BootStrap extends AbstractLoader {
-
-  private static final String CFG_PROPERTY = "cfg.uri";
-  private static final String ENCRYPT = "encrypt";
-  private static final String CIPHER_KEY = "CoyoteLoader";
-  private static final String CIPHER_NAME = BlowfishCipher.CIPHER_NAME;
 
   private static Config configuration = null;
   private static URI cfgUri = null;
@@ -167,7 +161,7 @@ public class BootStrap extends AbstractLoader {
    * @return a configured loader or null if there was not "CLASS" attribute in 
    *         the root of the configuration indicating was not found.
    */
-  private static Loader buildLoader( String[] args) {
+  private static Loader buildLoader( String[] args ) {
     //System.out.println(JSONMarshaler.toFormattedString( configuration ));
     Loader retval = null;
 
@@ -187,7 +181,7 @@ public class BootStrap extends AbstractLoader {
           if ( object instanceof Loader ) {
             retval = (Loader)object;
             try {
-              retval.setCommandLineArguments(args);
+              retval.setCommandLineArguments( args );
               retval.configure( configuration );
             } catch ( ConfigurationException e ) {
               System.err.println( LogMsg.createMsg( "Loader.could_not_config_loader", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage() ) );
@@ -255,7 +249,7 @@ public class BootStrap extends AbstractLoader {
       readConfig();
 
       // Create a loader from the configuration
-      Loader loader = buildLoader(args);
+      Loader loader = buildLoader( args );
 
       // If we have a loader
       if ( loader != null ) {
