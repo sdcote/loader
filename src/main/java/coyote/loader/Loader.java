@@ -23,7 +23,8 @@ import coyote.loader.thread.ThreadPool;
  */
 public interface Loader extends WatchDog {
 
-  public static final String CFG_PROPERTY = "cfg.uri";
+  public static final String CFG_URI_PROPERTY = "cfg.uri";
+  public static final String CFG_DIR_PROPERTY = "cfg.dir";
   public static final String ENCRYPT = "encrypt";
   public static final String CIPHER_KEY = "CoyoteLoader";
   public static final String CIPHER_NAME = BlowfishCipher.CIPHER_NAME;

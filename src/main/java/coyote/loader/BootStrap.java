@@ -11,6 +11,7 @@
  */
 package coyote.loader;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -19,6 +20,7 @@ import java.util.Date;
 
 import coyote.commons.CipherUtil;
 import coyote.commons.ExceptionUtil;
+import coyote.commons.FileUtil;
 import coyote.commons.StringUtil;
 import coyote.commons.UriUtil;
 import coyote.dataframe.DataField;
@@ -102,7 +104,12 @@ public class BootStrap extends AbstractLoader {
 
 
   /**
-   * Use the first command line argument as the URI to the configuration file
+   * Use the first command line argument as the URI to the configuration file 
+   * unless it is the encrypt keyword then the arguments are used to generate 
+   * an encrypted string.
+   * 
+   * <p>If there are no arguments, then assume the configuration URI is stored 
+   * in the {@code cfg.uri} system property.</p>
    * 
    * @param args The command line arguments passed to the main method
    */
@@ -121,12 +128,15 @@ public class BootStrap extends AbstractLoader {
         cfgLoc = args[0];
       }
     } else {
-      cfgLoc = System.getProperties().getProperty( CFG_PROPERTY );
+      cfgLoc = System.getProperties().getProperty( CFG_URI_PROPERTY );
     }
 
     // Parse the argument value into a URI
     if ( StringUtil.isNotBlank( cfgLoc ) ) {
       cfgUri = UriUtil.parse( cfgLoc );
+    } else {
+      System.err.println( LogMsg.createMsg( "Loader.error_no_config" ) );
+      System.exit( 8 );
     }
 
   }
@@ -135,15 +145,68 @@ public class BootStrap extends AbstractLoader {
 
 
   /**
-   * Generate a configuration from the file read-in.
+   * Generate a configuration from the file URI specified on the command line 
+   * or the {@code cfg.uri} system property.
+   * 
+   * <p>If the URI has no scheme, then it is assimed to be a file name. If the 
+   * file name is relative, the current directory will be checked for its 
+   * existence. if it does not exist there, the {@code cfg.dir} system property 
+   * is used to determine a common configuration directory and the existence of 
+   * the file will be checked in that location. If the file does not exist 
+   * there, a simple error message is displayed and the boot strap loader 
+   * terminates.</p> 
    */
   private static void readConfig() {
-    try {
-      configuration = Config.read( cfgUri );
-    } catch ( IOException | ConfigurationException e ) {
-      System.err.println( LogMsg.createMsg( "Loader.error_reading_configuration", cfgUri, e.getLocalizedMessage(), ExceptionUtil.stackTrace( e ) ) );
-      System.exit( 7 );
-    }
+
+    if ( cfgUri != null ) {
+      if ( StringUtil.isBlank( cfgUri.getScheme() ) ) {
+        File localfile = UriUtil.getFile( cfgUri );
+        if ( localfile.exists() ) {
+          cfgUri = FileUtil.getFileURI( localfile );
+        } else {
+          // see if ther is a system property with 
+          String cfgDir = System.getProperties().getProperty( CFG_DIR_PROPERTY );
+
+          if ( StringUtil.isNotBlank( cfgDir ) ) {
+            File configDir = new File( cfgDir );
+            if ( configDir.exists() ) {
+              if ( configDir.isDirectory() ) {
+                File cfgFile = new File( configDir, localfile.getPath() );
+                if ( cfgFile.exists() ) {
+                  // Success
+                  cfgUri = FileUtil.getFileURI( cfgFile );
+                } else {
+                  System.out.println( "Could not load cfg from common directory: " + cfgFile.getAbsolutePath() );
+                  System.exit( 9 );
+                }
+              } else {
+                System.err.println( "CFG dir is not a directory" );
+                System.exit( 10 );
+              }
+
+            } else {
+              System.err.println( "CFG dir does not exist" );
+              System.exit( 11 );
+            }
+
+          } else {
+
+            // TODO: support loading from the class path to allow components to package utility configurations
+
+            System.err.println( "CFG File not found" );
+            System.exit( 12 );
+          }
+        } // localfile exists
+
+      } // no scheme in uri implying a file
+
+      try {
+        configuration = Config.read( cfgUri );
+      } catch ( IOException | ConfigurationException e ) {
+        System.err.println( LogMsg.createMsg( "Loader.error_reading_configuration", cfgUri, e.getLocalizedMessage(), ExceptionUtil.stackTrace( e ) ) );
+        System.exit( 7 );
+      }
+    } // cfguri !null
   }
 
 
