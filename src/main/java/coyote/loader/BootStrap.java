@@ -305,9 +305,10 @@ public class BootStrap extends AbstractLoader {
    * Confirm the configuration location
    */
   private static void confirmConfigurationLocation() {
-    StringBuffer b = new StringBuffer();
-    b.append( LogMsg.createMsg( LOADER_MSG, "Loader.confirming_cfg_location", cfgLoc ) + StringUtil.CRLF );
+    // start building error messages for user feedback
+    StringBuffer errMsg = new StringBuffer( LogMsg.createMsg( LOADER_MSG, "Loader.confirming_cfg_location", cfgLoc ) + StringUtil.CRLF );
 
+    // process the configuration location if it exists
     if ( StringUtil.isNotBlank( cfgLoc ) ) {
 
       // all configurations locations should be a URI
@@ -319,62 +320,77 @@ public class BootStrap extends AbstractLoader {
 
       // if we could not create a URI from the location or its scheme is empty
       if ( cfgUri == null || StringUtil.isBlank( cfgUri.getScheme() ) ) {
-        // apparently the config location is not a valid URI or a filename
 
         // try the location as a file
         File localfile = new File( cfgLoc );
 
+        // make sure a file object has been created
         if ( localfile != null ) {
-          // 
+
+          // if the file is an absolute path or is relative and exists in the 
+          // curret working directory...
           if ( localfile.exists() ) {
+            // we are done, get the file location as a URI
             cfgUri = FileUtil.getFileURI( localfile );
-            return;
           } else {
+            // add the filename we checked unsuccessfully to the error message
+            errMsg.append( LogMsg.createMsg( LOADER_MSG, "Loader.no_local_cfg_file", localfile.getAbsolutePath() ) + StringUtil.CRLF );
+
+            // the file does not exist so if it is a relative filename 
             if ( !localfile.isAbsolute() ) {
+
               // see if it is in the current working directory
               localfile = FileUtil.normalize( System.getProperty( "user.dir" ) + System.getProperty( "file.separator" ) + cfgLoc );
 
+              // if it exists, we are done
               if ( localfile.exists() ) {
                 cfgUri = FileUtil.getFileURI( localfile );
-                return;
               }
-              b.append( LogMsg.createMsg( LOADER_MSG, "Loader.no_local_cfg_file", localfile.getAbsolutePath() ) + StringUtil.CRLF );
+              // not found in the current working directory
+              errMsg.append( LogMsg.createMsg( LOADER_MSG, "Loader.no_local_cfg_file", localfile.getAbsolutePath() ) + StringUtil.CRLF );
 
               // see if there is a system property with a shared configuration directory
               String path = System.getProperties().getProperty( CFG_DIR_PROPERTY );
 
+              // if there is a shared directory specified for config files
               if ( StringUtil.isNotBlank( path ) ) {
+                // remove all the relations and duplicate slashes
                 String cfgDir = FileUtil.normalizePath( path );
 
+                // create a file reference to that shared directory 
                 File configDir = new File( cfgDir );
+                // make sure it exists
                 if ( configDir.exists() ) {
+                  // make sure it is a directory
                   if ( configDir.isDirectory() ) {
+                    // make a file reference to expected file
                     File cfgFile = new File( configDir, cfgLoc );
+                    // see if it exists
                     if ( cfgFile.exists() ) {
-                      // Success
+                      // Success - cfg was found in the shared config directory
                       cfgUri = FileUtil.getFileURI( cfgFile );
                     } else {
-                      b.append( LogMsg.createMsg( LOADER_MSG, "Loader.no_common_cfg_file", cfgFile.getAbsolutePath() ) + StringUtil.CRLF );
-                      System.out.println( b.toString() );
+                      // we tried the local and shared locations, report error
+                      errMsg.append( LogMsg.createMsg( LOADER_MSG, "Loader.no_common_cfg_file", cfgFile.getAbsolutePath() ) + StringUtil.CRLF );
+                      System.out.println( errMsg.toString() );
                       System.exit( 9 );
                     }
                   } else {
-                    b.append( LogMsg.createMsg( LOADER_MSG, "Loader.cfg_dir_is_not_directory", cfgDir ) + StringUtil.CRLF );
-                    System.out.println( b.toString() );
+                    // the specified config directory was not a directory
+                    errMsg.append( LogMsg.createMsg( LOADER_MSG, "Loader.cfg_dir_is_not_directory", cfgDir ) + StringUtil.CRLF );
+                    System.out.println( errMsg.toString() );
                     System.exit( 10 );
                   }
-
                 } else {
-                  System.err.println( "CFG dir does not exist" );
-                  b.append( LogMsg.createMsg( LOADER_MSG, "Loader.cfg_dir_does_not_exist", cfgDir ) + StringUtil.CRLF );
-                  System.out.println( b.toString() );
+                  // the specified config directory does not exist
+                  errMsg.append( LogMsg.createMsg( LOADER_MSG, "Loader.cfg_dir_does_not_exist", cfgDir ) + StringUtil.CRLF );
+                  System.out.println( errMsg.toString() );
                   System.exit( 11 );
                 }
-
               } else {
-
-                b.append( LogMsg.createMsg( LOADER_MSG, "Loader.cfg_dir_not_provided", CFG_DIR_PROPERTY ) + StringUtil.CRLF );
-                System.out.println( b.toString() );
+                // no shared config directory provided in system properties
+                errMsg.append( LogMsg.createMsg( LOADER_MSG, "Loader.cfg_dir_not_provided", CFG_DIR_PROPERTY ) + StringUtil.CRLF );
+                System.out.println( errMsg.toString() );
                 System.exit( 12 );
               }
 
@@ -391,8 +407,8 @@ public class BootStrap extends AbstractLoader {
         File test = UriUtil.getFile( cfgUri );
 
         if ( !test.exists() || !test.canRead() ) {
-          b.append( LogMsg.createMsg( LOADER_MSG, "Loader.cfg_file_not_readable", test.getAbsolutePath() ) + StringUtil.CRLF );
-          System.out.println( b.toString() );
+          errMsg.append( LogMsg.createMsg( LOADER_MSG, "Loader.cfg_file_not_readable", test.getAbsolutePath() ) + StringUtil.CRLF );
+          System.out.println( errMsg.toString() );
           System.exit( 13 );
         }
       }
