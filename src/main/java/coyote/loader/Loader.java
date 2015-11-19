@@ -100,7 +100,12 @@ public interface Loader extends WatchDog {
 
 
   /**
-   * Set the command line arguments read in from the bootstrap loader
+   * Set the command line arguments read in
+   * 
+   * <p>This is set by any factory-style creation components such as the 
+   * bootstrap loader so any command line arguments can be passed to the actual
+   * loader. It is entirely possible that there are no command line arguments 
+   * since loaders can be created from events within other components.</p>
    * 
    * @param args command line arguments
    */

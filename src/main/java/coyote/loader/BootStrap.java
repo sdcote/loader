@@ -328,7 +328,7 @@ public class BootStrap extends AbstractLoader {
         if ( localfile != null ) {
 
           // if the file is an absolute path or is relative and exists in the 
-          // curret working directory...
+          // current working directory...
           if ( localfile.exists() ) {
             // we are done, get the file location as a URI
             cfgUri = FileUtil.getFileURI( localfile );
