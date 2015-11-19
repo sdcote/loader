@@ -16,18 +16,18 @@ import java.text.NumberFormat;
 
 
 /**
-* The Metric class models a basic metric.
-*/
+ * The Metric class models a basic metric.
+ */
 public class Metric {
   private String name = null;
-  
+
   private String units = "ms";
   private long minValue = 0;
   private long maxValue = 0;
   private int samples = 0;
   private long total = 0;
   private long sumOfSquares = 0;
-  
+
   static private final String NONE = "";
   static private final String TOTAL = "Total";
   static private final String MIN = "Min Value";
@@ -40,8 +40,8 @@ public class Metric {
 
 
   /**
-  *
-  */
+   *
+   */
   public Metric( final String name ) {
     this.name = name;
   }
@@ -58,8 +58,8 @@ public class Metric {
 
 
   /**
-  * Create a deep copy of this counter.
-  */
+   * Create a deep copy of this counter.
+   */
   @Override
   public Object clone() {
     final Metric retval = new Metric( this.name );
@@ -76,8 +76,8 @@ public class Metric {
 
 
   /**
-  * @return The currently set name of this object.
-  */
+   * @return The currently set name of this object.
+   */
   public String getName() {
     return name;
   }
@@ -86,8 +86,8 @@ public class Metric {
 
 
   /**
-  * @return The number of times the value was updated.
-  */
+   * @return The number of times the value was updated.
+   */
   public long getSamplesCount() {
     return samples;
   }
@@ -96,10 +96,10 @@ public class Metric {
 
 
   /**
-  * Included for balance but it should not be used by the uninitiated.
-  *
-  * @param name The new name to set.
-  */
+   * Included for balance but it should not be used by the uninitiated.
+   *
+   * @param name The new name to set.
+   */
   void setName( final String name ) {
     this.name = name;
   }
@@ -108,8 +108,20 @@ public class Metric {
 
 
   /**
-  * @return Returns the maximum value the counter ever represented.
-  */
+   * @return Returns the average value the counter ever represented.
+   */
+  public long getAvgValue() {
+    synchronized( name ) {
+      return getAverage();
+    }
+  }
+
+
+
+
+  /**
+   * @return Returns the maximum value the counter ever represented.
+   */
   public long getMaxValue() {
     synchronized( name ) {
       return maxValue;
@@ -120,8 +132,8 @@ public class Metric {
 
 
   /**
-  * @return Returns the minimum value the counter ever represented.
-  */
+   * @return Returns the minimum value the counter ever represented.
+   */
   public long getMinValue() {
     synchronized( name ) {
       return minValue;
@@ -132,8 +144,8 @@ public class Metric {
 
 
   /**
-  * @return Returns the units the counter measures.
-  */
+   * @return Returns the units the counter measures.
+   */
   public String getUnits() {
     return units;
   }
@@ -142,13 +154,13 @@ public class Metric {
 
 
   /**
-  * Increase the time by the specified amount of milliseconds.
-  *
-  * <p>This is the method that keeps track of the various statistics being
-  * tracked.</p>
-  *
-  * @param value the amount to increase the accrued value.
-  */
+   * Increase the time by the specified amount of milliseconds.
+   *
+   * <p>This is the method that keeps track of the various statistics being
+   * tracked.</p>
+   *
+   * @param value the amount to increase the accrued value.
+   */
   public synchronized void sample( final long value ) {
     // Increment the number of samples
     samples++;
@@ -169,14 +181,14 @@ public class Metric {
 
 
   /**
-  * Set the current, update count and Min/Max values to zero.
-  *
-  * <p>The return value will represent a copy of the counter prior to the
-  * reset and is useful for applications that desire delta values. These delta
-  * values are simply the return values of successive reset calls.</p>
-  *
-  * @return a counter representing the state prior to the reset.
-  */
+   * Set the current, update count and Min/Max values to zero.
+   *
+   * <p>The return value will represent a copy of the counter prior to the
+   * reset and is useful for applications that desire delta values. These delta
+   * values are simply the return values of successive reset calls.</p>
+   *
+   * @return a counter representing the state prior to the reset.
+   */
   public Metric reset() {
     synchronized( name ) {
       final Metric retval = (Metric)clone();
@@ -193,10 +205,10 @@ public class Metric {
 
 
   /**
-  * Sets the units the counter measures.
-  *
-  * @param units The units to set.
-  */
+   * Sets the units the counter measures.
+   *
+   * @param units The units to set.
+   */
   public void setUnits( final String units ) {
     synchronized( name ) {
       this.units = units;
@@ -207,10 +219,10 @@ public class Metric {
 
 
   /**
-  * Access the current standard deviation for all samples using the Sum of Squares algorithm.
-  *
-  * @return The amount of one standard deviation of all the sample values.
-  */
+   * Access the current standard deviation for all samples using the Sum of Squares algorithm.
+   *
+   * @return The amount of one standard deviation of all the sample values.
+   */
   public long getStandardDeviation() {
     long stdDeviation = 0;
     if ( samples != 0 ) {
@@ -272,10 +284,10 @@ public class Metric {
 
 
   /**
-  * @return the total count
-  */
+   * @return the total count
+   */
   public long getTotal() {
     return total;
   }
-  
+
 }
