@@ -130,8 +130,6 @@ public class BootStrap extends AbstractLoader {
       } else {
         cfgLoc = args[0];
       }
-    } else {
-      cfgLoc = System.getProperties().getProperty( CFG_URI_PROPERTY );
     }
 
     // Make sure we have a configuration 
