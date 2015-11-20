@@ -21,12 +21,13 @@ import coyote.commons.StringUtil;
 
 
 /**
- * ConsoleAppender is an implementation of Logger that extends LoggerBase and
- * defines event() to write the event to a Writer.
+ * ConsoleAppender is an implementation of Logger that extends AbstractLogger 
+ * and defines event() to write the event to a Writer.
+ * 
+ * <p>This appender uses a minimalistic formatter to keep the console tidy.</p>
  */
 public class ConsoleAppender extends AbstractLogger {
 
-  /** Field log_writer */
   Writer log_writer;
 
 
@@ -77,7 +78,7 @@ public class ConsoleAppender extends AbstractLogger {
    */
   public ConsoleAppender( final Writer writer, final long mask ) {
     super( mask );
-
+    formatter = new ConsoleFormatter();
     log_writer = writer;
   }
 
@@ -110,9 +111,7 @@ public class ConsoleAppender extends AbstractLogger {
 
 
   /**
-   * Return the writer.
-   *
-   * @return TODO Complete Documentation
+   * @return  the writer.
    */
   public Writer getWriter() {
     return log_writer;

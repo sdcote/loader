@@ -30,7 +30,6 @@ import coyote.loader.cfg.ConfigurationException;
 import coyote.loader.log.ConsoleAppender;
 import coyote.loader.log.Log;
 import coyote.loader.log.LogMsg;
-import coyote.loader.log.LogMsg.BundleBaseName;
 
 
 /**
@@ -46,11 +45,6 @@ public class BootStrap extends AbstractLoader {
   private static Config configuration = null;
   private static String cfgLoc = null;
   private static URI cfgUri = null;
-
-  private static final BundleBaseName LOADER_MSG;
-  static {
-    LOADER_MSG = new BundleBaseName( "LoaderMsg" );
-  }
 
 
 
@@ -231,13 +225,13 @@ public class BootStrap extends AbstractLoader {
     try {
       Runtime.getRuntime().addShutdownHook( new Thread( "LoaderHook" ) {
         public void run() {
-          Log.info( LogMsg.createMsg( LOADER_MSG, "Loader.runtime_terminating", new Date() ) );
+          Log.debug( LogMsg.createMsg( LOADER_MSG, "Loader.runtime_terminating", new Date() ) );
 
           if ( loader != null ) {
             loader.shutdown();
           }
 
-          Log.info( LogMsg.createMsg( LOADER_MSG, "Loader.runtime_terminated", new Date() ) );
+          Log.debug( LogMsg.createMsg( LOADER_MSG, "Loader.runtime_terminated", new Date() ) );
         }
       } );
     } catch ( java.lang.NoSuchMethodError nsme ) {
@@ -258,8 +252,8 @@ public class BootStrap extends AbstractLoader {
    */
   public static void main( String[] args ) {
 
-    Log.addLogger( Log.DEFAULT_LOGGER_NAME, new ConsoleAppender( Log.INFO_EVENTS | Log.WARN_EVENTS | Log.ERROR_EVENTS | Log.FATAL_EVENTS ) );
-    Log.startLogging( Log.INFO );
+    // set the default logger
+    Log.addLogger( Log.DEFAULT_LOGGER_NAME, new ConsoleAppender( Log.WARN_EVENTS | Log.ERROR_EVENTS | Log.FATAL_EVENTS ) );
 
     // Parse the command line arguments
     parseArgs( args );
@@ -350,10 +344,8 @@ public class BootStrap extends AbstractLoader {
                 File homeDir = new File( appDir );
 
                 // create a reference to the configuration directory
-                File configDir = new File( homeDir,"cfg" );
-                
-              System.out.println(" checking - "+configDir.getAbsolutePath() );
-              
+                File configDir = new File( homeDir, "cfg" );
+
                 // make sure it exists
                 if ( configDir.exists() ) {
                   // make sure it is a directory
@@ -367,6 +359,7 @@ public class BootStrap extends AbstractLoader {
                     } else {
                       // we tried the local and shared locations, report error
                       errMsg.append( LogMsg.createMsg( LOADER_MSG, "Loader.no_common_cfg_file", cfgFile.getAbsolutePath() ) + StringUtil.CRLF );
+                      errMsg.append( LogMsg.createMsg( LOADER_MSG, "Loader.cfg_file_not_found", cfgLoc ) + StringUtil.CRLF );
                       System.out.println( errMsg.toString() );
                       System.exit( 9 );
                     }
