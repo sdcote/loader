@@ -339,26 +339,23 @@ public class BootStrap extends AbstractLoader {
             // the file does not exist so if it is a relative filename 
             if ( !localfile.isAbsolute() ) {
 
-              // see if it is in the current working directory
-              localfile = FileUtil.normalize( System.getProperty( "user.dir" ) + System.getProperty( "file.separator" ) + cfgLoc );
-
-              // if it exists, we are done
-              if ( localfile.exists() ) {
-                cfgUri = FileUtil.getFileURI( localfile );
-              }
-              // not found in the current working directory
-              errMsg.append( LogMsg.createMsg( LOADER_MSG, "Loader.no_local_cfg_file", localfile.getAbsolutePath() ) + StringUtil.CRLF );
-
               // see if there is a system property with a shared configuration directory
-              String path = System.getProperties().getProperty( CFG_DIR_PROPERTY );
+              String path = System.getProperties().getProperty( APP_HOME );
 
-              // if there is a shared directory specified for config files
+              // if there is a application home directory specified
               if ( StringUtil.isNotBlank( path ) ) {
+
                 // remove all the relations and duplicate slashes
-                String cfgDir = FileUtil.normalizePath( path );
+                String appDir = FileUtil.normalizePath( path );
 
                 // create a file reference to that shared directory 
-                File configDir = new File( cfgDir );
+                File homeDir = new File( appDir );
+
+                // create a reference to the configuration directory
+                File configDir = new File( homeDir,"cfg" );
+                
+              System.out.println(" checking - "+configDir.getAbsolutePath() );
+              
                 // make sure it exists
                 if ( configDir.exists() ) {
                   // make sure it is a directory
@@ -377,19 +374,19 @@ public class BootStrap extends AbstractLoader {
                     }
                   } else {
                     // the specified config directory was not a directory
-                    errMsg.append( LogMsg.createMsg( LOADER_MSG, "Loader.cfg_dir_is_not_directory", cfgDir ) + StringUtil.CRLF );
+                    errMsg.append( LogMsg.createMsg( LOADER_MSG, "Loader.cfg_dir_is_not_directory", appDir ) + StringUtil.CRLF );
                     System.out.println( errMsg.toString() );
                     System.exit( 10 );
                   }
                 } else {
                   // the specified config directory does not exist
-                  errMsg.append( LogMsg.createMsg( LOADER_MSG, "Loader.cfg_dir_does_not_exist", cfgDir ) + StringUtil.CRLF );
+                  errMsg.append( LogMsg.createMsg( LOADER_MSG, "Loader.cfg_dir_does_not_exist", appDir ) + StringUtil.CRLF );
                   System.out.println( errMsg.toString() );
                   System.exit( 11 );
                 }
               } else {
                 // no shared config directory provided in system properties
-                errMsg.append( LogMsg.createMsg( LOADER_MSG, "Loader.cfg_dir_not_provided", CFG_DIR_PROPERTY ) + StringUtil.CRLF );
+                errMsg.append( LogMsg.createMsg( LOADER_MSG, "Loader.cfg_dir_not_provided", APP_HOME ) + StringUtil.CRLF );
                 System.out.println( errMsg.toString() );
                 System.exit( 12 );
               }
