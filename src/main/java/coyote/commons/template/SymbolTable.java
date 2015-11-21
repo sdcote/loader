@@ -11,6 +11,10 @@
  */
 package coyote.commons.template;
 
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -35,6 +39,10 @@ import coyote.commons.StringUtil;
 public class SymbolTable extends HashMap {
 
   private static final long serialVersionUID = -3448311765253950903L;
+
+  // Hash Maps of formatters under the (possibly mistaken) assumption that construction and garbage collection may be more expensive than caching and searching
+  private HashMap<String, DateFormat> dateFormatMap = new HashMap<String, DateFormat>();
+  private HashMap<String, NumberFormat> numberFormatMap = new HashMap<String, NumberFormat>();
 
 
 
@@ -109,18 +117,9 @@ public class SymbolTable extends HashMap {
 
 
 
-  /**
-   * Return the String value of the named symbol from the table.
-   *
-   * @param symbol the symbol to lookup in the table
-   *
-   * @return the value of the symbol or an empty string if the value was not found.
-   */
-  public synchronized String getString( String symbol ) {
+  private String getStaticValue( String symbol ) {
     if ( symbol != null ) {
-      if ( containsKey( symbol ) ) {
-        return get( symbol ).toString();
-      } else if ( symbol.equals( "time" ) ) {
+      if ( symbol.equals( "time" ) ) {
         return DateUtil.toExtendedTime( new Date() );
       } else if ( symbol.equals( "currentMilliseconds" ) ) {
         return Long.toString( System.currentTimeMillis() );
@@ -154,6 +153,122 @@ public class SymbolTable extends HashMap {
     }
 
     return "";
+  }
+
+
+
+
+  /**
+   * Return the String value of the named symbol from the table.
+   *
+   * @param symbol the symbol to lookup in the table
+   *
+   * @return the value of the symbol or an empty string if the value was not found.
+   */
+  public synchronized String getString( String symbol ) {
+    if ( symbol != null ) {
+      if ( containsKey( symbol ) ) {
+        return get( symbol ).toString();
+      } else {
+        return this.getStaticValue( symbol );
+      }
+    }
+
+    return "";
+  }
+
+
+
+
+  /**
+   * Return the String value of the named symbol from the table applying the 
+   * given formatting.
+   *
+   * @param symbol the symbol to lookup in the table
+   * @param format the format pattern to use
+   *
+   * @return the value of the symbol or an empty string if the value was not found.
+   */
+  public synchronized String getString( String symbol, String format ) {
+    if ( symbol != null ) {
+      if ( containsKey( symbol ) ) {
+        Object retval = get( symbol );
+
+        // check to see if there is formatting to be applied to the value
+        if ( StringUtil.isNotBlank( format ) ) {
+
+          // apply formatting based on tye type of object it is
+          if ( retval instanceof Number ) {
+            // If retval is numeric, then use a number format
+            return formatNumber( (Number)retval, format );
+          } else if ( retval instanceof Date ) {
+            // if retval is a date, then use a date format
+            return formatDate( (Date)retval, format );
+          }
+        }
+
+        // either the format string was empty or returned value is not format-able
+        return retval.toString();
+
+      } else {
+        // we do not have the symbol in our table, so try a static value
+        return this.getStaticValue( symbol );
+      }
+    }
+
+    return "";
+  }
+
+
+
+
+  /**
+   * @param retval
+   * @param format
+   * @return
+   */
+  private String formatDate( Date date, String format ) {
+    if ( date != null ) {
+
+      // retrieve an existing formatter
+      DateFormat formatter = dateFormatMap.get( format );
+
+      // if one was not found, create one and cache it for later
+      if ( formatter == null ) {
+        formatter = new SimpleDateFormat( format );
+        dateFormatMap.put( format, formatter );
+      }
+
+      // return the formatted date 
+      return formatter.format( date );
+    } else {
+      return "";
+    }
+  }
+
+
+
+
+  /**
+   * @param retval
+   * @param format
+   * @return
+   */
+  private String formatNumber( Number number, String format ) {
+    if ( number != null ) {
+      NumberFormat formatter = numberFormatMap.get( format );
+
+      // if one was not found, create one and cache it for later
+      if ( formatter == null ) {
+        formatter = new DecimalFormat( format );
+        numberFormatMap.put( format, formatter );
+      }
+
+      // return the formatted number 
+      return formatter.format( number );
+    } else {
+      return "";
+    }
   }
 
 

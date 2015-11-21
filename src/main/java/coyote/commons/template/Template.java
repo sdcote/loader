@@ -159,8 +159,17 @@ public class Template extends StringParser {
         }
 
         if ( token.startsWith( "$" ) ) {
-          String key = token.substring( 1 );
-          retval.append( symbols.getString( key ) );
+
+          // if the token contains a vertical pipe character, split the token into the variable key and the format string.
+          int boundry = token.indexOf( '|' );
+          if ( boundry > 0 ) {
+            String key = token.substring( 1, boundry );
+            String format = token.substring( boundry+1 );
+            retval.append( symbols.getString( key, format ) );
+
+          } else {
+            retval.append( symbols.getString( token.substring( 1 ) ) );
+          }
         } else {
           // Must be a class; see if it is a method or constructor reference
 
