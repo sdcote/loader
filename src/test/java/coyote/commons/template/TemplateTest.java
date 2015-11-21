@@ -12,19 +12,27 @@
 package coyote.commons.template;
 
 //import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Date;
-import static org.junit.Assert.*;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+
 /**
  * 
  */
 public class TemplateTest {
-private static final SymbolTable symbols = new SymbolTable();
+  private static final SymbolTable symbols = new SymbolTable();
+
+
+
+
   /**
    * @throws java.lang.Exception
    */
@@ -32,9 +40,8 @@ private static final SymbolTable symbols = new SymbolTable();
   public static void setUpBeforeClass() throws Exception {
     symbols.put( "One", 1.02 );
     symbols.put( "Today", new Date() );
-    
+
   }
-  
 
 
 
@@ -71,8 +78,10 @@ private static final SymbolTable symbols = new SymbolTable();
     String text = "[#$One|###,###.00#]";
     String formattedText = Template.resolve( text, symbols );
     //System.out.println(formattedText);
-    assertEquals("1.02",formattedText);
+    assertEquals( "1.02", formattedText );
   }
+
+
 
 
   @Test
@@ -80,7 +89,7 @@ private static final SymbolTable symbols = new SymbolTable();
     String text = "[#$Today|YYYYMMdd#]";
     String formattedText = Template.resolve( text, symbols );
     //System.out.println(formattedText);
-    assertTrue(formattedText.length()==8);
+    assertTrue( formattedText.length() == 8 );
   }
 
 }

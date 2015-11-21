@@ -223,9 +223,12 @@ public class SymbolTable extends HashMap {
 
 
   /**
-   * @param retval
-   * @param format
-   * @return
+   * Format the given date with the given format string.
+   * 
+   * @param date the date to format
+   * @param format the format string
+   * 
+   * @return the formatted date string or an empty string if the date is null 
    */
   private String formatDate( Date date, String format ) {
     if ( date != null ) {
@@ -250,9 +253,12 @@ public class SymbolTable extends HashMap {
 
 
   /**
-   * @param retval
-   * @param format
-   * @return
+   * Format the given number with the given format string.
+   * 
+   * @param number the date to format
+   * @param format the format string
+   * 
+   * @return the formatted number string or an empty string if the number is null 
    */
   private String formatNumber( Number number, String format ) {
     if ( number != null ) {
