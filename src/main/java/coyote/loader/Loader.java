@@ -24,6 +24,7 @@ import coyote.loader.thread.ThreadPool;
 public interface Loader extends WatchDog {
 
   public static final String APP_HOME = "app.home";
+  public static final String APP_WORK = "app.work";
   public static final String ENCRYPT = "encrypt";
   public static final String CIPHER_KEY = "CoyoteLoader";
   public static final String CIPHER_NAME = BlowfishCipher.CIPHER_NAME;

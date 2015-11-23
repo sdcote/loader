@@ -259,6 +259,12 @@ public class BootStrap extends AbstractLoader {
     // Parse the command line arguments
     parseArgs( args );
 
+    // confirm the readability of app.home if it is set
+    confirmAppHome();
+
+    // Confirm the writability of app.work if it is set
+    confirmAppWork();
+
     // confirm the configuration location is a valid URI
     confirmConfigurationLocation();
 
@@ -288,6 +294,71 @@ public class BootStrap extends AbstractLoader {
 
     // Normal termination
     System.exit( 0 );
+
+  }
+
+
+
+
+  private static void confirmAppWork() {
+    String path = System.getProperties().getProperty( APP_WORK );
+
+    if ( StringUtil.isNotBlank( path ) ) {
+
+      String workDir = FileUtil.normalizePath( path );
+
+      File workingDir = new File( workDir );
+
+      if ( workingDir.exists() ) {
+        if ( workingDir.isDirectory() ) {
+          if ( !workingDir.canWrite() ) {
+            System.out.println( "The app.work property specified an un-writable (permissions) directory: " + workDir );
+          }
+        } else {
+          System.out.println( "The app.work property does not specify a directory: " + workDir );
+        }
+      } else {
+        try {
+          FileUtil.makeDirectory( workingDir );
+        } catch ( IOException e ) {
+          System.err.print( "Could not create working directory specified in app.work property: " + workDir + " - " + e.getMessage() );
+        }
+      }
+
+    }
+
+  }
+
+
+
+
+  private static void confirmAppHome() {
+    // see if there is a system property with a shared configuration directory
+    String path = System.getProperties().getProperty( APP_HOME );
+
+    // if there is a application home directory specified
+    if ( StringUtil.isNotBlank( path ) ) {
+
+      // remove all the relations and duplicate slashes
+      String appDir = FileUtil.normalizePath( path );
+
+      // create a file reference to that shared directory 
+      File homeDir = new File( appDir );
+
+      if ( homeDir.exists() ) {
+        // make sure it is a directory
+        if ( homeDir.isDirectory() ) {
+          if ( !homeDir.canRead() ) {
+            System.out.println( "The app.home property specified an un-readable (permissions) directory: " + appDir );
+          }
+        } else {
+          System.out.println( "The app.home property does not specify a directory: " + appDir );
+        }
+      } else {
+        System.out.println( "The app.home property does not exist: " + appDir );
+      }
+
+    }
 
   }
 
