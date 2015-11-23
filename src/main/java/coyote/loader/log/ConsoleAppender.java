@@ -124,8 +124,10 @@ public class ConsoleAppender extends AbstractLogger {
    * Initialize the logger.
    */
   public void initialize() {
-    if ( config != null && config.contains( Logger.CATEGORY_TAG ) ) {
-      for ( final StringTokenizer st = new StringTokenizer( config.getAsString( Logger.CATEGORY_TAG ), Logger.CATEGORY_DELIMS ); st.hasMoreTokens(); startLogging( st.nextToken() ) );
+    // TODO write to either SYSOUT or SYSERR depending on configuration!
+    
+    if ( config != null && config.getString( Logger.CATEGORY_TAG ) != null ) {
+      for ( final StringTokenizer st = new StringTokenizer( config.getString( Logger.CATEGORY_TAG ), Logger.CATEGORY_DELIMS ); st.hasMoreTokens(); startLogging( st.nextToken() ) );
     }
     // System.out is already initialized
   }

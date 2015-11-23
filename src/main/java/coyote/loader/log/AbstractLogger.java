@@ -128,7 +128,6 @@ public abstract class AbstractLogger implements Logger {
    * @param category The category.
    */
   public void startLogging( final String category ) {
-
     addMask( Log.getCode( category ) );
   }
 
@@ -296,8 +295,8 @@ public abstract class AbstractLogger implements Logger {
       if ( target == null ) {
         // target = UriUtil.parse( properties.getProperty( TARGET_TAG ) );
         try {
-          target = new URI( config.getAsString( Logger.TARGET_TAG ) );
-        } catch ( final URISyntaxException e ) {
+          target = new URI( config.getString( Logger.TARGET_TAG ) );
+        } catch ( final Exception e ) {
           System.err.println( "Invalid logger target URI (" + e.getMessage() + ") - '" + config.get( Logger.TARGET_TAG ) + "'" );
         }
 
