@@ -22,7 +22,7 @@ import java.util.Vector;
  * sending an event to all of them.
  * 
  * <p>This is an implementation of a category based logger, where all messages 
- * of a category are logged. There are no concepts of levels in this logger.  
+ * of a category are logged. There is no concepts of levels in this logger.  
  * This means if you turn on the logging of one category, all the other 
  * categories remain unaffected. This allows your to turn on and off all 
  * "security" messages for example while the "protocol" messages remain 
@@ -702,6 +702,26 @@ public final class Log {
       Log.nameToLogger.remove( name );
       Log.recalcMasks();
     }
+  }
+
+
+
+
+  /**
+   * Removes all logers from the system - including permanent loggers.
+   */
+  public static synchronized void removeAllLoggers() {
+
+    // terminate each of the loggers
+    for ( final Enumeration<Logger> en = Log.nameToLogger.elements(); en.hasMoreElements(); ) {
+      en.nextElement().terminate();
+    }
+    
+    // clear the logger table
+    Log.nameToLogger.clear();
+    
+    // recalc masks to 0
+    Log.recalcMasks();
   }
 
 
