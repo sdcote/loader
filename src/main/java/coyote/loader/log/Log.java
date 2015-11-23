@@ -716,10 +716,10 @@ public final class Log {
     for ( final Enumeration<Logger> en = Log.nameToLogger.elements(); en.hasMoreElements(); ) {
       en.nextElement().terminate();
     }
-    
+
     // clear the logger table
     Log.nameToLogger.clear();
-    
+
     // recalc masks to 0
     Log.recalcMasks();
   }
