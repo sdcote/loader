@@ -16,7 +16,6 @@ import java.net.URISyntaxException;
 import java.util.StringTokenizer;
 
 import coyote.loader.cfg.Config;
-import coyote.loader.cfg.ConfigurationException;
 
 
 /**
@@ -302,8 +301,9 @@ public abstract class AbstractLogger implements Logger {
 
       }
 
-      if ( config.contains( Logger.CATEGORY_TAG ) ) {
-        for ( final StringTokenizer st = new StringTokenizer( config.getAsString( Logger.CATEGORY_TAG ), Logger.CATEGORY_DELIMS ); st.hasMoreTokens(); startLogging( st.nextToken() ) );
+      // Case insensitive search for categories to log
+      if ( config.getString( Logger.CATEGORY_TAG ) != null ) {
+        for ( final StringTokenizer st = new StringTokenizer( config.getString( Logger.CATEGORY_TAG ), Logger.CATEGORY_DELIMS ); st.hasMoreTokens(); startLogging( st.nextToken() ) );
       }
     }
 
