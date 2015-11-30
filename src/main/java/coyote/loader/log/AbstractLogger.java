@@ -298,12 +298,22 @@ public abstract class AbstractLogger implements Logger {
         } catch ( final Exception e ) {
           System.err.println( "Invalid logger target URI (" + e.getMessage() + ") - '" + config.get( Logger.TARGET_TAG ) + "'" );
         }
-
       }
 
       // Case insensitive search for categories to log
       if ( config.getString( Logger.CATEGORY_TAG ) != null ) {
         for ( final StringTokenizer st = new StringTokenizer( config.getString( Logger.CATEGORY_TAG ), Logger.CATEGORY_DELIMS ); st.hasMoreTokens(); startLogging( st.nextToken() ) );
+      }
+    }
+
+    // determine if this logger is disabled, if so set mask to 0
+    if ( config.getString( Logger.ENABLED_TAG ) != null ) {
+      try {
+        if ( !config.getAsBoolean( Logger.ENABLED_TAG ) ) {
+          disable(); // set the mask to 0
+        }
+      } catch ( Exception e ) {
+        System.err.println( "Invalid logger enabled value (" + e.getMessage() + ") - '" + config.get( Logger.ENABLED_TAG ) + "'" );
       }
     }
 

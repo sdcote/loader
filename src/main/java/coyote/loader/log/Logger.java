@@ -30,6 +30,9 @@ public interface Logger {
   /** The category delimiters used in properties. */
   public static final String CATEGORY_DELIMS = ",:;| ";
 
+  /** the name of the configuration property indicating if this logger is enabled. (default=true) */
+  public static final String ENABLED_TAG = "Enabled";
+
 
 
 
