@@ -165,42 +165,69 @@ public class FileAppender extends AbstractLogger {
       // have the logger init the target and categories from properties for us
       super.initialize();
 
-      try {
-        if ( ( target != null ) && UriUtil.isFile( target ) ) {
-          // Make sure we have a complete path to the target file
-          File dest = new File( UriUtil.getFilePath( target ) );
-
-          if ( !dest.isAbsolute() ) {
-            dest = new File( System.getProperty( "user.dir" ), UriUtil.getFilePath( target ) );
-          }
-
-          dest.getParentFile().mkdirs();
-
-          targetFile = dest;
-
-          // Create the writer
-          log_writer = new OutputStreamWriter( new FileOutputStream( targetFile.toString(), true ) );
-
-          final byte[] header = getFormatter().initialize();
-
-          if ( header != null ) {
-            log_writer.write( new String( header ) );
-          }
-
-          initialized = true;
-        } else {
-          throw new Exception( "URI schema '" + target.getScheme() + "' does not specify a file" );
-        }
-      } catch ( final Exception e ) {
-        System.err.println( "Log Initialization Error: " + getClass().getName() + " could not attach logger to target '" + target + "'. Reason: \"" + e.getMessage() + "\"." );
-        e.printStackTrace();
-
-        log_writer = null;
-        targetFile = null;
-
-        disable();
+      // check to see if we are enabled, if so, then prepare the log writer
+      if ( getMask() != 0 ) {
+        prepareWriter();
       }
     }
+  }
+
+
+
+
+  /**
+   * Overrides the enablement of this logger by first ensuring the log_writer 
+   * is created before restoring the log mask.
+   */
+  @Override
+  public synchronized void enable() {
+
+    if ( log_writer == null ) {
+      prepareWriter();
+    }
+    super.enable();
+  }
+
+
+
+
+  private void prepareWriter() {
+    try {
+      if ( ( target != null ) && UriUtil.isFile( target ) ) {
+        // Make sure we have a complete path to the target file
+        File dest = new File( UriUtil.getFilePath( target ) );
+
+        if ( !dest.isAbsolute() ) {
+          dest = new File( System.getProperty( "user.dir" ), UriUtil.getFilePath( target ) );
+        }
+
+        dest.getParentFile().mkdirs();
+
+        targetFile = dest;
+
+        // Create the writer
+        log_writer = new OutputStreamWriter( new FileOutputStream( targetFile.toString(), true ) );
+
+        final byte[] header = getFormatter().initialize();
+
+        if ( header != null ) {
+          log_writer.write( new String( header ) );
+        }
+
+        initialized = true;
+      } else {
+        throw new Exception( "URI schema '" + target.getScheme() + "' does not specify a file" );
+      }
+    } catch ( final Exception e ) {
+      System.err.println( "Log Initialization Error: " + getClass().getName() + " could not attach logger to target '" + target + "'. Reason: \"" + e.getMessage() + "\"." );
+      e.printStackTrace();
+
+      log_writer = null;
+      targetFile = null;
+
+      disable();
+    }
+
   }
 
 
