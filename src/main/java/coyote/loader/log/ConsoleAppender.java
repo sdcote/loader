@@ -124,8 +124,8 @@ public class ConsoleAppender extends AbstractLogger {
    * Initialize the logger.
    */
   public void initialize() {
-    // we don't call super.initialize() cuz we dont need the file based
-    
+    // we don't call super.initialize() because we don't need the file based initialization
+
     // Switch to STDERR depending on configuration!
     if ( config != null && config.getString( TARGET_TAG ) != null && "SYSERR".equalsIgnoreCase( config.getString( TARGET_TAG ) ) ) {
       log_writer = new OutputStreamWriter( System.err );
@@ -134,18 +134,14 @@ public class ConsoleAppender extends AbstractLogger {
     if ( config != null && config.getString( Logger.CATEGORY_TAG ) != null ) {
       for ( final StringTokenizer st = new StringTokenizer( config.getString( Logger.CATEGORY_TAG ), Logger.CATEGORY_DELIMS ); st.hasMoreTokens(); startLogging( st.nextToken() ) );
     }
-    
+
     // determine if this logger is disabled, if so set mask to 0
-    if ( config.getString( Logger.ENABLED_TAG ) != null ) {
-      try {
-        if ( !config.getAsBoolean( Logger.ENABLED_TAG ) ) {
-          disable(); // set the mask to 0
-        }
-      } catch ( Exception e ) {
-        System.err.println( "Invalid logger enabled value (" + e.getMessage() + ") - '" + config.get( Logger.ENABLED_TAG ) + "'" );
+    if ( config != null && config.getString( Logger.ENABLED_TAG ) != null ) {
+      String str = config.getString( Logger.ENABLED_TAG ).toLowerCase();
+      if ( "false".equals( str ) || "0".equals( str ) || "no".equals( str ) ) {
+        disable(); // set the mask to 0
       }
     }
-
 
   }
 

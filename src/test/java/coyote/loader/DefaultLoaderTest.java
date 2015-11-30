@@ -24,6 +24,7 @@ public class DefaultLoaderTest {
 
   @Test
   public void test() {
+
     // Add a logger that will send log messages to the console 
     Log.addLogger( "Loader", new ConsoleAppender( Log.INFO_EVENTS | Log.WARN_EVENTS | Log.ERROR_EVENTS | Log.FATAL_EVENTS ) );
     Log.startLogging( Log.DEBUG );

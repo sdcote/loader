@@ -307,13 +307,10 @@ public abstract class AbstractLogger implements Logger {
     }
 
     // determine if this logger is disabled, if so set mask to 0
-    if ( config.getString( Logger.ENABLED_TAG ) != null ) {
-      try {
-        if ( !config.getAsBoolean( Logger.ENABLED_TAG ) ) {
-          disable(); // set the mask to 0
-        }
-      } catch ( Exception e ) {
-        System.err.println( "Invalid logger enabled value (" + e.getMessage() + ") - '" + config.get( Logger.ENABLED_TAG ) + "'" );
+    if ( config != null && config.getString( Logger.ENABLED_TAG ) != null ) {
+      String str = config.getString( Logger.ENABLED_TAG ).toLowerCase();
+      if ( "false".equals( str ) || "0".equals( str ) || "no".equals( str ) ) {
+        disable(); // set the mask to 0
       }
     }
 
