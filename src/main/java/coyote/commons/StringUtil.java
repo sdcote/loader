@@ -390,7 +390,7 @@ public class StringUtil {
    * 
    * @param text the text to represent
    * @param length the length of the string to return
-   * @param alignment 0 (or less) left justified, 1 = right and 2 (or greater) right justified.
+   * @param alignment 0 (or less) left justified, 1 = center and 2 (or greater) right justified.
    * 
    * @return A string of exactly the given length with the text aligned within as specified,
    */
@@ -413,7 +413,7 @@ public class StringUtil {
    * 
    * @param text the text to represent
    * @param length the length of the string to return
-   * @param alignment 0 (or less) left justified, 1 = right and 2 (or greater) right justified.
+   * @param alignment 0 (or less) left justified, 1 = center and 2 (or greater) right justified.
    * @param padChar the character with which to pad the string.
    * 
    * @return A string of exactly the given length with the text aligned within as specified,
@@ -505,7 +505,7 @@ public class StringUtil {
 
 
   /**
-   * Return the string after the last occurance of the given character in the
+   * Return the string after the last occurrence of the given character in the
    * given string.
    *
    * <p>Useful for getting extensions from filenames. Also used to retrieve the
@@ -514,7 +514,7 @@ public class StringUtil {
    * @param text the string to parse
    * @param ch the sentinel character
    *
-   * @return the string after the last occurance of the given character in the
+   * @return the string after the last occurrence of the given character in the
    * given string
    */
   public static String tail( String text, char ch ) {
