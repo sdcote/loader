@@ -64,6 +64,13 @@ public class StringUtil {
   /** Eight-bit Unicode Transformation Format. */
   public static final String UTF_8 = "UTF-8";
 
+  /** Left Alignment value ({@value}) for {@code fixedLength} method */
+  public static final int LEFT_ALIGNMENT = 0;
+  /** Center Alignment value ({@value}) for {@code fixedLength} method */
+  public static final int CENTER_ALIGNMENT = 1;
+  /** Right Alignment value ({@value}) for {@code fixedLength} method */
+  public static final int RIGHT_ALIGNMENT = 2;
+
   /** Field ISO8859_1 */
   public static String ISO8859_1;
   static {
