@@ -43,7 +43,7 @@ public class ExceptionUtil {
    * Return the root cause message.
    *
    * <p>Return the message of the inner-most exception that is wrapped by this
-   * and any nested exceptions threrein. This will delegate the event call to
+   * and any nested exceptions therein. This will delegate the event call to
    * the first exception in the chain and return its value.</p>
    *
    * @return The message of the core exception.
