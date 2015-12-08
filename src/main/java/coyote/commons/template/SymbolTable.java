@@ -197,7 +197,7 @@ public class SymbolTable extends HashMap {
         // check to see if there is formatting to be applied to the value
         if ( StringUtil.isNotBlank( format ) ) {
 
-          // apply formatting based on tye type of object it is
+          // apply formatting based on type type of object it is
           if ( retval instanceof Number ) {
             // If retval is numeric, then use a number format
             return formatNumber( (Number)retval, format );
