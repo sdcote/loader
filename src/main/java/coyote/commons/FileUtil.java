@@ -2815,6 +2815,7 @@ public final class FileUtil {
    * @return a list of file references to discovered files matching the given name pattern.
    */
   public static List<File> getFiles( File directory, String pattern, boolean recurse ) {
+    final List<File> list = new ArrayList<File>();
 
     Pattern regex = null;
 
@@ -2823,25 +2824,25 @@ public final class FileUtil {
     }
 
     File[] listOfFiles = directory.listFiles();
-    final List<File> list = new ArrayList<File>( listOfFiles.length );
+    if ( listOfFiles != null ) {
 
-    for ( int i = 0; i < listOfFiles.length; i++ ) {
-      if ( listOfFiles[i].isFile() ) {
-        // This is where we do pattern checks on the entire file path
-        if ( regex != null ) {
-          if ( regex.matcher( listOfFiles[i].getAbsolutePath() ).matches() ) {
+      for ( int i = 0; i < listOfFiles.length; i++ ) {
+        if ( listOfFiles[i].isFile() ) {
+          // This is where we do pattern checks on the entire file path
+          if ( regex != null ) {
+            if ( regex.matcher( listOfFiles[i].getAbsolutePath() ).matches() ) {
+              list.add( listOfFiles[i] );
+            }
+          } else {
             list.add( listOfFiles[i] );
           }
-        } else {
-          list.add( listOfFiles[i] );
-        }
-      } else if ( listOfFiles[i].isDirectory() ) {
-        if ( recurse ) {
-          list.addAll( getFiles( listOfFiles[i], pattern, recurse ) );
-        }
-
-      }
-    }
+        } else if ( listOfFiles[i].isDirectory() ) {
+          if ( recurse ) {
+            list.addAll( getFiles( listOfFiles[i], pattern, recurse ) );
+          }
+        } // isFile || dir
+      } // for
+    } // !null
 
     return list;
   }
