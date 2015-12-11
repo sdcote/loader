@@ -2737,22 +2737,40 @@ public final class FileUtil {
 
 
 
-  public static List<File> getFiles( File cwd ) {
-    return getFiles( cwd, null, false );
+  /**
+   * Get a listing of all the files in this directory which matches the given 
+   * pattern.
+   * 
+   * <p>All the files in the directory will be returned.</p>
+   * 
+   * <p>Only files are returned; directories are not included in the list.</p>
+   * 
+   * @param directory the directory to scan to start 
+   * 
+   * @return a list of file references to discovered files matching the given name pattern.
+   */
+  public static List<File> getFiles( File directory ) {
+    return getFiles( directory, null, false );
   }
 
 
 
 
-  public static List<File> getFiles( File cwd, boolean recurse ) {
-    return getFiles( cwd, null, recurse );
-  }
-
-
-
-
-  public static List<File> getFiles( File cwd, String pattern ) {
-    return getFiles( cwd, pattern, false );
+  /**
+   * Get a listing of all the files in this directory which matches the given 
+   * pattern.
+   * 
+   * <p>All the files in the directory will be returned.</p>
+   * 
+   * <p>Only files are returned; directories are not included in the list.</p>
+   * 
+   * @param directory the directory to scan to start 
+   * @param recurse true to include all sub-directories as well
+   * 
+   * @return a list of file references to discovered files matching the given name pattern.
+   */
+  public static List<File> getFiles( File directory, boolean recurse ) {
+    return getFiles( directory, null, recurse );
   }
 
 
@@ -2770,7 +2788,29 @@ public final class FileUtil {
    * 
    * @param directory the directory to scan to start 
    * @param pattern the regex pattern to match, if null, no files will be excluded
-   * @param recurse true to include all sub-directories
+   * 
+   * @return a list of file references to discovered files matching the given name pattern.
+   */
+  public static List<File> getFiles( File directory, String pattern ) {
+    return getFiles( directory, pattern, false );
+  }
+
+
+
+
+  /**
+   * Get a listing of all the files in this directory which matches the given 
+   * pattern.
+   * 
+   * <p>The pattern is a regular expression (regex) which is applied to the 
+   * entire file path of the discovered file. If the path of the file matches, 
+   * the file is placed in the list of return values.</p>
+   * 
+   * <p>Only files are returned; directories are not included in the list.</p>
+   * 
+   * @param directory the directory to scan to start 
+   * @param pattern the regex pattern to match, if null, no files will be excluded
+   * @param recurse true to include all sub-directories as well
    * 
    * @return a list of file references to discovered files matching the given name pattern.
    */
