@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Stack;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.regex.Pattern;
 
 
 /**
@@ -2719,6 +2720,90 @@ public final class FileUtil {
     if ( keepDate ) {
       destFile.setLastModified( srcFile.lastModified() );
     }
+  }
+
+
+
+
+  /**
+   * Convenience method for getting a file reference to "user.dir".
+   * 
+   * @return a file reference to the currently set working directory
+   */
+  public static File getCurrentWorkingDirectory() {
+    return new File( System.getProperty( "user.dir" ) );
+  }
+
+
+
+
+  public static List<File> getFiles( File cwd ) {
+    return getFiles( cwd, null, false );
+  }
+
+
+
+
+  public static List<File> getFiles( File cwd, boolean recurse ) {
+    return getFiles( cwd, null, recurse );
+  }
+
+
+
+
+  public static List<File> getFiles( File cwd, String pattern ) {
+    return getFiles( cwd, pattern, false );
+  }
+
+
+
+
+  /**
+   * Get a listing of all the files in this directory which matches the given 
+   * pattern.
+   * 
+   * <p>The pattern is a regular expression (regex) which is applied to the 
+   * entire file path of the discovered file. If the path of the file matches, 
+   * the file is placed in the list of return values.</p>
+   * 
+   * <p>Only files are returned; directories are not included in the list.</p>
+   * 
+   * @param directory the directory to scan to start 
+   * @param pattern the regex pattern to match, if null, no files will be excluded
+   * @param recurse true to include all sub-directories
+   * 
+   * @return a list of file references to discovered files matching the given name pattern.
+   */
+  public static List<File> getFiles( File directory, String pattern, boolean recurse ) {
+
+    Pattern regex = null;
+
+    if ( pattern != null && pattern.trim().length() > 0 ) {
+      regex = Pattern.compile( pattern );
+    }
+
+    File[] listOfFiles = directory.listFiles();
+    final List<File> list = new ArrayList<File>( listOfFiles.length );
+
+    for ( int i = 0; i < listOfFiles.length; i++ ) {
+      if ( listOfFiles[i].isFile() ) {
+        // This is where we do pattern checks on the entire file path
+        if ( regex != null ) {
+          if ( regex.matcher( listOfFiles[i].getAbsolutePath() ).matches() ) {
+            list.add( listOfFiles[i] );
+          }
+        } else {
+          list.add( listOfFiles[i] );
+        }
+      } else if ( listOfFiles[i].isDirectory() ) {
+        if ( recurse ) {
+          list.addAll( getFiles( listOfFiles[i], pattern, recurse ) );
+        }
+
+      }
+    }
+
+    return list;
   }
 
 }

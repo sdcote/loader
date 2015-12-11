@@ -12,11 +12,13 @@
 package coyote.commons;
 
 //import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.net.URI;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -50,6 +52,26 @@ public class FileUtilTest {
     } catch ( Exception e ) {
       e.printStackTrace();
     }
+  }
+
+
+
+
+  @Test
+  public void testGetFiles() {
+    File cwd = FileUtil.getCurrentWorkingDirectory();
+
+    String regex = "([^\\s]+(\\.(?i)(JAVA))$)";// java files
+
+    List<File> files = FileUtil.getFiles( cwd, regex, true );
+    assertTrue( files.size() > 20 );
+
+    for ( File file : files ) {
+      //System.out.println( file.getName() );
+      String path = file.getAbsolutePath();
+      assertFalse( !".java".equalsIgnoreCase( path.substring( path.length() - 5 ) ) );
+    }
+
   }
 
 }
