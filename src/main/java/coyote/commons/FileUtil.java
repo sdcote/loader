@@ -2847,4 +2847,46 @@ public final class FileUtil {
     return list;
   }
 
+
+
+
+  /**
+   * Deletes a directory and all of its contents.
+   * 
+   * @param dir the reference to a directory or a file
+   * 
+   * @return true if everything was deleted, false if at least one item could not be deleted.
+   */
+  public static boolean deleteDirectory( File dir ) {
+    boolean retval = true;
+    File[] currList;
+    Stack<File> stack = new Stack<File>();
+    stack.push( dir );
+    
+    // while we still have things to delete
+    while ( !stack.isEmpty() ) {
+      
+      // if the next item is a directory
+      if ( stack.lastElement().isDirectory() ) {
+        // get a listing of all the files and directories
+        currList = stack.lastElement().listFiles();
+        
+        // place everything found on the stack
+        if ( currList.length > 0 ) {
+          for ( File curr : currList ) {
+            stack.push( curr );
+          }
+        } else {
+          // there is nothing in this directory so it can be deleted
+          if ( !stack.pop().delete() )
+            retval = false;
+        }
+      } else {
+        // this is a file, so delete it
+        if ( !stack.pop().delete() )
+          retval = false;
+      }
+    }
+    return retval;
+  }
 }
