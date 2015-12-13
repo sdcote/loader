@@ -40,7 +40,11 @@ import java.text.FieldPosition;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -2862,15 +2866,15 @@ public final class FileUtil {
     File[] currList;
     Stack<File> stack = new Stack<File>();
     stack.push( dir );
-    
+
     // while we still have things to delete
     while ( !stack.isEmpty() ) {
-      
+
       // if the next item is a directory
       if ( stack.lastElement().isDirectory() ) {
         // get a listing of all the files and directories
         currList = stack.lastElement().listFiles();
-        
+
         // place everything found on the stack
         if ( currList.length > 0 ) {
           for ( File curr : currList ) {
@@ -2889,4 +2893,173 @@ public final class FileUtil {
     }
     return retval;
   }
+
+
+
+
+  /**
+   * This will copy files and directories from one directory to another.
+   * 
+   * @param source directory from which the files are to be read
+   * @param target directory to which files are to be written
+   * @param pattern regex pattern to match on the fully qualified filename
+   * @param recurse true to also search the sub-directories of the source directory
+   * @param preserveHierarchy true to maintain the hierarchy in the target directory for recursive searches
+   * @param keepDate true to keep the data of the target file the same as the source file, false to keep the current date/time
+   * @param overwrite true to overwrite files in the target directory with the same name if they exist
+   * @param rename true to rename the file in the target directory if it already exists and overwrite is false, false to ignore name collisions
+   * 
+   * @return true if all files were sucessfully copied, false if even one file was skipped due to overwrite=false and rename=false settings
+   * 
+   * @throws IOException if there were major problems with any of the file operations
+   */
+  public static boolean copyDirectory( String source, String target, String pattern, boolean recurse, boolean preserveHierarchy, boolean keepDate, boolean overwrite, boolean rename ) throws IOException {
+    return FileUtil.copyDirectory( new File( source ), new File( target ), pattern, recurse, preserveHierarchy, keepDate, overwrite, rename );
+  }
+
+
+
+
+  /**
+   * This will copy files and directories from one directory to another.
+   * 
+   * @param source directory from which the files are to be read
+   * @param target directory to which files are to be written
+   * @param pattern regex pattern to match on the fully qualified filename
+   * @param recurse true to also search the sub-directories of the source directory
+   * @param preserveHierarchy true to maintain the hierarchy in the target directory for recursive searches
+   * @param keepDate true to keep the date of the target file the same as the source file, false to keep the current date/time
+   * @param overwrite true to overwrite files in the target directory with the same name if they exist
+   * @param rename true to rename the file in the target directory if it already exists and overwrite is false, false to ignore name collisions
+   * 
+   * @return true if all files were sucessfully copied, false if even one file was skipped due to overwrite=false and rename=false settings
+   * 
+   * @throws IOException if there were major problems with any of the file operations
+   */
+  public static boolean copyDirectory( File source, File target, String pattern, boolean recurse, boolean preserveHierarchy, boolean keepDate, boolean overwrite, boolean rename ) throws IOException {
+    boolean retval = true;
+
+    // if we have a pattern
+    if ( StringUtil.isNotBlank( pattern ) ) {
+
+      List<File> foundFiles = FileUtil.getFiles( source, pattern, recurse );
+
+      // create a map of source files to target files.
+      Map<String, String> src2tgt = new HashMap<String, String>( foundFiles.size() );
+      for ( File file : foundFiles ) {
+        src2tgt.put( file.getAbsolutePath(), file.getAbsolutePath() );
+      }
+
+      if ( recurse ) {
+        // collect files matching the pattern from potentially many different directories
+        String src = source.getAbsolutePath();
+        String tgt = target.getAbsolutePath();
+
+        if ( preserveHierarchy ) {
+
+          // swap the source directory name with the target directory name in the target side of the map
+          for ( Map.Entry<String, String> entry : src2tgt.entrySet() ) {
+            entry.setValue( entry.getValue().replace( src, tgt ) );
+            File srcFile = new File( entry.getKey() );
+            File tgtFile = new File( entry.getValue() );
+            tgtFile.getParentFile().mkdirs();
+            copyFile( srcFile, tgtFile, keepDate );
+          }
+
+        } else {
+          if ( !target.exists() ) {
+            if ( !target.mkdirs() ) {
+              throw new IOException( "Could not create target directory: " + target.getAbsolutePath() );
+            }
+          }
+
+          Set<String> targets = new HashSet<String>();
+
+          for ( File srcFile : foundFiles ) {
+            String tgtName = srcFile.getName();
+            File tgtFile = new File( tgt, tgtName );
+
+            if ( tgtFile.exists() ) {
+              if ( overwrite ) {
+                copyFile( srcFile, tgtFile, keepDate );
+                targets.add( tgtName );
+              } else {
+                // we are not allowed to overwrite files so see if we can 
+                // rename it
+                if ( rename ) {
+                  // create a generational target name
+                  int generation = 1;
+                  while ( targets.contains( tgtName ) ) {
+                    tgtName = formatGenerationalName( tgtName, generation++ );
+                  }
+                  tgtFile = new File( tgt, tgtName );
+                  copyFile( srcFile, tgtFile, keepDate );
+                  targets.add( tgtName );
+
+                } else {
+                  // The target file already exists, but we are not allowed to 
+                  // overwrite it and we are not allow to create a new file 
+                  // with a different name so don't copy the file and set the 
+                  // return flag to false indicating that at least one file did 
+                  // not get copied.
+                  retval = false;
+                }
+              }
+
+            } else {
+              copyFile( srcFile, tgtFile, keepDate );
+              targets.add( tgtName );
+            }
+          }
+        }
+
+      } else {
+        // one directory's contents onto another no name collisions
+
+      }
+
+    } else {
+      // simple directory copy
+      FileUtil.copyDirectory( source, target, keepDate );
+    }
+
+    return retval;
+  }
+
+
+
+
+  /**
+   * Construct a generational name from the given filename using the given int as the generation.
+   * 
+   * <p>This is desigend to be called thusly:<pre>
+   * int generation = 1;
+   * while(<some_test> )){
+   *   tgtFile = formatGenerationalName(tgtFile,generation++);
+   * }</pre></p>
+   * 
+   * @param tgtFile
+   * @param generation
+   * @return the generational name, never null, but may be blank 
+   */
+  public static String formatGenerationalName( String tgtFile, int generation ) {
+    StringBuffer b = new StringBuffer();
+    if ( StringUtil.isNotBlank( tgtFile ) ) {
+      String[] tokens = tgtFile.split( "\\.(?=[^\\.]+$)" );
+      if ( tokens.length == 2 ) {
+        b.append( tokens[0] );
+        b.append( '.' );
+        b.append( generation );
+        b.append( '.' );
+        b.append( tokens[1] );
+      } else if ( tokens.length == 1 ) {
+        b.append( tokens[0] );
+        b.append( '.' );
+        b.append( generation );
+      }
+    }
+
+    return b.toString();
+  }
+
 }
