@@ -40,10 +40,8 @@ import java.text.FieldPosition;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.StringTokenizer;
@@ -2944,12 +2942,6 @@ public final class FileUtil {
 
       List<File> foundFiles = FileUtil.getFiles( source, pattern, recurse );
 
-      // create a map of source files to target files.
-      Map<String, String> src2tgt = new HashMap<String, String>( foundFiles.size() );
-      for ( File file : foundFiles ) {
-        src2tgt.put( file.getAbsolutePath(), file.getAbsolutePath() );
-      }
-
       if ( recurse ) {
         // collect files matching the pattern from potentially many different directories
         String src = source.getAbsolutePath();
@@ -2957,13 +2949,16 @@ public final class FileUtil {
 
         if ( preserveHierarchy ) {
 
-          // swap the source directory name with the target directory name in the target side of the map
-          for ( Map.Entry<String, String> entry : src2tgt.entrySet() ) {
-            entry.setValue( entry.getValue().replace( src, tgt ) );
-            File srcFile = new File( entry.getKey() );
-            File tgtFile = new File( entry.getValue() );
+          // for each of the found files
+          for ( File file : foundFiles ) {
+            // replace the source directory path with the target directory path
+            File tgtFile = new File( file.getAbsolutePath().replace( src, tgt ) );
+
+            // make sure the parent directories exist
             tgtFile.getParentFile().mkdirs();
-            copyFile( srcFile, tgtFile, keepDate );
+            // copy the file preserving the date if necessary
+            copyFile( file, tgtFile, keepDate );
+
           }
 
         } else {

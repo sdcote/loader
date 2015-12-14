@@ -53,7 +53,6 @@ public class FileUtilCopyTest {
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
     testDir = new File( "testdir" );
-    System.out.println( testDir.getAbsolutePath() );
     Log.addLogger( Log.DEFAULT_LOGGER_NAME, new ConsoleAppender( Log.TRACE_EVENTS | Log.DEBUG_EVENTS | Log.INFO_EVENTS | Log.WARN_EVENTS | Log.ERROR_EVENTS | Log.FATAL_EVENTS ) );
   }
 
