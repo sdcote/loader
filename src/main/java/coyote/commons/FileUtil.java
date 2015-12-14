@@ -1251,22 +1251,42 @@ public final class FileUtil {
 
 
   /**
-   * Delete a file
+   * Delete a file without throwing any exceptions.
    *
-   * @param fname
+   * @param file the file reference to delete
    *
-   * @throws IOException
-   * @throws NullPointerException
+   * @return true if the file was deleted or does not exist, false otherwise
    */
-  public final static void deleteFile( final String fname ) throws NullPointerException, IOException {
-    final File f = new File( fname );
-
-    // only delete a file that exists
-    if ( f.exists() ) {
-      // try the delete. If it fails, complain
-      if ( !f.delete() ) {
-        throw new IOException( "Could not delete file: '" + fname + "'" );
+  public final static boolean deleteFile( File file ) {
+    if ( file != null ) {
+      // only delete a file that exists
+      if ( file.exists() ) {
+        // try the delete. If it fails, complain
+        if ( !file.delete() ) {
+          return false;
+        }
       }
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+
+
+
+  /**
+   * Delete a file without throwing any exceptions.
+   *
+   * @param fname the name of the file to delete
+   *
+   * @return true if the file was deleted or does not exist, false otherwise
+   */
+  public final static boolean deleteFile( final String fname ) {
+    if ( StringUtil.isNotBlank( fname ) ) {
+      return deleteFile( new File( fname ) );
+    } else {
+      return false;
     }
   }
 
@@ -1468,6 +1488,8 @@ public final class FileUtil {
    * @param dir The file reference to the directory to delete
    * @param clrdir Delete the directory after it has been cleared
    * @param clrsub Clear the sub-directories of this directory as well
+   * 
+   * @see #deleteDirectory(File)
    */
   public static void clearDir( final File dir, final boolean clrdir, final boolean clrsub ) {
     if ( !dir.isDirectory() ) {
@@ -2857,9 +2879,15 @@ public final class FileUtil {
   /**
    * Deletes a directory and all of its contents.
    * 
+   * <p>Simple,Quick, No Frills approach to wiping out a directory. See 
+   * {@linkplain #clearDir(File, boolean, boolean)} for a method with more 
+   * frills.</p>
+   * 
    * @param dir the reference to a directory or a file
    * 
    * @return true if everything was deleted, false if at least one item could not be deleted.
+   * 
+   * @see #clearDir(File, boolean, boolean)
    */
   public static boolean deleteDirectory( File dir ) {
     boolean retval = true;
