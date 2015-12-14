@@ -48,6 +48,8 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.regex.Pattern;
 
+import coyote.loader.log.Log;
+
 
 /**
  * This is group of static functions to work with files.
@@ -2907,7 +2909,7 @@ public final class FileUtil {
    * @param overwrite true to overwrite files in the target directory with the same name if they exist
    * @param rename true to rename the file in the target directory if it already exists and overwrite is false, false to ignore name collisions
    * 
-   * @return true if all files were sucessfully copied, false if even one file was skipped due to overwrite=false and rename=false settings
+   * @return true if all files were successfully copied, false if even one file was skipped due to overwrite=false and rename=false settings
    * 
    * @throws IOException if there were major problems with any of the file operations
    */
@@ -2930,7 +2932,7 @@ public final class FileUtil {
    * @param overwrite true to overwrite files in the target directory with the same name if they exist
    * @param rename true to rename the file in the target directory if it already exists and overwrite is false, false to ignore name collisions
    * 
-   * @return true if all files were sucessfully copied, false if even one file was skipped due to overwrite=false and rename=false settings
+   * @return true if all files were successfully copied, false if even one file was skipped due to overwrite=false and rename=false settings
    * 
    * @throws IOException if there were major problems with any of the file operations
    */
@@ -2941,6 +2943,10 @@ public final class FileUtil {
     if ( StringUtil.isNotBlank( pattern ) ) {
 
       List<File> foundFiles = FileUtil.getFiles( source, pattern, recurse );
+
+      if ( Log.isLogging( Log.DEBUG_EVENTS ) ) {
+        Log.debug( "Found " + foundFiles.size() + " files with a pattern of '" + pattern + "' in " + source.getAbsolutePath() + " - resurse:" + recurse );
+      }
 
       if ( recurse ) {
         // collect files matching the pattern from potentially many different directories
@@ -3009,9 +3015,45 @@ public final class FileUtil {
         }
 
       } else {
-        // one directory's contents onto another no name collisions
 
-      }
+        // make sure the target directory exists
+        if ( !target.exists() ) {
+          if ( !target.mkdirs() ) {
+            throw new IOException( "Could not create target directory: " + target.getAbsolutePath() );
+          }
+        }
+
+        String tgt = target.getAbsolutePath();
+
+        // one directory's contents onto another no name collisions
+        for ( File srcFile : foundFiles ) {
+          String tgtName = srcFile.getName();
+          File tgtFile = new File( tgt, tgtName );
+
+          if ( tgtFile.exists() ) {
+            if ( overwrite ) {
+              copyFile( srcFile, tgtFile, keepDate );
+            } else {
+              if ( rename ) {
+                // create a generational target name
+                int generation = 1;
+                while ( tgtFile.exists() ) {
+                  tgtFile = new File( tgt, formatGenerationalName( tgtName, generation++ ) );
+                }
+                copyFile( srcFile, tgtFile, keepDate );
+              } else {
+                // set the return flag to false indicating that at least one 
+                // file did not get copied.
+                retval = false;
+              } // rename
+            } // overwrite
+          } else {
+            // just copy it
+            copyFile( srcFile, tgtFile, keepDate );
+          }// target exists
+        } // for each found file
+
+      } // recurse
 
     } else {
       // simple directory copy
@@ -3027,7 +3069,7 @@ public final class FileUtil {
   /**
    * Construct a generational name from the given filename using the given int as the generation.
    * 
-   * <p>This is desigend to be called thusly:<pre>
+   * <p>This is designed to be called thusly:<pre>
    * int generation = 1;
    * while(<some_test> )){
    *   tgtFile = formatGenerationalName(tgtFile,generation++);
