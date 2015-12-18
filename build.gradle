@@ -4,7 +4,7 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 
 
-defaultTasks 'clean', 'build', 'publish'
+defaultTasks 'clean', 'build', 'publish', 'fatJar'
 group = 'coyote'
 version = '1.1'
 
@@ -42,18 +42,23 @@ repositories {
 	mavenLocal()
 
 	mavenCentral()
-		
+
 }
 
 
 ext {
 	junitVersion = '4.11'
 	dataFrameVersion = '0.3'
+	slf4jVersion = '1.7.7'
+	
 }
 dependencies {
 
 	// Abstract Data Type
 	compile "coyote:DataFrame:$dataFrameVersion"
+	
+	// used to make internal logger binding
+	compile "org.slf4j:slf4j-api:$slf4jVersion"
 
 	// UnitTesting
 	testCompile "junit:junit:$junitVersion"	
