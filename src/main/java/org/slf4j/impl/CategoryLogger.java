@@ -51,7 +51,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void debug( final Marker marker, final String format, final Object arg ) {
-    // TODO Auto-generated method stub
+    Log.debug( String.format( format, arg ) );
   }
 
 
@@ -62,7 +62,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void debug( final Marker marker, final String format, final Object... arguments ) {
-    // TODO Auto-generated method stub
+    Log.debug( String.format( format, arguments ) );
   }
 
 
@@ -73,7 +73,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void debug( final Marker marker, final String format, final Object arg1, final Object arg2 ) {
-    // TODO Auto-generated method stub
+    Log.debug( String.format( format, arg1, arg2 ) );
   }
 
 
@@ -106,7 +106,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void debug( final String format, final Object arg ) {
-    Log.debug( arg );
+    Log.debug( String.format( format, arg ) );
   }
 
 
@@ -117,7 +117,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void debug( final String format, final Object... arguments ) {
-    // TODO Auto-generated method stub
+    Log.debug( String.format( format, arguments ) );
   }
 
 
@@ -128,7 +128,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void debug( final String format, final Object arg1, final Object arg2 ) {
-    Log.debug( arg1 );
+    Log.debug( String.format( format, arg1, arg2 ) );
   }
 
 
@@ -139,7 +139,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void debug( final String msg, final Throwable t ) {
-    Log.info( msg, t );
+    Log.debug( msg, t );
   }
 
 
@@ -161,7 +161,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void error( final Marker marker, final String format, final Object arg ) {
-    Log.error( arg );
+    Log.error( String.format( format, arg ) );
   }
 
 
@@ -172,7 +172,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void error( final Marker marker, final String format, final Object... arguments ) {
-    // TODO Auto-generated method stub
+    Log.error( String.format( format, arguments ) );
   }
 
 
@@ -183,7 +183,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void error( final Marker marker, final String format, final Object arg1, final Object arg2 ) {
-    // TODO Auto-generated method stub
+    Log.error( String.format( format, arg1, arg2 ) );
   }
 
 
@@ -194,7 +194,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void error( final Marker marker, final String msg, final Throwable t ) {
-    // TODO Auto-generated method stub
+    Log.error( msg, t );
   }
 
 
@@ -216,7 +216,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void error( final String format, final Object arg ) {
-    Log.error( arg );
+    Log.error( String.format( format, arg ) );
   }
 
 
@@ -227,7 +227,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void error( final String format, final Object... arguments ) {
-    // TODO Auto-generated method stub
+    Log.error( String.format( format, arguments ) );
   }
 
 
@@ -238,7 +238,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void error( final String format, final Object arg1, final Object arg2 ) {
-    Log.error( arg1 );
+    Log.error( String.format( format, arg1, arg2 ) );
   }
 
 
@@ -282,7 +282,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void info( final Marker marker, final String format, final Object arg ) {
-    // TODO Auto-generated method stub
+    Log.info( String.format( format, arg ) );
   }
 
 
@@ -293,7 +293,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void info( final Marker marker, final String format, final Object... arguments ) {
-    // TODO Auto-generated method stub
+    Log.info( String.format( format, arguments ) );
   }
 
 
@@ -304,7 +304,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void info( final Marker marker, final String format, final Object arg1, final Object arg2 ) {
-    // TODO Auto-generated method stub
+    Log.info( String.format( format, arg1, arg2 ) );
   }
 
 
@@ -315,7 +315,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void info( final Marker marker, final String msg, final Throwable t ) {
-    // TODO Auto-generated method stub
+    Log.info( msg, t );
   }
 
 
@@ -337,7 +337,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void info( final String format, final Object arg ) {
-    Log.info( arg );
+    Log.info( String.format( format, arg ) );
   }
 
 
@@ -348,7 +348,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void info( final String format, final Object... arguments ) {
-    // TODO Auto-generated method stub
+    Log.info( String.format( format, arguments ) );
   }
 
 
@@ -359,7 +359,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void info( final String format, final Object arg1, final Object arg2 ) {
-    Log.info( arg1 );
+    Log.info( String.format( format, arg1, arg2 ) );
   }
 
 
@@ -392,7 +392,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public boolean isDebugEnabled( final Marker marker ) {
-    return false;
+    return Log.isLogging( Log.DEBUG );
   }
 
 
@@ -414,7 +414,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public boolean isErrorEnabled( final Marker marker ) {
-    return false;
+    return Log.isLogging( Log.ERROR );
   }
 
 
@@ -436,8 +436,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public boolean isInfoEnabled( final Marker marker ) {
-    // TODO Auto-generated method stub
-    return false;
+    return Log.isLogging( Log.INFO );
   }
 
 
@@ -459,7 +458,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public boolean isTraceEnabled( final Marker marker ) {
-    return false;
+    return Log.isLogging( Log.TRACE );
   }
 
 
@@ -481,7 +480,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public boolean isWarnEnabled( final Marker marker ) {
-    return false;
+    return Log.isLogging( Log.WARN );
   }
 
 
@@ -492,7 +491,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void trace( final Marker marker, final String msg ) {
-    // TODO Auto-generated method stub
+    Log.trace( msg );
   }
 
 
@@ -503,7 +502,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void trace( final Marker marker, final String format, final Object arg ) {
-    // TODO Auto-generated method stub
+    Log.trace( String.format( format, arg ) );
   }
 
 
@@ -513,8 +512,8 @@ public class CategoryLogger implements Logger {
    * @see org.slf4j.Logger#trace(org.slf4j.Marker, java.lang.String, java.lang.Object[])
    */
   @Override
-  public void trace( final Marker marker, final String format, final Object... argArray ) {
-    // TODO Auto-generated method stub
+  public void trace( final Marker marker, final String format, final Object... arguments ) {
+    Log.trace( String.format( format, arguments ) );
   }
 
 
@@ -525,7 +524,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void trace( final Marker marker, final String format, final Object arg1, final Object arg2 ) {
-    // TODO Auto-generated method stub
+    Log.trace( String.format( format, arg1, arg2 ) );
   }
 
 
@@ -536,7 +535,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void trace( final Marker marker, final String msg, final Throwable t ) {
-    // TODO Auto-generated method stub
+    Log.trace( msg, t );
   }
 
 
@@ -558,7 +557,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void trace( final String format, final Object arg ) {
-    Log.trace( arg );
+    Log.trace( String.format( format, arg ) );
   }
 
 
@@ -569,7 +568,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void trace( final String format, final Object... arguments ) {
-    // TODO Auto-generated method stub
+    Log.trace( String.format( format, arguments ) );
   }
 
 
@@ -580,7 +579,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void trace( final String format, final Object arg1, final Object arg2 ) {
-    Log.trace( arg1 );
+    Log.trace( String.format( format, arg1, arg2 ) );
   }
 
 
@@ -613,7 +612,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void warn( final Marker marker, final String format, final Object arg ) {
-    // TODO Auto-generated method stub
+    Log.warn( String.format( format, arg ) );
   }
 
 
@@ -624,7 +623,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void warn( final Marker marker, final String format, final Object... arguments ) {
-    // TODO Auto-generated method stub
+    Log.warn( String.format( format, arguments ) );
   }
 
 
@@ -635,7 +634,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void warn( final Marker marker, final String format, final Object arg1, final Object arg2 ) {
-    // TODO Auto-generated method stub
+    Log.warn( String.format( format, arg1, arg2 ) );
   }
 
 
@@ -668,7 +667,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void warn( final String format, final Object arg ) {
-    Log.warn( arg );
+    Log.warn( String.format( format, arg ) );
   }
 
 
@@ -679,7 +678,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void warn( final String format, final Object... arguments ) {
-    // TODO Auto-generated method stub
+    Log.warn( String.format( format, arguments ) );
   }
 
 
@@ -690,7 +689,7 @@ public class CategoryLogger implements Logger {
    */
   @Override
   public void warn( final String format, final Object arg1, final Object arg2 ) {
-    Log.warn( arg1 );
+    Log.warn( String.format( format, arg1, arg2 ) );
   }
 
 
