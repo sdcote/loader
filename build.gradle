@@ -48,7 +48,7 @@ repositories {
 
 ext {
 	junitVersion = '4.11'
-	dataFrameVersion = '0.3'
+	dataFrameVersion = '1.0'
 	slf4jVersion = '1.7.7'
 	
 }
