@@ -13,6 +13,7 @@ package coyote.commons;
 
 //import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -82,6 +83,26 @@ public class StringUtilTest {
     field = StringUtil.fixedLength( text, 4, RIGHT, '*' );
     assertTrue( field.length() == 4 );
     assertEquals( field, "yote" );
+  }
+
+
+
+
+  @Test
+  public void empty() {
+    assertTrue( StringUtil.isEmpty( "" ) );
+    assertTrue( StringUtil.isEmpty( null ) );
+    assertFalse( StringUtil.isEmpty( " " ) );
+  }
+
+
+
+
+  @Test
+  public void notEmpty() {
+    assertFalse( StringUtil.isNotEmpty( "" ) );
+    assertFalse( StringUtil.isNotEmpty( null ) );
+    assertTrue( StringUtil.isNotEmpty( " " ) );
   }
 
 }

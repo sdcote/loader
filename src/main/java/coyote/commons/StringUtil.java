@@ -195,6 +195,46 @@ public class StringUtil {
 
 
   /**
+   * Checks if a string is null or empty ("").
+   * 
+   * @param str the String to check, may be null
+   * 
+   * @return <code>true</code> if the String is empty or null, false othersize
+   * 
+   * @see #isNotEmpty(String)
+   */
+  public static boolean isEmpty( String str ) {
+    if ( str == null || str.length() == 0 ) {
+      return true;
+    }
+    return false;
+  }
+
+
+
+
+  /**
+   * Checks if a string is not null and not empty ("").
+   * 
+   * <p>Whitespace is allowed.</p>
+   * 
+   * <p>This is a convenience wrapper around {@code isEmpty(String)} to make 
+   * code slightly more readable.</p>
+   * 
+   * @param str the String to check, may be null
+   * 
+   * @return <code>true</code> if the String is not empty and not null, false othersize
+   * 
+   * @see #isEmpty(String)
+   */
+  public static boolean isNotEmpty( String str ) {
+    return !StringUtil.isEmpty( str );
+  }
+
+
+
+
+  /**
    * Checks if a string is not null, empty ("") and not only whitespace.
    * 
    * @param str the String to check, may be null
