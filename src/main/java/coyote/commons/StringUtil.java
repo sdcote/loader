@@ -199,7 +199,7 @@ public class StringUtil {
    * 
    * @param str the String to check, may be null
    * 
-   * @return <code>true</code> if the String is empty or null, false othersize
+   * @return <code>true</code> if the String is empty or null, false otherwise
    * 
    * @see #isNotEmpty(String)
    */
