@@ -68,14 +68,14 @@ public class DefaultFormatter implements Formatter {
     buffer.append( " | " );
 
     // The trace category get additional location information
-    if ( Log.TRACE.equals( category ) ) {
+    if ( Log.TRACE.equals( category ) || Log.DEBUG.equals( category ) ) {
       final StackTraceElement[] stack = new Exception().fillInStackTrace().getStackTrace();
 
       // get the 4th element, 1=DefaultFormatter.format(), 2=Appender.append(),
       // 3=Log.append(), 4=the source method call
       final StackTraceElement elem = stack[4];
 
-      buffer.append( ExceptionUtil.getLocalJavaName( elem.getClassName() ) );
+      buffer.append( ExceptionUtil.getAbbreviatedClassname( elem.getClassName() ) );
       buffer.append( "." );
       buffer.append( elem.getMethodName() );
       buffer.append( "():" );
@@ -159,9 +159,7 @@ public class DefaultFormatter implements Formatter {
 
 
   /**
-   * Method initialize
-   *
-   * @return TODO Complete Documentation
+   * @return any header data to be sent to the appender
    */
   public byte[] initialize() {
     return null;
@@ -171,9 +169,7 @@ public class DefaultFormatter implements Formatter {
 
 
   /**
-   * Method terminate
-   *
-   * @return TODO Complete Documentation
+   * @return any footer data to be sent to the appender
    */
   public byte[] terminate() {
     return null;
