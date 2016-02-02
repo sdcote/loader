@@ -137,4 +137,35 @@ public class ExceptionUtil {
     return ( indx != -1 ) ? text.substring( indx + 1 ) : text;
   }
 
+
+
+
+  public static String getAbbreviatedClassname( final String classname ) {
+    if ( classname != null ) {
+      String[] tokens = classname.split( "\\." );
+
+      if ( tokens.length > 1 ) {
+        StringBuffer b = new StringBuffer();
+        for ( int x = 0; x < tokens.length; x++ ) {
+          if ( tokens[x].length() > 0 ) {
+            if ( x + 1 < tokens.length ) {
+              b.append( tokens[x].charAt( 0 ) );
+              b.append( '.' );
+            } else {
+              b.append( tail( classname, '.' ) );
+              break;
+            }
+          }
+        }
+        return b.toString();
+
+      } else {
+        return classname;
+      }
+    } else {
+      return "";
+    }
+
+  }
+
 }
