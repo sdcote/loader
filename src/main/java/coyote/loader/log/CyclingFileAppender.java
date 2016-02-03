@@ -32,6 +32,7 @@ import java.util.Calendar;
 public class CyclingFileAppender extends FileAppender {
   /** The name of the property containing the maximum generations to keep. */
   public static final String GENERATION_TAG = "Generations";
+
   /**
    * The name of the property containing the maximum size in bytes of the file
    * to keep before cycling.

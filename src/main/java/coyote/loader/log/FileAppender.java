@@ -20,6 +20,7 @@ import java.io.Writer;
 import coyote.commons.ExceptionUtil;
 import coyote.commons.StringUtil;
 import coyote.commons.UriUtil;
+import coyote.dataframe.DataFrameException;
 
 
 /**
@@ -28,10 +29,12 @@ import coyote.commons.UriUtil;
  */
 public class FileAppender extends AbstractLogger {
 
-  /** Field log_writer */
+  public static final String APPEND_TAG = "append";
+
   protected Writer log_writer;
   protected File targetFile = null;
   protected long nextCycle = Long.MAX_VALUE;
+  protected boolean append = true;
 
 
 
@@ -48,32 +51,49 @@ public class FileAppender extends AbstractLogger {
 
 
   /**
-   * Construct a LoggerBase that writes to the specified File with an initial mask
-   * value of zero (i.e. does not log any events).
+   * Construct a LoggerBase that writes (appends) to the specified File with an 
+   * initial mask value of zero (i.e. does not log any events).
    *
    * @param file The file.
    */
   public FileAppender( final File file ) {
-    this( file, 0 );
+    this( file, 0, true );
   }
 
 
 
 
   /**
-   * Construct a LoggerBase that writes to the specified File with an initial mask
-   * value.
+   * Construct a LoggerBase that writes to the specified File with an initial 
+   * mask value of zero (i.e. does not log any events) and either appends or 
+   * overwrites the file.
+   *
+   * @param file The file.
+   * @param appendflag true to append data to the file, false to overwrite
+   */
+  public FileAppender( final File file, final boolean appendflag ) {
+    this( file, 0, appendflag );
+  }
+
+
+
+
+  /**
+   * Construct a LoggerBase that writes to the specified File with an initial 
+   * mask value and either appends or overwrites the file.
    *
    * @param file The file.
    * @param mask The initial mask value.
+   * @param appendflag true to append data to the file, false to overwrite
    */
-  public FileAppender( final File file, final int mask ) {
+  public FileAppender( final File file, final long mask, boolean appendflag ) {
     super( mask );
+    append = appendflag;
 
     try {
       if ( log_writer == null ) {
         targetFile = file;
-        log_writer = new OutputStreamWriter( new FileOutputStream( file.toString(), true ) );
+        log_writer = new OutputStreamWriter( new FileOutputStream( file.toString(), append ) );
 
         final byte[] header = getFormatter().initialize();
 
@@ -104,7 +124,7 @@ public class FileAppender extends AbstractLogger {
   public void append( final String category, final Object event, final Throwable cause ) {
     if ( !targetFile.exists() ) {
       try {
-        log_writer = new OutputStreamWriter( new FileOutputStream( targetFile.toString(), true ) );
+        log_writer = new OutputStreamWriter( new FileOutputStream( targetFile.toString(), append ) );
 
         final byte[] header = getFormatter().initialize();
 
@@ -165,6 +185,13 @@ public class FileAppender extends AbstractLogger {
       // have the logger init the target and categories from properties for us
       super.initialize();
 
+      // see if the configuration contains the append flag
+      if ( config.contains( FileAppender.APPEND_TAG ) ) {
+        try {
+          append = config.getAsBoolean( FileAppender.APPEND_TAG );
+        } catch ( DataFrameException ignore ) {}
+      }
+
       // check to see if we are enabled, if so, then prepare the log writer
       if ( getMask() != 0 ) {
         prepareWriter();
@@ -206,7 +233,7 @@ public class FileAppender extends AbstractLogger {
         targetFile = dest;
 
         // Create the writer
-        log_writer = new OutputStreamWriter( new FileOutputStream( targetFile.toString(), true ) );
+        log_writer = new OutputStreamWriter( new FileOutputStream( targetFile.toString(), append ) );
 
         final byte[] header = getFormatter().initialize();
 
@@ -264,5 +291,25 @@ public class FileAppender extends AbstractLogger {
     finally {
       initialized = false;
     }
+  }
+
+
+
+
+  /**
+   * @return the append
+   */
+  public boolean isAppending() {
+    return append;
+  }
+
+
+
+
+  /**
+   * @param flag true to append log entries to the file, false to overwrite the file
+   */
+  public void setAppending( boolean flag ) {
+    append = flag;
   }
 }
