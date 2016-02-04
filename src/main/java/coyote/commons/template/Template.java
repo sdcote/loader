@@ -70,9 +70,11 @@ import coyote.commons.StringParser;
 public class Template extends StringParser {
   private static SymbolTable symbols = new SymbolTable();
   private Hashtable<String, Object> classCache = new Hashtable<String, Object>();
+  private static Hashtable<String, Object> staticCache = new Hashtable<String, Object>();
 
   private static final String OPEN = "[#";
   private static final String CLOSE = "#]";
+  private static final char DOT = '.';
 
 
 
@@ -112,6 +114,21 @@ public class Template extends StringParser {
   public void put( Object obj ) {
     if ( obj != null ) {
       classCache.put( obj.getClass().getName(), obj );
+    }
+  }
+
+
+
+
+  /**
+   * Method put
+   *
+   * @param obj
+   * @param name name of the class to place in the template
+   */
+  public void put( String name, Object obj ) {
+    if ( obj != null && name != null && name.length() > 0 ) {
+      classCache.put( name, obj );
     }
   }
 
@@ -164,7 +181,7 @@ public class Template extends StringParser {
           int boundry = token.indexOf( '|' );
           if ( boundry > 0 ) {
             String key = token.substring( 1, boundry );
-            String format = token.substring( boundry+1 );
+            String format = token.substring( boundry + 1 );
             retval.append( symbols.getString( key, format ) );
 
           } else {
@@ -173,9 +190,30 @@ public class Template extends StringParser {
         } else {
           // Must be a class; see if it is a method or constructor reference
 
-          //
-          // TODO: More goes here
-          //
+          if ( token.indexOf( DOT ) > 0 ) {
+            // we have an object key and a method
+
+            // get the object by the key
+
+            // parse out the method to call
+
+            // parse out the arguments by the space delimiter
+
+            // if the arguments start with a $, resolve them to their values
+
+            // reflect into the object to see if there is the named method with the correct number of string arguments
+
+            // call the method
+
+            // call the toString on the return value
+
+            // append the result to our return value
+
+          } else {
+            // we just have an object
+
+            // get the object and call its toString method
+          }
 
         }
       }

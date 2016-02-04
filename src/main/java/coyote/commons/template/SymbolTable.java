@@ -66,6 +66,9 @@ public class SymbolTable extends HashMap {
 
 
 
+  /**
+   * Remove properties which are known to contain sensitive data
+   */
   private void cleanse() {
     remove( "http.proxyPassword" );
   }
