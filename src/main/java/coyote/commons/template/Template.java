@@ -185,14 +185,14 @@ public class Template extends StringParser {
             retval.append( symbols.getString( token.substring( 1 ) ) );
           }
         } else {
-          // Must be a class; see if it is a method or constructor reference
+          // Must be a class; use the entire tag when parsing
 
           // the last dotted token is always assumed to be a method name
-          int indx = token.lastIndexOf( DOT );
+          int indx = tag.lastIndexOf( DOT );
           if ( indx != -1 ) {
             // we have an object key and a method
-            String objectKey = token.substring( 0, indx );
-            String methodToken = token.substring( indx + 1 );
+            String objectKey = tag.substring( 0, indx );
+            String methodToken = tag.substring( indx + 1 );
             String methodName = null;
             String[] arguments = EMPTY_ARGS;
 
@@ -242,39 +242,23 @@ public class Template extends StringParser {
                 Object returned = null;
 
                 // setup the argument signature
-                Class[] cArg = new Class[arguments.length];
-                for ( int x = 0; x < cArg.length; x++ ) {
-                  cArg[x] = String.class;
+                Class<?>[] cArg = new Class[arguments.length];
+                for ( int x = 0; x < arguments.length; x++ ) {
+                  cArg[x] = arguments[x].getClass();;
                 }
 
+                // find the method with the argument signature
                 try {
                   method = obj.getClass().getMethod( methodName, cArg );
                 } catch ( Exception e1 ) {
-                  e1.printStackTrace();
+                  // silently ignore e1.printStackTrace();
                 }
 
+                // if we found a method matching the signature
                 if ( method != null ) {
-
+                  // invoke the method
                   try {
-                    if ( arguments.length == 0 ) {
-                      returned = method.invoke( obj );
-                    } else if ( arguments.length == 1 ) {
-                      returned = method.invoke( obj, arguments[0] );
-                    } else if ( arguments.length == 2 ) {
-                      returned = method.invoke( obj, arguments[0], arguments[1] );
-                    } else if ( arguments.length == 3 ) {
-                      returned = method.invoke( obj, arguments[0], arguments[1], arguments[2] );
-                    } else if ( arguments.length == 4 ) {
-                      returned = method.invoke( obj, arguments[0], arguments[1], arguments[2], arguments[3] );
-                    } else if ( arguments.length == 5 ) {
-                      returned = method.invoke( obj, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4] );
-                    } else if ( arguments.length == 6 ) {
-                      returned = method.invoke( obj, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5] );
-                    } else if ( arguments.length == 7 ) {
-                      returned = method.invoke( obj, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6] );
-                    } else if ( arguments.length >= 8 ) {
-                      returned = method.invoke( obj, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7] );
-                    }
+                    returned = method.invoke( obj, (Object[])arguments );
 
                     // If we received a return value, append it
                     if ( returned != null ) {
@@ -294,11 +278,19 @@ public class Template extends StringParser {
           } else {
             // we just have an object
 
-            // get the object and call its toString method
-          }
+            // get the object by the key
+            Object obj = Template.get( token );
 
-        }
-      }
+            // If we have an object with that name call its toString method
+            if ( obj != null ) {
+              retval.append( obj.toString() );
+            }
+
+          } // object key 
+
+        }// variable or object token?
+
+      } // while parser not EOF
     } catch ( Exception ex ) {
 
     }

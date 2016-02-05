@@ -123,6 +123,18 @@ public class TemplateTest {
     formattedText = Template.resolve( text, symbols );
     System.out.println( formattedText );
 
+    text = ">[#Thing.tupper(hello, something)#]<-wrong parameter count";
+    formattedText = Template.resolve( text, symbols );
+    System.out.println( formattedText );
+
+    text = ">[#Thing.tlower(hello)#]<-unknown method";
+    formattedText = Template.resolve( text, symbols );
+    System.out.println( formattedText );
+
+    text = ">[#NoThing.tupper(hello)#]<-unknown object";
+    formattedText = Template.resolve( text, symbols );
+    System.out.println( formattedText );
+
   }
 
   /**
