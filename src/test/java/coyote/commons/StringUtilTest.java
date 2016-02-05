@@ -14,6 +14,8 @@ package coyote.commons;
 //import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -105,4 +107,50 @@ public class StringUtilTest {
     assertTrue( StringUtil.isNotEmpty( " " ) );
   }
 
+
+
+
+  @Test
+  public void quotedValue() {
+
+    String text = "";
+    String expected = null;
+    String result = StringUtil.getQuotedValue( text );
+    //System.out.println( "EMPTY>" + result + "<" );
+    assertNull( result );
+
+    text = "\"";
+    result = StringUtil.getQuotedValue( text );
+    //System.out.println( "ONE>" + result + "<" );
+    assertNull( result );
+
+    text = "\"\"";
+    expected = "";
+    result = StringUtil.getQuotedValue( text );
+    //System.out.println( "TWO>" + result + "<" );
+    assertNotNull( result );
+    assertEquals( result, expected );
+
+    text = "\"123\"";
+    expected = "123";
+    result = StringUtil.getQuotedValue( text );
+    //System.out.println( "123>" + result + "<" );
+    assertNotNull( result );
+    assertEquals( result, expected );
+
+    text =  "  \"ABC\"   ";
+    expected = "ABC";
+    result = StringUtil.getQuotedValue( text );
+    //System.out.println( "SPACED>" + result+ "<" );
+    assertNotNull( result );
+    assertEquals( result, expected );
+    
+    text =  "  \"\"A\"\"B\"\"C\"\"   ";
+    expected = "\"A\"\"B\"\"C\"";
+    result = StringUtil.getQuotedValue( text );
+    //System.out.println( "INCLOSED>" + result + "<" );
+    assertNotNull( result );
+    assertEquals( result, expected );
+  }
+  
 }

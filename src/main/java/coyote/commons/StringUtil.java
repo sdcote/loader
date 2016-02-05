@@ -71,6 +71,9 @@ public class StringUtil {
   /** Right Alignment value ({@value}) for {@code fixedLength} method */
   public static final int RIGHT_ALIGNMENT = 2;
 
+  /** Double Quote character */
+  public static final char DOUBLE_QUOTE = '"';
+
   /** Field ISO8859_1 */
   public static String ISO8859_1;
   static {
@@ -235,12 +238,11 @@ public class StringUtil {
 
 
   /**
-   * Checks if a string is not null, empty ("") and not only whitespace.
+   * Checks if a string is null, empty ("") or only whitespace.
    * 
    * @param str the String to check, may be null
    * 
-   * @return <code>true</code> if the String is not empty and not null and not
-   *         whitespace
+   * @return {@code true} if the argument is empty or null or only whitespace
    */
   public static boolean isBlank( String str ) {
     int strLen;
@@ -576,7 +578,7 @@ public class StringUtil {
    * Return the string before the last occurrence of the given character in
    * the given string.
    * 
-   * <p> Useful for getting the body of a filename. </p>
+   * <p>Useful for getting the body of a filename.</p>
    * 
    * @param text the string to parse
    * @param ch the sentinel character
@@ -587,6 +589,36 @@ public class StringUtil {
   public static String head( final String text, final char ch ) {
     final int indx = text.lastIndexOf( ch );
     return ( indx != -1 ) ? text.substring( 0, indx ) : text;
+  }
+
+
+
+
+  /**
+   * Retrieve the value between the first and last double-quote characters.
+   * 
+   * <p>If there are no double-quotes or only one double-quote, the returned 
+   * value is null.</p>
+   * 
+   * <p>It is possible the returned value itself contains double-quotes. This 
+   * is because this method starts from the outside edges of the text and 
+   * returns values within the outside pairings of double-quotes.</p>
+   * 
+   * @param text the text string to parse
+   * 
+   * @return the value between the outside pairing of double-quotes or null if 
+   *         no parings were found.
+   */
+  public static String getQuotedValue( String text ) {
+    String retval = null;
+    int start = text.indexOf( DOUBLE_QUOTE );
+    int end = text.lastIndexOf( DOUBLE_QUOTE );
+
+    if ( start > -1 && end > start ) {
+      retval = text.substring( start+1, end );
+    }
+
+    return retval;
   }
 
 }

@@ -45,23 +45,15 @@ import coyote.commons.StringUtil;
  * If the token is not found in the table or the symbols object returns a null
  * string, then an empty string is returned.</p>
  *
- * <p>Tokens that are not preceded with a &quot;$&quot; are treated as class
- * tokens when encountered, the parser attempts to create a new instance of
- * that class, calling the new instances <code>toString</code> method after
- * it's constructor. If the class is not found, a string value of
- * &quot;null&quot; is returned.</p>
+ * <p>Tokens that are not preceded with a &quot;$&quot; are treated as object
+ * tokens. When encountered, the parser attempts to lookup the object in the 
+ * static cache of objects. If found, the object's {@code toString()} method is 
+ * called and that value is used at that location in the template. If the class 
+ * is not found, a string value of &quot;null&quot; is returned.</p>
+ * 
+ * <p>If the object token contains a &quot;.$&quot; character, the last token delimited by the 
  *
- * <p>If a class token contains the &quot;.&quot; character, then special
- * processing will take place. Specifically, if the last token delimited by the
- * &quot;.&quot; character in the class token starts with a lowercase alpha
- * character, then that sub-token will be treated as a method name, and the
- * remaining symbols in that tag will be resolved and passed to that method
- * after that method's class is instantiated.</p>
- *
- * <p>Classes that are created during the parsing of a template string are
- * cached and re-used by the instance of the Template class. This means the
- * template can be effectively initialized by one template string, loading the
- * classes needed for later template parsing operations.</p>
+
  *
  * <p>Pre-initialized class references may be placed into the class cache in an
  * effort to give the template visibility into component frameworks. This
@@ -195,7 +187,7 @@ public class Template extends StringParser {
         } else {
           // Must be a class; see if it is a method or constructor reference
 
-          // the las dotted token is always assumed to me a method name
+          // the last dotted token is always assumed to be a method name
           int indx = token.lastIndexOf( DOT );
           if ( indx != -1 ) {
             // we have an object key and a method
@@ -220,13 +212,11 @@ public class Template extends StringParser {
                   args = args.substring( 0, indx );
                 }
 
-                // split the argument portion into separate strings by commas
-                // ignoring any spaces
-                arguments = args.split( ",\\s*" );
-
-              } else {
-                // check for spaces, everything after might be args
-                // maybe a no-arg call is implied?
+                if ( StringUtil.isNotBlank( args ) ) {
+                  // split the argument portion into separate strings by commas
+                  // ignoring any spaces
+                  arguments = args.split( ",\\s*" );
+                }
               }
 
               // if the arguments start with a $, resolve them to their values
@@ -234,42 +224,68 @@ public class Template extends StringParser {
                 if ( StringUtil.isNotBlank( arguments[x] ) && arguments[x].charAt( 0 ) == VAR ) {
                   arguments[x] = symbols.getString( arguments[x].substring( 1 ) );
                 }
+
+                // Handle quoted values especially empty string arguments: ""
+                if ( arguments[x].length() > 1 && arguments[x].indexOf( '"' ) > -1 ) {
+                  String qval = StringUtil.getQuotedValue( arguments[x] );
+                  if ( qval != null ) {
+                    arguments[x] = qval;
+                  }
+                }
+
               }
               if ( StringUtil.isNotBlank( methodName ) ) {
                 // reflect into the object to see if there is the named method 
                 // with the correct number of string arguments
 
-                try {
-                  Method method = obj.getClass().getMethod( methodName );
-                  Object returned = null;
+                Method method = null;
+                Object returned = null;
 
-                  if ( arguments.length == 0 ) {
-                    returned = method.invoke( obj );
-                  } else if ( arguments.length == 1 ) {
-                    returned = method.invoke( obj, arguments[0] );
-                  } else if ( arguments.length == 2 ) {
-                    returned = method.invoke( obj, arguments[0], arguments[1] );
-                  } else if ( arguments.length == 3 ) {
-                    returned = method.invoke( obj, arguments[0], arguments[1], arguments[2] );
-                  } else if ( arguments.length == 4 ) {
-                    returned = method.invoke( obj, arguments[0], arguments[1], arguments[2], arguments[3] );
-                  } else if ( arguments.length == 5 ) {
-                    returned = method.invoke( obj, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4] );
-                  } else if ( arguments.length == 6 ) {
-                    returned = method.invoke( obj, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5] );
-                  } else if ( arguments.length == 7 ) {
-                    returned = method.invoke( obj, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6] );
-                  } else if ( arguments.length == 8 ) {
-                    returned = method.invoke( obj, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7] );
-                  }
-
-                  // If we received a return value, append it
-                  if ( returned != null ) {
-                    retval.append( returned.toString() );
-                  }
-                } catch ( Exception e ) {
-                  // exception handling omitted for brevity
+                // setup the argument signature
+                Class[] cArg = new Class[arguments.length];
+                for ( int x = 0; x < cArg.length; x++ ) {
+                  cArg[x] = String.class;
                 }
+
+                try {
+                  method = obj.getClass().getMethod( methodName, cArg );
+                } catch ( Exception e1 ) {
+                  e1.printStackTrace();
+                }
+
+                if ( method != null ) {
+
+                  try {
+                    if ( arguments.length == 0 ) {
+                      returned = method.invoke( obj );
+                    } else if ( arguments.length == 1 ) {
+                      returned = method.invoke( obj, arguments[0] );
+                    } else if ( arguments.length == 2 ) {
+                      returned = method.invoke( obj, arguments[0], arguments[1] );
+                    } else if ( arguments.length == 3 ) {
+                      returned = method.invoke( obj, arguments[0], arguments[1], arguments[2] );
+                    } else if ( arguments.length == 4 ) {
+                      returned = method.invoke( obj, arguments[0], arguments[1], arguments[2], arguments[3] );
+                    } else if ( arguments.length == 5 ) {
+                      returned = method.invoke( obj, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4] );
+                    } else if ( arguments.length == 6 ) {
+                      returned = method.invoke( obj, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5] );
+                    } else if ( arguments.length == 7 ) {
+                      returned = method.invoke( obj, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6] );
+                    } else if ( arguments.length >= 8 ) {
+                      returned = method.invoke( obj, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7] );
+                    }
+
+                    // If we received a return value, append it
+                    if ( returned != null ) {
+                      retval.append( returned.toString() );
+                    }
+                  } catch ( Exception e ) {
+                    System.out.println( e.getClass().getSimpleName() + ":" + e.getMessage() );
+                    //e.printStackTrace();
+                  }
+
+                } // if we found a method with the signature
 
               } // if we have a method name to call
 
