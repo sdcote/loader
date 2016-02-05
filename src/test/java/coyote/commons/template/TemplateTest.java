@@ -92,4 +92,54 @@ public class TemplateTest {
     assertTrue( formattedText.length() == 8 );
   }
 
+
+
+
+  @Test
+  public void testObjects() {
+
+    // Create a new object to place in the template
+    Thing thing = new Thing();
+    
+    // Place it in the template with the name of "Thing"
+    Template.put( "Thing", thing );
+
+    // Create a template which call a method on the object
+    String text = "[#Thing.hello()#] World!";
+
+    // Resolve the text
+    String formattedText = Template.resolve( text, symbols );
+    System.out.println( formattedText );
+  }
+
+  
+  /**
+   * The objects which can be placed in templates have few limitations. 
+   * Only methods which take strings as arguments are called.
+   * A is limit of 8 arguments in such methods.
+   */
+  class Thing {
+    Thing() {
+
+    }
+
+
+
+
+    String hello() {
+      return "Hello";
+    }
+
+
+
+
+    String tupper( String text ) {
+      if ( text != null ) {
+        return text.toUpperCase();
+      } else {
+        return "";
+      }
+    }
+
+  }
 }

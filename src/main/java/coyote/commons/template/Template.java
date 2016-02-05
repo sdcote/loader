@@ -12,9 +12,11 @@
 package coyote.commons.template;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Hashtable;
 
 import coyote.commons.StringParser;
+import coyote.commons.StringUtil;
 
 
 /**
@@ -71,10 +73,14 @@ public class Template extends StringParser {
   private static SymbolTable symbols = new SymbolTable();
   private Hashtable<String, Object> classCache = new Hashtable<String, Object>();
   private static Hashtable<String, Object> staticCache = new Hashtable<String, Object>();
+  private static final String[] EMPTY_ARGS = new String[0];
 
   private static final String OPEN = "[#";
   private static final String CLOSE = "#]";
   private static final char DOT = '.';
+  private static final char OP = '(';
+  private static final char CP = ')';
+  private static final char VAR = '$';
 
 
 
@@ -107,13 +113,13 @@ public class Template extends StringParser {
 
 
   /**
-   * Method put
+   * Put an object in the class cache for use in template resolution
    *
-   * @param obj
+   * @param obj the object to cache
    */
-  public void put( Object obj ) {
+  public static void put( Object obj ) {
     if ( obj != null ) {
-      classCache.put( obj.getClass().getName(), obj );
+      staticCache.put( obj.getClass().getName(), obj );
     }
   }
 
@@ -121,14 +127,14 @@ public class Template extends StringParser {
 
 
   /**
-   * Method put
+   * Put an object in the class cache for use in template resolution
    *
-   * @param obj
+   * @param obj the object to cache
    * @param name name of the class to place in the template
    */
-  public void put( String name, Object obj ) {
+  public static void put( String name, Object obj ) {
     if ( obj != null && name != null && name.length() > 0 ) {
-      classCache.put( name, obj );
+      staticCache.put( name, obj );
     }
   }
 
@@ -136,17 +142,16 @@ public class Template extends StringParser {
 
 
   /**
-   * Get the object with the given name.
+   * Get the object with the given name from the cache.
    *
    * @param name The name of the object to retrieve.
    *
    * @return the object with the given name or null if not found.
    */
-  public Object get( String name ) {
+  public static Object get( String name ) {
     if ( ( name != null ) && ( name.length() > 0 ) ) {
-      return classCache.get( name );
+      return staticCache.get( name );
     }
-
     return null;
   }
 
@@ -190,24 +195,85 @@ public class Template extends StringParser {
         } else {
           // Must be a class; see if it is a method or constructor reference
 
-          if ( token.indexOf( DOT ) > 0 ) {
+          // the las dotted token is always assumed to me a method name
+          int indx = token.lastIndexOf( DOT );
+          if ( indx != -1 ) {
             // we have an object key and a method
+            String objectKey = token.substring( 0, indx );
+            String methodToken = token.substring( indx + 1 );
+            String methodName = null;
+            String[] arguments = EMPTY_ARGS;
 
             // get the object by the key
+            Object obj = Template.get( objectKey );
 
-            // parse out the method to call
+            if ( obj != null ) {
+              // parse out the method to call - It should be within parentheses
+              indx = methodToken.indexOf( OP );
+              if ( indx != -1 ) {
+                methodName = methodToken.substring( 0, indx );
+                String args = methodToken.substring( indx + 1 );
 
-            // parse out the arguments by the space delimiter
+                // parse to the closing parentheses
+                indx = args.indexOf( CP );
+                if ( indx != -1 ) {
+                  args = args.substring( 0, indx );
+                }
 
-            // if the arguments start with a $, resolve them to their values
+                // split the argument portion into separate strings by commas
+                // ignoring any spaces
+                arguments = args.split( ",\\s*" );
 
-            // reflect into the object to see if there is the named method with the correct number of string arguments
+              } else {
+                // check for spaces, everything after might be args
+                // maybe a no-arg call is implied?
+              }
 
-            // call the method
+              // if the arguments start with a $, resolve them to their values
+              for ( int x = 0; x < arguments.length; x++ ) {
+                if ( StringUtil.isNotBlank( arguments[x] ) && arguments[x].charAt( 0 ) == VAR ) {
+                  arguments[x] = symbols.getString( arguments[x].substring( 1 ) );
+                }
+              }
+              if ( StringUtil.isNotBlank( methodName ) ) {
+                // reflect into the object to see if there is the named method 
+                // with the correct number of string arguments
 
-            // call the toString on the return value
+                try {
+                  Method method = obj.getClass().getMethod( methodName );
+                  Object returned = null;
 
-            // append the result to our return value
+                  if ( arguments.length == 0 ) {
+                    returned = method.invoke( obj );
+                  } else if ( arguments.length == 1 ) {
+                    returned = method.invoke( obj, arguments[0] );
+                  } else if ( arguments.length == 2 ) {
+                    returned = method.invoke( obj, arguments[0], arguments[1] );
+                  } else if ( arguments.length == 3 ) {
+                    returned = method.invoke( obj, arguments[0], arguments[1], arguments[2] );
+                  } else if ( arguments.length == 4 ) {
+                    returned = method.invoke( obj, arguments[0], arguments[1], arguments[2], arguments[3] );
+                  } else if ( arguments.length == 5 ) {
+                    returned = method.invoke( obj, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4] );
+                  } else if ( arguments.length == 6 ) {
+                    returned = method.invoke( obj, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5] );
+                  } else if ( arguments.length == 7 ) {
+                    returned = method.invoke( obj, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6] );
+                  } else if ( arguments.length == 8 ) {
+                    returned = method.invoke( obj, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7] );
+                  }
+
+                  // If we received a return value, append it
+                  if ( returned != null ) {
+                    retval.append( returned.toString() );
+                  }
+                } catch ( Exception e ) {
+                  // exception handling omitted for brevity
+                }
+
+              } // if we have a method name to call
+
+            } // if object with the name is found
 
           } else {
             // we just have an object
