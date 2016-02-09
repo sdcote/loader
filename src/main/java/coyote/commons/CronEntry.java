@@ -26,10 +26,39 @@ import java.util.HashMap;
  * passes the minute check. The rest of the date/time values can be checked 
  * accordingly.</p>
  * 
+ * minute 0-59
+ * hour 0-23
+ * day 1-31
+ * month 1-12
+ * day of week 0-6
+ * 
  * see https://en.wikipedia.org/wiki/Cron#CRON_expression
  */
 public class CronEntry {
-
+  private static final String ANY = "*";
+  private static final String MON = "Mon";
+  private static final String TUE = "Tue";
+  private static final String WED = "Wed";
+  private static final String THU = "Thu";
+  private static final String FRI = "Fri";
+  private static final String SAT = "Sat";
+  private static final String SUN = "Sun";
+  private static final String WEEKDAYS = "W";
+  private static final String JAN = "Jan";
+  private static final String FEB = "Feb";
+  private static final String MAR = "MAR";
+  private static final String APR = "Apr";
+  private static final String MAY = "May";
+  private static final String JUN = "Jun";
+  private static final String JUL = "Jul";
+  private static final String AUG = "Aug";
+  private static final String SEP = "Sep";
+  private static final String OCT = "Oct";
+  private static final String NOV = "Nov";
+  private static final String DEC = "Dec";
+  
+  
+  
   static final protected int MINUTESPERHOUR = 60;
   static final protected int HOURESPERDAY = 24;
   static final protected int DAYSPERWEEK = 7;
@@ -43,16 +72,32 @@ public class CronEntry {
   private HashMap<String, String> weekday = new HashMap<String, String>();
   private String configLine = "";
 
+  private String minutePattern = ANY;
+  private String hourPattern = ANY;
+  private String dayPattern = ANY;
+  private String monthPattern = ANY;
+  private String dayOfWeekPattern = ANY;
 
 
 
-  private CronEntry() {}
+
+  private CronEntry() {
+
+  }
 
 
 
 
   /**
-   * Parse the given crontab pattern into a CronEntry
+   * Parse the given crontab pattern into a CronEntry.
+   * 
+   * <p>Parsing is from left to right using the traditional ordering:<ol>
+   * <li>minutes</li>
+   * <li>hours</li>
+   * <li>day</li>
+   * <li>month</li>
+   * <li>day of week</li></ol>
+   * Any missing fields will be defaulted to ANY (i.e."*").</p>
    * 
    * <p>Only simple syntax is supported:
    * <li>* - any value</li>
@@ -60,7 +105,7 @@ public class CronEntry {
    * <li># - scalar value</li>
    * <li>#,#, - a list of scalars</li>
    * <li>#-# - a range of numbers</li>
-   * <li>/# - intervals</li>
+   * <li>/# - intervals</li></p>
    * 
    * @param pattern The pattern to parse
    * 
@@ -71,43 +116,52 @@ public class CronEntry {
   public static CronEntry parse( String pattern ) throws ParseException {
     CronEntry retval = new CronEntry();
 
-    retval.configLine = pattern;
-    String[] tokens = retval.configLine.split( " " );
+    String[] tokens = new String[0];
+
+    // Handle null and empty arguments
+    if ( pattern != null ) {
+      retval.configLine = pattern.trim();
+      if ( retval.configLine.length() > 0 ) {
+        tokens = retval.configLine.split( " " );
+      }
+    }
+
     if ( tokens.length > 0 ) {
-      retval.minutes = parseRangeParam( tokens[0], MINUTESPERHOUR, 0 );
+      retval.setMinutePattern( tokens[0] );
       if ( tokens.length > 1 ) {
-        retval.hours = parseRangeParam( tokens[1], HOURESPERDAY, 0 );
+        retval.setHourPattern( tokens[1] );
         if ( tokens.length > 2 ) {
-          retval.day = parseRangeParam( tokens[2], DAYSPERMONTH, 1 );
+          retval.setDayPattern( tokens[2] );
           if ( tokens.length > 3 ) {
-            retval.month = parseRangeParam( tokens[3], MONTHSPERYEAR, 1 );
+            retval.setMonthPattern( tokens[3] );
             if ( tokens.length > 4 ) {
-              retval.weekday = parseRangeParam( tokens[4], DAYSPERWEEK, 0 );
+              retval.setDayOfWeekPattern( tokens[4] );
             } else {
-              retval.weekday = parseRangeParam( "*", DAYSPERWEEK, 0 );
+              retval.setDayOfWeekPattern( ANY );
             }
           } else {
-            retval.month = parseRangeParam( "*", MONTHSPERYEAR, 1 );
-            retval.weekday = parseRangeParam( "*", DAYSPERWEEK, 0 );
+            retval.setMonthPattern( ANY );
+            retval.setDayOfWeekPattern( ANY );
           }
         } else {
-          retval.day = parseRangeParam( "*", DAYSPERMONTH, 1 );
-          retval.month = parseRangeParam( "*", MONTHSPERYEAR, 1 );
-          retval.weekday = parseRangeParam( "*", DAYSPERWEEK, 0 );
+          retval.setDayPattern( ANY );
+          retval.setMonthPattern( ANY );
+          retval.setDayOfWeekPattern( ANY );
         }
       } else {
-        retval.hours = parseRangeParam( "*", HOURESPERDAY, 0 );
-        retval.day = parseRangeParam( "*", DAYSPERMONTH, 1 );
-        retval.month = parseRangeParam( "*", MONTHSPERYEAR, 1 );
-        retval.weekday = parseRangeParam( "*", DAYSPERWEEK, 0 );
+        retval.setHourPattern( ANY );
+        retval.setDayPattern( ANY );
+        retval.setMonthPattern( ANY );
+        retval.setDayOfWeekPattern( ANY );
       }
     } else {
-      retval.minutes = parseRangeParam( "*", MINUTESPERHOUR, 0 );
-      retval.hours = parseRangeParam( "*", HOURESPERDAY, 0 );
-      retval.day = parseRangeParam( "*", DAYSPERMONTH, 1 );
-      retval.month = parseRangeParam( "*", MONTHSPERYEAR, 1 );
-      retval.weekday = parseRangeParam( "*", DAYSPERWEEK, 0 );
+      retval.setMinutePattern( ANY );
+      retval.setHourPattern( ANY );
+      retval.setDayPattern( ANY );
+      retval.setMonthPattern( ANY );
+      retval.setDayOfWeekPattern( ANY );
     }
+
     return retval;
   }
 
@@ -150,6 +204,7 @@ public class CronEntry {
         if ( paramarray[i].equals( "*" ) || paramarray[i].equals( "?" ) ) {
           rangeitems.append( fillRange( minlength + "-" + timelength ) );
         } else {
+          // TODO: check for valid values!
           rangeitems.append( fillRange( paramarray[i] ) );
         }
       }
@@ -191,8 +246,8 @@ public class CronEntry {
 
 
   /**
-   * @param cal
-   * @return
+   * @param cal the calendar to check
+   * @return true if the date represented by the argument can run according to this cron entry, false otherwise.
    */
   public boolean mayRunAt( Calendar cal ) {
     int monthOfYear = cal.get( Calendar.MONTH ) + 1;
@@ -218,6 +273,9 @@ public class CronEntry {
 
 
 
+  /**
+   * @return true if the current system time can run according to this cron entry.
+   */
   public boolean mayRunNow() {
     return mayRunAt( new GregorianCalendar() );
   }
@@ -319,6 +377,132 @@ public class CronEntry {
 
   private boolean minutePasses( int val ) {
     return ( minutes.get( Integer.toString( val ) ) != null );
+  }
+
+
+
+
+  /**
+   * @return the minutePattern
+   */
+  protected String getMinutePattern() {
+    return minutePattern;
+  }
+
+
+
+
+  /**
+   * @param pattern the minutePattern to set
+   */
+  protected void setMinutePattern( String pattern ) {
+    minutes = parseRangeParam( pattern, MINUTESPERHOUR, 0 );
+    minutePattern = pattern;
+  }
+
+
+
+
+  /**
+   * @return the hourPattern
+   */
+  protected String getHourPattern() {
+    return hourPattern;
+  }
+
+
+
+
+  /**
+   * @param pattern the hourPattern to set
+   */
+  protected void setHourPattern( String pattern ) {
+    hours = parseRangeParam( pattern, HOURESPERDAY, 0 );
+    hourPattern = pattern;
+  }
+
+
+
+
+  /**
+   * @return the dayPattern
+   */
+  protected String getDayPattern() {
+    return dayPattern;
+  }
+
+
+
+
+  /**
+   * @param pattern the dayPattern to set
+   */
+  protected void setDayPattern( String pattern ) {
+    day = parseRangeParam( pattern, DAYSPERMONTH, 1 );
+    dayPattern = pattern;
+  }
+
+
+
+
+  /**
+   * @return the monthPattern
+   */
+  protected String getMonthPattern() {
+    return monthPattern;
+  }
+
+
+
+
+  /**
+   * @param pattern the monthPattern to set
+   */
+  protected void setMonthPattern( String pattern ) {
+    month = parseRangeParam( pattern, MONTHSPERYEAR, 1 );
+    monthPattern = pattern;
+  }
+
+
+
+
+  /**
+   * @return the dayOfWeekPattern
+   */
+  protected String getDayOfWeekPattern() {
+    return dayOfWeekPattern;
+  }
+
+
+
+
+  /**
+   * @param pattern the dayOfWeekPattern to set
+   */
+  protected void setDayOfWeekPattern( String pattern ) {
+    weekday = parseRangeParam( pattern, DAYSPERWEEK, 0 );
+    dayOfWeekPattern = pattern;
+  }
+
+
+
+
+  /**
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    StringBuffer b = new StringBuffer();
+    b.append( minutePattern );
+    b.append( " " );
+    b.append( hourPattern );
+    b.append( " " );
+    b.append( dayPattern );
+    b.append( " " );
+    b.append( monthPattern );
+    b.append( " " );
+    b.append( dayOfWeekPattern );
+    return b.toString();
   }
 
 }
