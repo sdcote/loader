@@ -30,7 +30,7 @@ public class ConfigTag {
   // Configuration tags
 
   /** Name ({@value}) of the Logging configuration sections. */
-  public static final String LOGGER = "Logger";
+  public static final String LOGGING = "Logging";
 
   /** Name ({@value}) of the configuration attribute specifying a class. */
   public static final String CLASS = "Class";

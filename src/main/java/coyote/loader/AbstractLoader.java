@@ -85,8 +85,11 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
 
 
+  /**
+   * Looks for a section named logging and loads the loggers from there
+   */
   private void initLogging() {
-    List<Config> loggers = configuration.getSections( ConfigTag.LOGGER );
+    List<Config> loggers = configuration.getSections( ConfigTag.LOGGING );
 
     Logger retval = null;
     for ( Config cfg : loggers ) {
@@ -397,7 +400,11 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
         for ( final Iterator<Object> it = components.keySet().iterator(); it.hasNext(); ) {
           final Object cmpnt = it.next();
           if ( cmpnt instanceof ManagedComponent ) {
-            if ( !( (ManagedComponent)cmpnt ).isActive() ) {
+            
+            // Don't shut down scheduled jobs...they are inactive while they 
+            // are waiting in the scheduler for their next execution.
+            
+            if( !(cmpnt instanceof ScheduledJob) && !( (ManagedComponent)cmpnt ).isActive() ) {
               Log.info( LogMsg.createMsg( LOADER_MSG, "Loader.removing_inactive_cmpnt", cmpnt.toString() ) );
 
               // get a reference to the components configuration
