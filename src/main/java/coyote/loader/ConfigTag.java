@@ -32,6 +32,12 @@ public class ConfigTag {
   /** Name ({@value}) of the Logging configuration sections. */
   public static final String LOGGING = "Logging";
 
+  /** Name ({@value}) of the categories of events a logger should log. */
+  public static final String CATEGORIES = "categories";
+
+  /** Name ({@value}) of the tag specifying the logging target. */
+  public static final String TARGET = "target";
+
   /** Name ({@value}) of the configuration attribute specifying a class. */
   public static final String CLASS = "Class";
 

@@ -11,15 +11,19 @@
  */
 package coyote.loader;
 
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import coyote.commons.FileUtil;
 import coyote.commons.GUID;
 import coyote.commons.StringUtil;
+import coyote.commons.UriUtil;
 import coyote.dataframe.DataField;
 import coyote.dataframe.DataFrame;
 import coyote.loader.cfg.Config;
@@ -44,6 +48,9 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   static {
     LOADER_MSG = new BundleBaseName( "LoaderMsg" );
   }
+
+  /** Constant to assist in determining the full class name of loggers */
+  private static final String LOGGER_PKG = Log.class.getPackage().getName();
 
   /** The command line arguments used to invoke the loader */
   protected String[] commandLineArguments = null;
@@ -86,37 +93,106 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
 
   /**
-   * Looks for a section named logging and loads the loggers from there
+   * Load loggers for the entire process.
+   * 
+   * <p>This looks for a section named logging in the main loader and loads the 
+   * loggers from there.</p>
    */
   private void initLogging() {
     List<Config> loggers = configuration.getSections( ConfigTag.LOGGING );
 
-    Logger retval = null;
+    // for each of the logger sections
     for ( Config cfg : loggers ) {
 
-      // Look for the class to load
+      // Find the individual loggers
       for ( DataField field : cfg.getFields() ) {
-        if ( ConfigTag.CLASS.equalsIgnoreCase( field.getName() ) ) {
-          String className = field.getStringValue();
-          if ( className != null && StringUtil.countOccurrencesOf( className, "." ) < 1 ) {
-            className = Log.class.getPackage().getName() + "." + className;
-          }
 
-          try {
-            Class<?> clazz = Class.forName( className );
-            Constructor<?> ctor = clazz.getConstructor();
-            Object object = ctor.newInstance();
+        // each logger is a frame
+        if ( field.isFrame() ) {
 
-            if ( object instanceof Logger ) {
-              retval = (Logger)object;
-              retval.setConfig( cfg );
+          DataFrame cfgFrame = (DataFrame)field.getObjectValue();
+          // we need named sections, not arrays
+          if ( StringUtil.isNotBlank( field.getName() ) ) {
 
+            // start building the configuration for logger
+            Config loggerConfiguration = new Config();
+
+            // use the name of the section as the class name
+            String className = field.getName();
+
+            // Make sure the class is fully qualified 
+            if ( StringUtil.countOccurrencesOf( className, "." ) < 1 ) {
+              className = LOGGER_PKG + "." + className;
+            }
+
+            // put the name of the class in the logger configuration
+            loggerConfiguration.put( ConfigTag.CLASS, className );
+
+            // add each of the fields in the config frame to the logger config
+            for ( DataField lfield : cfgFrame.getFields() ) {
+
+              // handle the target...make sure it is relative to ????
+              if ( ConfigTag.TARGET.equalsIgnoreCase( lfield.getName() ) ) {
+                String cval = lfield.getStringValue();
+
+                // the targets for loggers MUST be a URI
+                if ( !( "stdout".equalsIgnoreCase( cval ) || "stderr".equalsIgnoreCase( cval ) ) ) {
+                  URI testTarget = UriUtil.parse( cval );
+
+                  if ( testTarget != null ) {
+                    if ( testTarget.getScheme() == null ) {
+                      cval = "file://" + cval;
+                    }
+                  }
+
+                  URI testUri = UriUtil.parse( cval );
+                  if ( testUri != null ) {
+                    if ( UriUtil.isFile( testUri ) ) {
+                      File logfile = UriUtil.getFile( testUri );
+
+                      // make it absolute to our job directory
+                      if ( !logfile.isAbsolute() ) {
+
+                        // as a loader, we use app.home as our home directory 
+                        // and therefore logging should be in a "log" directory 
+                        // off of app.home
+                        String path = System.getProperties().getProperty( APP_HOME );
+
+                        if ( StringUtil.isBlank( path ) ) {
+                          path = System.getProperties().getProperty( "user.dir" );
+                        }
+                        File logdir = new File( path + "/log" );
+                        logfile = new File( logdir, logfile.getPath() );
+                        testUri = FileUtil.getFileURI( logfile );
+                        cval = testUri.toString();
+                      }
+                    }
+
+                  } else {
+                    System.out.println( "Bad target URI '" + cval + "'" );
+                    System.exit( 11 );
+                  }
+
+                }
+
+                // set the validated URI in the target field
+                loggerConfiguration.put( ConfigTag.TARGET, cval );
+              } else {
+                // pass the rest of the attributes unmolested
+                loggerConfiguration.add( lfield );
+              }
+            }
+
+            // create the logger
+            Logger logger = createLogger( loggerConfiguration );
+
+            if ( logger != null ) {
               // Get the name of the logger
-              String name = cfg.getString( ConfigTag.NAME );
+              String name = loggerConfiguration.getString( ConfigTag.NAME );
 
               // If there is no name, try looking for an ID
               if ( StringUtil.isBlank( name ) ) {
-                name = cfg.getString( ConfigTag.ID );
+                name = loggerConfiguration.getString( ConfigTag.ID );
               }
 
               //If no name or ID, assign it a name
@@ -124,24 +200,67 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
                 name = GUID.randomGUID().toString();
               }
 
-              // Add the logger to the logging subsystem and initialize it
-              Log.addLogger( name, retval );
-
+              try {
+                Log.addLogger( name, logger );
+              } catch ( Exception e ) {
+                System.out.println( LogMsg.createMsg( LOADER_MSG, "Loader.Could not add configured logger", name, logger.getClass(), e.getMessage() ) );
+                System.exit( 11 );
+              }
             } else {
-              System.err.println( LogMsg.createMsg( LOADER_MSG, "Loader.class_is_not_logger", className ) );
+              System.err.println( LogMsg.createMsg( LOADER_MSG, "Loader.Could not create an instance of the specified logger" ) );
               System.exit( 11 );
             }
-          } catch ( ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e ) {
-            System.err.println( LogMsg.createMsg( LOADER_MSG, "Loader.logger_instantiation_error", className, e.getClass().getName(), e.getMessage() ) );
-            System.exit( 10 );
-          }
-        }
-      }
 
-    }
+          } else {
+            System.err.println( LogMsg.createMsg( LOADER_MSG, "Loader.no_logger_classname", cfgFrame.toString() ) );
+            System.exit( 11 );
+          }
+        } else {
+          System.err.println( LogMsg.createMsg( LOADER_MSG, "Loader.invalid_logger_configuration_section" ) );
+          System.exit( 11 );
+        } // must be a frame/section
+
+      } // for each logger 
+
+    } // for each logger section
 
     Log.debug( LogMsg.createMsg( LOADER_MSG, "Loader.logging_initiated", new Date() ) );
 
+  }
+
+
+
+
+  private static Logger createLogger( Config cfg ) {
+    Logger retval = null;
+    if ( cfg != null ) {
+      if ( cfg.contains( ConfigTag.CLASS ) ) {
+        String className = cfg.getAsString( ConfigTag.CLASS );
+
+        try {
+          Class<?> clazz = Class.forName( className );
+          Constructor<?> ctor = clazz.getConstructor();
+          Object object = ctor.newInstance();
+
+          if ( object instanceof Logger ) {
+            retval = (Logger)object;
+            try {
+              retval.setConfig( cfg );
+            } catch ( Exception e ) {
+              Log.error( LogMsg.createMsg( LOADER_MSG, "Loader.could_not_configure_logger {} - {} : {}", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage() ) );
+            }
+          } else {
+            Log.warn( LogMsg.createMsg( LOADER_MSG, "Loader.instance_is_not_a_logger of {} is not configurable", className ) );
+          }
+        } catch ( ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e ) {
+          Log.error( LogMsg.createMsg( LOADER_MSG, "Loader.Could not instantiate {} reason: {} - {}", className, e.getClass().getName(), e.getMessage() ) );
+        }
+      } else {
+        Log.error( LogMsg.createMsg( LOADER_MSG, "Loader.Configuration frame did not contain a class name" ) );
+      }
+    }
+
+    return retval;
   }
 
 
@@ -400,11 +519,11 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
         for ( final Iterator<Object> it = components.keySet().iterator(); it.hasNext(); ) {
           final Object cmpnt = it.next();
           if ( cmpnt instanceof ManagedComponent ) {
-            
+
             // Don't shut down scheduled jobs...they are inactive while they 
             // are waiting in the scheduler for their next execution.
-            
-            if( !(cmpnt instanceof ScheduledJob) && !( (ManagedComponent)cmpnt ).isActive() ) {
+
+            if ( !( cmpnt instanceof ScheduledJob ) && !( (ManagedComponent)cmpnt ).isActive() ) {
               Log.info( LogMsg.createMsg( LOADER_MSG, "Loader.removing_inactive_cmpnt", cmpnt.toString() ) );
 
               // get a reference to the components configuration
