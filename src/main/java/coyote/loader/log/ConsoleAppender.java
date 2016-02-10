@@ -30,6 +30,8 @@ public class ConsoleAppender extends AbstractLogger {
 
   Writer log_writer;
 
+  private static final String STDERR = "STDERR";
+
 
 
 
@@ -127,7 +129,7 @@ public class ConsoleAppender extends AbstractLogger {
     // we don't call super.initialize() because we don't need the file based initialization
 
     // Switch to STDERR depending on configuration!
-    if ( config != null && config.getString( TARGET_TAG ) != null && "SYSERR".equalsIgnoreCase( config.getString( TARGET_TAG ) ) ) {
+    if ( config != null && config.getString( TARGET_TAG ) != null && STDERR.equalsIgnoreCase( config.getString( TARGET_TAG ) ) ) {
       log_writer = new OutputStreamWriter( System.err );
     }
 
@@ -164,6 +166,6 @@ public class ConsoleAppender extends AbstractLogger {
    * Terminates the logger.
    */
   public void terminate() {
-    // System.out should not be closed
+    // System.out and System.err should not be closed
   }
 }
