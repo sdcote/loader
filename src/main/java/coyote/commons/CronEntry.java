@@ -56,9 +56,7 @@ public class CronEntry {
   private static final String OCT = "Oct";
   private static final String NOV = "Nov";
   private static final String DEC = "Dec";
-  
-  
-  
+
   static final protected int MINUTESPERHOUR = 60;
   static final protected int HOURESPERDAY = 24;
   static final protected int DAYSPERWEEK = 7;
@@ -176,10 +174,6 @@ public class CronEntry {
    * @return
    */
   private static HashMap<String, String> parseRangeParam( String token, int timelength, int minlength ) {
-    // split by ","
-
-    // System.out.println(param + ":");
-
     String[] paramarray;
     if ( token.indexOf( "," ) != -1 ) {
       paramarray = token.split( "," );
@@ -286,16 +280,18 @@ public class CronEntry {
   // Return the next time specified by this cron entry 
   public long getNextTime() {
     long retval = -1;
-
+    int next = 0;
     Calendar cal = new GregorianCalendar();
 
-    int monthOfYear = cal.get( Calendar.MONTH ) + 1;
-    int dayOfMonth = cal.get( Calendar.DAY_OF_MONTH );
-    int dayOfWeek = cal.get( Calendar.DAY_OF_WEEK ) - 1;
-    int hourOfDay = cal.get( Calendar.HOUR_OF_DAY );
-    int minuteOfHour = cal.get( Calendar.MINUTE );
+    int monthOfYear, dayOfMonth, dayOfWeek, hourOfDay, minuteOfHour;
 
     while ( retval < 0 ) {
+      monthOfYear = cal.get( Calendar.MONTH ) + 1;
+      dayOfMonth = cal.get( Calendar.DAY_OF_MONTH );
+      dayOfWeek = cal.get( Calendar.DAY_OF_WEEK ) - 1;
+      hourOfDay = cal.get( Calendar.HOUR_OF_DAY );
+      minuteOfHour = cal.get( Calendar.MINUTE );
+
       if ( monthPasses( monthOfYear ) ) {
         if ( weekDayPasses( dayOfWeek ) && dayPasses( dayOfMonth ) ) {
           if ( hourPasses( hourOfDay ) ) {
@@ -303,15 +299,51 @@ public class CronEntry {
               /// we got it
               retval = cal.getTimeInMillis();
             } else {
-              cal.add( Calendar.MINUTE, +1 );
+              // find the next allowable minute
+              next = getNext( minutes, minuteOfHour );
+              if ( next == 0 ) {
+                cal.set( Calendar.HOUR_OF_DAY, getNext( hours, hourOfDay ) );
+                cal.set( Calendar.MINUTE, getNext( minutes, 0 ) );
+              } else {
+                cal.set( Calendar.MINUTE, next );
+              }
             }
           } else {
-            // Nudge to hour of day (0)
-            cal.add( Calendar.HOUR, 1 );
-            // set to first minute of hour (0)
-            cal.set( Calendar.MINUTE, 0 );
+            //find the next allowable hour
+            next = getNext( hours, hourOfDay );
+            if ( next == 0 ) {
+              int dom = getNext( day, dayOfMonth );
+
+              // have to do a little check to make sure we dont set Feb31 here
+              if ( dom > cal.getActualMaximum( Calendar.DAY_OF_MONTH ) ) {
+                cal.add( Calendar.MONTH, 1 ); // go to the next month
+                dom = getNext( day, 0 );// get next day in new month
+              }
+
+              cal.set( Calendar.DAY_OF_MONTH, dom );
+              cal.set( Calendar.HOUR_OF_DAY, getNext( hours, 0 ) );
+            } else {
+              cal.set( Calendar.HOUR_OF_DAY, next );
+            }
           }
         } else {
+          // find the next allowable day
+          next = getNext( day, dayOfMonth );
+
+          if ( next > cal.getActualMaximum( Calendar.DAY_OF_MONTH ) ) {
+            cal.add( Calendar.MONTH, 1 ); // go to the next month
+            next = getNext( day, 0 );// get next day in new month
+          } else if ( next == 0 ) {
+            cal.set( Calendar.MONTH, getNext( month, monthOfYear ) );
+            // TODO do we set everything else to zero as well?????  
+          }
+
+          //
+
+          // TODO Start Here
+
+          //
+
           // Nudge to next day
           cal.add( Calendar.DAY_OF_MONTH, 1 );
           // set to first hour of day (0)
@@ -332,6 +364,43 @@ public class CronEntry {
     }
 
     return retval;
+  }
+
+
+
+
+  /**
+   * Returns the next acceptable value in the given time map starting after the 
+   * given value.
+   * 
+   * @param timemap The time map to search
+   * 
+   * @param start the starting point
+   * 
+   * @return the next valid value, or 0 if the end of the map was reached 
+   *         without finding the next value.
+   */
+  private int getNext( HashMap<String, String> timemap, int start ) {
+    // start searching at the next higest value
+    int indx = start + 1;
+
+    if ( timemap == null || timemap.size() == 0 ) {
+      throw new IllegalArgumentException( "Time map cannot be null or empty" );
+    }
+
+    // cycle through the map, but only for as long as there are entries
+    for ( int x = 0; x < timemap.size(); x++ ) {
+      // if there is an entry for the new index value, return it
+      if ( timemap.containsKey( Integer.toString( indx ) ) ) {
+        return indx;
+      }
+      // otherwise increment the value
+      indx++;
+    }
+
+    // we apparently went through the entire array(and then some) without 
+    // finding a matching value; return zero indicating where to start next
+    return 0;
   }
 
 
