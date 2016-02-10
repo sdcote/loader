@@ -12,9 +12,9 @@
 package coyote.commons;
 
 //import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.junit.Assert.*;
 
 import java.text.ParseException;
 import java.util.Calendar;
@@ -142,7 +142,7 @@ public class CronEntryTest {
     try {
       subject = CronEntry.parse( pattern );
       assertTrue( subject.mayRunNow() );
-      
+
       subject = CronEntry.parse( null );
       Calendar cal = new GregorianCalendar();
       subject.setMinutePattern( Integer.toString( cal.get( Calendar.MINUTE ) ) );
@@ -151,7 +151,7 @@ public class CronEntryTest {
       subject.setMonthPattern( Integer.toString( cal.get( Calendar.MONTH ) + 1 ) );
       subject.setDayOfWeekPattern( Integer.toString( cal.get( Calendar.DAY_OF_WEEK ) - 1 ) );
       assertTrue( subject.mayRunNow() );
-      
+
       //System.out.println( subject );      
     } catch ( ParseException e ) {
       fail( e.getMessage() );
@@ -171,19 +171,19 @@ public class CronEntryTest {
       subject = CronEntry.parse( null );
       Calendar cal = new GregorianCalendar();
       subject.setMinutePattern( Integer.toString( cal.get( Calendar.MINUTE ) ) );
-      subject.setHourPattern( Integer.toString( cal.get( Calendar.HOUR_OF_DAY )+1 ) );
+      subject.setHourPattern( Integer.toString( cal.get( Calendar.HOUR_OF_DAY ) + 1 ) );
       subject.setDayPattern( Integer.toString( cal.get( Calendar.DAY_OF_MONTH ) ) );
       subject.setMonthPattern( Integer.toString( cal.get( Calendar.MONTH ) + 1 ) );
       subject.setDayOfWeekPattern( Integer.toString( cal.get( Calendar.DAY_OF_WEEK ) - 1 ) );
       assertFalse( subject.mayRunNow() );
-      
+
       //long millis = subject.getNextTime();
-     // System.out.println( millis );
-      
-      
+      // System.out.println( millis );
+
     } catch ( ParseException e ) {
       fail( e.getMessage() );
-    }  }
+    }
+  }
 
 
 

@@ -101,7 +101,7 @@ public class CronEntry {
    * <li>* - any value</li>
    * <li>? - any value</li>
    * <li># - scalar value</li>
-   * <li>#,#, - a list of scalars</li>
+   * <li>#,#, - a list of scalars including intervals</li>
    * <li>#-# - a range of numbers</li>
    * <li>/# - intervals</li></p>
    * 
@@ -167,13 +167,16 @@ public class CronEntry {
 
 
   /**
+   * Parse the given token and fill a hash map (a.k.a. time map) with valid 
+   * values indicated by the token.
    * 
-   * @param token a range
-   * @param timelength  range of values
+   * @param token a range the token to parse specifying a range
+   * @param maximum the maximum value for the range
+   * @param start the first value in the range to populate
    * 
-   * @return
+   * @return a hash map filled with values specified by the string; will not be null
    */
-  private static HashMap<String, String> parseRangeParam( String token, int timelength, int minlength ) {
+  private static HashMap<String, String> parseRangeParam( String token, int maximum, int start ) {
     String[] paramarray;
     if ( token.indexOf( "," ) != -1 ) {
       paramarray = token.split( "," );
@@ -185,10 +188,10 @@ public class CronEntry {
       // you may mix */# syntax with other range syntax
       if ( paramarray[i].indexOf( "/" ) != -1 ) {
         // handle */# syntax
-        for ( int a = 1; a <= timelength; a++ ) {
+        for ( int a = 1; a <= maximum; a++ ) {
           if ( a % Integer.parseInt( paramarray[i].substring( paramarray[i].indexOf( "/" ) + 1 ) ) == 0 ) {
-            if ( a == timelength ) {
-              rangeitems.append( minlength + "," );
+            if ( a == maximum ) {
+              rangeitems.append( start + "," );
             } else {
               rangeitems.append( a + "," );
             }
@@ -196,7 +199,7 @@ public class CronEntry {
         }
       } else {
         if ( paramarray[i].equals( "*" ) || paramarray[i].equals( "?" ) ) {
-          rangeitems.append( fillRange( minlength + "-" + timelength ) );
+          rangeitems.append( fillRange( start + "-" + maximum ) );
         } else {
           // TODO: check for valid values!
           rangeitems.append( fillRange( paramarray[i] ) );
@@ -217,13 +220,14 @@ public class CronEntry {
 
 
   /**
+   * Convert the #-# pattern to a list (#,#,#,#,...) pattern.
    * 
-   * @param range
-   * @return
+   * @param range The range pattern in the format of "#-#"
+   *  
+   * @return a list of values represented by that range
    */
   private static String fillRange( String range ) {
-    // split by "-"
-
+    // if no delimiter, just return the range as a value
     if ( range.indexOf( "-" ) == -1 ) {
       return range + ",";
     }
@@ -240,7 +244,11 @@ public class CronEntry {
 
 
   /**
+   * Check the current calendar object to see if it is included in the 
+   * currently sent time pattern.
+   * 
    * @param cal the calendar to check
+   * 
    * @return true if the date represented by the argument can run according to this cron entry, false otherwise.
    */
   public boolean mayRunAt( Calendar cal ) {
@@ -314,14 +322,14 @@ public class CronEntry {
             if ( next == 0 ) {
               int dom = getNext( day, dayOfMonth );
 
-              // have to do a little check to make sure we dont set Feb31 here
+              // have to do a little check to make sure we don't set Feb31 here
               if ( dom > cal.getActualMaximum( Calendar.DAY_OF_MONTH ) ) {
                 cal.add( Calendar.MONTH, 1 ); // go to the next month
                 dom = getNext( day, 0 );// get next day in new month
+              } else {
+                cal.set( Calendar.DAY_OF_MONTH, dom );
+                cal.set( Calendar.HOUR_OF_DAY, getNext( hours, 0 ) );
               }
-
-              cal.set( Calendar.DAY_OF_MONTH, dom );
-              cal.set( Calendar.HOUR_OF_DAY, getNext( hours, 0 ) );
             } else {
               cal.set( Calendar.HOUR_OF_DAY, next );
             }
