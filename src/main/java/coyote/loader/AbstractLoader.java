@@ -177,6 +177,13 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
                 // set the validated URI in the target field
                 loggerConfiguration.put( ConfigTag.TARGET, cval );
+              } else if ( ConfigTag.CATEGORIES.equalsIgnoreCase( lfield.getName() ) ) {
+                // Categories should be normalized to upper case
+                String cval = lfield.getStringValue();
+                if ( StringUtil.isNotEmpty( cval ) ) {
+                  cval = cval.toUpperCase();
+                  loggerConfiguration.put( ConfigTag.CATEGORIES, cval );
+                }
               } else {
                 // pass the rest of the attributes unmolested
                 loggerConfiguration.add( lfield );
