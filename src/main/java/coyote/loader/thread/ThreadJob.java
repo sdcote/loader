@@ -537,6 +537,11 @@ public class ThreadJob implements Runnable {
 
   /**
    * Perform any sub-class initialization.
+   * 
+   * <p>This method is called just before the main run loop is entered. It is 
+   * called only once unless the job is restarted as this method is inside the 
+   * restart loop. This implies this method is called everytime the job is 
+   * restarted.</p>
    */
   public void initialize() {}
 
