@@ -35,7 +35,7 @@ public class Wedge extends AbstractManagedComponent implements ManagedComponent 
   @Override
   public void setConfiguration( Config config ) {
     super.setConfiguration( config );
-    Log.info( config.toFormattedString() );
+    Log.debug( config.toFormattedString() );
   }
 
 
@@ -59,21 +59,14 @@ public class Wedge extends AbstractManagedComponent implements ManagedComponent 
 
 
   /**
-   * This is the main, re-entrant method that is repeatedly called while in the 
+   * This is the main, reentrant method that is called while in the 
    * main run loop.
+   * 
    * @see coyote.loader.thread.ThreadJob#doWork()
    */
   @Override
   public void doWork() {
-    Log.info( "Doing work..." );
-    Log.trace( "Trace" );
-    Log.debug( "Debug" );
-    Log.warn( "Warn" );
-    Log.error( "Error" );
-    Log.fatal( "Fatal" );
-    // some other event categories
-    Log.append( "SCHEDULER", "Schedule" );
-    Log.append( "THREAD", "Thread" );
+    // do nothing
   }
 
 
