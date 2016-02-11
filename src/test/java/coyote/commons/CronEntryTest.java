@@ -20,6 +20,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.TreeSet;
 
 import org.junit.Test;
 
@@ -110,7 +111,7 @@ public class CronEntryTest {
   /**
    * Test method for {@link coyote.commons.CronEntry#parse(java.lang.String)}.
    */
-  @Test
+  // @Test
   public void testParse() {
     CronEntry subject = null;
 
@@ -184,7 +185,7 @@ public class CronEntryTest {
   /**
    * Test method for {@link coyote.commons.CronEntry#mayRunAt(java.util.Calendar)}.
    */
-  @Test
+  // @Test
   public void testMayRunAt() {
     StringBuffer b = new StringBuffer();
     Calendar cal = new GregorianCalendar();
@@ -214,7 +215,7 @@ public class CronEntryTest {
   /**
    * Test method for {@link coyote.commons.CronEntry#mayRunNow()}.
    */
-  @Test
+  //  @Test
   public void testMayRunNow() {
     String pattern = "* * * * *";
     CronEntry subject = null;
@@ -243,7 +244,7 @@ public class CronEntryTest {
   /**
    * Test method for {@link coyote.commons.CronEntry#getNextTime()}.
    */
-  @Test
+  //@Test
   public void testGetNextTime() {
     CronEntry subject = new CronEntry();
     long millis;
@@ -280,12 +281,12 @@ public class CronEntryTest {
   /**
    * Test method for {@link coyote.commons.CronEntry#getNextInterval()}.
    */
-  @Test
+  //  @Test
   public void testGetNextInterval() {
     CronEntry subject = new CronEntry();
     long millis;
     Calendar cal = new GregorianCalendar();
-    System.out.println( subject.dump() );
+    //System.out.println( subject.dump() );
 
     // set the pattern to one hour in the future
     subject.setMinutePattern( Integer.toString( cal.get( Calendar.MINUTE ) ) );
@@ -294,25 +295,76 @@ public class CronEntryTest {
     subject.setMonthPattern( Integer.toString( cal.get( Calendar.MONTH ) + 1 ) );// no adjustment
     subject.setDayOfWeekPattern( Integer.toString( cal.get( Calendar.DAY_OF_WEEK ) - 1 ) );// no adjustment
     assertFalse( subject.mayRunNow() );
-    //System.out.println( subject.toString() );
+    millis = subject.getNextInterval();
+    //System.out.println( millis + " - " + formatElapsed( millis ) );
+    assertTrue( millis <= ( 3600000 ) );
 
+    //System.out.println( "\r\n30 minute test Part 1" );
+    subject = new CronEntry();
+    subject.setMinutePattern( "0,30" );
+    //System.out.println( subject.dump() );
+    millis = subject.getNextInterval();
+    //System.out.println( millis + " - " + formatElapsed( millis ) );
+    assertTrue( "30mP1 " + millis + "!<=1800000", millis <= 1800000 );
+
+    //System.out.println( "\r\n30 minute test Part 2" );
+    subject = new CronEntry();
+    subject.setMinutePattern( "*/30" );
+    //System.out.println( subject.dump() );
+    millis = subject.getNextInterval();
+    //System.out.println( millis + " - " + formatElapsed( millis ) );
+    assertTrue( "30mP2 " + millis + "!<=1800000", millis <= 1800000 );
+
+    //System.out.println( "\r\n5 minute test" );
+    subject = new CronEntry();
+    subject.setMinutePattern( "*/5" );
+    //System.out.println( subject.dump() );
+    millis = subject.getNextInterval();
+    //System.out.println( millis + " - " + formatElapsed( millis ) );
+    assertTrue( "15m " + millis + "!<=300000", millis <= 300000 );
+
+    subject = new CronEntry();
+    subject.setHourPattern( Integer.toString( cal.get( Calendar.DAY_OF_MONTH ) + 1 ) ); // adjustment
+    //System.out.println( subject.dump() );
     millis = subject.getNextInterval();
     //System.out.println( millis + " - " + formatElapsed( millis ) );
 
-    // every 30 minute test
-    subject = new CronEntry();
-    subject.setMinutePattern( "0,30" );
-    //millis = subject.getNextInterval();
-    //System.out.println( millis );
-    //assertTrue(millis<=(1800000));
-    //System.out.println( millis + " - " + formatElapsed( millis ) );
+  }
 
-    subject = new CronEntry();
-    subject.setMinutePattern( "*/30" );
-    //millis = subject.getNextInterval();
-    //System.out.println( millis + " - " + formatElapsed( millis ) );
 
-    System.out.println( subject.dump() );
+
+
+  @Test
+  public void testGetNext() {
+
+    TreeSet<String> timemap = new TreeSet<String>();
+    timemap.add( "0" );
+    timemap.add( "30" );
+
+    CronEntry subject = new CronEntry();
+    int next = subject.getNext( timemap, 45, 59 );
+    assertTrue( next == 0 );
+    next = subject.getNext( timemap, 60, 59 );
+    assertTrue( next == 0 );
+    next = subject.getNext( timemap, 0, 59 );
+    assertTrue( next == 30 );
+
+    timemap.clear();
+    timemap.add( "12" );
+    timemap.add( "13" );
+    timemap.add( "0" );
+
+    next = subject.getNext( timemap, 0, 59 );
+    assertTrue( next == 12 );
+
+    next = subject.getNext( timemap, 11, 59 );
+    assertTrue( next == 12 );
+
+    next = subject.getNext( timemap, 11, 15 );//wrong size
+    assertTrue( next == 12 );
+    next = subject.getNext( timemap, 11, 13 );//wrong size
+    assertTrue( next == 12 );
+
   }
 
 }

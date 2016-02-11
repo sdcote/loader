@@ -33,6 +33,10 @@ import java.util.TreeSet;
  * day of week 0-6
  * 
  * see https://en.wikipedia.org/wiki/Cron#CRON_expression
+ * 
+ * <p>Note: TreeSet is used only for assisting in development and debugging 
+ * when using the {@code dump()} method. It can be safely replaced with 
+ * HashSet.</p>
  */
 public class CronEntry {
   private static final String ANY = "*";
@@ -197,6 +201,7 @@ public class CronEntry {
       // you may mix */# syntax with other range syntax
       if ( paramarray[i].indexOf( "/" ) != -1 ) {
         // handle */# syntax
+        rangeitems.append( "0," ); // 0 is implied
         for ( int a = 1; a <= maximum; a++ ) {
           if ( a % Integer.parseInt( paramarray[i].substring( paramarray[i].indexOf( "/" ) + 1 ) ) == 0 ) {
             if ( a == maximum ) {
@@ -316,38 +321,43 @@ public class CronEntry {
       minuteOfHour = cal.get( Calendar.MINUTE );
 
       if ( monthPasses( monthOfYear ) ) {
+
         if ( weekDayPasses( dayOfWeek ) && dayPasses( dayOfMonth ) ) {
+
           if ( hourPasses( hourOfDay ) ) {
+
             if ( minutePasses( minuteOfHour ) ) {
               /// we got it
               retval = cal.getTimeInMillis();
             } else {
               // find the next allowable minute
-              next = getNext( minutes, minuteOfHour );
-              if ( next == 0 ) {
-                cal.set( Calendar.HOUR_OF_DAY, getNext( hours, hourOfDay ) );
-                cal.set( Calendar.MINUTE, getNext( minutes, 0 ) );
+              next = getNext( minutes, minuteOfHour, MAX_MINUTES_IN_HOUR );
+
+              // if next = -1, then
+              if ( next <= minuteOfHour ) {
+                cal.set( Calendar.HOUR_OF_DAY, getNext( hours, hourOfDay, MAX_HOURS_IN_DAY ) );
+                cal.set( Calendar.MINUTE, getNext( minutes, 0, MAX_MINUTES_IN_HOUR ) );
               } else {
                 cal.set( Calendar.MINUTE, next );
               }
             }
           } else {
             //find the next allowable hour
-            next = getNext( hours, hourOfDay );
-            if ( next == 0 ) {
+            next = getNext( hours, hourOfDay, MAX_HOURS_IN_DAY );
+            if ( next <= hourOfDay ) {
               // go to next allowable day
-              int dom = getNext( day, dayOfMonth );
+              int dom = getNext( day, dayOfMonth, MAX_DAYS_IN_MONTH );
 
               // have to do a little check to make sure we don't set Feb31 here
               if ( dom > cal.getActualMaximum( Calendar.DAY_OF_MONTH ) ) {
                 cal.add( Calendar.MONTH, 1 ); // go to the next month
-                dom = getNext( day, 0 );// get next day in new month
-                cal.set( Calendar.HOUR_OF_DAY, getNext( hours, 0 ) );
-                cal.set( Calendar.MINUTE, getNext( minutes, 0 ) );
+                dom = getNext( day, 0, MAX_DAYS_IN_MONTH );// get next day in new month
+                cal.set( Calendar.HOUR_OF_DAY, getNext( hours, 0, MAX_HOURS_IN_DAY ) );
+                cal.set( Calendar.MINUTE, getNext( minutes, 0, MAX_MINUTES_IN_HOUR ) );
               } else {
                 cal.set( Calendar.DAY_OF_MONTH, dom );
-                cal.set( Calendar.HOUR_OF_DAY, getNext( hours, 0 ) );
-                cal.set( Calendar.MINUTE, getNext( minutes, 0 ) );
+                cal.set( Calendar.HOUR_OF_DAY, getNext( hours, 0, MAX_HOURS_IN_DAY ) );
+                cal.set( Calendar.MINUTE, getNext( minutes, 0, MAX_MINUTES_IN_HOUR ) );
               }
             } else {
               cal.set( Calendar.HOUR_OF_DAY, next );
@@ -355,24 +365,38 @@ public class CronEntry {
           }
         } else {
           // find the next allowable day
-          next = getNext( day, dayOfMonth );
+          next = getNext( day, dayOfMonth, MAX_DAYS_IN_MONTH );
 
-          if ( next == 0 || next > cal.getActualMaximum( Calendar.DAY_OF_MONTH ) ) {
+          if ( next <= dayOfMonth || next > cal.getActualMaximum( Calendar.DAY_OF_MONTH ) ) {
             cal.add( Calendar.MONTH, 1 ); // go to the next month
-            cal.set( Calendar.DAY_OF_MONTH, getNext( day, 0 ) );
-            cal.set( Calendar.HOUR_OF_DAY, getNext( hours, 0 ) );
-            cal.set( Calendar.MINUTE, getNext( minutes, 0 ) );
+            cal.set( Calendar.DAY_OF_MONTH, getNext( day, 0, MAX_DAYS_IN_MONTH ) );
+            cal.set( Calendar.HOUR_OF_DAY, getNext( hours, 0, MAX_HOURS_IN_DAY ) );
+            cal.set( Calendar.MINUTE, getNext( minutes, 0, MAX_MINUTES_IN_HOUR ) );
           } else {
             cal.set( Calendar.DAY_OF_MONTH, next );
           }
         }
       } else {
-        cal.add( Calendar.MONTH, 1 ); // go to the next month
-        cal.set( Calendar.DAY_OF_MONTH, getNext( day, 0 ) );
-        cal.set( Calendar.HOUR_OF_DAY, getNext( hours, 0 ) );
-        cal.set( Calendar.MINUTE, getNext( minutes, 0 ) );
+        cal.add( Calendar.MONTH, 1 );
+        cal.set( Calendar.DAY_OF_MONTH, getNext( day, 0, MAX_DAYS_IN_MONTH ) );
+        cal.set( Calendar.HOUR_OF_DAY, getNext( hours, 0, MAX_HOURS_IN_DAY ) );
+        cal.set( Calendar.MINUTE, getNext( minutes, 0, MAX_MINUTES_IN_HOUR ) );
       }
     }
+
+    StringBuffer b = new StringBuffer( "Returning: '" );
+    b.append( cal.get( Calendar.MINUTE ) );
+    b.append( " " );
+    b.append( cal.get( Calendar.HOUR_OF_DAY ) );
+    b.append( " " );
+    b.append( cal.get( Calendar.DAY_OF_MONTH ) );
+    b.append( " " );
+    b.append( cal.get( Calendar.MONTH ) + 1 );
+    b.append( " " );
+    b.append( cal.get( Calendar.DAY_OF_WEEK ) - 1 );
+    b.append( "' " );
+    b.append( cal.getTime() );
+    System.out.println( b );
 
     return retval;
   }
@@ -385,33 +409,39 @@ public class CronEntry {
    * given value.
    * 
    * @param timemap The time map to search
-   * 
    * @param start the starting point
+   * @param max the max value expected in the map
    * 
    * @return the next valid value, or 0 if the end of the map was reached 
    *         without finding the next value.
    */
-  private int getNext( TreeSet<String> timemap, int start ) {
-    // start searching at the next highest value
-    int indx = start + 1;
-
+  int getNext( TreeSet<String> timemap, int start, int max ) {
     if ( timemap == null || timemap.size() == 0 ) {
       throw new IllegalArgumentException( "Time map cannot be null or empty" );
     }
 
-    // cycle through the map, but only for as long as there are entries
-    for ( int x = 0; x < timemap.size(); x++ ) {
-      // if there is an entry for the new index value, return it
-      if ( timemap.contains( Integer.toString( indx ) ) ) {
-        return indx;
+    // increment the return value to the max value
+    for ( int indx = start + 1; indx <= max; indx++ ) {
+      // go through each element of the set
+      for ( int x = 0; x <= timemap.size(); x++ ) {
+        // if there is an entry for the new index value, return it
+        if ( timemap.contains( Integer.toString( indx ) ) ) {
+          return indx;
+        }
       }
-      // otherwise increment the value
-      indx++;
     }
 
-    // we apparently went through the entire array(and then some) without 
-    // finding a matching value; return zero indicating where to start next
-    return 0;
+    // wrap around the list, since it is possible the next available value is behind us
+    for ( int indx = 0; indx <= start; indx++ ) {
+      for ( int x = 0; x <= timemap.size(); x++ ) {
+        if ( timemap.contains( Integer.toString( indx ) ) ) {
+          return indx;
+        }
+      }
+    }
+
+    System.err.println( "GetNext failed to get the next value starting from " + start + " in this time map: " + timemap );
+    return -1;
   }
 
 
@@ -589,7 +619,7 @@ public class CronEntry {
 
 
   String dump() {
-    StringBuffer b = new StringBuffer( "Cron Entry Pattern:'" );
+    StringBuffer b = new StringBuffer( "Cron Entry Pattern: " );
     b.append( toString() );
     b.append( "\r\nminutes(" );
     b.append( minutes.size() );
