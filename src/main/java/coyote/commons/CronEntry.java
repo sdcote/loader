@@ -13,7 +13,7 @@ package coyote.commons;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashSet;
+import java.util.TreeSet;
 
 
 /**
@@ -59,17 +59,17 @@ public class CronEntry {
   private static final String NOV = "Nov"; // 11
   private static final String DEC = "Dec"; // 12
 
-  static final protected int MINUTESPERHOUR = 60;
-  static final protected int HOURESPERDAY = 24;
-  static final protected int DAYSPERWEEK = 7;
-  static final protected int MONTHSPERYEAR = 12;
-  static final protected int DAYSPERMONTH = 31;
+  static final protected int MAX_MINUTES_IN_HOUR = 59;
+  static final protected int MAX_HOURS_IN_DAY = 23;
+  static final protected int MAX_DAYS_IN_WEEK = 6;
+  static final protected int MAX_MONTHS_IN_YEAR = 12;
+  static final protected int MAX_DAYS_IN_MONTH = 31;
 
-  private HashSet<String> minutes = new HashSet<String>();
-  private HashSet<String> hours = new HashSet<String>();
-  private HashSet<String> day = new HashSet<String>();
-  private HashSet<String> month = new HashSet<String>();
-  private HashSet<String> weekday = new HashSet<String>();
+  private TreeSet<String> minutes = new TreeSet<String>();
+  private TreeSet<String> hours = new TreeSet<String>();
+  private TreeSet<String> day = new TreeSet<String>();
+  private TreeSet<String> month = new TreeSet<String>();
+  private TreeSet<String> weekday = new TreeSet<String>();
   private String configLine = "";
 
   private String minutePattern = ANY;
@@ -185,7 +185,7 @@ public class CronEntry {
    * 
    * @return a hash map filled with values specified by the string; will not be null
    */
-  private static HashSet<String> parseRangeParam( String token, int maximum, int start ) {
+  private static TreeSet<String> parseRangeParam( String token, int maximum, int start ) {
     String[] paramarray;
     if ( token.indexOf( "," ) != -1 ) {
       paramarray = token.split( "," );
@@ -216,7 +216,7 @@ public class CronEntry {
       }
     }
     String[] values = rangeitems.toString().split( "," );
-    HashSet<String> result = new HashSet<String>();
+    TreeSet<String> result = new TreeSet<String>();
     for ( int i = 0; i < values.length; i++ ) {
       result.add( values[i] );
     }
@@ -391,7 +391,7 @@ public class CronEntry {
    * @return the next valid value, or 0 if the end of the map was reached 
    *         without finding the next value.
    */
-  private int getNext( HashSet<String> timemap, int start ) {
+  private int getNext( TreeSet<String> timemap, int start ) {
     // start searching at the next highest value
     int indx = start + 1;
 
@@ -476,7 +476,7 @@ public class CronEntry {
    * @param pattern the minutePattern to set
    */
   protected void setMinutePattern( String pattern ) {
-    minutes = parseRangeParam( pattern, MINUTESPERHOUR, 0 );
+    minutes = parseRangeParam( pattern, MAX_MINUTES_IN_HOUR, 0 );
     minutePattern = pattern;
   }
 
@@ -497,7 +497,7 @@ public class CronEntry {
    * @param pattern the hourPattern to set
    */
   protected void setHourPattern( String pattern ) {
-    hours = parseRangeParam( pattern, HOURESPERDAY, 0 );
+    hours = parseRangeParam( pattern, MAX_HOURS_IN_DAY, 0 );
     hourPattern = pattern;
   }
 
@@ -518,7 +518,7 @@ public class CronEntry {
    * @param pattern the dayPattern to set
    */
   protected void setDayPattern( String pattern ) {
-    day = parseRangeParam( pattern, DAYSPERMONTH, 1 );
+    day = parseRangeParam( pattern, MAX_DAYS_IN_MONTH, 1 );
     dayPattern = pattern;
   }
 
@@ -539,7 +539,7 @@ public class CronEntry {
    * @param pattern the monthPattern to set
    */
   protected void setMonthPattern( String pattern ) {
-    month = parseRangeParam( pattern, MONTHSPERYEAR, 1 );
+    month = parseRangeParam( pattern, MAX_MONTHS_IN_YEAR, 1 );
     monthPattern = pattern;
   }
 
@@ -560,7 +560,7 @@ public class CronEntry {
    * @param pattern the dayOfWeekPattern to set
    */
   protected void setDayOfWeekPattern( String pattern ) {
-    weekday = parseRangeParam( pattern, DAYSPERWEEK, 0 );
+    weekday = parseRangeParam( pattern, MAX_DAYS_IN_WEEK, 0 );
     dayOfWeekPattern = pattern;
   }
 
@@ -582,6 +582,35 @@ public class CronEntry {
     b.append( monthPattern );
     b.append( " " );
     b.append( dayOfWeekPattern );
+    return b.toString();
+  }
+
+
+
+
+  String dump() {
+    StringBuffer b = new StringBuffer( "Cron Entry Pattern:'" );
+    b.append( toString() );
+    b.append( "\r\nminutes(" );
+    b.append( minutes.size() );
+    b.append( "):" );
+    b.append( minutes );
+    b.append( "\r\nhours(" );
+    b.append( hours.size() );
+    b.append( "):" );
+    b.append( hours );
+    b.append( "\r\ndays(" );
+    b.append( day.size() );
+    b.append( "):" );
+    b.append( day );
+    b.append( "\r\nmonths(" );
+    b.append( month.size() );
+    b.append( "):" );
+    b.append( month );
+    b.append( "\r\nweekday(" );
+    b.append( weekday.size() );
+    b.append( "):" );
+    b.append( weekday );
     return b.toString();
   }
 
