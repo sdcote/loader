@@ -101,7 +101,7 @@ public class ThreadPool {
   public ThreadPool() {
     configuration.setName( "ThreadService" );
 
-    pool_name = "ThreadPool" + poolcount++;
+    pool_name = "Pool" + poolcount++;
   }
 
 
