@@ -13,7 +13,7 @@ package coyote.commons;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
+import java.util.HashSet;
 
 
 /**
@@ -36,26 +36,28 @@ import java.util.HashMap;
  */
 public class CronEntry {
   private static final String ANY = "*";
-  private static final String MON = "Mon";
-  private static final String TUE = "Tue";
-  private static final String WED = "Wed";
-  private static final String THU = "Thu";
-  private static final String FRI = "Fri";
-  private static final String SAT = "Sat";
-  private static final String SUN = "Sun";
-  private static final String WEEKDAYS = "W";
-  private static final String JAN = "Jan";
-  private static final String FEB = "Feb";
-  private static final String MAR = "MAR";
-  private static final String APR = "Apr";
-  private static final String MAY = "May";
-  private static final String JUN = "Jun";
-  private static final String JUL = "Jul";
-  private static final String AUG = "Aug";
-  private static final String SEP = "Sep";
-  private static final String OCT = "Oct";
-  private static final String NOV = "Nov";
-  private static final String DEC = "Dec";
+  private static final String SUN = "Sun"; // 0
+  private static final String MON = "Mon"; // 1
+  private static final String TUE = "Tue"; // 2
+  private static final String WED = "Wed"; // 3
+  private static final String THU = "Thu"; // 4
+  private static final String FRI = "Fri"; // 5
+  private static final String SAT = "Sat"; // 6
+
+  private static final String WEEKDAYS = "W"; // 1-5
+
+  private static final String JAN = "Jan"; // 1
+  private static final String FEB = "Feb"; // 2
+  private static final String MAR = "MAR"; // 3
+  private static final String APR = "Apr"; // 4
+  private static final String MAY = "May"; // 5
+  private static final String JUN = "Jun"; // 6
+  private static final String JUL = "Jul"; // 7
+  private static final String AUG = "Aug"; // 8
+  private static final String SEP = "Sep"; // 9
+  private static final String OCT = "Oct"; // 10
+  private static final String NOV = "Nov"; // 11
+  private static final String DEC = "Dec"; // 12
 
   static final protected int MINUTESPERHOUR = 60;
   static final protected int HOURESPERDAY = 24;
@@ -63,11 +65,11 @@ public class CronEntry {
   static final protected int MONTHSPERYEAR = 12;
   static final protected int DAYSPERMONTH = 31;
 
-  private HashMap<String, String> minutes = new HashMap<String, String>();
-  private HashMap<String, String> hours = new HashMap<String, String>();
-  private HashMap<String, String> day = new HashMap<String, String>();
-  private HashMap<String, String> month = new HashMap<String, String>();
-  private HashMap<String, String> weekday = new HashMap<String, String>();
+  private HashSet<String> minutes = new HashSet<String>();
+  private HashSet<String> hours = new HashSet<String>();
+  private HashSet<String> day = new HashSet<String>();
+  private HashSet<String> month = new HashSet<String>();
+  private HashSet<String> weekday = new HashSet<String>();
   private String configLine = "";
 
   private String minutePattern = ANY;
@@ -79,8 +81,15 @@ public class CronEntry {
 
 
 
-  private CronEntry() {
-
+  /**
+   * Create a CronEntry which allows all times (i.e. "{@code * * * * *}")
+   */
+  public CronEntry() {
+    setMinutePattern( ANY );
+    setHourPattern( ANY );
+    setDayPattern( ANY );
+    setMonthPattern( ANY );
+    setDayOfWeekPattern( ANY );
   }
 
 
@@ -176,7 +185,7 @@ public class CronEntry {
    * 
    * @return a hash map filled with values specified by the string; will not be null
    */
-  private static HashMap<String, String> parseRangeParam( String token, int maximum, int start ) {
+  private static HashSet<String> parseRangeParam( String token, int maximum, int start ) {
     String[] paramarray;
     if ( token.indexOf( "," ) != -1 ) {
       paramarray = token.split( "," );
@@ -207,9 +216,9 @@ public class CronEntry {
       }
     }
     String[] values = rangeitems.toString().split( "," );
-    HashMap<String, String> result = new HashMap<String, String>();
+    HashSet<String> result = new HashSet<String>();
     for ( int i = 0; i < values.length; i++ ) {
-      result.put( values[i], values[i] );
+      result.add( values[i] );
     }
 
     return result;
@@ -258,11 +267,11 @@ public class CronEntry {
     int hourOfDay = cal.get( Calendar.HOUR_OF_DAY );
     int minuteOfHour = cal.get( Calendar.MINUTE );
 
-    if ( minutes.get( Integer.toString( minuteOfHour ) ) != null ) {
-      if ( hours.get( Integer.toString( hourOfDay ) ) != null ) {
-        if ( day.get( Integer.toString( dayOfMonth ) ) != null ) {
-          if ( month.get( Integer.toString( monthOfYear ) ) != null ) {
-            if ( weekday.get( Integer.toString( dayOfWeek ) ) != null ) {
+    if ( minutes.contains( Integer.toString( minuteOfHour ) ) ) {
+      if ( hours.contains( Integer.toString( hourOfDay ) ) ) {
+        if ( day.contains( Integer.toString( dayOfMonth ) ) ) {
+          if ( month.contains( Integer.toString( monthOfYear ) ) ) {
+            if ( weekday.contains( Integer.toString( dayOfWeek ) ) ) {
               return true;
             }
           }
@@ -285,11 +294,17 @@ public class CronEntry {
 
 
 
-  // Return the next time specified by this cron entry 
   public long getNextTime() {
+    return getNextTime( new GregorianCalendar() );
+  }
+
+
+
+
+  // Return the next time specified by this cron entry 
+  public long getNextTime( GregorianCalendar cal ) {
     long retval = -1;
     int next = 0;
-    Calendar cal = new GregorianCalendar();
 
     int monthOfYear, dayOfMonth, dayOfWeek, hourOfDay, minuteOfHour;
 
@@ -320,15 +335,19 @@ public class CronEntry {
             //find the next allowable hour
             next = getNext( hours, hourOfDay );
             if ( next == 0 ) {
+              // go to next allowable day
               int dom = getNext( day, dayOfMonth );
 
               // have to do a little check to make sure we don't set Feb31 here
               if ( dom > cal.getActualMaximum( Calendar.DAY_OF_MONTH ) ) {
                 cal.add( Calendar.MONTH, 1 ); // go to the next month
                 dom = getNext( day, 0 );// get next day in new month
+                cal.set( Calendar.HOUR_OF_DAY, getNext( hours, 0 ) );
+                cal.set( Calendar.MINUTE, getNext( minutes, 0 ) );
               } else {
                 cal.set( Calendar.DAY_OF_MONTH, dom );
                 cal.set( Calendar.HOUR_OF_DAY, getNext( hours, 0 ) );
+                cal.set( Calendar.MINUTE, getNext( minutes, 0 ) );
               }
             } else {
               cal.set( Calendar.HOUR_OF_DAY, next );
@@ -338,36 +357,20 @@ public class CronEntry {
           // find the next allowable day
           next = getNext( day, dayOfMonth );
 
-          if ( next > cal.getActualMaximum( Calendar.DAY_OF_MONTH ) ) {
+          if ( next == 0 || next > cal.getActualMaximum( Calendar.DAY_OF_MONTH ) ) {
             cal.add( Calendar.MONTH, 1 ); // go to the next month
-            next = getNext( day, 0 );// get next day in new month
-          } else if ( next == 0 ) {
-            cal.set( Calendar.MONTH, getNext( month, monthOfYear ) );
-            // TODO do we set everything else to zero as well?????  
+            cal.set( Calendar.DAY_OF_MONTH, getNext( day, 0 ) );
+            cal.set( Calendar.HOUR_OF_DAY, getNext( hours, 0 ) );
+            cal.set( Calendar.MINUTE, getNext( minutes, 0 ) );
+          } else {
+            cal.set( Calendar.DAY_OF_MONTH, next );
           }
-
-          //
-
-          // TODO Start Here
-
-          //
-
-          // Nudge to next day
-          cal.add( Calendar.DAY_OF_MONTH, 1 );
-          // set to first hour of day (0)
-          cal.set( Calendar.HOUR_OF_DAY, 0 );
-          // set to first minute of hour (0)
-          cal.set( Calendar.MINUTE, 0 );
         }
       } else {
-        // Nudge to next month
-        cal.add( Calendar.MONTH, 1 );
-        // set to first day of month
-        cal.set( Calendar.DAY_OF_MONTH, 1 );
-        // set to first hour of day (0)
-        cal.set( Calendar.HOUR_OF_DAY, 0 );
-        // set to first minute of hour (0)
-        cal.set( Calendar.MINUTE, 0 );
+        cal.add( Calendar.MONTH, 1 ); // go to the next month
+        cal.set( Calendar.DAY_OF_MONTH, getNext( day, 0 ) );
+        cal.set( Calendar.HOUR_OF_DAY, getNext( hours, 0 ) );
+        cal.set( Calendar.MINUTE, getNext( minutes, 0 ) );
       }
     }
 
@@ -388,8 +391,8 @@ public class CronEntry {
    * @return the next valid value, or 0 if the end of the map was reached 
    *         without finding the next value.
    */
-  private int getNext( HashMap<String, String> timemap, int start ) {
-    // start searching at the next higest value
+  private int getNext( HashSet<String> timemap, int start ) {
+    // start searching at the next highest value
     int indx = start + 1;
 
     if ( timemap == null || timemap.size() == 0 ) {
@@ -399,7 +402,7 @@ public class CronEntry {
     // cycle through the map, but only for as long as there are entries
     for ( int x = 0; x < timemap.size(); x++ ) {
       // if there is an entry for the new index value, return it
-      if ( timemap.containsKey( Integer.toString( indx ) ) ) {
+      if ( timemap.contains( Integer.toString( indx ) ) ) {
         return indx;
       }
       // otherwise increment the value
@@ -425,35 +428,35 @@ public class CronEntry {
 
 
   private boolean weekDayPasses( int val ) {
-    return ( weekday.get( Integer.toString( val ) ) != null );
+    return ( weekday.contains( Integer.toString( val ) ) );
   }
 
 
 
 
   private boolean monthPasses( int val ) {
-    return ( month.get( Integer.toString( val ) ) != null );
+    return ( month.contains( Integer.toString( val ) ) );
   }
 
 
 
 
   private boolean dayPasses( int val ) {
-    return ( day.get( Integer.toString( val ) ) != null );
+    return ( day.contains( Integer.toString( val ) ) );
   }
 
 
 
 
   private boolean hourPasses( int val ) {
-    return ( hours.get( Integer.toString( val ) ) != null );
+    return ( hours.contains( Integer.toString( val ) ) );
   }
 
 
 
 
   private boolean minutePasses( int val ) {
-    return ( minutes.get( Integer.toString( val ) ) != null );
+    return ( minutes.contains( Integer.toString( val ) ) );
   }
 
 
