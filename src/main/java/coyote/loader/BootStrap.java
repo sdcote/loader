@@ -50,6 +50,8 @@ public class BootStrap extends AbstractLoader {
   protected static final String INFO_ARG = "-v";
 
 
+
+
   /**
    * Performs encryption operation from the command line arguments.
    * 
@@ -133,7 +135,7 @@ public class BootStrap extends AbstractLoader {
         Log.startLogging( Log.INFO );
       }
     }
-    
+
     // Make sure we have a configuration 
     if ( StringUtil.isBlank( cfgLoc ) ) {
       System.err.println( LogMsg.createMsg( LOADER_MSG, "Loader.error_no_config" ) );
@@ -266,9 +268,9 @@ public class BootStrap extends AbstractLoader {
 
     // Parse the command line arguments
     parseArgs( args );
-    
-    Log.info("Verbose logging is enabled");
-    Log.debug("Debug logging is enabled");
+
+    Log.info( "Verbose logging is enabled" );
+    Log.debug( "Debug logging is enabled" );
 
     // confirm the readability of app.home if it is set
     confirmAppHome();
