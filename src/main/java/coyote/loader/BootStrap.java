@@ -46,7 +46,8 @@ public class BootStrap extends AbstractLoader {
   private static String cfgLoc = null;
   private static URI cfgUri = null;
 
-
+  protected static final String DEBUG_ARG = "-d";
+  protected static final String INFO_ARG = "-v";
 
 
   /**
@@ -125,7 +126,14 @@ public class BootStrap extends AbstractLoader {
         cfgLoc = args[0];
       }
     }
-
+    for ( int x = 0; x < args.length; x++ ) {
+      if ( DEBUG_ARG.equalsIgnoreCase( args[x] ) ) {
+        Log.startLogging( Log.DEBUG );
+      } else if ( INFO_ARG.equalsIgnoreCase( args[x] ) ) {
+        Log.startLogging( Log.INFO );
+      }
+    }
+    
     // Make sure we have a configuration 
     if ( StringUtil.isBlank( cfgLoc ) ) {
       System.err.println( LogMsg.createMsg( LOADER_MSG, "Loader.error_no_config" ) );
@@ -258,6 +266,9 @@ public class BootStrap extends AbstractLoader {
 
     // Parse the command line arguments
     parseArgs( args );
+    
+    Log.info("Verbose logging is enabled");
+    Log.debug("Debug logging is enabled");
 
     // confirm the readability of app.home if it is set
     confirmAppHome();
