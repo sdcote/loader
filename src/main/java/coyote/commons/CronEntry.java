@@ -307,19 +307,33 @@ public class CronEntry {
 
 
   // Return the next time specified by this cron entry 
-  public long getNextTime( GregorianCalendar cal ) {
+  public long getNextTime( Calendar start ) {
+
     long retval = -1;
-    int next = 0;
+    int next, monthOfYear, dayOfMonth, dayOfWeek, hourOfDay, minuteOfHour = 0;
 
-    int monthOfYear, dayOfMonth, dayOfWeek, hourOfDay, minuteOfHour;
+    //System.outprintln( "=============================================" );
+    //System.outprintln( "NEXTTIME:  " + toPattern( start ) );
+    Calendar cal = new GregorianCalendar();
+    cal.setTimeInMillis( start.getTimeInMillis() );
+    cal.add( Calendar.MINUTE, +1 ); // nudge to the next increment of time
+    cal.set( Calendar.SECOND, 0 ); // set to top of minute
+    cal.set( Calendar.MILLISECOND, 0 ); // set to top of second
+    //System.outprintln( "PRIMED:    " + toPattern( cal ) );
 
+    int loopcount = 0;
     while ( retval < 0 ) {
-      monthOfYear = cal.get( Calendar.MONTH ) + 1;
+      if ( loopcount++ > 100 ) {
+        System.err.println( "GetNext failed to get the next value starting from " + start + "; possibly conflicting values" );
+        return Long.MAX_VALUE;
+      }
+      monthOfYear = cal.get( Calendar.MONTH ) + 1; // adjust from 0 based
       dayOfMonth = cal.get( Calendar.DAY_OF_MONTH );
-      dayOfWeek = cal.get( Calendar.DAY_OF_WEEK ) - 1;
+      dayOfWeek = cal.get( Calendar.DAY_OF_WEEK ) - 1; // adjust to 0-based
       hourOfDay = cal.get( Calendar.HOUR_OF_DAY );
       minuteOfHour = cal.get( Calendar.MINUTE );
-
+      //System.outprintln( "CHECKING:  " + toPattern( cal ) + "---------" );
+      //System.outprintln( "AGAINST:   " + toString() );
       if ( monthPasses( monthOfYear ) ) {
 
         if ( weekDayPasses( dayOfWeek ) && dayPasses( dayOfMonth ) ) {
@@ -330,63 +344,66 @@ public class CronEntry {
               /// we got it
               retval = cal.getTimeInMillis();
             } else {
+              //System.outprintln( "Minute of '" + minuteOfHour + "' did not pass..." );
               // find the next allowable minute
               next = getNext( minutes, minuteOfHour, MAX_MINUTES_IN_HOUR );
-
-              // if next < where we started, increment hour
-              if ( next <= minuteOfHour ) {
-                cal.set( Calendar.HOUR_OF_DAY, getNext( hours, hourOfDay, MAX_HOURS_IN_DAY ) );
-              } else {
-                cal.set( Calendar.MINUTE, next );
+              cal.set( Calendar.MINUTE, next );
+              //System.outprintln( "nudged minutes to " + cal.get( Calendar.MINUTE ) );
+              if ( next < minuteOfHour ) {
+                cal.add( Calendar.HOUR_OF_DAY, 1 );
+                //System.outprintln( "minutes cycled past 60, nudged hour to " + cal.get( Calendar.HOUR_OF_DAY ) );
               }
-            }
+            } // minute check
+
           } else {
+            //System.outprintln( "Hour of '" + hourOfDay + "' did not pass..." );
             //find the next allowable hour
             next = getNext( hours, hourOfDay, MAX_HOURS_IN_DAY );
-            if ( next < hourOfDay ) {
-              // go to next allowable day
-              int dom = getNext( day, dayOfMonth, MAX_DAYS_IN_MONTH );
-
-              // have to do a little check to make sure we don't set Feb31 here
-              if ( dom > cal.getActualMaximum( Calendar.DAY_OF_MONTH ) ) {
-                cal.add( Calendar.MONTH, 1 ); // go to the next month
-                dom = getNext( day, 0, MAX_DAYS_IN_MONTH );// get next day in new month
-              }
-              cal.set( Calendar.DAY_OF_MONTH, dom );
-
-            }
             cal.set( Calendar.HOUR_OF_DAY, next );
+            //System.outprintln( "nudged hour to " + cal.get( Calendar.HOUR_OF_DAY ) );
+            if ( next < hourOfDay ) {
+              cal.add( Calendar.DAY_OF_MONTH, 1 );
+              //System.outprintln( "hour cycled past midnight, nudged day to " + cal.get( Calendar.DAY_OF_MONTH ) );
+            }
+            cal.set( Calendar.MINUTE, getNext( minutes, -1, MAX_MINUTES_IN_HOUR ) );
+            //System.outprintln( "reset minutes to " + cal.get( Calendar.MINUTE ) );
+          } // hour check
 
-          }
         } else {
+          //System.outprintln( "Day of '" + dayOfMonth + "' did not pass..." );
           // find the next allowable day
           next = getNext( day, dayOfMonth, MAX_DAYS_IN_MONTH );
 
           if ( next < dayOfMonth || next > cal.getActualMaximum( Calendar.DAY_OF_MONTH ) ) {
             cal.add( Calendar.MONTH, 1 );
+          } else {
+            cal.set( Calendar.DAY_OF_MONTH, next );
           }
+
+          //System.outprintln( "nudged day to " + cal.get( Calendar.DAY_OF_MONTH ) );
+          cal.set( Calendar.HOUR_OF_DAY, getNext( hours, -1, MAX_HOURS_IN_DAY ) );
+          //System.outprintln( "reset hour to " + cal.get( Calendar.HOUR_OF_DAY ) );
+          cal.set( Calendar.MINUTE, getNext( minutes, -1, MAX_MINUTES_IN_HOUR ) );
+          //System.outprintln( "reset minutes to " + cal.get( Calendar.MINUTE ) );
 
           cal.set( Calendar.DAY_OF_MONTH, next );
 
-        }
+        } // day check
+
       } else {
-        cal.add( Calendar.MONTH, 1 );
-      }
+        //System.outprintln( "Month of '" + monthOfYear + "' did not pass..." );
+        cal.add( Calendar.MONTH, getNext( month, monthOfYear, MAX_MONTHS_IN_YEAR ) );
+        //System.outprintln( "nudged month to " + cal.get( Calendar.MONTH ) );
+        cal.set( Calendar.DAY_OF_MONTH, getNext( day, 0, MAX_DAYS_IN_MONTH ) );
+        //System.outprintln( "reset day to " + cal.get( Calendar.DAY_OF_MONTH ) );
+        cal.set( Calendar.HOUR_OF_DAY, getNext( hours, -1, MAX_HOURS_IN_DAY ) );
+        //System.outprintln( "reset hour to " + cal.get( Calendar.HOUR_OF_DAY ) );
+        cal.set( Calendar.MINUTE, getNext( minutes, -1, MAX_MINUTES_IN_HOUR ) );
+        //System.outprintln( "reset minutes to " + cal.get( Calendar.MINUTE ) );
+      } // month check
     }
 
-//    StringBuffer b = new StringBuffer( "Returning: '" );
-//    b.append( cal.get( Calendar.MINUTE ) );
-//    b.append( " " );
-//    b.append( cal.get( Calendar.HOUR_OF_DAY ) );
-//    b.append( " " );
-//    b.append( cal.get( Calendar.DAY_OF_MONTH ) );
-//    b.append( " " );
-//    b.append( cal.get( Calendar.MONTH ) + 1 );
-//    b.append( " " );
-//    b.append( cal.get( Calendar.DAY_OF_WEEK ) - 1 );
-//    b.append( "' " );
-//    b.append( cal.getTime() );
-//    System.out.println( b );
+    //System.outprintln( "RETURNING: " + toPattern( cal ) );
 
     return retval;
   }
@@ -398,11 +415,16 @@ public class CronEntry {
    * Returns the next acceptable value in the given time map starting after the 
    * given value.
    * 
+   * <p>If it is desired to start the search from 0, then -1 should be used. 
+   * This is important for those time maps which are zero-based as in minute, 
+   * hour and day of week.</p>
+   * 
    * @param timemap The time map to search
-   * @param start the starting point
+   * @param start the starting point, use -1 to start searching from the 
+   *        beginning on 0-based time maps like hour and minute.
    * @param max the max value expected in the map
    * 
-   * @return the next valid value, or 0 if the end of the map was reached 
+   * @return the next highest valid value. Note it could be the same as the , or 0 if the end of the map was reached 
    *         without finding the next value.
    */
   int getNext( TreeSet<String> timemap, int start, int max ) {
@@ -608,9 +630,27 @@ public class CronEntry {
 
 
 
+  public static String toPattern( Calendar cal ) {
+    StringBuffer b = new StringBuffer();
+    b.append( cal.get( Calendar.MINUTE ) );
+    b.append( " " );
+    b.append( cal.get( Calendar.HOUR_OF_DAY ) );
+    b.append( " " );
+    b.append( cal.get( Calendar.DAY_OF_MONTH ) );
+    b.append( " " );
+    b.append( cal.get( Calendar.MONTH ) + 1 );
+    b.append( " " );
+    b.append( cal.get( Calendar.DAY_OF_WEEK ) - 1 );
+    return b.toString();
+  }
+
+
+
+
   String dump() {
     StringBuffer b = new StringBuffer( "Cron Entry Pattern: " );
     b.append( toString() );
+    b.append( "\r\nAllowable time values for each category:" );
     b.append( "\r\nminutes(" );
     b.append( minutes.size() );
     b.append( "):" );
