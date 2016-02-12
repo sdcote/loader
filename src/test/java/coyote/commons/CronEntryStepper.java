@@ -11,6 +11,10 @@
  */
 package coyote.commons;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
+
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -34,25 +38,38 @@ public class CronEntryStepper {
   public static void main( String[] args ) {
     CronEntry subject = new CronEntry();
     long millis;
-    Calendar now = new GregorianCalendar();
-    //now.add( Calendar.MINUTE, -15 );
-    System.out.println( "NOW:      " + DATEFORMAT.format( now.getTime() ) + " - " + CronEntry.toPattern( now ) );
-    System.out.println();
-
-    long nowmillis = now.getTimeInMillis();
-
     Calendar cal = new GregorianCalendar();
 
-    // set the pattern to one hour in the future
-    subject.setHourPattern( Integer.toString( cal.get( Calendar.HOUR_OF_DAY ) + 1 ) ); // adjustment
-    System.out.println( subject.dump() );
+    cal.set( Calendar.MONTH, 0 );// 0=Jan in Java Calendar <sigh/>
+    cal.set( Calendar.DAY_OF_MONTH, 15 );
+    cal.set( Calendar.HOUR_OF_DAY, 11 );
+    cal.set( Calendar.MINUTE, 57 );
+    cal.set( Calendar.SECOND, 0 );
+    cal.set( Calendar.MILLISECOND, 0 );
+    System.out.println(cal.getTime());
+    System.out.println(CronEntry.toPattern( cal ));
 
-    millis = subject.getNextTime( now );
-    Date result = new Date( millis );
+    try {
+      // parse an entry which allows / accepts all dates and times
+      subject = CronEntry.parse( null );
 
-    System.out.println();
-    System.out.println( "RESULT:   " + DATEFORMAT.format( result ) );
-    System.out.println( "INTERVAL: " + millis + " - " + CronEntryTest.formatElapsed( millis - nowmillis ) );
+      // set the pattern to only allow February runs one month later
+      subject.setMonthPattern( Integer.toString( 2 ) ); //  (Jan=0,Feb=1)
+      System.out.println( subject );
+
+      System.out.println(CronEntry.toPattern( cal ));
+      // cannot run on 1/15
+      assertFalse( subject.mayRunAt( cal ));
+
+      millis = subject.getNextTime(cal);
+      long now = System.currentTimeMillis();
+      //assertTrue( ( millis - now ) <= 3600000 );
+
+      Date date = new Date(millis);
+      System.out.println( millis + " - " + date );
+    } catch ( ParseException e ) {
+      fail( e.getMessage() );
+    }
   }
 
 }
