@@ -485,7 +485,7 @@ public class CronEntry {
   /**
    * @return the minutePattern
    */
-  protected String getMinutePattern() {
+  public String getMinutePattern() {
     return minutePattern;
   }
 
@@ -495,7 +495,7 @@ public class CronEntry {
   /**
    * @param pattern the minutePattern to set
    */
-  protected void setMinutePattern( String pattern ) {
+  public void setMinutePattern( String pattern ) {
     minutes = parseRangeParam( pattern, MAX_MINUTES_IN_HOUR, 0 );
     minutePattern = pattern;
   }
@@ -506,7 +506,7 @@ public class CronEntry {
   /**
    * @return the hourPattern
    */
-  protected String getHourPattern() {
+  public String getHourPattern() {
     return hourPattern;
   }
 
@@ -516,7 +516,7 @@ public class CronEntry {
   /**
    * @param pattern the hourPattern to set
    */
-  protected void setHourPattern( String pattern ) {
+  public void setHourPattern( String pattern ) {
     hours = parseRangeParam( pattern, MAX_HOURS_IN_DAY, 0 );
     hourPattern = pattern;
   }
@@ -527,7 +527,7 @@ public class CronEntry {
   /**
    * @return the dayPattern
    */
-  protected String getDayPattern() {
+  public String getDayPattern() {
     return dayPattern;
   }
 
@@ -537,7 +537,7 @@ public class CronEntry {
   /**
    * @param pattern the dayPattern to set
    */
-  protected void setDayPattern( String pattern ) {
+  public void setDayPattern( String pattern ) {
     day = parseRangeParam( pattern, MAX_DAYS_IN_MONTH, 1 );
     dayPattern = pattern;
   }
@@ -548,7 +548,7 @@ public class CronEntry {
   /**
    * @return the monthPattern
    */
-  protected String getMonthPattern() {
+  public String getMonthPattern() {
     return monthPattern;
   }
 
@@ -558,7 +558,7 @@ public class CronEntry {
   /**
    * @param pattern the monthPattern to set
    */
-  protected void setMonthPattern( String pattern ) {
+  public void setMonthPattern( String pattern ) {
     month = parseRangeParam( pattern, MAX_MONTHS_IN_YEAR, 1 );
     monthPattern = pattern;
   }
@@ -569,7 +569,7 @@ public class CronEntry {
   /**
    * @return the dayOfWeekPattern
    */
-  protected String getDayOfWeekPattern() {
+  public String getDayOfWeekPattern() {
     return dayOfWeekPattern;
   }
 
@@ -579,7 +579,7 @@ public class CronEntry {
   /**
    * @param pattern the dayOfWeekPattern to set
    */
-  protected void setDayOfWeekPattern( String pattern ) {
+  public void setDayOfWeekPattern( String pattern ) {
     weekday = parseRangeParam( pattern, MAX_DAYS_IN_WEEK, 0 );
     dayOfWeekPattern = pattern;
   }
