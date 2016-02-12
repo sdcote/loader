@@ -333,10 +333,9 @@ public class CronEntry {
               // find the next allowable minute
               next = getNext( minutes, minuteOfHour, MAX_MINUTES_IN_HOUR );
 
-              // if next = -1, then
+              // if next < where we started, increment hour
               if ( next <= minuteOfHour ) {
                 cal.set( Calendar.HOUR_OF_DAY, getNext( hours, hourOfDay, MAX_HOURS_IN_DAY ) );
-                cal.set( Calendar.MINUTE, getNext( minutes, 0, MAX_MINUTES_IN_HOUR ) );
               } else {
                 cal.set( Calendar.MINUTE, next );
               }
@@ -344,7 +343,7 @@ public class CronEntry {
           } else {
             //find the next allowable hour
             next = getNext( hours, hourOfDay, MAX_HOURS_IN_DAY );
-            if ( next <= hourOfDay ) {
+            if ( next < hourOfDay ) {
               // go to next allowable day
               int dom = getNext( day, dayOfMonth, MAX_DAYS_IN_MONTH );
 
@@ -352,51 +351,42 @@ public class CronEntry {
               if ( dom > cal.getActualMaximum( Calendar.DAY_OF_MONTH ) ) {
                 cal.add( Calendar.MONTH, 1 ); // go to the next month
                 dom = getNext( day, 0, MAX_DAYS_IN_MONTH );// get next day in new month
-                cal.set( Calendar.HOUR_OF_DAY, getNext( hours, 0, MAX_HOURS_IN_DAY ) );
-                cal.set( Calendar.MINUTE, getNext( minutes, 0, MAX_MINUTES_IN_HOUR ) );
-              } else {
-                cal.set( Calendar.DAY_OF_MONTH, dom );
-                cal.set( Calendar.HOUR_OF_DAY, getNext( hours, 0, MAX_HOURS_IN_DAY ) );
-                cal.set( Calendar.MINUTE, getNext( minutes, 0, MAX_MINUTES_IN_HOUR ) );
               }
-            } else {
-              cal.set( Calendar.HOUR_OF_DAY, next );
+              cal.set( Calendar.DAY_OF_MONTH, dom );
+
             }
+            cal.set( Calendar.HOUR_OF_DAY, next );
+
           }
         } else {
           // find the next allowable day
           next = getNext( day, dayOfMonth, MAX_DAYS_IN_MONTH );
 
-          if ( next <= dayOfMonth || next > cal.getActualMaximum( Calendar.DAY_OF_MONTH ) ) {
-            cal.add( Calendar.MONTH, 1 ); // go to the next month
-            cal.set( Calendar.DAY_OF_MONTH, getNext( day, 0, MAX_DAYS_IN_MONTH ) );
-            cal.set( Calendar.HOUR_OF_DAY, getNext( hours, 0, MAX_HOURS_IN_DAY ) );
-            cal.set( Calendar.MINUTE, getNext( minutes, 0, MAX_MINUTES_IN_HOUR ) );
-          } else {
-            cal.set( Calendar.DAY_OF_MONTH, next );
+          if ( next < dayOfMonth || next > cal.getActualMaximum( Calendar.DAY_OF_MONTH ) ) {
+            cal.add( Calendar.MONTH, 1 );
           }
+
+          cal.set( Calendar.DAY_OF_MONTH, next );
+
         }
       } else {
         cal.add( Calendar.MONTH, 1 );
-        cal.set( Calendar.DAY_OF_MONTH, getNext( day, 0, MAX_DAYS_IN_MONTH ) );
-        cal.set( Calendar.HOUR_OF_DAY, getNext( hours, 0, MAX_HOURS_IN_DAY ) );
-        cal.set( Calendar.MINUTE, getNext( minutes, 0, MAX_MINUTES_IN_HOUR ) );
       }
     }
 
-    StringBuffer b = new StringBuffer( "Returning: '" );
-    b.append( cal.get( Calendar.MINUTE ) );
-    b.append( " " );
-    b.append( cal.get( Calendar.HOUR_OF_DAY ) );
-    b.append( " " );
-    b.append( cal.get( Calendar.DAY_OF_MONTH ) );
-    b.append( " " );
-    b.append( cal.get( Calendar.MONTH ) + 1 );
-    b.append( " " );
-    b.append( cal.get( Calendar.DAY_OF_WEEK ) - 1 );
-    b.append( "' " );
-    b.append( cal.getTime() );
-    System.out.println( b );
+//    StringBuffer b = new StringBuffer( "Returning: '" );
+//    b.append( cal.get( Calendar.MINUTE ) );
+//    b.append( " " );
+//    b.append( cal.get( Calendar.HOUR_OF_DAY ) );
+//    b.append( " " );
+//    b.append( cal.get( Calendar.DAY_OF_MONTH ) );
+//    b.append( " " );
+//    b.append( cal.get( Calendar.MONTH ) + 1 );
+//    b.append( " " );
+//    b.append( cal.get( Calendar.DAY_OF_WEEK ) - 1 );
+//    b.append( "' " );
+//    b.append( cal.getTime() );
+//    System.out.println( b );
 
     return retval;
   }

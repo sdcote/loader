@@ -281,7 +281,7 @@ public class CronEntryTest {
   /**
    * Test method for {@link coyote.commons.CronEntry#getNextInterval()}.
    */
-  //  @Test
+  @Test
   public void testGetNextInterval() {
     CronEntry subject = new CronEntry();
     long millis;
@@ -295,7 +295,7 @@ public class CronEntryTest {
     subject.setMonthPattern( Integer.toString( cal.get( Calendar.MONTH ) + 1 ) );// no adjustment
     subject.setDayOfWeekPattern( Integer.toString( cal.get( Calendar.DAY_OF_WEEK ) - 1 ) );// no adjustment
     assertFalse( subject.mayRunNow() );
-    millis = subject.getNextInterval();
+   millis = subject.getNextInterval();
     //System.out.println( millis + " - " + formatElapsed( millis ) );
     assertTrue( millis <= ( 3600000 ) );
 
@@ -328,6 +328,7 @@ public class CronEntryTest {
     //System.out.println( subject.dump() );
     millis = subject.getNextInterval();
     //System.out.println( millis + " - " + formatElapsed( millis ) );
+    assertTrue( "1d " + millis + "!<=86400000", millis <= 86400000 );
 
   }
 
