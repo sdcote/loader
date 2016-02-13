@@ -17,6 +17,8 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.logging.Level;
 
+import coyote.loader.log.Log;
+
 
 /**
  * The runnable that will be used for every new client connection.
@@ -68,7 +70,7 @@ public class ClientHandler implements Runnable {
       // was anything other than the expected SocketException OR a 
       // SocketTimeoutException, print the stacktrace
       if ( !( ( e instanceof SocketException ) && "HTTPD Shutdown".equals( e.getMessage() ) ) && !( e instanceof SocketTimeoutException ) ) {
-        HTTPD.LOG.log( Level.SEVERE, "Communication with the client broken, or an bug in the handler code", e );
+        Log.append( HTTPD.EVENT, "ERROR: Communication with the client broken, or an bug in the handler code", e );
       }
     }
     finally {

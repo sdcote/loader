@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import coyote.loader.log.Log;
+
 /**
  * Default strategy for creating and cleaning up temporary files.
  * 
@@ -49,7 +51,7 @@ public class DefaultTempFileManager implements TempFileManager {
       try {
         file.delete();
       } catch ( final Exception ignored ) {
-        HTTPD.LOG.log( Level.WARNING, "Could not delete file ", ignored );
+        Log.append( HTTPD.EVENT, "WARNING: Could not delete file ", ignored );
       }
     }
     tempFiles.clear();

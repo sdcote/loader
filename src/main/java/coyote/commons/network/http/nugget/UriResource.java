@@ -23,8 +23,12 @@ import coyote.commons.network.http.HTTPD;
 import coyote.commons.network.http.IHTTPSession;
 import coyote.commons.network.http.Response;
 import coyote.commons.network.http.Status;
+import coyote.loader.log.Log;
 
 
+/**
+ * 
+ */
 public class UriResource {
 
   private static final Pattern PARAM_PATTERN = Pattern.compile( "(?<=(^|/)):[a-zA-Z0-9_-]+(?=(/|$))" );
@@ -101,7 +105,7 @@ public class UriResource {
     if ( initParameter.length > parameterIndex ) {
       return paramClazz.cast( initParameter[parameterIndex] );
     }
-    HTTPDRouter.LOG.severe( "init parameter index not available " + parameterIndex );
+    Log.append( HTTPD.EVENT,"ERROR: init parameter index not available " + parameterIndex );
     return null;
   }
 
@@ -133,7 +137,7 @@ public class UriResource {
 
 
   public Response process( final Map<String, String> urlParams, final IHTTPSession session ) {
-    String error = "General error";
+    String error = "Error: Problems while processing URI resource";
     if ( handler != null ) {
       try {
         final Object object = handler.newInstance();
@@ -161,7 +165,7 @@ public class UriResource {
         }
       } catch ( final Exception e ) {
         error = "Error: " + e.getClass().getName() + " : " + e.getMessage();
-        HTTPDRouter.LOG.log( Level.SEVERE, error, e );
+        Log.append( HTTPD.EVENT, error, e );
       }
     }
     return HTTPD.newFixedLengthResponse( Status.INTERNAL_ERROR, "text/plain", error );

@@ -14,7 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.logging.Level;
+
+import coyote.loader.log.Log;
 
 
 /**
@@ -59,7 +60,7 @@ public class ServerRunnable implements Runnable {
         final InputStream inputStream = finalAccept.getInputStream();
         this.httpd.asyncRunner.exec( this.httpd.createClientHandler( finalAccept, inputStream ) );
       } catch ( final IOException e ) {
-        HTTPD.LOG.log( Level.FINE, "Communication with the client broken", e );
+        Log.append( HTTPD.EVENT, "WARNING: Communication with the client broken", e );
       }
     }
     while ( !this.httpd.myServerSocket.isClosed() );

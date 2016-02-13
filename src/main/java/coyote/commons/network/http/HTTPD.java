@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import javax.net.ssl.KeyManager;
@@ -28,6 +26,8 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
+
+import coyote.loader.log.Log;
 
 
 /**
@@ -37,6 +37,8 @@ import javax.net.ssl.TrustManagerFactory;
  * method overridden to serve the request.</p>
  */
 public abstract class HTTPD {
+  public static final String CLASS = "HTTPD";
+  public static final long EVENT = Log.getCode( CLASS );
 
   private static final String CONTENT_DISPOSITION_REGEX = "([ |\t]*Content-Disposition[ |\t]*:)(.*)";
 
@@ -68,8 +70,6 @@ public abstract class HTTPD {
    * parameters map for later re-processing.
    */
   private static final String QUERY_STRING_PARAMETER = "Httpd.QUERY_STRING";
-
-  static final Logger LOG = Logger.getLogger( HTTPD.class.getName() );
 
   /** Hashtable mapping file extension to mime type */
   protected static Map<String, String> MIME_TYPES;
@@ -156,7 +156,7 @@ public abstract class HTTPD {
     try {
       decoded = URLDecoder.decode( str, "UTF8" );
     } catch ( final UnsupportedEncodingException ignored ) {
-      HTTPD.LOG.log( Level.WARNING, "Encoding not supported, ignored", ignored );
+      Log.append( EVENT, "Encoding not supported, ignored", ignored );
     }
     return decoded;
   }
@@ -195,7 +195,7 @@ public abstract class HTTPD {
           stream = url.openStream();
           properties.load( url.openStream() );
         } catch ( final IOException e ) {
-          LOG.log( Level.SEVERE, "could not load mimetypes from " + url, e );
+          Log.append( EVENT, "could not load mimetypes from " + url, e );
         }
         finally {
           safeClose( stream );
@@ -203,7 +203,7 @@ public abstract class HTTPD {
         result.putAll( (Map)properties );
       }
     } catch ( final IOException e ) {
-      LOG.log( Level.INFO, "no mime types available at " + resourceName );
+      Log.append( EVENT, "no mime types available at " + resourceName );
     }
   }
 
@@ -279,7 +279,7 @@ public abstract class HTTPD {
       loadMimeTypes( MIME_TYPES, "httpd/default-mimetypes.properties" );
       loadMimeTypes( MIME_TYPES, "httpd/mimetypes.properties" );
       if ( MIME_TYPES.isEmpty() ) {
-        LOG.log( Level.WARNING, "no mime types found in the classpath! please provide mimetypes.properties" );
+        Log.append( EVENT, "no mime types found in the classpath! please provide mimetypes.properties" );
       }
     }
     return MIME_TYPES;
@@ -324,7 +324,7 @@ public abstract class HTTPD {
         }
         bytes = txt.getBytes( contentType.getEncoding() );
       } catch ( final UnsupportedEncodingException e ) {
-        HTTPD.LOG.log( Level.SEVERE, "encoding problem", e );
+        Log.append( EVENT, "encoding problem", e );
         bytes = new byte[0];
       }
       return newFixedLengthResponse( status, contentType.getContentTypeHeader(), new ByteArrayInputStream( bytes ), bytes.length );
@@ -358,7 +358,7 @@ public abstract class HTTPD {
         }
       }
     } catch ( final IOException e ) {
-      HTTPD.LOG.log( Level.SEVERE, "Could not close", e );
+      Log.append( EVENT, "Could not close", e );
     }
   }
 
@@ -383,6 +383,7 @@ public abstract class HTTPD {
     myPort = port;
     setTempFileManagerFactory( new DefaultTempFileManagerFactory() );
     setAsyncRunner( new DefaultAsyncRunner() );
+    Log.append( EVENT, "server initialized" );
   }
 
 
@@ -573,7 +574,7 @@ public abstract class HTTPD {
     final ServerRunnable serverRunnable = createServerRunnable( timeout );
     myThread = new Thread( serverRunnable );
     myThread.setDaemon( daemon );
-    myThread.setName( "HTTPD Main Listener" );
+    myThread.setName( "HTTPD Listener" );
     myThread.start();
     while ( !serverRunnable.hasBinded && ( serverRunnable.bindException == null ) ) {
       try {
@@ -603,7 +604,7 @@ public abstract class HTTPD {
         myThread.join();
       }
     } catch ( final Exception e ) {
-      HTTPD.LOG.log( Level.SEVERE, "Could not stop all connections", e );
+      Log.append( EVENT, "Could not stop all connections", e );
     }
   }
 

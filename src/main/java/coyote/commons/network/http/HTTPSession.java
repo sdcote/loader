@@ -37,6 +37,8 @@ import java.util.regex.Matcher;
 
 import javax.net.ssl.SSLException;
 
+import coyote.loader.log.Log;
+
 
 class HTTPSession implements IHTTPSession {
 
@@ -145,7 +147,7 @@ class HTTPSession implements IHTTPSession {
         protocolVersion = st.nextToken();
       } else {
         protocolVersion = "HTTP/1.1";
-        HTTPD.LOG.log( Level.FINE, "no protocol version specified, strange. Assuming HTTP/1.1." );
+        Log.append( HTTPD.EVENT, "No protocol version specified. Assuming HTTP/1.1" );
       }
       String line = in.readLine();
       while ( ( line != null ) && !line.trim().isEmpty() ) {

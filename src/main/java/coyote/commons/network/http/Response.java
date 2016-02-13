@@ -28,6 +28,8 @@ import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.zip.GZIPOutputStream;
 
+import coyote.loader.log.Log;
+
 /**
  * HTTP response. Return one of these from serve().
  */
@@ -243,7 +245,7 @@ public class Response implements Closeable {
       outputStream.flush();
       HTTPD.safeClose( data );
     } catch ( final IOException ioe ) {
-      HTTPD.LOG.log( Level.SEVERE, "Could not send response to the client", ioe );
+      Log.append( HTTPD.EVENT, "ERROR: Could not send response to the client", ioe );
     }
   }
 
@@ -316,7 +318,7 @@ public class Response implements Closeable {
       try {
         size = Long.parseLong( contentLengthString );
       } catch ( final NumberFormatException ex ) {
-        HTTPD.LOG.severe( "content-length was no number " + contentLengthString );
+        Log.append( HTTPD.EVENT, "ERROR: content-length was not a number " + contentLengthString );
       }
     }
     pw.print( "Content-Length: " + size + "\r\n" );

@@ -72,10 +72,10 @@ public class UriRouter {
     final String work = HTTPDRouter.normalizeUri( session.getUri() );
     Map<String, String> params = null;
     UriResource uriResource = error404Url;
-    for ( final UriResource u : mappings ) {
-      params = u.match( work );
+    for ( final UriResource resource : mappings ) {
+      params = resource.match( work );
       if ( params != null ) {
-        uriResource = u;
+        uriResource = resource;
         break;
       }
     }

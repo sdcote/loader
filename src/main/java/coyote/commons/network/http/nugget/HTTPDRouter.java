@@ -17,7 +17,6 @@ import coyote.commons.network.http.Response;
  */
 public class HTTPDRouter extends HTTPD {
 
-  static final Logger LOG = Logger.getLogger( HTTPDRouter.class.getName() );
 
   private final UriRouter router;
 
