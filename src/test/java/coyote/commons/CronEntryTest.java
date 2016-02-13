@@ -254,7 +254,7 @@ public class CronEntryTest {
     long millis;
     Calendar cal = new GregorianCalendar();
 
-    cal.set( Calendar.MONTH, 1 );
+    cal.set( Calendar.MONTH, 0 ); // Java Calendar: 0=Jan
     cal.set( Calendar.DAY_OF_MONTH, 15 );
     cal.set( Calendar.HOUR_OF_DAY, 11 );
     cal.set( Calendar.MINUTE, 57 );
@@ -265,18 +265,19 @@ public class CronEntryTest {
       // parse an entry which allows / accepts all dates and times
       subject = CronEntry.parse( null );
 
-      // set the pattern to only allow February runs one month later
-      subject.setMonthPattern( Integer.toString( 1 ) ); //  (Jan=0,Feb=1)
+      // set the pattern to only allow February runs (one month later)
+      subject.setMonthPattern( Integer.toString( 2 ) ); // Cron: 2=Feb
       //System.out.println( subject );
 
       // cannot run on 1/15
-      assertFalse( subject.mayRunAt( cal ));
+      assertFalse( subject.mayRunAt( cal ) );
 
-      millis = subject.getNextTime(cal);
+      millis = subject.getNextTime( cal );
       long now = System.currentTimeMillis();
+
       //assertTrue( ( millis - now ) <= 3600000 );
 
-      Date date = new Date(millis);
+      Date date = new Date( millis );
       System.out.println( millis + " - " + date );
     } catch ( ParseException e ) {
       fail( e.getMessage() );
@@ -299,7 +300,8 @@ public class CronEntryTest {
     //System.out.println( subject.dump() );
 
     // set the pattern to one hour in the future
-    subject.setHourPattern( Integer.toString( cal.get( Calendar.HOUR_OF_DAY ) + 1 ) ); // adjustment
+    cal.add( Calendar.HOUR_OF_DAY, 1 );
+    subject.setHourPattern( Integer.toString( cal.get( Calendar.HOUR_OF_DAY ) ) ); // adjustment
     assertFalse( subject.mayRunNow() );
     millis = subject.getNextInterval();
     // System.out.println( millis + " - " + formatElapsed( millis ) );
@@ -395,9 +397,11 @@ public class CronEntryTest {
 
   }
 
-  
-  
-  public void anotherTest(){
+
+
+
+  @Test
+  public void anotherTest() {
     CronEntry subject = new CronEntry();
     long millis;
     Calendar now = new GregorianCalendar();
