@@ -383,7 +383,19 @@ public abstract class HTTPD {
     myPort = port;
     setTempFileManagerFactory( new DefaultTempFileManagerFactory() );
     setAsyncRunner( new DefaultAsyncRunner() );
-    Log.append( EVENT, "server initialized" );
+    Log.append( EVENT, "Server initialized on port "+myPort );
+  }
+
+
+
+
+  /**
+   * @return the port on which this server was requested to run.
+   * 
+   * @see #getListeningPort()
+   */
+  public int getPort() {
+    return myPort;
   }
 
 
@@ -437,6 +449,11 @@ public abstract class HTTPD {
 
 
 
+  /**
+   * @return return the port on which this server is <i>actually</i> listening. May be -1 for an inactive socket.
+   * 
+   * @see #getPort()
+   */
   public final int getListeningPort() {
     return myServerSocket == null ? -1 : myServerSocket.getLocalPort();
   }
@@ -597,6 +614,7 @@ public abstract class HTTPD {
    * Stop the server.
    */
   public void stop() {
+    Log.append( EVENT, "Server terminating" );
     try {
       safeClose( myServerSocket );
       asyncRunner.closeAll();
@@ -604,8 +622,9 @@ public abstract class HTTPD {
         myThread.join();
       }
     } catch ( final Exception e ) {
-      Log.append( EVENT, "Could not stop all connections", e );
+      Log.append( EVENT, "WARN: Could not stop all connections", e );
     }
+    Log.append( EVENT, "Server termination complete" );
   }
 
 
