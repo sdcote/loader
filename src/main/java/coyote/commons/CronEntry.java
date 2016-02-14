@@ -312,15 +312,15 @@ public class CronEntry {
     long retval = -1;
     int next, monthOfYear, dayOfMonth, dayOfWeek, hourOfDay, minuteOfHour = 0;
 
-    System.out.println( "=============================================" );
-    System.out.println( "NEXTTIME:  " + toPattern( start ) );
+    // // System.out.println( "=============================================" );
+    // // System.out.println( "NEXTTIME:  " + toPattern( start ) );
     Calendar cal = new GregorianCalendar();
     cal.setTimeInMillis( start.getTimeInMillis() );
 
     cal.add( Calendar.MINUTE, +1 ); // nudge to the next increment of time
     cal.set( Calendar.SECOND, 0 ); // set to top of minute
     cal.set( Calendar.MILLISECOND, 0 ); // set to top of second
-    System.out.println( "PRIMED:    " + toPattern( cal ) );
+    // // System.out.println( "PRIMED:    " + toPattern( cal ) );
 
     int loopcount = 0;
     while ( retval < 0 ) {
@@ -333,8 +333,8 @@ public class CronEntry {
       dayOfWeek = cal.get( Calendar.DAY_OF_WEEK )-1; // Java is 1-based, cron is 0-based
       hourOfDay = cal.get( Calendar.HOUR_OF_DAY );
       minuteOfHour = cal.get( Calendar.MINUTE );
-      System.out.println( "CHECKING:  " + toPattern( cal ) + "---------" );
-      System.out.println( "AGAINST:   " + toString() );
+      // // System.out.println( "CHECKING:  " + toPattern( cal ) + "---------" );
+      // // System.out.println( "AGAINST:   " + toString() );
       
       if ( monthPasses( monthOfYear ) ) {
 
@@ -346,33 +346,33 @@ public class CronEntry {
               /// we got it
               retval = cal.getTimeInMillis();
             } else {
-              System.out.println( "Minute of '" + minuteOfHour + "' did not pass..." );
+              // System.out.println( "Minute of '" + minuteOfHour + "' did not pass..." );
               // find the next allowable minute
               next = getNext( minutes, minuteOfHour, MAX_MINUTES_IN_HOUR );
               cal.set( Calendar.MINUTE, next );
-              System.out.println( "nudged minutes to " + cal.get( Calendar.MINUTE ) );
+              // System.out.println( "nudged minutes to " + cal.get( Calendar.MINUTE ) );
               if ( next < minuteOfHour ) {
                 cal.add( Calendar.HOUR_OF_DAY, 1 );
-                System.out.println( "minutes cycled past 60, nudged hour to " + cal.get( Calendar.HOUR_OF_DAY ) );
+                // System.out.println( "minutes cycled past 60, nudged hour to " + cal.get( Calendar.HOUR_OF_DAY ) );
               }
             } // minute check
 
           } else {
-            System.out.println( "Hour of '" + hourOfDay + "' did not pass..." );
+            // System.out.println( "Hour of '" + hourOfDay + "' did not pass..." );
             //find the next allowable hour
             next = getNext( hours, hourOfDay, MAX_HOURS_IN_DAY );
             cal.set( Calendar.HOUR_OF_DAY, next );
-            System.out.println( "nudged hour to " + cal.get( Calendar.HOUR_OF_DAY ) );
+            // System.out.println( "nudged hour to " + cal.get( Calendar.HOUR_OF_DAY ) );
             if ( next < hourOfDay ) {
               cal.add( Calendar.DAY_OF_MONTH, 1 );
-              System.out.println( "hour cycled past midnight, nudged day to " + cal.get( Calendar.DAY_OF_MONTH ) );
+              // System.out.println( "hour cycled past midnight, nudged day to " + cal.get( Calendar.DAY_OF_MONTH ) );
             }
             cal.set( Calendar.MINUTE, getNext( minutes, -1, MAX_MINUTES_IN_HOUR ) );
-            System.out.println( "reset minutes to " + cal.get( Calendar.MINUTE ) );
+            // System.out.println( "reset minutes to " + cal.get( Calendar.MINUTE ) );
           } // hour check
 
         } else {
-          System.out.println( "Day of '" + dayOfMonth + "' did not pass..." );
+          // System.out.println( "Day of '" + dayOfMonth + "' did not pass..." );
           // find the next allowable day
           next = getNext( day, dayOfMonth, MAX_DAYS_IN_MONTH );
 
@@ -382,30 +382,30 @@ public class CronEntry {
             cal.set( Calendar.DAY_OF_MONTH, next );
           }
 
-          System.out.println( "nudged day to " + cal.get( Calendar.DAY_OF_MONTH ) );
+          // System.out.println( "nudged day to " + cal.get( Calendar.DAY_OF_MONTH ) );
           cal.set( Calendar.HOUR_OF_DAY, getNext( hours, -1, MAX_HOURS_IN_DAY ) );
-          System.out.println( "reset hour to " + cal.get( Calendar.HOUR_OF_DAY ) );
+          // System.out.println( "reset hour to " + cal.get( Calendar.HOUR_OF_DAY ) );
           cal.set( Calendar.MINUTE, getNext( minutes, -1, MAX_MINUTES_IN_HOUR ) );
-          System.out.println( "reset minutes to " + cal.get( Calendar.MINUTE ) );
+          // System.out.println( "reset minutes to " + cal.get( Calendar.MINUTE ) );
 
           cal.set( Calendar.DAY_OF_MONTH, next );
 
         } // day check
 
       } else {
-        System.out.println( "Month of '" + monthOfYear+ "' did not pass..." );
+        // System.out.println( "Month of '" + monthOfYear+ "' did not pass..." );
         cal.add( Calendar.MONTH, getNext( month, monthOfYear, MAX_MONTHS_IN_YEAR )-1 ); // java adjust
-        System.out.println( "nudged month to " + cal.get( Calendar.MONTH ) );
+        // System.out.println( "nudged month to " + cal.get( Calendar.MONTH ) );
         cal.set( Calendar.DAY_OF_MONTH, getNext( day, 0, MAX_DAYS_IN_MONTH ) );
-        System.out.println( "reset day to " + cal.get( Calendar.DAY_OF_MONTH ) );
+        // System.out.println( "reset day to " + cal.get( Calendar.DAY_OF_MONTH ) );
         cal.set( Calendar.HOUR_OF_DAY, getNext( hours, -1, MAX_HOURS_IN_DAY ) );
-        System.out.println( "reset hour to " + cal.get( Calendar.HOUR_OF_DAY ) );
+        // System.out.println( "reset hour to " + cal.get( Calendar.HOUR_OF_DAY ) );
         cal.set( Calendar.MINUTE, getNext( minutes, -1, MAX_MINUTES_IN_HOUR ) );
-        System.out.println( "reset minutes to " + cal.get( Calendar.MINUTE ) );
+        // System.out.println( "reset minutes to " + cal.get( Calendar.MINUTE ) );
       } // month check
     }
 
-    System.out.println( "RETURNING: " + toPattern( cal ) );
+    // System.out.println( "RETURNING: " + toPattern( cal ) );
 
     return retval;
   }
