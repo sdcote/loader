@@ -502,4 +502,19 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
     this.scheduler = scheduler;
   }
 
+
+
+
+  /**
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    if ( name != null && name.trim().length() > 0 ) {
+      return name;
+    } else {
+      return super.toString();
+    }
+  }
+
 }

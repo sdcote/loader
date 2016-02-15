@@ -147,6 +147,7 @@ public class Scheduler extends ThreadJob {
 
             // Remove the job from the list and only work with the job which was removed
             ScheduledJob target = remove( nextJob );
+            Log.append( SCHED, "Handling '" + target + "' now - next job '" + nextJob + "' to run at " + new Date( nextJob.getExecutionTime() ) );
 
             Log.append( SCHED, target + " enabled=" + target.isEnabled() + " cancelled=" + target.isCancelled() + " limit=" + target.getExecutionLimit() + " count=" + target.getExecutionCount() + " repeat=" + target.isRepeatable() );
             if ( !target.isCancelled() && ( ( target.getExecutionLimit() < 1 ) || ( target.getExecutionLimit() > 0 ) && ( target.getExecutionCount() < target.getExecutionLimit() ) ) ) {
@@ -190,15 +191,17 @@ public class Scheduler extends ThreadJob {
           } catch ( Exception ex ) {
             Log.warn( ex.getClass().getName() + " thrown in scheduler loop\r\n" + ExceptionUtil.stackTrace( ex ) );
           }
-        }
+
+          Log.append( SCHED, "Next job '" + nextJob + "' to run at " + new Date( nextJob.getExecutionTime() ) );
+
+        } // 
+
         // It is not time to execute the the next job yet, so exit the method
         // and let the threadjob check to see if we should shutdown
 
       } // nextJob !null
 
     } // sync
-
-    //Log.append( SCHED, "Completed running job" );
 
   }
 
@@ -384,6 +387,8 @@ public class Scheduler extends ThreadJob {
         // Let everyone know there is a new Job in the scheduler
         mutex.notifyAll();
       }
+
+      Log.append( SCHED, "Job scheduled in list of " + getJobCount() + " jobs; next job '" + nextJob + "' to run at " + new Date( nextJob.getExecutionTime() ) );
     }
   }
 
@@ -404,10 +409,14 @@ public class Scheduler extends ThreadJob {
 
     synchronized( mutex ) {
       if ( this.nextJob != null ) {
+        // start at the top of the queue of jobs
         ScheduledJob test = nextJob;
 
         while ( test != null ) {
+
+          // if the current job matches the job for which er are looking
           if ( job == test ) {
+
             if ( test.getPreviousJob() != null ) {
               test.getPreviousJob().setNextJob( test.getNextJob() );
             } else {
