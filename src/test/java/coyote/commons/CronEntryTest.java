@@ -161,10 +161,8 @@ public class CronEntryTest {
     pattern = "B A D * *";
     try {
       subject = CronEntry.parse( pattern );
-      //System.out.println(subject);
-    } catch ( ParseException e ) {
-      fail( e.getMessage() );
-    }
+      fail( "Did not detect invalid pattern of '" + pattern + "'" );
+    } catch ( ParseException e ) {}
 
     pattern = "";
     try {
@@ -340,14 +338,31 @@ public class CronEntryTest {
     //System.out.println();
 
     subject = new CronEntry();
-    subject.setHourPattern( Integer.toString( cal.get( Calendar.DAY_OF_MONTH ) + 1 ) ); // adjustment
+    String hrp = Integer.toString( cal.get( Calendar.HOUR_OF_DAY ) + 1 );
+    System.out.println( "HRP:" + hrp );
+    subject.setHourPattern( hrp ); // adjustment
     //System.out.println( subject.dump() );
     millis = subject.getNextInterval();
-    //System.out.println( millis + " - " + formatElapsed( millis ) );
+    System.out.println( millis + " - " + formatElapsed( millis ) );
     assertTrue( "1d " + millis + "!<=86400000", millis <= 86400000 );
     assertTrue( millis >= 0 );
-    //System.out.println();
+    System.out.println();
 
+  }
+
+
+
+
+  /**
+   *
+   */
+  @Test
+  public void testParseRangeParam() {
+    CronEntry subject = new CronEntry();
+    try {
+      subject.setHourPattern( "30" );
+      fail( "There are not 30 hours in a day" );
+    } catch ( Exception e ) {}
   }
 
 

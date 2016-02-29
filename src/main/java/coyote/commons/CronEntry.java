@@ -137,40 +137,44 @@ public class CronEntry {
       }
     }
 
-    if ( tokens.length > 0 ) {
-      retval.setMinutePattern( tokens[0] );
-      if ( tokens.length > 1 ) {
-        retval.setHourPattern( tokens[1] );
-        if ( tokens.length > 2 ) {
-          retval.setDayPattern( tokens[2] );
-          if ( tokens.length > 3 ) {
-            retval.setMonthPattern( tokens[3] );
-            if ( tokens.length > 4 ) {
-              retval.setDayOfWeekPattern( tokens[4] );
+    try {
+      if ( tokens.length > 0 ) {
+        retval.setMinutePattern( tokens[0] );
+        if ( tokens.length > 1 ) {
+          retval.setHourPattern( tokens[1] );
+          if ( tokens.length > 2 ) {
+            retval.setDayPattern( tokens[2] );
+            if ( tokens.length > 3 ) {
+              retval.setMonthPattern( tokens[3] );
+              if ( tokens.length > 4 ) {
+                retval.setDayOfWeekPattern( tokens[4] );
+              } else {
+                retval.setDayOfWeekPattern( ANY );
+              }
             } else {
+              retval.setMonthPattern( ANY );
               retval.setDayOfWeekPattern( ANY );
             }
           } else {
+            retval.setDayPattern( ANY );
             retval.setMonthPattern( ANY );
             retval.setDayOfWeekPattern( ANY );
           }
         } else {
+          retval.setHourPattern( ANY );
           retval.setDayPattern( ANY );
           retval.setMonthPattern( ANY );
           retval.setDayOfWeekPattern( ANY );
         }
       } else {
+        retval.setMinutePattern( ANY );
         retval.setHourPattern( ANY );
         retval.setDayPattern( ANY );
         retval.setMonthPattern( ANY );
         retval.setDayOfWeekPattern( ANY );
       }
-    } else {
-      retval.setMinutePattern( ANY );
-      retval.setHourPattern( ANY );
-      retval.setDayPattern( ANY );
-      retval.setMonthPattern( ANY );
-      retval.setDayOfWeekPattern( ANY );
+    } catch ( Exception e ) {
+      throw new ParseException( e.getMessage(), 0 );
     }
 
     return retval;
@@ -215,19 +219,32 @@ public class CronEntry {
         if ( paramarray[i].equals( "*" ) || paramarray[i].equals( "?" ) ) {
           rangeitems.append( fillRange( start + "-" + maximum ) );
         } else {
-          // TODO: check for valid values!
           rangeitems.append( fillRange( paramarray[i] ) );
         }
       }
     }
+
+    // Now create the actual range of valid values
     String[] values = rangeitems.toString().split( "," );
     TreeSet<String> result = new TreeSet<String>();
     for ( int i = 0; i < values.length; i++ ) {
+
+      // check for valid values
+      try {
+        int ri = Integer.parseInt( values[i] );
+        if ( ri < start - 1 ) {
+          throw new IllegalArgumentException( "The time token '" + values[i] + "' is too small" );
+        } else if ( ri > maximum ) {
+          throw new IllegalArgumentException( "The time token '" + values[i] + "' is too large" );
+        }
+      } catch ( NumberFormatException e ) {
+        throw new IllegalArgumentException( "The time token '" + values[i] + "' is not a valid number" );
+      }
+
       result.add( values[i] );
     }
 
     return result;
-
   }
 
 
@@ -328,14 +345,14 @@ public class CronEntry {
         System.err.println( "GetNext failed to get the next value starting from " + start + "; possibly conflicting values" );
         return Long.MAX_VALUE;
       }
-      monthOfYear = cal.get( Calendar.MONTH )+1; // Java is 0-based, cron is 1-based
+      monthOfYear = cal.get( Calendar.MONTH ) + 1; // Java is 0-based, cron is 1-based
       dayOfMonth = cal.get( Calendar.DAY_OF_MONTH );
-      dayOfWeek = cal.get( Calendar.DAY_OF_WEEK )-1; // Java is 1-based, cron is 0-based
+      dayOfWeek = cal.get( Calendar.DAY_OF_WEEK ) - 1; // Java is 1-based, cron is 0-based
       hourOfDay = cal.get( Calendar.HOUR_OF_DAY );
       minuteOfHour = cal.get( Calendar.MINUTE );
       // // System.out.println( "CHECKING:  " + toPattern( cal ) + "---------" );
       // // System.out.println( "AGAINST:   " + toString() );
-      
+
       if ( monthPasses( monthOfYear ) ) {
 
         if ( weekDayPasses( dayOfWeek ) && dayPasses( dayOfMonth ) ) {
@@ -394,7 +411,7 @@ public class CronEntry {
 
       } else {
         // System.out.println( "Month of '" + monthOfYear+ "' did not pass..." );
-        cal.add( Calendar.MONTH, getNext( month, monthOfYear, MAX_MONTHS_IN_YEAR )-1 ); // java adjust
+        cal.add( Calendar.MONTH, getNext( month, monthOfYear, MAX_MONTHS_IN_YEAR ) - 1 ); // java adjust
         // System.out.println( "nudged month to " + cal.get( Calendar.MONTH ) );
         cal.set( Calendar.DAY_OF_MONTH, getNext( day, 0, MAX_DAYS_IN_MONTH ) );
         // System.out.println( "reset day to " + cal.get( Calendar.DAY_OF_MONTH ) );
