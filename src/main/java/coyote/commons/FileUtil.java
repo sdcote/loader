@@ -1774,25 +1774,24 @@ public final class FileUtil {
 
 
   /**
-   * Make the parent directories necessary to make this directory reference 
-   * valid.
+   * Create all directories required for this directory reference to be valid
    *
-   * @param file reference of the file to make into a directory
+   * @param dir
    *
-   * @throws IOException if the parent directories could not be created
+   * @throws IOException
    */
-  public static void makeDirectory( final File file ) throws IOException {
-    if ( file == null ) {
+  public static void makeDirectory( final File dir ) throws IOException {
+    if ( dir == null ) {
       throw new IOException( "File reference was null" );
     }
 
-    if ( !file.exists() || ( file.exists() && file.isFile() ) ) {
+    if ( !dir.exists() || ( dir.exists() && dir.isFile() ) ) {
       // Make sure the parent directories are present
-      if ( file.getParent() != null ) {
-        file.getParentFile().mkdirs();
+      if ( dir.getParent() != null ) {
+        dir.getParentFile().mkdirs();
       }
 
-      if ( !file.mkdir() ) {
+      if ( !dir.mkdir() ) {
         throw new IOException( "Could not make directory" );
       }
     }
@@ -1806,20 +1805,74 @@ public final class FileUtil {
    *
    * <p>If the operation failed, a partial path may exist.</p>
    *
-   * @param name any valid path name with slashes, back-slashes, relational
+   * @param directory any valid directory path with slashes, back-slashes, 
+   * relational dots and whatever.
+   *
+   * @return The file reference to the directory created, null if the operation
+   *         failed in some way.
+   */
+  public static File makeDirectory( final String directory ) {
+    File retval = null;
+
+    if ( ( directory != null ) && ( directory.length() > 0 ) ) {
+      final File tempfile = new File( FileUtil.normalizePath( directory ) );
+
+      try {
+        FileUtil.makeDirectory( tempfile );
+
+        retval = tempfile;
+      } catch ( final Exception e ) {
+        retval = null;
+      }
+    }
+
+    return retval;
+  }
+
+
+
+
+  /**
+   * Make all the directories required to create the given file.
+   * 
+   * @param file the file reference
+   * 
+   * @throws IOException
+   */
+  public static void makeParentDirectory( final File file ) throws IOException {
+    if ( file == null ) {
+      throw new IOException( "File reference was null" );
+    }
+
+    if ( !file.exists() || ( file.exists() && file.isFile() ) ) {
+      if ( file.getParent() != null ) {
+        file.getParentFile().mkdirs();
+      }
+    }
+  }
+
+
+
+
+  /**
+   * Make all the directories required to create the named file.
+   *
+   * <p>If the operation failed, a partial path may exist.</p>
+   *
+   * @param filename any valid file name with slashes, back-slashes, relational
    * dots and whatever.
    *
    * @return The file reference to the directory created, null if the operation
    *         failed in some way.
    */
-  public static File makeDirectory( final String name ) {
+  public static File makeParentDirectory( final String filename ) {
     File retval = null;
 
-    if ( ( name != null ) && ( name.length() > 0 ) ) {
-      final File tempfile = new File( FileUtil.normalizePath( name ) );
+    if ( ( filename != null ) && ( filename.length() > 0 ) ) {
+      final File tempfile = new File( FileUtil.normalizePath( filename ) );
 
       try {
-        FileUtil.makeDirectory( tempfile );
+        FileUtil.makeParentDirectory( tempfile );
 
         retval = tempfile;
       } catch ( final Exception e ) {
