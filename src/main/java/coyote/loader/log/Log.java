@@ -61,6 +61,13 @@ public final class Log {
    */
   public static final String INFO = "INFO";
 
+  /** 
+   * The name of the category of events where an expected event has occurred 
+   * but should be noticed by operations. Monitoring systems scan for events of 
+   * this category.
+   */
+  public static final String NOTICE = "NOTICE";
+
   /**
    * The name of the category of events where an unexpected event has occurred 
    * but execution can continue. The code can compensate for the event and the 
@@ -87,6 +94,8 @@ public final class Log {
   public static final long DEBUG_EVENTS = Log.getCode( Log.DEBUG );
   /** The category mask for the INFO category. */
   public static final long INFO_EVENTS = Log.getCode( Log.INFO );
+  /** The category mask for the NOTICE category. */
+  public static final long NOTICE_EVENTS = Log.getCode( Log.NOTICE );
   /** The category mask for the WARN category. */
   public static final long WARN_EVENTS = Log.getCode( Log.WARN );
   /** The category mask for the ERROR category. */
@@ -120,7 +129,7 @@ public final class Log {
       } );
     } catch ( final Throwable ignore ) {}
     // are the only logging framework
-    Log.addLogger( Log.DEFAULT_LOGGER_NAME, new NullAppender( Log.INFO_EVENTS | Log.WARN_EVENTS | Log.ERROR_EVENTS | Log.FATAL_EVENTS ) );
+    Log.addLogger( Log.DEFAULT_LOGGER_NAME, new NullAppender( Log.INFO_EVENTS | Log.NOTICE_EVENTS | Log.WARN_EVENTS | Log.ERROR_EVENTS | Log.FATAL_EVENTS ) );
   } // static initializer
 
 
@@ -518,9 +527,7 @@ public final class Log {
 
 
   /**
-   * Return an enumeration over all the current logger names.
-   *
-   * @return TODO Complete Documentation
+   * @return an enumeration over all the current logger names.
    */
   public synchronized static Enumeration<String> getLoggerNames() {
     final Vector<String> names = new Vector<String>();
@@ -587,6 +594,39 @@ public final class Log {
 
 
   /**
+   * Log the event with category "NOTICE".
+   *
+   * <p>This is equivalent to <tt>log( NOTICE_EVENTS, event );</tt></p>
+   *
+   * @param event
+   */
+  public static void notice( final Object event ) {
+    if ( ( Log.masks & Log.NOTICE_EVENTS ) != 0 ) {
+      Log.append( Log.NOTICE_EVENTS, event, null );
+    }
+  }
+
+
+
+
+  /**
+   * Log the event with category "NOTICE".
+   *
+   * <p>This is equivalent to <tt>log( NOTICE_EVENTS, event, cause );</tt></p>
+   *
+   * @param event The event to log
+   * @param cause The cause of the event.
+   */
+  public static void notice( final Object event, final Throwable cause ) {
+    if ( ( Log.masks & Log.NOTICE_EVENTS ) != 0 ) {
+      Log.append( Log.NOTICE_EVENTS, event, cause );
+    }
+  }
+
+
+
+
+  /**
    * Return true if at least one of the loggers is logging a category defined
    * by the mask.
    * 
@@ -595,7 +635,8 @@ public final class Log {
    *
    * @param mask The mask.
    *
-   * @return TODO Complete Documentation
+   * @return true if at least one of the loggers is logging a category defined
+   *         by the mask false otherwise
    */
   public static boolean isLogging( final long mask ) {
     return ( ( Log.masks & mask ) != 0 );
@@ -610,7 +651,8 @@ public final class Log {
    *
    * @param category The category.
    *
-   * @return TODO Complete Documentation
+   * @return true if at least one of the loggers is logging a category defined
+   *         by the mask false otherwise
    */
   public static boolean isLogging( final String category ) {
     return Log.isLogging( Log.getCode( category ) );
