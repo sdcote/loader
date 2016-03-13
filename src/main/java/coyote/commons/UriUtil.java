@@ -424,12 +424,13 @@ public class UriUtil {
   public static URI parse( final String text ) {
     URI retval = null;
 
-    try {
-      retval = new URI( text );
-    } catch ( final URISyntaxException use ) {
-      // Ignore and return null
+    if ( text != null ) {
+      try {
+        retval = new URI( text );
+      } catch ( final URISyntaxException use ) {
+        // Ignore and return null
+      }
     }
-
     return retval;
   }
 
