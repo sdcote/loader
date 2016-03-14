@@ -69,9 +69,13 @@ public class UriRouter {
    * @return the Response from the URI resource processing
    */
   public Response process( final IHTTPSession session ) {
+    
     final String work = HTTPDRouter.normalizeUri( session.getUri() );
+    
     Map<String, String> params = null;
     UriResource uriResource = error404Url;
+    
+    // For all the resources, see which one matches first
     for ( final UriResource resource : mappings ) {
       params = resource.match( work );
       if ( params != null ) {
@@ -79,6 +83,8 @@ public class UriRouter {
         break;
       }
     }
+    
+    // Have the found (or default 404) URI resource process the session
     return uriResource.process( params, session );
   }
 

@@ -22,6 +22,13 @@ public class HTTPDRouter extends HTTPD {
 
 
 
+  /**
+   * Remove any leading and trailing slashes (/) from the URI
+   * 
+   * @param value the URI value to normalize
+   *  
+   * @return the URI with no leading or trailing slashes
+   */
   public static String normalizeUri( String value ) {
     if ( value == null ) {
       return value;
@@ -80,6 +87,9 @@ public class HTTPDRouter extends HTTPD {
 
 
 
+  /**
+   * @see coyote.commons.network.http.HTTPD#serve(coyote.commons.network.http.IHTTPSession)
+   */
   @Override
   public Response serve( final IHTTPSession session ) {
     // Try to find match

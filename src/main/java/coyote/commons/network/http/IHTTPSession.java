@@ -66,7 +66,7 @@ public interface IHTTPSession {
 
 
   /**
-   * Get the remote ip address of the requester.
+   * Get the remote IP address of the requester.
    * 
    * @return the IP address.
    */
