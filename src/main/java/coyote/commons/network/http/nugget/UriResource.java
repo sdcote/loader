@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,6 +34,7 @@ public class UriResource {
 
   private static final String PARAM_MATCHER = "([A-Za-z0-9\\-\\._~:/?#\\[\\]@!\\$&'\\(\\)\\*\\+,;=\\s]+)";
 
+  // default empty parameter map
   private static final Map<String, String> EMPTY = Collections.unmodifiableMap( new HashMap<String, String>() );
 
   private final String uri;
@@ -43,8 +43,10 @@ public class UriResource {
 
   final int priority;
 
+  // The class to use handling the URI
   private final Class<?> handler;
 
+  // the initialization parameters for the handler
   private final Object[] initParameter;
 
   private final List<String> uriParams = new ArrayList<String>();
@@ -52,17 +54,27 @@ public class UriResource {
 
 
 
+  /**
+   * Create a URI Resource
+   * 
+   * @param uri the 
+   * @param priority
+   * @param handler
+   * @param initParameter
+   */
   public UriResource( final String uri, final int priority, final Class<?> handler, final Object... initParameter ) {
     this.handler = handler;
     this.initParameter = initParameter;
     if ( uri != null ) {
       this.uri = HTTPDRouter.normalizeUri( uri );
-      parse();
       uriPattern = createUriPattern();
     } else {
       uriPattern = null;
       this.uri = null;
     }
+
+    // prioritize this resource based on the number of parameters; the fewer 
+    // the parameters, the higher the priority
     this.priority = priority + ( uriParams.size() * 1000 );
   }
 
@@ -105,13 +117,21 @@ public class UriResource {
     if ( initParameter.length > parameterIndex ) {
       return paramClazz.cast( initParameter[parameterIndex] );
     }
-    Log.append( HTTPD.EVENT,"ERROR: init parameter index not available " + parameterIndex );
+    Log.append( HTTPD.EVENT, "ERROR: init parameter index not available " + parameterIndex );
     return null;
   }
 
 
 
 
+  /**
+   * see if the URL matches this resources RegEx pattern, if it does, return 
+   * the parameters parsed from this URI based on the routing pattern.
+   *  
+   * @param url the URL to match
+   * 
+   * @return parameters pulled from the URL based on this resource's matching pattern
+   */
   public Map<String, String> match( final String url ) {
     final Matcher matcher = uriPattern.matcher( url );
     if ( matcher.matches() ) {
@@ -127,11 +147,6 @@ public class UriResource {
     }
     return null;
   }
-
-
-
-
-  private void parse() {}
 
 
 
@@ -176,10 +191,12 @@ public class UriResource {
 
   @Override
   public String toString() {
-    return new StringBuilder( "UriResource{uri='" ).append( ( uri == null ? "/" : uri ) )//
-        .append( "', urlParts=" ).append( uriParams )//
-        .append( '}' )//
-        .toString();
+    StringBuilder b = new StringBuilder( "UriResource{uri='" );
+    b.append( ( uri == null ? "/" : uri ) );
+    b.append( "', urlParts=" );
+    b.append( uriParams );
+    b.append( '}' );
+    return b.toString();
   }
 
 }
