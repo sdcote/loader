@@ -19,6 +19,11 @@ public class HTTPDRouter extends HTTPD {
 
 
   private final UriRouter router;
+  
+  static{
+    // make sure we load the MIME type mappings from properties
+    mimeTypes();
+  }
 
 
 
