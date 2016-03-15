@@ -273,11 +273,25 @@ public abstract class HTTPD {
 
 
 
+  /**
+   * Loads a map of file extensions to a MIME-type header strings.
+   * 
+   * <p>The first time this is called, it loads the types from the class path.
+   * Subsequent calls returns the cached map of types.</p>  
+   * 
+   * @return the map of file extensions to MIME type headers.
+   */
   public static Map<String, String> mimeTypes() {
     if ( MIME_TYPES == null ) {
       MIME_TYPES = new HashMap<String, String>();
+
+      // these are ones we know about by default
       loadMimeTypes( MIME_TYPES, "httpd/default-mimetypes.properties" );
+
+      // These can be provided by the user to add more and even over-ride ours
       loadMimeTypes( MIME_TYPES, "httpd/mimetypes.properties" );
+
+      // This should not happen since we have our default types but, who knows?
       if ( MIME_TYPES.isEmpty() ) {
         Log.append( EVENT, "no mime types found in the classpath! please provide mimetypes.properties" );
       }
@@ -383,7 +397,7 @@ public abstract class HTTPD {
     myPort = port;
     setTempFileManagerFactory( new DefaultTempFileManagerFactory() );
     setAsyncRunner( new DefaultAsyncRunner() );
-    Log.append( EVENT, "Server initialized on port "+myPort );
+    Log.append( EVENT, "Server initialized on port " + myPort );
   }
 
 
