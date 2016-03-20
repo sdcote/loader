@@ -6,10 +6,7 @@
 package coyote.loader.cfg;
 
 /**
- * The ConfigException class models...
- * 
- * @author Stephan D. Cote'
- * @version $Revision:$
+ * The exception thrown when there are problems with configuration parameters
  */
 public class ConfigurationException extends Exception {
 
