@@ -475,15 +475,22 @@ public class BootStrap extends AbstractLoader {
 
       } // cfguri is not valid
 
-      // Now check to see if the CFG is readable (if it is a file)
-      if ( UriUtil.isFile( cfgUri ) ) {
-        File test = UriUtil.getFile( cfgUri );
+      if ( cfgUri != null ) {
+        // Now check to see if the CFG is readable (if it is a file)
+        if ( UriUtil.isFile( cfgUri ) ) {
+          File test = UriUtil.getFile( cfgUri );
 
-        if ( !test.exists() || !test.canRead() ) {
-          errMsg.append( LogMsg.createMsg( LOADER_MSG, "Loader.cfg_file_not_readable", test.getAbsolutePath() ) + StringUtil.CRLF );
-          System.out.println( errMsg.toString() );
-          System.exit( 13 );
+          if ( !test.exists() || !test.canRead() ) {
+            errMsg.append( LogMsg.createMsg( LOADER_MSG, "Loader.cfg_file_not_readable", test.getAbsolutePath() ) + StringUtil.CRLF );
+            System.out.println( errMsg.toString() );
+            System.exit( 13 );
+          }
         }
+      } else {
+        errMsg.append( LogMsg.createMsg( LOADER_MSG, "Loader.cfg_file_not_found", cfgLoc ) + StringUtil.CRLF );
+        System.out.println( errMsg.toString() );
+        System.exit( 9 );
+
       }
 
     } else {
