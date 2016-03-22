@@ -22,8 +22,8 @@ public class Metric {
   private String name = null;
 
   private String units = "ms";
-  private long minValue = 0;
-  private long maxValue = 0;
+  private long minValue = Long.MAX_VALUE;
+  private long maxValue = Long.MIN_VALUE;
   private int samples = 0;
   private long total = 0;
   private long sumOfSquares = 0;
@@ -186,14 +186,18 @@ public class Metric {
    * <p>The return value will represent a copy of the counter prior to the
    * reset and is useful for applications that desire delta values. These delta
    * values are simply the return values of successive reset calls.</p>
+   * 
+   * <p>NOTE: Min and Max values are set to Long.MAX_VALUE and Long.MIN_VALUE
+   * respectively as this allows calculation logic to work and means about the 
+   * same relative to each other.</p> 
    *
    * @return a counter representing the state prior to the reset.
    */
   public Metric reset() {
     synchronized( name ) {
       final Metric retval = (Metric)clone();
-      minValue = 0;
-      maxValue = 0;
+      minValue = Long.MAX_VALUE;
+      maxValue = Long.MIN_VALUE;
       samples = 0;
       total = 0;
       sumOfSquares = 0;
