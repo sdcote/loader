@@ -43,7 +43,7 @@ public class UriResource {
 
   final int priority;
 
-  // The class to use handling the URI
+  // The class to use handling the URI (i.e. Nugget)
   private final Class<?> handler;
 
   // the initialization parameters for the handler

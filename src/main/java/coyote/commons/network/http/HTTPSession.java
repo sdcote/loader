@@ -270,9 +270,8 @@ class HTTPSession implements IHTTPSession {
 
 
   /**
-   * Decodes parameters in percent-encoded URI-format ( e.g.
-   * "name=Biff%20Wonderdog" ) and adds them to given Map. 
-   * NOTE: this doesn't support multiple identical keys.
+   * Decodes parameters in percent-encoded URI-format (e.g."name=Tin%20Tin") 
+   * and adds them to given Map.
    */
   private void decodeParms( final String parms, final Map<String, String> p ) {
     if ( parms == null ) {
@@ -300,7 +299,7 @@ class HTTPSession implements IHTTPSession {
   public void execute() throws IOException {
     Response r = null;
     try {
-      // Read the first 8192 bytes; this should fit the entire heaer.
+      // Read the first 8192 bytes; this should fit the entire header.
       // Do NOT assume that a single read will get the entire header!
       final byte[] buf = new byte[HTTPSession.BUFSIZE];
       splitbyte = 0;
@@ -462,7 +461,7 @@ class HTTPSession implements IHTTPSession {
 
 
   /**
-   * Find the byte positions where multipart boundaries start. 
+   * Find the byte positions where multi-part boundaries start. 
    * 
    * <p>This reads a large block at a time and uses a temporary buffer to 
    * optimize file access.</p>

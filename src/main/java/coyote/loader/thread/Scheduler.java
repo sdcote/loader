@@ -147,7 +147,14 @@ public class Scheduler extends ThreadJob {
 
             // Remove the job from the list and only work with the job which was removed
             ScheduledJob target = remove( nextJob );
-            Log.append( SCHED, "Handling '" + target + "' now - next job '" + nextJob + "' to run at " + new Date( nextJob.getExecutionTime() ) );
+
+            if ( Log.isLogging( SCHED ) ) {
+              if ( nextJob != null ) {
+                Log.append( SCHED, "Handling '" + target + "' now - next job '" + nextJob + "' to run at " + new Date( nextJob.getExecutionTime() ) );
+              } else {
+                Log.append( SCHED, "Handling '" + target + "' now - there is no other job to run" );
+              }
+            }
 
             Log.append( SCHED, target + " enabled=" + target.isEnabled() + " cancelled=" + target.isCancelled() + " limit=" + target.getExecutionLimit() + " count=" + target.getExecutionCount() + " repeat=" + target.isRepeatable() );
             if ( !target.isCancelled() && ( ( target.getExecutionLimit() < 1 ) || ( target.getExecutionLimit() > 0 ) && ( target.getExecutionCount() < target.getExecutionLimit() ) ) ) {

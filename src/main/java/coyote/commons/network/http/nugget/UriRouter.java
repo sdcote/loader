@@ -17,8 +17,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import coyote.commons.network.http.HTTPD;
 import coyote.commons.network.http.IHTTPSession;
 import coyote.commons.network.http.Response;
+import coyote.loader.log.Log;
+
 
 /**
  * This is the heart of the URI routing mechanism in a nugget server.
@@ -69,12 +72,12 @@ public class UriRouter {
    * @return the Response from the URI resource processing
    */
   public Response process( final IHTTPSession session ) {
-    
+
     final String work = HTTPDRouter.normalizeUri( session.getUri() );
-    
+
     Map<String, String> params = null;
     UriResource uriResource = error404Url;
-    
+
     // For all the resources, see which one matches first
     for ( final UriResource resource : mappings ) {
       params = resource.match( work );
@@ -83,7 +86,14 @@ public class UriRouter {
         break;
       }
     }
-    
+
+    if ( Log.isLogging( HTTPD.EVENT ) ) {
+      if( error404Url ==uriResource){
+      Log.append( HTTPD.EVENT, "No handler defined for " + work );
+      } else {
+        Log.append( HTTPD.EVENT, "Servicing request for " + work );
+      }
+    }
     // Have the found (or default 404) URI resource process the session
     return uriResource.process( params, session );
   }
