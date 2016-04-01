@@ -18,7 +18,8 @@ import coyote.loader.log.Log;
 
 
 /**
- * 
+ * This is a do-nothing component which keeps the watchdog busy as it will 
+ * terminate once all the components are done processing. This "never dies". 
  */
 public class Wedge extends AbstractManagedComponent implements ManagedComponent {
 
