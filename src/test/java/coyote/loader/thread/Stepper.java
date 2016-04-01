@@ -79,6 +79,41 @@ public class Stepper {
 
 
 
+  private void testScheduler() {
+
+    long startTime = System.currentTimeMillis();
+
+    ScheduledJob task0 = new ScheduledTest( "Task0" );
+    task0.setExecutionTime( startTime );
+
+    ScheduledJob task1 = new ScheduledTest( "Task1" );
+    task1.setExecutionTime( startTime);
+
+    ScheduledJob task2 = new ScheduledTest( "Task2" );
+    task2.setExecutionTime( startTime );
+
+    scheduler.schedule( task0 );
+    scheduler.schedule( task1 );
+    scheduler.schedule( task2 );
+    
+    ScheduledJob firstJob = scheduler.getNextJob();
+    ScheduledJob secondJob = firstJob.getNextJob();
+    ScheduledJob thirdJob = secondJob.getNextJob();
+    ScheduledJob fourthJob = thirdJob.getNextJob();
+    System.out.println(scheduler.dump());
+    
+    ScheduledJob nextJob = scheduler.getNextJob();
+    ScheduledJob target = scheduler.remove( nextJob );
+    // They should be the same
+    
+    System.out.println(scheduler.dump());
+    scheduler.schedule( target );
+    System.out.println(scheduler.dump());
+
+    
+  }
+  
+  
   /**
    * Method main
    * 
@@ -86,6 +121,11 @@ public class Stepper {
    */
   public static void main( String[] args ) {
     Stepper test = new Stepper();
-    test.testMethod();
+    //test.testMethod();
+    test.testScheduler();
   }
+
+
+
+
 }

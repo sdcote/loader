@@ -1,19 +1,23 @@
 /*
- * $Id:$
- *
  * Copyright (C) 2003 Stephan D. Cote' - All rights reserved.
  */
 package coyote.loader.thread;
 
 /**
- * Class TestJob
- * 
- * @author Stephan D. Cote' - Enterprise Architecture
- * @version $Revision:$
+ *
  */
 public class ScheduledTest extends ScheduledJob {
-  private String display = ".";
   private int count = 0;
+
+
+
+
+  /**
+   * @return the count
+   */
+  public int getCount() {
+    return count;
+  }
 
 
 
@@ -24,10 +28,7 @@ public class ScheduledTest extends ScheduledJob {
   public ScheduledTest( String text ) {
     // Always a good practice
     super();
-
-    if ( text != null ) {
-      display = text;
-    }
+    super.setName( text );
   }
 
 
@@ -40,7 +41,7 @@ public class ScheduledTest extends ScheduledJob {
     // Always initialize the super class first
     super.initialize();
 
-    if ( display.startsWith( "SlowStarter" ) ) {
+    if ( name != null && name.startsWith( "SlowStarter" ) ) {
       try {
         System.out.println( "Slow Starting " + current_thread.getName() );
         Thread.sleep( 2500 );
@@ -65,7 +66,12 @@ public class ScheduledTest extends ScheduledJob {
    *
    */
   public void doWork() {
-    System.out.println( display );
+    count++;
+    if ( getName() != null ) {
+      System.out.println( getName() + "(" + getCount() + ")" );
+    } else {
+      System.out.println( "." );
+    }
 
     try {
       sleep( 100 );
@@ -73,4 +79,5 @@ public class ScheduledTest extends ScheduledJob {
 
     shutdown();
   }
+
 }
