@@ -482,7 +482,7 @@ public class CronEntry {
    * @return the interval of milliseconds from the current time to the next time allowed by the cron entry.
    */
   public long getNextInterval() {
-    return getNextTime() - new GregorianCalendar().getTimeInMillis();
+    return getNextTime() - System.currentTimeMillis();
   }
 
 
