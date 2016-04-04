@@ -379,17 +379,17 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   protected void activate( Object component, Config config ) {
     if ( component != null ) {
       if ( component instanceof ScheduledJob ) {
-        Log.debug( "Loading " + component.getClass().getName() + " in the scheduler" );
+        Log.trace( "Loading " + component.getClass().getName() + " in the scheduler" );
         getScheduler().schedule( (ScheduledJob)component );
       } else if ( component instanceof ThreadJob ) {
         try {
-          Log.debug( "Loading " + component.getClass().getName() + " in the threadpool" );
+          Log.trace( "Loading " + component.getClass().getName() + " in the threadpool" );
           getThreadPool().handle( (ThreadJob)component );
         } catch ( InterruptedException e ) {
           Log.error( LogMsg.createMsg( LOADER_MSG, "Loader.activation_threadjob_error", e.getMessage() ) );
         }
       } else if ( component instanceof Runnable ) {
-        Log.debug( "Running " + component.getClass().getName() + " in the threadpool" );
+        Log.trace( "Running " + component.getClass().getName() + " in the threadpool" );
         getThreadPool().run( (Runnable)component );
       } else {
         Log.error( LogMsg.createMsg( LOADER_MSG, "Loader.activation_unrecognized_error", component.getClass().getName() ) );
@@ -410,7 +410,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
    */
   protected void removeComponent( Object component ) {
     if ( component != null ) {
-      Log.debug( "Removing " + component.getClass().getName() + " from loader" );
+      Log.trace( "Removing " + component.getClass().getName() + " from loader" );
 
       DataFrame frame = new DataFrame();
       frame.put( "Message", "Managed Removal" );
@@ -420,7 +420,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
         ( (ThreadJob)component ).shutdown(); // May not work as expected
       }
       if ( components.remove( component ) != null ) {
-        Log.debug( "Successfully removed " + component.getClass().getName() + " from loader" );
+        Log.trace( "Successfully removed " + component.getClass().getName() + " from loader" );
       } else {
         Log.warn( "Component " + component.getClass().getName() + " did not apper to be tracked by loader" );
       }
