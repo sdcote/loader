@@ -11,6 +11,7 @@
  */
 package coyote.loader.thread;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -33,7 +34,7 @@ import coyote.loader.log.Log;
  * {@link #daemonize()} method to start it running in the background.</p>
  */
 public class Scheduler extends ThreadJob {
-  /** Tag used in various class identifying locations like DataCapsule nodes */
+  /** Tag used in various class identifying locations */
   public static final String CLASS = "Scheduler";
 
   private ScheduledJob nextJob = null;
@@ -120,8 +121,8 @@ public class Scheduler extends ThreadJob {
       if ( nextJob != null ) {
         long executionTime = System.currentTimeMillis();
 
-        // Check to see if it is time to run this job
-        // If it is really close, wait around
+        // Check to see if it is time to run this job. If it is really close, 
+        // wait around
         long millis = nextJob.getExecutionTime() - executionTime;
         //Log.append( SCHED, nextJob + " to run at " + new Date( nextJob.getExecutionTime() ) );
 
@@ -140,19 +141,24 @@ public class Scheduler extends ThreadJob {
             }
           }
 
+          
+          
+          
+          
+          
           // If we got here, it is time (or past the time) to execute the next
           // ScheduledJob referenced by nextJob
           try {
-            Log.append( SCHED, "Execution Time: " + new Date( executionTime ) );
+            Log.append( SCHED, "Execution Time: " + executionTime + " (" + new Date( executionTime ) + "):\r\n" + dump() );
 
             // Remove the job from the list and only work with the job which was removed
             ScheduledJob target = remove( nextJob );
 
             if ( Log.isLogging( SCHED ) ) {
               if ( nextJob != null ) {
-                Log.append( SCHED, "Handling '" + target + "' now - next job '" + nextJob + "' to run at " + new Date( nextJob.getExecutionTime() ) );
+                Log.append( SCHED, "Handling '" + target + "' now - next job '" + nextJob + "' to run at " + new Date( nextJob.getExecutionTime() ) + "\r\n" + dump() );
               } else {
-                Log.append( SCHED, "Handling '" + target + "' now - there is no other job to run" );
+                Log.append( SCHED, "Handling '" + target + "' now - there is no other job to run\r\n" + dump() );
               }
             }
 
@@ -188,7 +194,7 @@ public class Scheduler extends ThreadJob {
                   target.setExecutionTime( executionTime + target.getExecutionInterval() );
                   Log.append( SCHED, "Set execution time to " + new Date( target.getExecutionTime() ) + " execution time = " + executionTime + ",  target interval = " + target.getExecutionInterval() );
                   schedule( target );
-                  Log.append( SCHED, "Scheduled repeating job " + target + " (runs=" + target.getExecutionCount() + " interval=" + target.getExecutionInterval() + ") will run again at " + new Date( target.getExecutionTime() ) );
+                  Log.append( SCHED, "Scheduled repeating job " + target + " (runs=" + target.getExecutionCount() + " interval=" + target.getExecutionInterval() + ") will run again at " + new Date( target.getExecutionTime() ) + "\r\n" + dump() );
                 }
               } else {
                 Log.append( SCHED, "Job " + target + " is not flagged to be repeated, removed from execution list" );
@@ -199,7 +205,7 @@ public class Scheduler extends ThreadJob {
             Log.warn( ex.getClass().getName() + " thrown in scheduler loop\r\n" + ExceptionUtil.stackTrace( ex ) );
           }
 
-          Log.append( SCHED, "Next job '" + nextJob + "' to run at " + new Date( nextJob.getExecutionTime() ) );
+          Log.append( SCHED, "Next job '" + nextJob + "' to run at " + nextJob.getExecutionTime() + " (" + new Date( nextJob.getExecutionTime() ) + ")" );
 
         } // 
 
@@ -369,7 +375,7 @@ public class Scheduler extends ThreadJob {
           current = current.getNextJob();
         }
 
-        // //////////////////////////////////////////////////////////////////////
+        // link current and previous jobs to this job
         if ( ( job != current ) && ( job != previous ) ) {
           job.setPreviousJob( previous );
           job.setNextJob( current );
@@ -388,8 +394,6 @@ public class Scheduler extends ThreadJob {
         } else {
           Log.append( SCHED, "Aaaakkk! Circular Job reference" );
         }
-
-        // //////////////////////////////////////////////////////////////////////
 
         // Let everyone know there is a new Job in the scheduler
         mutex.notifyAll();
@@ -464,6 +468,7 @@ public class Scheduler extends ThreadJob {
    * @return a string representation of the state of the scheduler
    */
   public String dump() {
+    SimpleDateFormat DATEFORMAT = new SimpleDateFormat( "yyyy/MM/dd HH:mm:ss" );
     StringBuffer retval = new StringBuffer( "--[ JobList ]------------------------------------------------\r\n" );
     retval.append( "Next: " + nextJob + "\r\n" );
     retval.append( "Last: " + lastJob + "\r\n" );
@@ -476,7 +481,7 @@ public class Scheduler extends ThreadJob {
         ScheduledJob test = nextJob;
 
         while ( test != null ) {
-          retval.append( "Job#" + i + " " + test.getExecutionTime() + " - " + test + "\r\n" );
+          retval.append( "Job#" + i + " " + test.getExecutionTime() + " (" + DATEFORMAT.format( new Date( test.getExecutionTime() ) ) + ")  - " + test + "\r\n" );
 
           test = test.getNextJob();
 
@@ -485,7 +490,7 @@ public class Scheduler extends ThreadJob {
       }
     }
 
-    retval.append( "-------------------------------------------------------------\r\n" );
+    retval.append( "-------------------------------------------------------------" );
 
     return retval.toString();
   }
