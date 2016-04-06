@@ -90,6 +90,11 @@ public final class Log {
    */
   public static final String DEFAULT_LOGGER_NAME = "default";
 
+  static {
+    // are the only logging framework
+    LogKernel.addLogger( LogKernel.DEFAULT_LOGGER_NAME, new NullAppender( Log.INFO_EVENTS | Log.NOTICE_EVENTS | Log.WARN_EVENTS | Log.ERROR_EVENTS | Log.FATAL_EVENTS ) );
+  } // static initializer
+
 
 
 

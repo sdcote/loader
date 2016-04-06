@@ -43,66 +43,6 @@ final class LogKernel {
   /** Map of all the loggers in the fixture keyed by their name. */
   static final Hashtable<String, Logger> nameToLogger = new Hashtable<String, Logger>();
 
-  /**
-   * The name of the category of events where an expected event has occurred 
-   * and additional (verbose) information will be displayed including the 
-   * location in the code where the event occurred.
-   */
-  public static final String TRACE = "TRACE";
-
-  /**
-   * The name of the category of events where an expected event has occurred 
-   * and additional (verbose) information will be displayed.
-   */
-  public static final String DEBUG = "DEBUG";
-
-  /** 
-   * The name of the category of events where an expected event has occurred. 
-   */
-  public static final String INFO = "INFO";
-
-  /** 
-   * The name of the category of events where an expected event has occurred 
-   * but should be noticed by operations. Monitoring systems scan for events of 
-   * this category.
-   */
-  public static final String NOTICE = "NOTICE";
-
-  /**
-   * The name of the category of events where an unexpected event has occurred 
-   * but execution can continue. The code can compensate for the event and the 
-   * occurrence may even be acceptable.
-   */
-  public static final String WARN = "WARN";
-
-  /** 
-   * The name of the category of events where an unexpected event has occurred 
-   * but execution can continue while operations may not produce the expected 
-   * results.
-   */
-  public static final String ERROR = "ERROR";
-
-  /** 
-   * The name of the category of events where an unexpected event has occurred 
-   * and all or part of the thread of execution can not continue.
-   */
-  public static final String FATAL = "FATAL";
-
-  /** The category mask for the TRACE category. */
-  public static final long TRACE_EVENTS = LogKernel.getCode( LogKernel.TRACE );
-  /** The category mask for the DEBUG category. */
-  public static final long DEBUG_EVENTS = LogKernel.getCode( LogKernel.DEBUG );
-  /** The category mask for the INFO category. */
-  public static final long INFO_EVENTS = LogKernel.getCode( LogKernel.INFO );
-  /** The category mask for the NOTICE category. */
-  public static final long NOTICE_EVENTS = LogKernel.getCode( LogKernel.NOTICE );
-  /** The category mask for the WARN category. */
-  public static final long WARN_EVENTS = LogKernel.getCode( LogKernel.WARN );
-  /** The category mask for the ERROR category. */
-  public static final long ERROR_EVENTS = LogKernel.getCode( LogKernel.ERROR );
-  /** The category mask for the FATAL category. */
-  public static final long FATAL_EVENTS = LogKernel.getCode( LogKernel.FATAL );
-
   static long masks; // union of masks of all loggers
   static final long started = System.currentTimeMillis();
 
@@ -119,6 +59,7 @@ final class LogKernel {
   private static final HashSet<String> permanentLoggers = new HashSet<String>();
 
   static {
+    // Setup a shutdown hook to clean-up the loggers
     try {
       Runtime.getRuntime().addShutdownHook( new Thread( "LogShutdown" ) {
         public void run() {
@@ -128,8 +69,6 @@ final class LogKernel {
         }
       } );
     } catch ( final Throwable ignore ) {}
-    // are the only logging framework
-    LogKernel.addLogger( LogKernel.DEFAULT_LOGGER_NAME, new NullAppender( LogKernel.INFO_EVENTS | LogKernel.NOTICE_EVENTS | LogKernel.WARN_EVENTS | LogKernel.ERROR_EVENTS | LogKernel.FATAL_EVENTS ) );
   } // static initializer
 
 
@@ -210,18 +149,6 @@ final class LogKernel {
         logger.append( category, event, cause );
       }
     }
-  }
-
-
-
-
-  /**
-   * Log the object using the info category.
-   *
-   * @param event The event to log.
-   */
-  public static void append( final Object event ) {
-    LogKernel.append( LogKernel.INFO_EVENTS, event, null );
   }
 
 
@@ -585,7 +512,7 @@ final class LogKernel {
 
 
   /**
-   * Removes all logers from the system - including permanent loggers.
+   * Removes all loggers from the system - including permanent loggers.
    */
   public static synchronized void removeAllLoggers() {
 
@@ -597,7 +524,7 @@ final class LogKernel {
     // clear the logger table
     LogKernel.nameToLogger.clear();
 
-    // recalc masks to 0
+    // recalculate masks to 0
     LogKernel.recalcMasks();
   }
 
