@@ -14,7 +14,6 @@ package coyote.loader.log;
 import java.net.URI;
 
 import coyote.loader.cfg.Config;
-import coyote.loader.cfg.ConfigurationException;
 
 
 /**
@@ -206,5 +205,23 @@ public interface Logger {
    *         changed, while false unlocks the logger allowing category changed.
    */
   public abstract void setLocked( boolean flag );
+
+
+
+
+  /**
+   * @return this loggers formatter
+   */
+  public Formatter getFormatter();
+
+
+
+
+  /**
+   * Set the formatter for this logger.
+   * 
+   * @param formatter The formatter this logger is to use.
+   */
+  public void setFormatter( final Formatter formatter );
 
 }

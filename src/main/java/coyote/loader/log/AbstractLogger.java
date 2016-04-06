@@ -266,6 +266,7 @@ public abstract class AbstractLogger implements Logger {
   /**
    * @return this loggers formatter
    */
+  @Override
   public Formatter getFormatter() {
     return formatter;
   }
@@ -278,6 +279,7 @@ public abstract class AbstractLogger implements Logger {
    * 
    * @param formatter The formatter this logger is to use.
    */
+  @Override
   public void setFormatter( final Formatter formatter ) {
     this.formatter = formatter;
   }
