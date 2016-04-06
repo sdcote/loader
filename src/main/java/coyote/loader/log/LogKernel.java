@@ -12,17 +12,36 @@
 package coyote.loader.log;
 
 import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Vector;
 
 
 /**
- * Log Is a fascade to the Log Kernel.
+ * LogKernel defines static methods for maintaining a collection of Loggers and
+ * sending an event to all of them.
  * 
- * <p>This serves two purposes, first it is an abstraction for the underlying 
- * implementation and second it acts as a peer to other fascades (e.g. SLF4J) 
- * to keep the stack count the same for the formatters using the stack do 
- * determine location of logging.</p> 
+ * <p>This is an implementation of a category based logger, where all messages 
+ * of a category are logged. There is no concepts of levels in this logger.  
+ * This means if you turn on the logging of one category, all the other 
+ * categories remain unaffected. This allows your to turn on and off all 
+ * "security" messages for example while the "protocol" messages remain 
+ * unaffected.</p>
+ *
+ * <p>The collection is initialized to a single default logger that logs INFO,
+ * WARN, ERROR and FATAL events to System.out through the ConsoleAppender
+ * logging class.</p>
  */
-public final class Log {
+public final class LogKernel {
+
+  /** Map of all the known logging category codes keyed by their name. */
+  static final Hashtable<String, Long> stringToCode = new Hashtable<String, Long>();
+
+  /** Map of all the category names keyed by their category code. */
+  static final Hashtable<Long, String> codeToString = new Hashtable<Long, String>();
+
+  /** Map of all the loggers in the fixture keyed by their name. */
+  static final Hashtable<String, Logger> nameToLogger = new Hashtable<String, Logger>();
 
   /**
    * The name of the category of events where an expected event has occurred 
@@ -70,25 +89,48 @@ public final class Log {
   public static final String FATAL = "FATAL";
 
   /** The category mask for the TRACE category. */
-  public static final long TRACE_EVENTS = LogKernel.getCode( Log.TRACE );
+  public static final long TRACE_EVENTS = LogKernel.getCode( LogKernel.TRACE );
   /** The category mask for the DEBUG category. */
-  public static final long DEBUG_EVENTS = LogKernel.getCode( Log.DEBUG );
+  public static final long DEBUG_EVENTS = LogKernel.getCode( LogKernel.DEBUG );
   /** The category mask for the INFO category. */
-  public static final long INFO_EVENTS = LogKernel.getCode( Log.INFO );
+  public static final long INFO_EVENTS = LogKernel.getCode( LogKernel.INFO );
   /** The category mask for the NOTICE category. */
-  public static final long NOTICE_EVENTS = LogKernel.getCode( Log.NOTICE );
+  public static final long NOTICE_EVENTS = LogKernel.getCode( LogKernel.NOTICE );
   /** The category mask for the WARN category. */
-  public static final long WARN_EVENTS = LogKernel.getCode( Log.WARN );
+  public static final long WARN_EVENTS = LogKernel.getCode( LogKernel.WARN );
   /** The category mask for the ERROR category. */
-  public static final long ERROR_EVENTS = LogKernel.getCode( Log.ERROR );
+  public static final long ERROR_EVENTS = LogKernel.getCode( LogKernel.ERROR );
   /** The category mask for the FATAL category. */
-  public static final long FATAL_EVENTS = LogKernel.getCode( Log.FATAL );
+  public static final long FATAL_EVENTS = LogKernel.getCode( LogKernel.FATAL );
+
+  static long masks; // union of masks of all loggers
+  static final long started = System.currentTimeMillis();
 
   /** 
    * The name of the default logger, or the name of the logger created and 
    * enabled by the logging subsystem when first accessed and initialized. 
    */
   public static final String DEFAULT_LOGGER_NAME = "default";
+
+  /**
+   * If a loggers name appears in this list, it will NOT be removed from the
+   * logger collection.
+   */
+  private static final HashSet<String> permanentLoggers = new HashSet<String>();
+
+  static {
+    try {
+      Runtime.getRuntime().addShutdownHook( new Thread( "LogShutdown" ) {
+        public void run() {
+          for ( final Enumeration<Logger> en = LogKernel.nameToLogger.elements(); en.hasMoreElements(); ) {
+            en.nextElement().terminate();
+          }
+        }
+      } );
+    } catch ( final Throwable ignore ) {}
+    // are the only logging framework
+    LogKernel.addLogger( LogKernel.DEFAULT_LOGGER_NAME, new NullAppender( LogKernel.INFO_EVENTS | LogKernel.NOTICE_EVENTS | LogKernel.WARN_EVENTS | LogKernel.ERROR_EVENTS | LogKernel.FATAL_EVENTS ) );
+  } // static initializer
 
 
 
@@ -124,7 +166,14 @@ public final class Log {
    * @param logger The logger to add.
    */
   public synchronized static void addLogger( final String name, final Logger logger ) {
-    LogKernel.addLogger( name, logger );
+    if ( isBlank( name ) )
+      throw new IllegalArgumentException( "Logger name cannot be blank" );
+
+    if ( logger != null ) {
+      LogKernel.nameToLogger.put( name, logger );
+      logger.initialize();
+      LogKernel.recalcMasks();
+    }
   }
 
 
@@ -152,7 +201,15 @@ public final class Log {
    * @param cause The cause of the event.
    */
   public synchronized static void append( final long code, final Object event, final Throwable cause ) {
-    LogKernel.append( code, event, cause );
+    final String category = LogKernel.getCategory( code );
+
+    for ( final Enumeration<Logger> en = LogKernel.nameToLogger.elements(); en.hasMoreElements(); ) {
+      final Logger logger = en.nextElement();
+
+      if ( ( logger.getMask() & code ) != 0 ) {
+        logger.append( category, event, cause );
+      }
+    }
   }
 
 
@@ -164,7 +221,7 @@ public final class Log {
    * @param event The event to log.
    */
   public static void append( final Object event ) {
-    LogKernel.append( Log.INFO_EVENTS, event, null );
+    LogKernel.append( LogKernel.INFO_EVENTS, event, null );
   }
 
 
@@ -193,37 +250,10 @@ public final class Log {
    * @param cause The exception that caused the log entry. Can be null.
    */
   public synchronized static void append( final String category, final Object event, final Throwable cause ) {
-    LogKernel.append( Log.getCode( category ), event, null );
+    LogKernel.append( LogKernel.getCode( category ), event, null );
   }
 
 
-
-
-  /**
-   * Log the event with category "DEBUG".
-   *
-   * <p>This is equivalent to <tt>log( DEBUG_EVENTS, event );</tt></p>
-   *
-   * @param event The event to log
-   */
-  public static void debug( final Object event ) {
-    LogKernel.append( Log.DEBUG_EVENTS, event, null );
-  }
-
-
-
-
-  /**
-   * Log the event with category "DEBUG".
-   *
-   * <p>This is equivalent to <tt>log( DEBUG_EVENTS, event, cause );</tt></p>
-   *
-   * @param event The event to log
-   * @param cause The cause of the event.
-   */
-  public static void debug( final Object event, final Throwable cause ) {
-    LogKernel.append( Log.DEBUG_EVENTS, event, cause );
-  }
 
 
 
@@ -240,7 +270,13 @@ public final class Log {
    * @see #enableLogger(String)
    */
   public static synchronized void disableLogger( final String name ) {
-    LogKernel.disableLogger( name );
+    if ( !LogKernel.permanentLoggers.contains( name ) ) {
+      final Logger ilogger = LogKernel.nameToLogger.get( name );
+
+      if ( ilogger != null ) {
+        ilogger.disable();
+      }
+    }
   }
 
 
@@ -257,66 +293,15 @@ public final class Log {
    * @see #disableLogger(String)
    */
   public static synchronized void enableLogger( final String name ) {
-    LogKernel.enableLogger( name );
+    final Logger ilogger = LogKernel.nameToLogger.get( name );
+
+    if ( ilogger != null ) {
+      ilogger.enable();
+    }
   }
 
 
 
-
-  /**
-   * Log the event with category "ERROR".
-   *
-   * <p>This is equivalent to <tt>log( ERROR_EVENTS, event );</tt></p>
-   *
-   * @param event
-   */
-  public static void error( final Object event ) {
-    LogKernel.append( Log.ERROR_EVENTS, event, null );
-  }
-
-
-
-
-  /**
-   * Log the event with category "ERROR".
-   *
-   * <p>This is equivalent to <tt>log( ERROR_EVENTS, event, cause );</tt></p>
-   *
-   * @param event The event to log
-   * @param cause The cause of the event.
-   */
-  public static void error( final Object event, final Throwable cause ) {
-    LogKernel.append( Log.ERROR_EVENTS, event, cause );
-  }
-
-
-
-
-  /**
-   * Log the event with category "FATAL".
-   *
-   * <p>This is equivalent to <tt>log( FATAL_EVENTS, event );</tt></p>
-   *
-   * @param event
-   */
-  public static void fatal( final Object event ) {
-    LogKernel.append( Log.FATAL_EVENTS, event, null );
-  }
-
-
-
-
-  /**
-   * Log the event with category "FATAL".
-   *
-   * <p>This is equivalent to <tt>log( FATAL_EVENTS, event );</tt></p>
-   *
-   * @param event The event to log
-   * @param cause The cause of the event.
-   */
-  public static void fatal( final Object event, final Throwable cause ) {
-    LogKernel.append( Log.FATAL_EVENTS, event, cause );
-  }
 
 
 
@@ -347,7 +332,15 @@ public final class Log {
    * @see #getCode(String)
    */
   public synchronized static String[] getCategoryNames() {
-    return LogKernel.getCategoryNames();
+    final String[] retval = new String[LogKernel.stringToCode.size()];
+
+    int i = 0;
+
+    for ( final Enumeration<String> en = LogKernel.stringToCode.keys(); en.hasMoreElements(); i++ ) {
+      retval[i] = en.nextElement();
+    }
+
+    return retval;
   }
 
 
@@ -364,7 +357,20 @@ public final class Log {
    * @return The code for the given category.
    */
   public static synchronized long getCode( final String category ) {
-    return LogKernel.getCode( category );
+    if ( LogKernel.stringToCode.size() < 64 ) {
+      Long code = LogKernel.stringToCode.get( category );
+
+      if ( code == null ) {
+        code = new Long( 1L << LogKernel.stringToCode.size() );
+
+        LogKernel.stringToCode.put( category, code );
+        LogKernel.codeToString.put( code, category );
+      }
+
+      return code.longValue();
+    }
+
+    throw new IllegalStateException( "Maximum number of categories (" + LogKernel.stringToCode.size() + ") has been reached" );
   }
 
 
@@ -376,7 +382,7 @@ public final class Log {
    * @return The default logger, or null if there is no logger named "default".
    */
   public synchronized static Logger getDefaultLogger() {
-    return LogKernel.getDefaultLogger();
+    return LogKernel.nameToLogger.get( LogKernel.DEFAULT_LOGGER_NAME );
   }
 
 
@@ -390,7 +396,7 @@ public final class Log {
    * @return The number of milliseconds since logging began.
    */
   public static long getInterval() {
-    return LogKernel.getInterval();
+    return System.currentTimeMillis() - LogKernel.started;
   }
 
 
@@ -404,7 +410,11 @@ public final class Log {
    * @return The reference to the Logger object with the given name.
    */
   public synchronized static Logger getLogger( final String name ) {
-    return LogKernel.getLogger( name );
+    if ( name != null ) {
+      return LogKernel.nameToLogger.get( name );
+    } else {
+      return null;
+    }
   }
 
 
@@ -416,7 +426,7 @@ public final class Log {
    * @return the number of logger in the static collection.
    */
   public synchronized static int getLoggerCount() {
-    return LogKernel.getLoggerCount();
+    return LogKernel.nameToLogger.size();
   }
 
 
@@ -426,7 +436,13 @@ public final class Log {
    * @return an enumeration over all the current logger names.
    */
   public synchronized static Enumeration<String> getLoggerNames() {
-    return LogKernel.getLoggerNames();
+    final Vector<String> names = new Vector<String>();
+
+    for ( final Enumeration<String> en = LogKernel.nameToLogger.keys(); en.hasMoreElements(); ) {
+      names.addElement( en.nextElement() );
+    }
+
+    return names.elements();
   }
 
 
@@ -438,67 +454,14 @@ public final class Log {
    * @return an enumeration over all the current loggers.
    */
   public synchronized static Enumeration<Logger> getLoggers() {
-    return LogKernel.getLoggers();
+    final Vector<Logger> loggers = new Vector<Logger>();
+
+    for ( final Enumeration<Logger> en = LogKernel.nameToLogger.elements(); en.hasMoreElements(); ) {
+      loggers.addElement( en.nextElement() );
+    }
+
+    return loggers.elements();
   }
-
-
-
-
-  /**
-   * Log the event with category "INFO".
-   *
-   * <p>This is equivalent to <tt>log( INFO_EVENTS, event );</tt></p>
-   *
-   * @param event
-   */
-  public static void info( final Object event ) {
-    LogKernel.append( Log.INFO_EVENTS, event, null );
-  }
-
-
-
-
-  /**
-   * Log the event with category "INFO".
-   *
-   * <p>This is equivalent to <tt>log( INFO_EVENTS, event, cause );</tt></p>
-   *
-   * @param event The event to log
-   * @param cause The cause of the event.
-   */
-  public static void info( final Object event, final Throwable cause ) {
-    LogKernel.append( Log.INFO_EVENTS, event, cause );
-  }
-
-
-
-
-  /**
-   * Log the event with category "NOTICE".
-   *
-   * <p>This is equivalent to <tt>log( NOTICE_EVENTS, event );</tt></p>
-   *
-   * @param event
-   */
-  public static void notice( final Object event ) {
-    LogKernel.append( Log.NOTICE_EVENTS, event, null );
-  }
-
-
-
-
-  /**
-   * Log the event with category "NOTICE".
-   *
-   * <p>This is equivalent to <tt>log( NOTICE_EVENTS, event, cause );</tt></p>
-   *
-   * @param event The event to log
-   * @param cause The cause of the event.
-   */
-  public static void notice( final Object event, final Throwable cause ) {
-    LogKernel.append( Log.NOTICE_EVENTS, event, cause );
-  }
-
 
 
 
@@ -515,7 +478,7 @@ public final class Log {
    *         by the mask false otherwise
    */
   public static boolean isLogging( final long mask ) {
-    return LogKernel.isLogging( mask );
+    return ( ( LogKernel.masks & mask ) != 0 );
   }
 
 
@@ -531,7 +494,7 @@ public final class Log {
    *         by the mask false otherwise
    */
   public static boolean isLogging( final String category ) {
-    return LogKernel.isLogging( category );
+    return LogKernel.isLogging( LogKernel.getCode( category ) );
   }
 
 
@@ -545,7 +508,7 @@ public final class Log {
    * @return True if the logger is tagged as permanent, false otherwise.
    */
   public static boolean isPermanent( final String name ) {
-    return LogKernel.isPermanent( name );
+    return LogKernel.permanentLoggers.contains( name );
   }
 
 
@@ -565,7 +528,22 @@ public final class Log {
    * @param name The name to ignore on any remove request.
    */
   public static void makeLoggerPermanent( final String name ) {
-    LogKernel.makeLoggerPermanent( name );
+    LogKernel.permanentLoggers.add( name );
+  }
+
+
+
+
+  /**
+   * Recalculate the master mask value.
+   */
+  static synchronized void recalcMasks() {
+    LogKernel.masks = 0L;
+
+    for ( final Enumeration<Logger> enumeration = LogKernel.nameToLogger.elements(); enumeration.hasMoreElements(); ) {
+      LogKernel.masks |= enumeration.nextElement().getMask();
+    }
+
   }
 
 
@@ -579,7 +557,7 @@ public final class Log {
    * operations.</p>
    */
   public synchronized static void removeDefaultLogger() {
-    LogKernel.removeDefaultLogger();
+    LogKernel.removeLogger( LogKernel.DEFAULT_LOGGER_NAME );
   }
 
 
@@ -595,7 +573,16 @@ public final class Log {
    * @param name The name of the logger.
    */
   public static synchronized void removeLogger( final String name ) {
-    LogKernel.removeLogger( name );
+    if ( !LogKernel.permanentLoggers.contains( name ) ) {
+      final Logger logger = LogKernel.nameToLogger.get( name );
+
+      if ( logger != null ) {
+        logger.terminate();
+      }
+
+      LogKernel.nameToLogger.remove( name );
+      LogKernel.recalcMasks();
+    }
   }
 
 
@@ -605,7 +592,17 @@ public final class Log {
    * Removes all logers from the system - including permanent loggers.
    */
   public static synchronized void removeAllLoggers() {
-    LogKernel.removeAllLoggers();
+
+    // terminate each of the loggers
+    for ( final Enumeration<Logger> en = LogKernel.nameToLogger.elements(); en.hasMoreElements(); ) {
+      en.nextElement().terminate();
+    }
+
+    // clear the logger table
+    LogKernel.nameToLogger.clear();
+
+    // recalc masks to 0
+    LogKernel.recalcMasks();
   }
 
 
@@ -617,7 +614,13 @@ public final class Log {
    * @param mask The mask to set to all loggers in the collection.
    */
   public static synchronized void setMask( final long mask ) {
-    LogKernel.setMask( mask );
+    Logger lgr = null;
+    for ( final Enumeration<Logger> en = LogKernel.nameToLogger.elements(); en.hasMoreElements(); ) {
+      lgr = en.nextElement();
+      if ( !lgr.isLocked() ) {
+        lgr.setMask( mask );
+      }
+    }
   }
 
 
@@ -629,7 +632,13 @@ public final class Log {
    * @param category The category.
    */
   public synchronized static void startLogging( final String category ) {
-    LogKernel.startLogging( category );
+    Logger lgr = null;
+    for ( final Enumeration<Logger> en = LogKernel.nameToLogger.elements(); en.hasMoreElements(); ) {
+      lgr = en.nextElement();
+      if ( !lgr.isLocked() ) {
+        lgr.startLogging( category );
+      }
+    }
   }
 
 
@@ -641,66 +650,17 @@ public final class Log {
    * @param category The category.
    */
   public synchronized static void stopLogging( final String category ) {
-    LogKernel.stopLogging( category );
+    Logger lgr = null;
+    for ( final Enumeration<Logger> en = LogKernel.nameToLogger.elements(); en.hasMoreElements(); ) {
+      lgr = en.nextElement();
+      if ( !lgr.isLocked() ) {
+        lgr.stopLogging( category );
+      }
+    }
   }
 
 
 
-
-  /**
-   * Log the event with category "TRACE".
-   *
-   * <p>This is equivalent to <tt>log( TRACE_EVENTS, event );</tt></p>
-   *
-   * @param event
-   */
-  public static void trace( final Object event ) {
-    Log.append( Log.TRACE_EVENTS, event, null );
-  }
-
-
-
-
-  /**
-   * Log the event with category "TRACE".
-   *
-   * <p>This is equivalent to <tt>log( TRACE_EVENTS, event, cause );</tt></p>
-   *
-   * @param event The event to log
-   * @param cause The cause of the event.
-   */
-  public static void trace( final Object event, final Throwable cause ) {
-    LogKernel.append( Log.TRACE_EVENTS, event, cause );
-  }
-
-
-
-
-  /**
-   * Log the event with category "WARN".
-   *
-   * <p>This is equivalent to <tt>log( WARN_EVENTS, event );</tt></p>
-   *
-   * @param event
-   */
-  public static void warn( final Object event ) {
-    LogKernel.append( Log.WARN_EVENTS, event, null );
-  }
-
-
-
-
-  /**
-   * Log the event with category "WARN".
-   *
-   * <p>This is equivalent to <tt>log( WARN_EVENTS, event, cause );</tt></p>
-   *
-   * @param event The event to log
-   * @param cause The cause of the event.
-   */
-  public static void warn( final Object event, final Throwable cause ) {
-    LogKernel.append( Log.WARN_EVENTS, event, cause );
-  }
 
 
 
@@ -708,6 +668,6 @@ public final class Log {
   /**
    * Private constructor to keep instances of this class from being created.
    */
-  private Log() {}
+  private LogKernel() {}
 
 }

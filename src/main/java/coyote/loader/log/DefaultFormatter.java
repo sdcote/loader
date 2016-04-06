@@ -72,7 +72,7 @@ public class DefaultFormatter implements Formatter {
       final StackTraceElement[] stack = new Exception().fillInStackTrace().getStackTrace();
 
       // get the 4th element, 0=DefaultFormatter.format(), 1=Appender.append(),
-      // 2=Log.append(), 3=the fascade, 4=the source method call
+      // 2=LogKernel.append(), 3=fascade(Log/CategoryLogger), 4=source call
       final StackTraceElement elem = stack[4];
 
       buffer.append( ExceptionUtil.getAbbreviatedClassname( elem.getClassName() ) );

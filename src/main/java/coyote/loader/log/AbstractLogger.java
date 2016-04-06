@@ -82,7 +82,7 @@ public abstract class AbstractLogger implements Logger {
     if ( !locked ) {
       this.mask = mask;
 
-      Log.recalcMasks();
+      LogKernel.recalcMasks();
     }
   }
 
@@ -98,7 +98,7 @@ public abstract class AbstractLogger implements Logger {
     if ( !locked ) {
       this.mask |= mask;
 
-      Log.recalcMasks();
+      LogKernel.recalcMasks();
     }
   }
 
@@ -114,7 +114,7 @@ public abstract class AbstractLogger implements Logger {
     if ( !locked ) {
       this.mask &= ~mask;
 
-      Log.recalcMasks();
+      LogKernel.recalcMasks();
     }
   }
 
@@ -160,7 +160,7 @@ public abstract class AbstractLogger implements Logger {
     disabledMask |= mask;
     mask = 0;
 
-    Log.recalcMasks();
+    LogKernel.recalcMasks();
   }
 
 
@@ -182,7 +182,7 @@ public abstract class AbstractLogger implements Logger {
     mask |= disabledMask;
     disabledMask = 0;
 
-    Log.recalcMasks();
+    LogKernel.recalcMasks();
   }
 
 
@@ -245,7 +245,7 @@ public abstract class AbstractLogger implements Logger {
   public void logAll() {
     mask = Long.MAX_VALUE;
 
-    Log.recalcMasks();
+    LogKernel.recalcMasks();
   }
 
 
@@ -257,7 +257,7 @@ public abstract class AbstractLogger implements Logger {
   public void logNone() {
     mask = 0;
 
-    Log.recalcMasks();
+    LogKernel.recalcMasks();
   }
 
 
