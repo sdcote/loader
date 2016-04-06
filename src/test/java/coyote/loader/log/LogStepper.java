@@ -21,8 +21,6 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class LogStepper {
-  /** The logger this class uses */
-  private static final Logger LOG = LoggerFactory.getLogger( LogStepper.class );
 
 
 
@@ -30,18 +28,10 @@ public class LogStepper {
   /**
    * @param args
    */
-  public static void main( String[] args ) {
+  public static void stepOne() {
 
-    // Add a logger that will send log messages to the console 
-    Log.addLogger( "Loader", new ConsoleAppender( Log.INFO_EVENTS | Log.WARN_EVENTS | Log.ERROR_EVENTS | Log.FATAL_EVENTS ) );
-
-    FileAppender appender = new FileAppender( new File("debug.log"));
-    appender.startLogging( Log.DEBUG );
-    Log.addLogger( "Debugfile",appender );
-
-    //Log.startLogging( Log.DEBUG );
-    //Log.startLogging( Log.TRACE );
-
+    // SLF4J
+    Logger LOG = LoggerFactory.getLogger( LogStepper.class );
     LOG.trace( "trace" );
     LOG.debug( "debug" );
     LOG.info( "info" );
@@ -58,4 +48,43 @@ public class LogStepper {
 
   }
 
+
+
+
+  public static void stepTwo() {
+
+    // Add a logger that will send log messages to the console 
+    Log.addLogger( "Loader", new ConsoleAppender( Log.INFO_EVENTS | Log.WARN_EVENTS | Log.ERROR_EVENTS | Log.FATAL_EVENTS ) );
+
+    FileAppender appender = new FileAppender( new File( "debug.log" ) );
+    appender.startLogging( Log.DEBUG );
+    Log.addLogger( "Debugfile", appender );
+
+    //Log.startLogging( Log.DEBUG );
+    //Log.startLogging( Log.TRACE );
+
+    Log.trace( "trace" );
+    Log.debug( "debug" );
+    Log.info( "info" );
+    Log.warn( "warn" );
+    Log.error( "error" );
+    System.out.println( "============================" );
+    Log.startLogging( Log.TRACE );
+
+    Log.trace( "trace" );
+    Log.debug( "debug" );
+    Log.info( "info" );
+    Log.warn( "warn" );
+    Log.error( "error" );
+  }
+
+
+
+
+  /**
+   * @param args
+   */
+  public static void main( String[] args ) {
+
+  }
 }

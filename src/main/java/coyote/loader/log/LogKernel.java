@@ -32,7 +32,7 @@ import java.util.Vector;
  * WARN, ERROR and FATAL events to System.out through the ConsoleAppender
  * logging class.</p>
  */
-public final class LogKernel {
+final class LogKernel {
 
   /** Map of all the known logging category codes keyed by their name. */
   static final Hashtable<String, Long> stringToCode = new Hashtable<String, Long>();
@@ -256,8 +256,6 @@ public final class LogKernel {
 
 
 
-
-
   /**
    * Disable the specified logger.
    * 
@@ -299,9 +297,6 @@ public final class LogKernel {
       ilogger.enable();
     }
   }
-
-
-
 
 
 
@@ -462,6 +457,7 @@ public final class LogKernel {
 
     return loggers.elements();
   }
+
 
 
 
@@ -658,9 +654,6 @@ public final class LogKernel {
       }
     }
   }
-
-
-
 
 
 

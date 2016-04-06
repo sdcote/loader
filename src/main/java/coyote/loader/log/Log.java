@@ -15,11 +15,11 @@ import java.util.Enumeration;
 
 
 /**
- * Log Is a fascade to the Log Kernel.
+ * Log Is a facade to the Log Kernel.
  * 
  * <p>This serves two purposes, first it is an abstraction for the underlying 
- * implementation and second it acts as a peer to other fascades (e.g. SLF4J) 
- * to keep the stack count the same for the formatters using the stack do 
+ * implementation and second it acts as a peer to other facades (e.g. SLF4J) 
+ * to keep the stack count the same for the formatters using the stack to 
  * determine location of logging.</p> 
  */
 public final class Log {
@@ -207,7 +207,7 @@ public final class Log {
    * @param event The event to log
    */
   public static void debug( final Object event ) {
-    LogKernel.append( Log.DEBUG_EVENTS, event, null );
+    Log.append( Log.DEBUG_EVENTS, event, null );
   }
 
 
@@ -222,7 +222,7 @@ public final class Log {
    * @param cause The cause of the event.
    */
   public static void debug( final Object event, final Throwable cause ) {
-    LogKernel.append( Log.DEBUG_EVENTS, event, cause );
+    Log.append( Log.DEBUG_EVENTS, event, cause );
   }
 
 
@@ -271,7 +271,7 @@ public final class Log {
    * @param event
    */
   public static void error( final Object event ) {
-    LogKernel.append( Log.ERROR_EVENTS, event, null );
+    Log.append( Log.ERROR_EVENTS, event, null );
   }
 
 
@@ -286,7 +286,7 @@ public final class Log {
    * @param cause The cause of the event.
    */
   public static void error( final Object event, final Throwable cause ) {
-    LogKernel.append( Log.ERROR_EVENTS, event, cause );
+    Log.append( Log.ERROR_EVENTS, event, cause );
   }
 
 
@@ -300,7 +300,7 @@ public final class Log {
    * @param event
    */
   public static void fatal( final Object event ) {
-    LogKernel.append( Log.FATAL_EVENTS, event, null );
+    Log.append( Log.FATAL_EVENTS, event, null );
   }
 
 
@@ -315,7 +315,7 @@ public final class Log {
    * @param cause The cause of the event.
    */
   public static void fatal( final Object event, final Throwable cause ) {
-    LogKernel.append( Log.FATAL_EVENTS, event, cause );
+    Log.append( Log.FATAL_EVENTS, event, cause );
   }
 
 
@@ -452,7 +452,7 @@ public final class Log {
    * @param event
    */
   public static void info( final Object event ) {
-    LogKernel.append( Log.INFO_EVENTS, event, null );
+    Log.append( Log.INFO_EVENTS, event, null );
   }
 
 
@@ -467,7 +467,7 @@ public final class Log {
    * @param cause The cause of the event.
    */
   public static void info( final Object event, final Throwable cause ) {
-    LogKernel.append( Log.INFO_EVENTS, event, cause );
+    Log.append( Log.INFO_EVENTS, event, cause );
   }
 
 
@@ -481,7 +481,7 @@ public final class Log {
    * @param event
    */
   public static void notice( final Object event ) {
-    LogKernel.append( Log.NOTICE_EVENTS, event, null );
+    Log.append( Log.NOTICE_EVENTS, event, null );
   }
 
 
@@ -496,7 +496,7 @@ public final class Log {
    * @param cause The cause of the event.
    */
   public static void notice( final Object event, final Throwable cause ) {
-    LogKernel.append( Log.NOTICE_EVENTS, event, cause );
+    Log.append( Log.NOTICE_EVENTS, event, cause );
   }
 
 
@@ -670,7 +670,7 @@ public final class Log {
    * @param cause The cause of the event.
    */
   public static void trace( final Object event, final Throwable cause ) {
-    LogKernel.append( Log.TRACE_EVENTS, event, cause );
+    Log.append( Log.TRACE_EVENTS, event, cause );
   }
 
 
@@ -684,7 +684,7 @@ public final class Log {
    * @param event
    */
   public static void warn( final Object event ) {
-    LogKernel.append( Log.WARN_EVENTS, event, null );
+    Log.append( Log.WARN_EVENTS, event, null );
   }
 
 
@@ -699,7 +699,7 @@ public final class Log {
    * @param cause The cause of the event.
    */
   public static void warn( final Object event, final Throwable cause ) {
-    LogKernel.append( Log.WARN_EVENTS, event, cause );
+    Log.append( Log.WARN_EVENTS, event, cause );
   }
 
 
