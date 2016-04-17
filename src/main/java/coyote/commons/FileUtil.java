@@ -219,6 +219,30 @@ public final class FileUtil {
   }
 
 
+  /**
+   * Opens a file, writes out the given string then closes the file.
+   *
+   * @param text - string to write
+   * @param fname - file to open
+   * @param charset - the name of the character set to use
+   * 
+   * @return boolean whether or not the operation worked, could be an IO error 
+   *         or a bad character set name.
+   */
+  public static boolean stringToFile( final String text, final String fname , final String chrset ) {
+    if ( fname != null ) {
+      final File file = new File( fname );
+
+      try {
+        FileUtil.write( file, text.getBytes( chrset) );
+        return true;
+      } catch ( final Exception ex ) {}
+    }
+
+    return false;
+  }
+
+
 
 
   /**
