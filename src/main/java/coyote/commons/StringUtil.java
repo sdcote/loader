@@ -95,6 +95,26 @@ public class StringUtil {
 
 
   /**
+   * Checks the given character set name for validity in this runtime.
+   * 
+   * @param name the name of the character set to check
+   * 
+   * @return true if this runtime supports this character set, false otherwise
+   */
+  public static boolean checkCharacterSetName( String name ) {
+    try {
+      new String( new byte[] { (byte)20 }, name );
+      return true;
+    } catch ( final java.io.UnsupportedEncodingException e ) {
+      return false;
+    }
+
+  }
+
+
+
+
+  /**
    * Convert the given string into ISO 8859-1 encoding.
    * 
    * <p>This is the defacto standard for string encoding on the Internet</p>
@@ -615,7 +635,7 @@ public class StringUtil {
     int end = text.lastIndexOf( DOUBLE_QUOTE );
 
     if ( start > -1 && end > start ) {
-      retval = text.substring( start+1, end );
+      retval = text.substring( start + 1, end );
     }
 
     return retval;
