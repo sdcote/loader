@@ -224,7 +224,7 @@ public final class FileUtil {
    *
    * @param text - string to write
    * @param fname - file to open
-   * @param charset - the name of the character set to use
+   * @param chrset - the name of the character set to use
    * 
    * @return boolean whether or not the operation worked, could be an IO error 
    *         or a bad character set name.
