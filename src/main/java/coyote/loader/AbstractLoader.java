@@ -680,4 +680,18 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
     commandLineArguments = args;
   }
 
+
+
+
+  /**
+   * @see coyote.loader.Loader#getConfig()
+   */
+  @Override
+  public Config getConfig() {
+    if ( configuration == null ) {
+      configuration = new Config();
+    }
+    return configuration;
+  }
+
 }

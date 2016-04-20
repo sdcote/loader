@@ -45,6 +45,19 @@ public interface Loader extends WatchDog {
 
 
   /**
+   * Get a configuration object for this loader.
+   * 
+   * <p>This will never return null. If a configuration does not exist, an 
+   * empty one will be created, set as the main configuration and returned.</p>
+   * 
+   * @return the currently set configuration 
+   */
+  public Config getConfig();
+
+
+
+
+  /**
    * Start the loader running.
    * 
    * <p>This is a blocking call. The thread will remain in this method until 
