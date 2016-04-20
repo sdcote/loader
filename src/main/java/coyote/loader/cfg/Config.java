@@ -375,6 +375,35 @@ public class Config extends DataFrame implements Cloneable, Serializable {
 
 
   /**
+   * Return the first section with the given name.
+   * 
+   * <p>This performs a case-insensitive search for the section.</p>
+   * 
+   * @param tag The name of the section for which to search
+   * 
+   * @return The first section with a matching name or null if no section with that name exists
+   */
+  public Config getSection( String tag ) {
+
+    // If we have a tag for which to search...
+    if ( StringUtil.isNotBlank( tag ) ) {
+      // Look for the class to load
+      for ( DataField field : getFields() ) {
+        if ( tag.equalsIgnoreCase( field.getName() ) && field.isFrame() ) {
+          Config cfg = new Config();
+          cfg.populate( (DataFrame)field.getObjectValue() );
+          return cfg;
+        } // name match && a frame
+      } // for
+    } // tag != null
+
+    return null;
+  }
+
+
+
+
+  /**
    * Return all the configuration sections within this section
    * 
    * <p>This will not return scalar attributes, just the embedded sections.</p>
