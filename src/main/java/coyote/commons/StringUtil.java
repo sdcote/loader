@@ -52,10 +52,10 @@ public class StringUtil {
    * <ul> <li>&amp; - &amp;amp; <li>&lt; - &amp;lt; <li>&gt; - &amp;gt;
    * <li>&quote; - &amp;quote; <li>&apos; - &amp;apos; </ul>
    */
-  public static final String XML_ENTITYREFS[] = { "&", "&amp;", "<", "&lt;", ">", "&gt;", "\"", "&quot;", "'", "&apos;" };
+  public static final String XML_ENTITYREFS[] = { "&", "&amp;", "<", "&lt;", ">", "&gt;", "\"", "&quot;", "'", "&apos;", "\n", "&#xa;", "\r", "&#xd;", "\t", "&#x9;" };
 
   /** Same as XML but there is no entity reference for an apostrophe. */
-  public static final String HTML_ENTITYREFS[] = { "&", "&amp;", "<", "&lt;", ">", "&gt;", "\"", "&quot;" };
+  public static final String HTML_ENTITYREFS[] = { "&", "&amp;", "<", "&lt;", ">", "&gt;", "\"", "&quot;", "\n", "&#xa;", "\r", "&#xd;", "\t", "&#x9;" };
 
   /** CharEncodingISO Latin Alphabet No. 1, a.k.a. ISO-LATIN-1. */
   public static final String ISO_8859_1 = "ISO-8859-1";
