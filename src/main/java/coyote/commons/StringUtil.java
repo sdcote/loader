@@ -46,6 +46,17 @@ public class StringUtil {
   /** Platform specific path separator (default = ":") */
   public static final String FILE_SEPARATOR = System.getProperty( "file.separator", ":" );
 
+  /**
+   * An "XML Safe" string require thats certain strings (or more correctly,
+   * characters) be substituted for others. See page 257 of "XML by Example".
+   * <ul> <li>&amp; - &amp;amp; <li>&lt; - &amp;lt; <li>&gt; - &amp;gt;
+   * <li>&quote; - &amp;quote; <li>&apos; - &amp;apos; </ul>
+   */
+  public static final String XML_ENTITYREFS[] = { "&", "&amp;", "<", "&lt;", ">", "&gt;", "\"", "&quot;", "'", "&apos;" };
+
+  /** Same as XML but there is no entity reference for an apostrophe. */
+  public static final String HTML_ENTITYREFS[] = { "&", "&amp;", "<", "&lt;", ">", "&gt;", "\"", "&quot;" };
+
   /** CharEncodingISO Latin Alphabet No. 1, a.k.a. ISO-LATIN-1. */
   public static final String ISO_8859_1 = "ISO-8859-1";
 
@@ -639,6 +650,191 @@ public class StringUtil {
     }
 
     return retval;
+  }
+
+
+
+
+  /**
+   * Make a string safe to send as part of an XML message.
+   * 
+   * @param string the string to convert
+   * 
+   * @return Restored string.
+   */
+  public static final String StringToXML( final String string ) {
+    return StringUtil.tokenSubst( StringUtil.XML_ENTITYREFS, StringUtil.notNull( string ), true );
+  }
+
+
+
+
+  /**
+   * Make a string safe to send as part of an HTML message.
+   * 
+   * @param string
+   * @return Restored string.
+   */
+  public static final String StringToHTML( final String string ) {
+    return StringUtil.tokenSubst( StringUtil.HTML_ENTITYREFS, StringUtil.notNull( string ), true );
+  }
+
+
+
+
+  /**
+   * Replace a list of tokens in a string.
+   * 
+   * <p> String {@code 2i} is replaced with String {@code 2i+1}.
+   * Order is very important. If you want to convert &lt; to &amp;lt; and you
+   * also want to convert &amp to &amp;amp; then it is important that you
+   * first convert &amp; to &amp;amp; before converting &lt; to &amp;lt;. If
+   * you do not, then the &amp in &amp;lt; will be converted to &amp;amp;lt;.
+   * </p>
+   * 
+   * @param tokens is an array of strings such that string {@code 2i} is
+   *            replaced with string {@code 2i+1}.
+   * @param string is the string to be searched.
+   * @param fromStart If true, the substitution will be performed from the
+   *            begining , otherwise the replacement will begin from the end
+   *            of the array resulting in a reverse substitution
+   * 
+   * @return string with tokens replaced.
+   */
+  public static final String tokenSubst( final String[] tokens, final String string, final boolean fromStart ) {
+    String temps = ( string == null ) ? "" : string;
+
+    if ( temps.length() > 0 ) {
+      final int delta = ( fromStart ) ? 2 : -2;
+      int i_old = ( fromStart ) ? 0 : tokens.length - 1;
+      int i_new = i_old + delta / 2;
+      final int num_to_do = tokens.length / 2;
+      int cnt;
+
+      for ( cnt = 0; cnt < num_to_do; ++cnt ) {
+        StringBuffer buf = null;
+        int last_pos = 0;
+        final String tok_string = tokens[i_old];
+        final int tok_len = tok_string.length();
+        int tok_pos = temps.indexOf( tok_string, last_pos );
+
+        while ( tok_pos >= 0 ) {
+          if ( buf == null ) {
+            buf = new StringBuffer();
+          }
+
+          if ( last_pos != tok_pos ) {
+            buf.append( temps.substring( last_pos, tok_pos ) );
+          }
+
+          buf.append( tokens[i_new] );
+
+          last_pos = tok_pos + tok_len;
+          tok_pos = temps.indexOf( tok_string, last_pos );
+        }
+
+        if ( ( last_pos < temps.length() ) && ( buf != null ) ) {
+          buf.append( temps.substring( last_pos ) );
+        }
+
+        if ( buf != null ) {
+          temps = buf.toString();
+        }
+
+        i_old += delta;
+        i_new += delta;
+      }
+    }
+
+    return temps;
+  }
+
+
+
+
+  /**
+   * Replace one character with another in a string.
+   * 
+   * @param target the target character to replace
+   * @param desired the desired character
+   * @param string is the string to be searched.
+   * 
+   * @return string with tokens replaced.
+   */
+  public static final String charSubst( final char target, final char desired, final String string ) {
+    final StringBuffer buf = new StringBuffer( ( string == null ) ? "" : string );
+
+    for ( int indx = buf.length() - 1; indx >= 0; --indx ) {
+      if ( buf.charAt( indx ) == target ) {
+        buf.setCharAt( indx, desired );
+      }
+    }
+
+    return buf.toString();
+  }
+
+
+
+
+  /**
+   * Return a string made XML safe back to its original condition.
+   * 
+   * @param string the string to convert
+   * 
+   * @return XML String converted to an XML safe string.
+   */
+  public static final String XMLToString( final String string ) {
+    return StringUtil.tokenSubst( StringUtil.XML_ENTITYREFS, string, false );
+  }
+
+
+
+
+  /**
+   * Makes a string safe to place in HTML
+   * 
+   * @param string the string to convert
+   * 
+   * @return a new string with HTML characters replaces with HTML entities.
+   */
+  public static final String HTMLToString( final String string ) {
+    return StringUtil.replace( StringUtil.tokenSubst( StringUtil.XML_ENTITYREFS, string, false ), "&nbsp;", "" );
+  }
+
+
+
+
+  /**
+   * Replace substrings within string.
+   * 
+   * @param text the text to scan
+   * @param target the string to replace in the text
+   * @param desired the string to put in place of the text
+   * 
+   * @return a string with all the occurrences of the target strings replaced
+   *         with the desired strings
+   */
+  public static final String replace( final String text, final String target, final String desired ) {
+    int ch = 0;
+    int indx = text.indexOf( target, ch );
+    if ( indx == -1 ) {
+      return text;
+    }
+
+    final StringBuffer buf = new StringBuffer( text.length() + desired.length() );
+    do {
+      buf.append( text.substring( ch, indx ) );
+      buf.append( desired );
+
+      ch = indx + target.length();
+    }
+    while ( ( indx = text.indexOf( target, ch ) ) != -1 );
+
+    if ( ch < text.length() ) {
+      buf.append( text.substring( ch, text.length() ) );
+    }
+
+    return buf.toString();
   }
 
 }
