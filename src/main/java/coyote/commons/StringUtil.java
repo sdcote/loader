@@ -808,7 +808,7 @@ public class StringUtil {
   /**
    * Tokenize the given string and return the string at given column index.
    * 
-   * <p>Often text will be retuned as a set of text separated by whitespace, 
+   * <p>Often text will be returned as a set of text separated by whitespace, 
    * this offers a quick method to return the token at a given location.</p>
    * 
    * @param text the line of text to tokenize
