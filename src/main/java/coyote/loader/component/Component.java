@@ -162,7 +162,7 @@ public interface Component {
    * 
    * <p>This is a way for a component to report to the loader that it should be 
    * terminated and removed from the system. If the component becomes unstable 
-   * or unusable, it should set it active flag fo false and cease processing. 
+   * or unusable, it should set it active flag to false and cease processing. 
    * The loader can then remove the component from the system when it is 
    * convenient.</p>
    * 

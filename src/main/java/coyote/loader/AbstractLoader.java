@@ -358,7 +358,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
   /**
    * Activate (start, run, whatever) this component as is appropriate for the
-   * Loader and ithe instance of the object.
+   * Loader and the instance of the object.
    * 
    * <p>It is expected that specialized Loaders will override this method and 
    * activate the component based on the needs of the application and the type 
@@ -368,7 +368,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
    * licensing data to determine if the object is allowed to run. If not, the 
    * component may be removed from the Loader instance.
    * 
-   * <p>The default behaviour of this class is to check to see if it is a 
+   * <p>The default behavior of this class is to check to see if it is a 
    * {@code ScheduledJob} and if so, place it in the scheduler. Otherwise, the 
    * object is run in the thread pool if it is a {@code ThreadJob} or 
    * implements {@code Runnable}.</p>
