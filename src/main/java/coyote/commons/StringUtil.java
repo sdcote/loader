@@ -12,6 +12,7 @@
 package coyote.commons;
 
 import java.io.UnsupportedEncodingException;
+import java.util.StringTokenizer;
 
 
 /**
@@ -799,6 +800,38 @@ public class StringUtil {
    */
   public static final String HTMLToString( final String string ) {
     return StringUtil.replace( StringUtil.tokenSubst( StringUtil.XML_ENTITYREFS, string, false ), "&nbsp;", "" );
+  }
+
+
+
+
+  /**
+   * Tokenize the given string and return the string at given column index.
+   * 
+   * <p>Often text will be retuned as a set of text separated by whitespace, 
+   * this offers a quick method to return the token at a given location.</p>
+   * 
+   * @param text the line of text to tokenize
+   * @param col the index of the
+   * 
+   * @return the token at the given column location or an empty string if the 
+   *         column index was greater than the number of tokens in the text. 
+   *         This will never return null.
+   */
+  public static String readColumn( final String text, final int col ) {
+    final StringTokenizer stringtokenizer = new StringTokenizer( text );
+
+    if ( stringtokenizer.countTokens() >= col ) {
+      for ( int indx = 1; indx <= col; indx++ ) {
+        final String retval = stringtokenizer.nextToken();
+
+        if ( indx == col ) {
+          return retval;
+        }
+      }
+    }
+
+    return "";
   }
 
 
