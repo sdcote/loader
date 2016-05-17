@@ -12,6 +12,7 @@
 package coyote.loader;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
@@ -74,6 +75,99 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   protected final ThreadPool threadpool = new ThreadPool();
 
   protected Scheduler scheduler = null;
+
+
+
+
+  protected static void confirmAppHome() {
+    // see if there is a system property with a shared configuration directory
+    String path = System.getProperties().getProperty( APP_HOME );
+
+    // if there is a application home directory specified
+    if ( StringUtil.isNotBlank( path ) ) {
+
+      // remove all the relations and duplicate slashes
+      String appDir = FileUtil.normalizePath( path );
+
+      // create a file reference to that shared directory 
+      File homeDir = new File( appDir );
+
+      if ( homeDir.exists() ) {
+        // make sure it is a directory
+        if ( homeDir.isDirectory() ) {
+          if ( !homeDir.canRead() ) {
+            System.out.println( "The app.home property specified an un-readable (permissions) directory: " + appDir );
+          }
+        } else {
+          System.out.println( "The app.home property does not specify a directory: " + appDir );
+        }
+      } else {
+        System.out.println( "The app.home property does not exist: " + appDir );
+      }
+
+    }
+
+  }
+
+
+
+
+  protected static void confirmAppWork() {
+    String path = System.getProperties().getProperty( APP_WORK );
+
+    if ( StringUtil.isNotBlank( path ) ) {
+
+      String workDir = FileUtil.normalizePath( path );
+
+      File workingDir = new File( workDir );
+
+      if ( workingDir.exists() ) {
+        if ( workingDir.isDirectory() ) {
+          if ( !workingDir.canWrite() ) {
+            System.out.println( "The app.work property specified an un-writable (permissions) directory: " + workDir );
+          }
+        } else {
+          System.out.println( "The app.work property does not specify a directory: " + workDir );
+        }
+      } else {
+        try {
+          FileUtil.makeDirectory( workingDir );
+        } catch ( IOException e ) {
+          System.err.print( "Could not create working directory specified in app.work property: " + workDir + " - " + e.getMessage() );
+        }
+      }
+
+    }
+
+  }
+
+
+
+
+  /**
+   * Add a shutdown hook into the JVM to help us shut everything down nicely.
+   * 
+   * @param loader The loader to terminate
+   */
+  protected static void registerShutdownHook( final Loader loader ) {
+    try {
+      Runtime.getRuntime().addShutdownHook( new Thread( "LoaderHook" ) {
+        public void run() {
+          Log.debug( LogMsg.createMsg( LOADER_MSG, "Loader.runtime_terminating", new Date() ) );
+
+          if ( loader != null ) {
+            loader.shutdown();
+          }
+
+          Log.debug( LogMsg.createMsg( LOADER_MSG, "Loader.runtime_terminated", new Date() ) );
+        }
+      } );
+    } catch ( java.lang.NoSuchMethodError nsme ) {
+      // Ignore
+    } catch ( Throwable e ) {
+      // Ignore
+    }
+  }
 
 
 
