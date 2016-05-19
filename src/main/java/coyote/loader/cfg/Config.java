@@ -118,7 +118,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
 
     if ( data != null ) {
       List<DataFrame> config = JSONMarshaler.marshal( data );
-      if ( config.get( 0 ) != null ) {
+      if ( config.size() > 0 && config.get( 0 ) != null ) {
         retval.populate( config.get( 0 ) );
       }
     }
