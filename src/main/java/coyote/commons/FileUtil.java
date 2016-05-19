@@ -219,6 +219,8 @@ public final class FileUtil {
   }
 
 
+
+
   /**
    * Opens a file, writes out the given string then closes the file.
    *
@@ -229,12 +231,12 @@ public final class FileUtil {
    * @return boolean whether or not the operation worked, could be an IO error 
    *         or a bad character set name.
    */
-  public static boolean stringToFile( final String text, final String fname , final String chrset ) {
+  public static boolean stringToFile( final String text, final String fname, final String chrset ) {
     if ( fname != null ) {
       final File file = new File( fname );
 
       try {
-        FileUtil.write( file, text.getBytes( chrset) );
+        FileUtil.write( file, text.getBytes( chrset ) );
         return true;
       } catch ( final Exception ex ) {}
     }
@@ -1180,16 +1182,14 @@ public final class FileUtil {
   public static URI getFileURI( final File file ) {
     final StringBuffer buffer = new StringBuffer( "file://" );
 
-    final char[] chars = file.getAbsolutePath().toCharArray();
+    final char[] chars = file.getAbsolutePath().trim().toCharArray();
 
     URI retval = null;
 
     if ( chars != null ) {
       if ( chars.length > 1 ) {
-        // If there is a drive delimiter ':' in the second position, we
-        // assume
-        // this is file is on a Windows system which does not return a
-        // leading /
+        // If there is a drive delimiter ':' in the second position, we assume
+        // this is file is on a Windows system which does not return a leading /
         if ( chars[1] == ':' ) {
           buffer.append( "/" );
         }
