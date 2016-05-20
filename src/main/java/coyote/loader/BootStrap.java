@@ -218,8 +218,13 @@ public class BootStrap extends AbstractLoader {
           System.err.println( LogMsg.createMsg( LOADER_MSG, "Loader.instantiation_error", className, e.getClass().getName(), e.getMessage() ) );
           System.exit( 4 );
         }
-      }
-    }
+
+        // Class was found, no need to look any further, break out of the loop
+        break;
+        
+      } // if class field
+      
+    } // for each field
 
     return retval;
   }
