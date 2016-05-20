@@ -383,7 +383,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
     for ( Config section : sections ) {
       // get each of the configurations
       for ( Config cfg : section.getSections() ) {
-        loadComponent( cfg );
+        activate( loadComponent( cfg ), cfg );
       }
     }
 
@@ -391,7 +391,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
     sections = configuration.getSections( ConfigTag.COMPONENT );
     for ( Config section : sections ) {
       for ( Config cfg : section.getSections() ) {
-        loadComponent( cfg );
+        activate( loadComponent( cfg ), cfg );
       }
     }
 
@@ -409,9 +409,12 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
    * in its place.</p>
    *   
    * @param config The configuration of the component to load
+   * 
+   * @return the loaded managed component or null if none was specified in the 
+   *         configuration
    */
-  protected void loadComponent( Config config ) {
-
+  protected ManagedComponent loadComponent( Config config ) {
+    ManagedComponent retval = null;
     String className = config.getString( ConfigTag.CLASS );
 
     // Create the component
@@ -423,7 +426,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
         Object object = ctor.newInstance();
 
         if ( object instanceof ManagedComponent ) {
-          ManagedComponent retval = (ManagedComponent)object;
+          retval = (ManagedComponent)object;
           retval.setConfiguration( config );
 
           // Set this loader as the watchdog if the component is interested 
@@ -436,15 +439,16 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
           System.err.println( LogMsg.createMsg( LOADER_MSG, "Loader.class_is_not_logic_component", className ) );
         }
 
-        // activate (start, run, whatever) this component
-        activate( object, config );
-
       } catch ( ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e ) {
         System.err.println( LogMsg.createMsg( LOADER_MSG, "Loader.component_instantiation_error", className, e.getClass().getName(), e.getMessage() ) );
         System.exit( 8 );
       }
+    } else {
+      Log.warn( LogMsg.createMsg( LOADER_MSG, "Loader.no_class_specified" ) );
+      Log.debug( LogMsg.createMsg( LOADER_MSG, "Loader.no_class_specified_debug", config.toString() ) );
     }
 
+    return retval;
   }
 
 
@@ -641,7 +645,9 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
               it.remove();
 
               // re-load the component
-              loadComponent( config );
+              ManagedComponent newCmpnt = loadComponent( config );
+              // activate it
+              activate( newCmpnt, config );
             }
           }
         }
