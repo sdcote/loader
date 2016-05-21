@@ -413,8 +413,8 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
    * @return the loaded managed component or null if none was specified in the 
    *         configuration
    */
-  protected ManagedComponent loadComponent( Config config ) {
-    ManagedComponent retval = null;
+  protected Object loadComponent( Config config ) {
+    Object retval = null;
     String className = config.getString( ConfigTag.CLASS );
 
     // Create the component
@@ -426,15 +426,22 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
         Object object = ctor.newInstance();
 
         if ( object instanceof ManagedComponent ) {
-          retval = (ManagedComponent)object;
-          retval.setConfiguration( config );
+          ManagedComponent cmpnt =(ManagedComponent)object;
+
+          // configure the component
+          cmpnt.setConfiguration( config );
 
           // Set this loader as the watchdog if the component is interested 
-          retval.setLoader( this );
+          cmpnt.setLoader( this );
 
           // Add it to the components map
           components.put( object, config );
-
+          
+          // return the component
+          retval = cmpnt;
+        } else if ( object instanceof Runnable ) {
+          // return the runnable
+          retval = (Runnable)object;
         } else {
           System.err.println( LogMsg.createMsg( LOADER_MSG, "Loader.class_is_not_logic_component", className ) );
         }
@@ -645,9 +652,12 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
               it.remove();
 
               // re-load the component
-              ManagedComponent newCmpnt = loadComponent( config );
+              Object newCmpnt = loadComponent( config );
+
               // activate it
-              activate( newCmpnt, config );
+              if ( newCmpnt != null ) {
+                activate( newCmpnt, config );
+              }
             }
           }
         }
