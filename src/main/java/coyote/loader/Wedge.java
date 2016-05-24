@@ -11,7 +11,6 @@
  */
 package coyote.loader;
 
-import coyote.loader.cfg.Config;
 import coyote.loader.component.AbstractManagedComponent;
 import coyote.loader.component.ManagedComponent;
 import coyote.loader.log.Log;
@@ -23,21 +22,7 @@ import coyote.loader.log.Log;
  */
 public class Wedge extends AbstractManagedComponent implements ManagedComponent {
 
-  public Wedge() {
-    Log.debug( this.getClass().getSimpleName() + " constructed" );
-  }
-
-
-
-
-  /**
-   * @see coyote.loader.component.AbstractManagedComponent#setConfiguration(coyote.loader.cfg.Config)
-   */
-  @Override
-  public void setConfiguration( Config config ) {
-    super.setConfiguration( config );
-    Log.debug( config.toFormattedString() );
-  }
+  public Wedge() {}
 
 
 
@@ -49,6 +34,9 @@ public class Wedge extends AbstractManagedComponent implements ManagedComponent 
    */
   @Override
   public void initialize() {
+    // Make sure to inform operations that this wedge is always running
+    Log.debug( this.getClass().getSimpleName() + " constructed, daemon should always remain active" );
+
     // pause 5 seconds between calls to doWork()
     setIdleWait( 5000 );
 
