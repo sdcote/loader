@@ -426,7 +426,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
         Object object = ctor.newInstance();
 
         if ( object instanceof ManagedComponent ) {
-          ManagedComponent cmpnt =(ManagedComponent)object;
+          ManagedComponent cmpnt = (ManagedComponent)object;
 
           // configure the component
           cmpnt.setConfiguration( config );
@@ -436,7 +436,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
           // Add it to the components map
           components.put( object, config );
-          
+
           // return the component
           retval = cmpnt;
         } else if ( object instanceof Runnable ) {
@@ -486,20 +486,25 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
       if ( component instanceof ScheduledJob ) {
         Log.trace( "Loading " + component.getClass().getName() + " in the scheduler" );
         getScheduler().schedule( (ScheduledJob)component );
+        Thread.yield(); // allow component to run
       } else if ( component instanceof ThreadJob ) {
         try {
           Log.trace( "Loading " + component.getClass().getName() + " in the threadpool" );
           getThreadPool().handle( (ThreadJob)component );
+          Thread.yield(); // allow component to run
         } catch ( InterruptedException e ) {
           Log.error( LogMsg.createMsg( LOADER_MSG, "Loader.activation_threadjob_error", e.getMessage() ) );
         }
       } else if ( component instanceof Runnable ) {
         Log.trace( "Running " + component.getClass().getName() + " in the threadpool" );
         getThreadPool().run( (Runnable)component );
+        Thread.yield(); // allow component to run
       } else {
         Log.error( LogMsg.createMsg( LOADER_MSG, "Loader.activation_unrecognized_error", component.getClass().getName() ) );
       }
+
     }
+
   }
 
 
