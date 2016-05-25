@@ -19,7 +19,8 @@ import coyote.loader.thread.ScheduledJob;
 
 
 /**
- * 
+ * This is a component which is run intermittently in the scheduler and not 
+ * continually in the thread pool like a thread job.
  */
 public class AbstractScheduledComponent extends ScheduledJob implements ManagedComponent {
 
