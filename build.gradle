@@ -38,28 +38,20 @@ task fatJar(type: Jar) {
 }
 
 repositories {
-
 	mavenLocal()
-
 	mavenCentral()
-
 }
 
 
 ext {
 	junitVersion = '4.11'
 	dataFrameVersion = '1.0'
-	slf4jVersion = '1.7.7'
-	
 }
 dependencies {
 
 	// Abstract Data Type
 	compile "coyote:DataFrame:$dataFrameVersion"
 	
-	// used to make internal logger binding
-	compile "org.slf4j:slf4j-api:$slf4jVersion"
-
 	// UnitTesting
 	testCompile "junit:junit:$junitVersion"	
 
