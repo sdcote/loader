@@ -297,7 +297,7 @@ class HTTPSession implements IHTTPSession {
 
   @Override
   public void execute() throws IOException {
-    Response r = null;
+    Response response = null;
     try {
       // Read the first 8192 bytes; this should fit the entire header.
       // Do NOT assume that a single read will get the entire header!
@@ -372,21 +372,21 @@ class HTTPSession implements IHTTPSession {
       // TODO: long body_size = getBodySize();
       // TODO: long pos_before_serve = this.inputStream.totalRead()
       // (requires implementation for totalRead())
-      r = this.httpd.serve( this );
+      response = this.httpd.serve( this );
       // TODO: this.inputStream.skip(body_size -
       // (this.inputStream.totalRead() - pos_before_serve))
 
-      if ( r == null ) {
+      if ( response == null ) {
         throw new ResponseException( Status.INTERNAL_ERROR, "SERVER INTERNAL ERROR: Serve() returned a null response." );
       } else {
         final String acceptEncoding = headers.get( "accept-encoding" );
-        cookies.unloadQueue( r );
-        r.setRequestMethod( method );
-        r.setGzipEncoding( this.httpd.useGzipWhenAccepted( r ) && ( acceptEncoding != null ) && acceptEncoding.contains( "gzip" ) );
-        r.setKeepAlive( keepAlive );
-        r.send( outputStream );
+        cookies.unloadQueue( response );
+        response.setRequestMethod( method );
+        response.setGzipEncoding( this.httpd.useGzipWhenAccepted( response ) && ( acceptEncoding != null ) && acceptEncoding.contains( "gzip" ) );
+        response.setKeepAlive( keepAlive );
+        response.send( outputStream );
       }
-      if ( !keepAlive || r.isCloseConnection() ) {
+      if ( !keepAlive || response.isCloseConnection() ) {
         throw new SocketException( "HTTPD Shutdown" );
       }
     } catch ( final SocketException e ) {
@@ -410,7 +410,7 @@ class HTTPSession implements IHTTPSession {
       HTTPD.safeClose( outputStream );
     }
     finally {
-      HTTPD.safeClose( r );
+      HTTPD.safeClose( response );
       tempFileManager.clear();
     }
   }

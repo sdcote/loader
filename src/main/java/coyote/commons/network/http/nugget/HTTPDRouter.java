@@ -1,7 +1,5 @@
 package coyote.commons.network.http.nugget;
 
-import java.util.logging.Logger;
-
 import coyote.commons.network.http.HTTPD;
 import coyote.commons.network.http.IHTTPSession;
 import coyote.commons.network.http.Response;
@@ -12,18 +10,18 @@ import coyote.commons.network.http.Response;
  * based on the request URI.
  * 
  * <p>This allows the server to implement a pluggable approach to handling 
- * requests. For example, it is possible to implement micro services with 
- * simple classes. 
+ * requests. For example, it is possible to implement microservices with 
+ * simple classes. </p>
  */
 public class HTTPDRouter extends HTTPD {
 
-
   private final UriRouter router;
-  
-  static{
+
+  static {
     // make sure we load the MIME type mappings from properties
     mimeTypes();
   }
+
 
 
 
@@ -51,7 +49,6 @@ public class HTTPDRouter extends HTTPD {
 
 
 
-
   public HTTPDRouter( final int port ) {
     super( port );
     router = new UriRouter();
@@ -61,13 +58,10 @@ public class HTTPDRouter extends HTTPD {
 
 
   /**
-   * default routings, they are over writable.
+   * Default routings, they are over writable.
    * 
-   * <pre>
-   * router.setNotFoundHandler(GeneralHandler.class);
-   * </pre>
+   * <pre>router.setNotFoundHandler(GeneralHandler.class);</pre>
    */
-
   public void addMappings() {
     router.setNotImplemented( NotImplementedHandler.class );
     router.setNotFoundHandler( Error404UriHandler.class );
@@ -78,6 +72,12 @@ public class HTTPDRouter extends HTTPD {
 
 
 
+  /**
+   * Add
+   * @param url
+   * @param handler
+   * @param initParameter
+   */
   public void addRoute( final String url, final Class<?> handler, final Object... initParameter ) {
     router.addRoute( url, 100, handler, initParameter );
   }

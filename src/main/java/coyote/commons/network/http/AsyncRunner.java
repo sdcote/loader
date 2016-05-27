@@ -12,7 +12,8 @@ package coyote.commons.network.http;
 
 
 /**
- * Pluggable strategy for asynchronously executing requests.
+ * Run client handlers asynchronously with any object implementing this 
+ * interface.
  */
 public interface AsyncRunner {
 

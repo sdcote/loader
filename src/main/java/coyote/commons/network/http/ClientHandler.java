@@ -25,14 +25,12 @@ import coyote.loader.log.Log;
  */
 public class ClientHandler implements Runnable {
 
-  /**
-   * 
-   */
+  /** The server which created the connection */
   private final HTTPD httpd;
 
   private final InputStream inputStream;
 
-  private final Socket acceptSocket;
+  private final Socket clientSocket;
 
 
 
@@ -40,7 +38,7 @@ public class ClientHandler implements Runnable {
   ClientHandler( final HTTPD daemon, final InputStream input, final Socket acptSocket ) {
     httpd = daemon;
     inputStream = input;
-    acceptSocket = acptSocket;
+    clientSocket = acptSocket;
   }
 
 
@@ -48,7 +46,7 @@ public class ClientHandler implements Runnable {
 
   public void close() {
     HTTPD.safeClose( inputStream );
-    HTTPD.safeClose( acceptSocket );
+    HTTPD.safeClose( clientSocket );
   }
 
 
@@ -58,10 +56,10 @@ public class ClientHandler implements Runnable {
   public void run() {
     OutputStream outputStream = null;
     try {
-      outputStream = acceptSocket.getOutputStream();
+      outputStream = clientSocket.getOutputStream();
       final TempFileManager tempFileManager = httpd.tempFileManagerFactory.create();
-      final HTTPSession session = new HTTPSession( httpd, tempFileManager, inputStream, outputStream, acceptSocket.getInetAddress() );
-      while ( !acceptSocket.isClosed() ) {
+      final HTTPSession session = new HTTPSession( httpd, tempFileManager, inputStream, outputStream, clientSocket.getInetAddress() );
+      while ( !clientSocket.isClosed() ) {
         session.execute();
       }
     } catch ( final Exception e ) {
@@ -76,7 +74,7 @@ public class ClientHandler implements Runnable {
     finally {
       HTTPD.safeClose( outputStream );
       HTTPD.safeClose( inputStream );
-      HTTPD.safeClose( acceptSocket );
+      HTTPD.safeClose( clientSocket );
       httpd.asyncRunner.closed( this );
     }
   }

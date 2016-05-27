@@ -53,12 +53,22 @@ public class ServerRunnable implements Runnable {
     }
     do {
       try {
-        final Socket finalAccept = this.httpd.myServerSocket.accept();
+        final Socket clientSocket = this.httpd.myServerSocket.accept();
         if ( timeout > 0 ) {
-          finalAccept.setSoTimeout( timeout );
+          clientSocket.setSoTimeout( timeout );
         }
-        final InputStream inputStream = finalAccept.getInputStream();
-        this.httpd.asyncRunner.exec( this.httpd.createClientHandler( finalAccept, inputStream ) );
+
+        Log.append( HTTPD.EVENT, "Connection from " + clientSocket.getInetAddress() + " on port " + clientSocket.getPort() + " to port " + clientSocket.getLocalPort() + " of " + clientSocket.getLocalAddress() );
+        
+        // Allow only connections from the local host or from remote hosts on our ACL
+        if ( clientSocket.getLocalAddress().equals( clientSocket.getInetAddress() ) || this.httpd.acl.allows( clientSocket.getInetAddress() ) ) {
+          final InputStream inputStream = clientSocket.getInputStream();
+          this.httpd.asyncRunner.exec( this.httpd.createClientHandler( clientSocket, inputStream ) );
+        } else {
+          Log.append( HTTPD.EVENT, "Remote connection refused due to ACL restrictions" );
+          HTTPD.safeClose( clientSocket );
+        }
+
       } catch ( final IOException e ) {
         Log.append( HTTPD.EVENT, "WARNING: Communication with the client broken", e );
       }

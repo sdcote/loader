@@ -17,7 +17,7 @@ import coyote.commons.network.http.Response;
 
 
 /**
- * This represents a class which responnds to a URI requested from the HTTP 
+ * This represents a class which responds to a URI requested from the HTTP 
  * server.
  * 
  * <p>The UriResource can contain important data for the operation of the 

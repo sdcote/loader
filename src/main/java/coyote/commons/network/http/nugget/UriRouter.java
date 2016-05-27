@@ -61,7 +61,7 @@ public class UriRouter {
   /**
    * Search in the mappings if the given url matches some of the rules.
    * 
-   * <p>If there are more than one march, this returns the rule with least 
+   * <p>If there are more than one match, this returns the rule with least 
    * parameters. For example: mapping 1 = /user/:id  - mapping 2 = /user/help. 
    * If the incoming uri is www.example.com/user/help - mapping 2 is returned. 
    * If the incoming uri is www.example.com/user/3232 - mapping 1 is 

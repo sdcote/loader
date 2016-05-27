@@ -27,13 +27,14 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
 
+import coyote.commons.network.IpAcl;
 import coyote.loader.log.Log;
 
 
 /**
  * This is the core of the HTTP Server.
  * 
- * <p>This class should be subclassed and the {@link #serve(IHTTPSession)} 
+ * <p>This class should be sub-classed and the {@link #serve(IHTTPSession)} 
  * method overridden to serve the request.</p>
  */
 public abstract class HTTPD {
@@ -65,6 +66,12 @@ public abstract class HTTPD {
   /** Common MIME type for dynamic content: html */
   public static final String MIME_HTML = "text/html";
 
+  /** 
+   * Our IP address Access Control List. It is set to deny everything unless 
+   * addresses match the entries in this list. 
+   */
+  final IpAcl acl = new IpAcl( IpAcl.DENY );
+
   /**
    * Pseudo-Parameter to use to store the actual query string in the
    * parameters map for later re-processing.
@@ -83,10 +90,8 @@ public abstract class HTTPD {
 
   private Thread myThread;
 
-  /** Pluggable strategy for asynchronously executing requests. */
   protected AsyncRunner asyncRunner;
 
-  /** Pluggable strategy for creating and cleaning up temporary files. */
   TempFileManagerFactory tempFileManagerFactory;
 
 
@@ -429,7 +434,7 @@ public abstract class HTTPD {
    * Create a instance of the client handler, subclasses can return a subclass
    * of the ClientHandler.
    * 
-   * @param finalAccept the socket the cleint is connected to
+   * @param finalAccept the socket the client is connected to
    * @param inputStream the input stream
    * 
    * @return the client handler
@@ -445,7 +450,7 @@ public abstract class HTTPD {
    * Instantiate the server runnable, can be overwritten by subclasses to
    * provide a subclass of the ServerRunnable.
    * 
-   * @param timeout the socet timeout to use.
+   * @param timeout the socket timeout to use.
    * 
    * @return the server runnable.
    */
@@ -612,7 +617,7 @@ public abstract class HTTPD {
         Thread.sleep( 10L );
       } catch ( final Throwable e ) {
         // on some platforms (e.g. mobile devices) this may not be allowed, 
-        // that is why we catch throwable.  THis should happen right away 
+        // that is why we catch throwable. This should happen right away 
         // because we are just waiting for the socket to bind.
       }
     }
