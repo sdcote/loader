@@ -109,7 +109,8 @@ public class IpAcl {
    * everything coming from the 192.168.0.0/255.255.0.0 network is allowed, 
    * 150.159.0.0/255.255.0.0 is denied and everything else is denied.</p>
    * 
-   * @param rules the string containing the network specifications and their ability to access.
+   * @param rules the string containing the network specifications and their 
+   *              ability to access.
    * 
    * @throws IllegalArgumentException if the rules cannot be parsed.
    */
@@ -183,7 +184,8 @@ public class IpAcl {
    * <p>This is what the check will return if it does not find an explicit rule 
    * to match against.</p>
    * 
-   * @param allow  The new default mode: True = allow by default, false = deny by default.
+   * @param allow The new default mode: True = allow by default, false = deny 
+   *              by default.
    */
   public synchronized void setDefaultAllow( final boolean allow ) {
     defaultAllow = allow;
@@ -196,8 +198,8 @@ public class IpAcl {
    * Add a network to the list with an allowance flag.
    *
    * @param network the network specification to add (e.g. "192.168/16","10/8")
-   * @param allowed wether or not connections from the specified network will be
-   *          accepted.
+   * @param allowed whether or not connections from the specified network will 
+   *                be accepted.
    *
    * @throws IpAddressException if the specified network is not valid.
    */
@@ -215,8 +217,8 @@ public class IpAcl {
    * Add a network to the list with an allowance flag.
    *
    * @param network the network specification to add
-   * @param allowed wether or not connections from the specified network will be
-   *          accepted.
+   * @param allowed whether or not connections from the specified network will 
+   *                be accepted.
    */
   public void add( final IpNetwork network, final boolean allowed ) {
     // create a new rule and add it to the list
