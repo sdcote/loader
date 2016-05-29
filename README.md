@@ -11,7 +11,7 @@ By separating the Loader out into a separate project it is easier to focus on ju
 
 This is a prototyping project which will be used to drive a loader for a set of IoT (Internet of Things) projects. It therefore must support traditional platforms (e.g. server installations) and the restricted resources of embedded systems. It therefore must not rely on classes or libraries which may not be available in JRE images with limited libraries. 
 
-  * Small Footprint - Forego larger, general purpose libraries for for simple, purpose driven code. Resources spend on storing unused code are resources taken away from application data.
+  * Small Footprint - Forego larger, general purpose libraries for for simple, purpose driven code. Resources spent on storing unused code are resources taken away from application data.
   * Portability - Usable on as many publicly available embedded systems platforms as possible. If it runs Java, it should be able to run this loader.
   * Simplicity over Elegance - Maintainability of the code is key to stable systems, this project uses simple concepts and plainly written code (and comments) so bugs are easier to spot and fix.
   * Security Built-In, not Bolted-On, working in the utilities industry has made it clear that security should be first on your requirements list and development plan.
