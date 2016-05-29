@@ -276,7 +276,7 @@ public class CronEntryTest {
       //assertTrue( ( millis - now ) <= 3600000 );
 
       Date date = new Date( millis );
-      System.out.println( millis + " - " + date );
+      //System.out.println( millis + " - " + date );
     } catch ( ParseException e ) {
       fail( e.getMessage() );
     }
@@ -338,15 +338,17 @@ public class CronEntryTest {
     //System.out.println();
 
     subject = new CronEntry();
-    String hrp = Integer.toString( cal.get( Calendar.HOUR_OF_DAY ) + 1 );
-    System.out.println( "HRP:" + hrp );
+    int hr = cal.get( Calendar.HOUR_OF_DAY );
+    hr = ( hr<23)? hr+1: 0;
+    String hrp = Integer.toString( hr );
+    //System.out.println( "HRP:" + hrp );
     subject.setHourPattern( hrp ); // adjustment
     //System.out.println( subject.dump() );
     millis = subject.getNextInterval();
-    System.out.println( millis + " - " + formatElapsed( millis ) );
+    //System.out.println( millis + " - " + formatElapsed( millis ) );
     assertTrue( "1d " + millis + "!<=86400000", millis <= 86400000 );
     assertTrue( millis >= 0 );
-    System.out.println();
+    //System.out.println();
 
   }
 
@@ -421,8 +423,8 @@ public class CronEntryTest {
     long millis;
     Calendar now = new GregorianCalendar();
     //now.add( Calendar.MINUTE, -15 );
-    System.out.println( "NOW:      " + DATEFORMAT.format( now.getTime() ) + " - " + CronEntry.toPattern( now ) );
-    System.out.println();
+    //System.out.println( "NOW:      " + DATEFORMAT.format( now.getTime() ) + " - " + CronEntry.toPattern( now ) );
+    //System.out.println();
 
     long nowmillis = now.getTimeInMillis();
 
@@ -430,13 +432,13 @@ public class CronEntryTest {
 
     // set the pattern to one hour in the future
     subject.setHourPattern( Integer.toString( cal.get( Calendar.HOUR_OF_DAY ) + 1 ) ); // adjustment
-    System.out.println( subject.dump() );
+    //System.out.println( subject.dump() );
 
     millis = subject.getNextTime( now );
     Date result = new Date( millis );
 
-    System.out.println();
-    System.out.println( "RESULT:   " + DATEFORMAT.format( result ) );
-    System.out.println( "INTERVAL: " + millis + " - " + CronEntryTest.formatElapsed( millis - nowmillis ) );
+    //System.out.println();
+    //System.out.println( "RESULT:   " + DATEFORMAT.format( result ) );
+    //System.out.println( "INTERVAL: " + millis + " - " + CronEntryTest.formatElapsed( millis - nowmillis ) );
   }
 }
