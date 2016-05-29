@@ -25,7 +25,10 @@ import coyote.commons.network.http.Status;
 
 
 /**
- * Generic nugget to print debug info as a html page.
+ * Generic nugget to retrieve the requested page from a file root.
+ * 
+ * <p>The first initialization parameter is the directory from which the files 
+ * are to be serverd.</p>
  */
 public class StaticPageHandler extends DefaultHandler {
 
@@ -63,21 +66,33 @@ public class StaticPageHandler extends DefaultHandler {
         break;
       }
     }
-    File fileOrdirectory = uriResource.initParameter( File.class );
+
+    // Start with the root directory as set in our init parameter
+    File requestedFile = uriResource.initParameter( File.class );
+
+    // TODO: this has a smell, redesign
     for ( final String pathPart : getPathArray( realUri ) ) {
-      fileOrdirectory = new File( fileOrdirectory, pathPart );
+      requestedFile = new File( requestedFile, pathPart );
     }
-    if ( fileOrdirectory.isDirectory() ) {
-      fileOrdirectory = new File( fileOrdirectory, "index.html" );
-      if ( !fileOrdirectory.exists() ) {
-        fileOrdirectory = new File( fileOrdirectory.getParentFile(), "index.htm" );
+
+    // if they asked for a directory, look for an index file
+    if ( requestedFile.isDirectory() ) {
+      requestedFile = new File( requestedFile, "index.html" );
+      // if that does not exist, look for the DOS version of the index file
+      if ( !requestedFile.exists() ) {
+        requestedFile = new File( requestedFile.getParentFile(), "index.htm" );
       }
     }
-    if ( !fileOrdirectory.exists() || !fileOrdirectory.isFile() ) {
+
+    // if the file does not exist or is not a file...
+    if ( !requestedFile.exists() || !requestedFile.isFile() ) {
+      // throw a 404 at them
       return new Error404UriHandler().get( uriResource, urlParams, session );
     } else {
+
+      // return the found file
       try {
-        return HTTPD.newChunkedResponse( getStatus(), HTTPD.getMimeTypeForFile( fileOrdirectory.getName() ), fileToInputStream( fileOrdirectory ) );
+        return HTTPD.newChunkedResponse( getStatus(), HTTPD.getMimeTypeForFile( requestedFile.getName() ), fileToInputStream( requestedFile ) );
       } catch ( final IOException ioe ) {
         return HTTPD.newFixedLengthResponse( Status.REQUEST_TIMEOUT, "text/plain", null );
       }

@@ -27,7 +27,9 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
 
+import coyote.commons.StringUtil;
 import coyote.commons.network.IpAcl;
+import coyote.commons.network.MimeType;
 import coyote.loader.log.Log;
 
 
@@ -77,6 +79,7 @@ public abstract class HTTPD {
    * parameters map for later re-processing.
    */
   private static final String QUERY_STRING_PARAMETER = "Httpd.QUERY_STRING";
+  private static final String MIMETYPE_RESOURCE = "httpd/mimetypes.properties";
 
   /** Hashtable mapping file extension to mime type */
   protected static Map<String, String> MIME_TYPES;
@@ -170,46 +173,14 @@ public abstract class HTTPD {
 
 
   /**
-   * Get MIME type from file name extension, if possible
-   * 
-   * @param uri the string representing a file
-   * 
-   * @return the connected mime/type
-   */
+    * Get MIME type from file name extension, if possible
+    * 
+    * @param uri the string representing a file
+    * 
+    * @return the connected mime/type
+    */
   public static String getMimeTypeForFile( final String uri ) {
-    final int dot = uri.lastIndexOf( '.' );
-    String mime = null;
-    if ( dot >= 0 ) {
-      mime = mimeTypes().get( uri.substring( dot + 1 ).toLowerCase() );
-    }
-    return mime == null ? "application/octet-stream" : mime;
-  }
-
-
-
-
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  private static void loadMimeTypes( final Map<String, String> result, final String resourceName ) {
-    try {
-      final Enumeration<URL> resources = HTTPD.class.getClassLoader().getResources( resourceName );
-      while ( resources.hasMoreElements() ) {
-        final URL url = resources.nextElement();
-        final Properties properties = new Properties();
-        InputStream stream = null;
-        try {
-          stream = url.openStream();
-          properties.load( url.openStream() );
-        } catch ( final IOException e ) {
-          Log.append( EVENT, "could not load mimetypes from " + url, e );
-        }
-        finally {
-          safeClose( stream );
-        }
-        result.putAll( (Map)properties );
-      }
-    } catch ( final IOException e ) {
-      Log.append( EVENT, "no mime types available at " + resourceName );
-    }
+    return MimeType.get( uri ).get( 0 ).getType();
   }
 
 
@@ -278,30 +249,46 @@ public abstract class HTTPD {
 
 
 
-  /**
-   * Loads a map of file extensions to a MIME-type header strings.
-   * 
-   * <p>The first time this is called, it loads the types from the class path.
-   * Subsequent calls returns the cached map of types.</p>  
-   * 
-   * @return the map of file extensions to MIME type headers.
-   */
-  public static Map<String, String> mimeTypes() {
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  public static List<MimeType> getMimeTypes( String filename ) {
+
     if ( MIME_TYPES == null ) {
+      // since the mimetype map is null, we apparently have not initialized yet 
       MIME_TYPES = new HashMap<String, String>();
+      try {
+        // try to load the custom mimetypes
+        final Enumeration<URL> resources = HTTPD.class.getClassLoader().getResources( MIMETYPE_RESOURCE );
+        while ( resources.hasMoreElements() ) {
+          final URL url = resources.nextElement();
+          final Properties properties = new Properties();
+          InputStream stream = null;
+          try {
+            stream = url.openStream();
+            properties.load( url.openStream() );
+          } catch ( final IOException e ) {
+            Log.append( EVENT, "Could not load custom mimetypes from " + url, e );
+          }
+          finally {
+            safeClose( stream );
+          }
+          // put all the found types in the map
+          MIME_TYPES.putAll( (Map)properties );
 
-      // these are ones we know about by default
-      loadMimeTypes( MIME_TYPES, "httpd/default-mimetypes.properties" );
-
-      // These can be provided by the user to add more and even over-ride ours
-      loadMimeTypes( MIME_TYPES, "httpd/mimetypes.properties" );
-
-      // This should not happen since we have our default types but, who knows?
-      if ( MIME_TYPES.isEmpty() ) {
-        Log.append( EVENT, "no mime types found in the classpath! please provide mimetypes.properties" );
+          // go through all the new types and add them to the static mapping
+          for ( String key : MIME_TYPES.keySet() ) {
+            String value = MIME_TYPES.get( key );
+            if ( StringUtil.isNotBlank( value ) ) {
+              MimeType.add( key, value, false );
+            }
+          }
+        }
+      } catch ( final IOException e ) {
+        Log.append( EVENT, "no mime types available at " + MIMETYPE_RESOURCE );
       }
     }
-    return MIME_TYPES;
+
+    // return the list of MimeTypes for this filename
+    return MimeType.get( filename );
   }
 
 

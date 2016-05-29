@@ -17,11 +17,6 @@ public class HTTPDRouter extends HTTPD {
 
   private final UriRouter router;
 
-  static {
-    // make sure we load the MIME type mappings from properties
-    mimeTypes();
-  }
-
 
 
 
@@ -73,13 +68,29 @@ public class HTTPDRouter extends HTTPD {
 
 
   /**
-   * Add
-   * @param url
-   * @param handler
-   * @param initParameter
+   * Add a handler for the given URL pattern.
+   * 
+   * @param urlPattern RegEx pattern describing the URL to match
+   * @param handler The class to be instantiated to handle the connection
+   * @param initParams the array of objects to pass to the handler upon in
    */
-  public void addRoute( final String url, final Class<?> handler, final Object... initParameter ) {
-    router.addRoute( url, 100, handler, initParameter );
+  public void addRoute( final String urlPattern, final Class<?> handler, final Object... initParams ) {
+    router.addRoute( urlPattern, 100, handler, initParams );
+  }
+
+
+
+
+  /**
+   * Add a handler for the given URL pattern.
+   * 
+   * @param urlPattern RegEx pattern describing the URL to match
+   * @param priority The evaluation priority to all the other routes
+   * @param handler The class to be instantiated to handle the connection
+   * @param initParams the array of objects to pass to the handler upon in
+   */
+  public void addRoute( final String urlPattern, int priority, final Class<?> handler, final Object... initParams ) {
+    router.addRoute( urlPattern, priority, handler, initParams );
   }
 
 

@@ -106,6 +106,15 @@ public class UriResource {
 
 
 
+  /**
+   * Cast the first initialization parameter to the given class.
+   * 
+   * @param paramClazz the class to perform the cast
+   * 
+   * @return the first parameter as an object of the given class
+   * 
+   * @throws ClassCastException if the cast fails
+   */
   public <T> T initParameter( final Class<T> paramClazz ) {
     return initParameter( 0, paramClazz );
   }
@@ -113,6 +122,16 @@ public class UriResource {
 
 
 
+  /**
+   * Cast the initialization parameter at the given index to the given class.
+   * 
+   * @param parameterIndex the 0-based index of the parameter to retrieve and cast
+   * @param paramClazz the class to perform the cast
+   * 
+   * @return the given parameter as an object of the given class
+   * 
+   * @throws ClassCastException if the cast fails
+   */
   public <T> T initParameter( final int parameterIndex, final Class<T> paramClazz ) {
     if ( initParameter.length > parameterIndex ) {
       return paramClazz.cast( initParameter[parameterIndex] );
@@ -125,7 +144,7 @@ public class UriResource {
 
 
   /**
-   * see if the URL matches this resources RegEx pattern, if it does, return 
+   * See if the URL matches this resources RegEx pattern, if it does, return 
    * the parameters parsed from this URI based on the routing pattern.
    *  
    * @param url the URL to match

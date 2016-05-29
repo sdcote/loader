@@ -88,10 +88,10 @@ public class UriRouter {
     }
 
     if ( Log.isLogging( HTTPD.EVENT ) ) {
-      if( error404Url ==uriResource){
-      Log.append( HTTPD.EVENT, "No handler defined for " + work );
+      if ( error404Url == uriResource ) {
+        Log.append( HTTPD.EVENT, "No handler defined for '" + work + "'" );
       } else {
-        Log.append( HTTPD.EVENT, "Servicing request for " + work );
+        Log.append( HTTPD.EVENT, "Servicing request for '" + work + "'" );
       }
     }
     // Have the found (or default 404) URI resource process the session
