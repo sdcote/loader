@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
+
 /**
  * Handles one session, i.e. parses the HTTP request and returns the
  * response.
@@ -71,6 +72,16 @@ public interface IHTTPSession {
    * @return the IP address.
    */
   String getRemoteIpAddress();
+
+
+
+
+  /**
+   * Get the remote IP port of the requester.
+   * 
+   * @return the IP port.
+   */
+  int getRemoteIpPort();
 
 
 

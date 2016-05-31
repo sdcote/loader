@@ -32,7 +32,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 
 import javax.net.ssl.SSLException;
@@ -76,6 +75,8 @@ class HTTPSession implements IHTTPSession {
 
   private String remoteIp;
 
+  private int remotePort;
+
   private String remoteHostname;
 
   private String protocolVersion;
@@ -93,11 +94,12 @@ class HTTPSession implements IHTTPSession {
 
 
 
-  public HTTPSession( HTTPD httpd, final TempFileManager tempFileManager, final InputStream inputStream, final OutputStream outputStream, final InetAddress inetAddress ) {
+  public HTTPSession( HTTPD httpd, final TempFileManager tempFileManager, final InputStream inputStream, final OutputStream outputStream, final InetAddress inetAddress, final int port ) {
     this.httpd = httpd;
     this.tempFileManager = tempFileManager;
     this.inputStream = new BufferedInputStream( inputStream, HTTPSession.BUFSIZE );
     this.outputStream = outputStream;
+    remotePort = port;
     remoteIp = inetAddress.isLoopbackAddress() || inetAddress.isAnyLocalAddress() ? "127.0.0.1" : inetAddress.getHostAddress().toString();
     remoteHostname = inetAddress.isLoopbackAddress() || inetAddress.isAnyLocalAddress() ? "localhost" : inetAddress.getHostName().toString();
     headers = new HashMap<String, String>();
@@ -560,6 +562,9 @@ class HTTPSession implements IHTTPSession {
 
 
 
+  /**
+   * @see coyote.commons.network.http.IHTTPSession#getRemoteHostName()
+   */
   @Override
   public String getRemoteHostName() {
     return remoteHostname;
@@ -568,9 +573,23 @@ class HTTPSession implements IHTTPSession {
 
 
 
+  /**
+   * @see coyote.commons.network.http.IHTTPSession#getRemoteIpAddress()
+   */
   @Override
   public String getRemoteIpAddress() {
     return remoteIp;
+  }
+
+
+
+
+  /**
+   * @see coyote.commons.network.http.IHTTPSession#getRemoteIpPort()
+   */
+  @Override
+  public int getRemoteIpPort() {
+    return remotePort;
   }
 
 
