@@ -19,7 +19,10 @@ import coyote.commons.StringUtil;
 
 
 /**
- * Models a MIME type for attachments and web apps.
+ * Models a MIME type for attachments and web applications.
+ * 
+ * <p>Order is important. Most code will only select the first MIME type 
+ * returned, so make sure the preferred MIME type appears first.</p>
  */
 public class MimeType {
 
@@ -110,8 +113,8 @@ public class MimeType {
     MIMES.add( new MimeType( "crt", "application/x-x509-user-cert", true ) );
     MIMES.add( new MimeType( "csh", "application/x-csh", false ) );
     MIMES.add( new MimeType( "csh", "text/x-script.csh", false ) );
-    MIMES.add( new MimeType( "css", "application/x-pointplus", true ) );
     MIMES.add( new MimeType( "css", "text/css", false ) );
+    MIMES.add( new MimeType( "css", "application/x-pointplus", true ) );
     MIMES.add( new MimeType( "cxx", "text/plain", false ) );
     MIMES.add( new MimeType( "dcr", "application/x-director", true ) );
     MIMES.add( new MimeType( "deepv", "application/x-deepv", true ) );
@@ -124,20 +127,14 @@ public class MimeType {
     MIMES.add( new MimeType( "dl", "video/x-dl", true ) );
     MIMES.add( new MimeType( "dll", "application/octet-stream", true ) );
     MIMES.add( new MimeType( "doc", "application/msword", true ) );
-    MIMES.add( new MimeType( "doc", "application/msword", true ) );
-    MIMES.add( new MimeType( "doc", "application/msword", true ) );
-    MIMES.add( new MimeType( "dot", "application/msword", true ) );
     MIMES.add( new MimeType( "dot", "application/msword", true ) );
     MIMES.add( new MimeType( "dp", "application/commonground", true ) );
-    MIMES.add( new MimeType( "drw", "application/drafting", true ) );
     MIMES.add( new MimeType( "drw", "application/drafting", true ) );
     MIMES.add( new MimeType( "dump", "application/octet-stream", true ) );
     MIMES.add( new MimeType( "dv", "video/x-dv", true ) );
     MIMES.add( new MimeType( "dvi", "application/x-dvi", true ) );
-    MIMES.add( new MimeType( "dvi", "application/x-dvi", true ) );
-    MIMES.add( new MimeType( "dvi", "application/x-dvi", true ) );
     MIMES.add( new MimeType( "dwf", "application/x-dwf", true ) );
-    MIMES.add( new MimeType( "dwf", "drawing/x-dwf (old)", true ) );
+    MIMES.add( new MimeType( "dwf", "drawing/x-dwf", true ) );
     MIMES.add( new MimeType( "dwf", "model/vnd.dwf", true ) );
     MIMES.add( new MimeType( "dwg", "application/acad", true ) );
     MIMES.add( new MimeType( "dwg", "application/acad", true ) );
@@ -260,11 +257,11 @@ public class MimeType {
     MIMES.add( new MimeType( "jpg", "image/jpeg", true ) );
     MIMES.add( new MimeType( "jpg", "image/pjpeg", true ) );
     MIMES.add( new MimeType( "jps", "image/x-jps", true ) );
-    MIMES.add( new MimeType( "js", "application/ecmascript", false ) );
     MIMES.add( new MimeType( "js", "application/javascript", false ) );
+    MIMES.add( new MimeType( "js", "text/javascript", false ) );
+    MIMES.add( new MimeType( "js", "application/ecmascript", false ) );
     MIMES.add( new MimeType( "js", "application/x-javascript", false ) );
     MIMES.add( new MimeType( "js", "text/ecmascript", false ) );
-    MIMES.add( new MimeType( "js", "text/javascript", false ) );
     MIMES.add( new MimeType( "jut", "image/jutvision", true ) );
     MIMES.add( new MimeType( "kar", "audio/midi", true ) );
     MIMES.add( new MimeType( "kar", "music/x-karaoke", true ) );
@@ -916,14 +913,14 @@ public class MimeType {
 
 
   /**
-   * Remove ALL mappins of this extension to any existing MIME types.
+   * Remove ALL mappings of this extension to any existing MIME types.
    * 
    * <p>The purpose of this is to provide a way to ensure that a given 
    * extension returns only the required MIME types and not any of the existing 
    * standard types. It is quite common for a single extension to return 
-   * multiple mime types. An extension of "zip" can be and is often mapped to 
+   * multiple MIME types. An extension of "zip" can be and is often mapped to 
    * "application/x-compressed", "application/zip", and "multipart/x-zip". This 
-   * method allows for the mapping of only one mime type by removong all the 
+   * method allows for the mapping of only one MIME type by removing all the 
    * existing mappings and then calling {@code add( String, String, boolean )} 
    * to add the desired type.</p>    
    * 
