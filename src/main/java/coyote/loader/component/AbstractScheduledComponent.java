@@ -43,7 +43,7 @@ public class AbstractScheduledComponent extends ScheduledJob implements ManagedC
   protected String identifier = new GUID().toString();
   protected String componentName = AbstractScheduledComponent.CLASS;
   protected Loader loader = null;
-  CronEntry cronentry = null;
+  protected CronEntry cronentry = null;
 
 
 
