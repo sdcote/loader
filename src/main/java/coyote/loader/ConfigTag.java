@@ -60,4 +60,14 @@ public class ConfigTag {
   public static final String ACTIVATION_TOKEN_TAG = "ActivationToken";
   public static final String INTERVAL_TAG = "CycleInterval";
 
+  // Scheduler
+  public static final String PATTERN = "Pattern";
+  public static final String SCHEDULE = "Schedule";
+  public static final String MINUTES = "Minutes";
+  public static final String HOURS = "Hours";
+  public static final String DAYS = "Days";
+  public static final String DAYS_OF_WEEK = "Weekdays";
+  public static final String MONTHS = "Months";
+  public static final String MILLIS = "Millis";
+
 }
