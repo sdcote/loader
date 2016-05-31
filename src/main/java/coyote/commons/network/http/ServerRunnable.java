@@ -58,14 +58,14 @@ public class ServerRunnable implements Runnable {
           clientSocket.setSoTimeout( timeout );
         }
 
-        Log.append( HTTPD.EVENT, "Connection from " + clientSocket.getInetAddress() + " on port " + clientSocket.getPort() + " to port " + clientSocket.getLocalPort() + " of " + clientSocket.getLocalAddress() );
+        // Log.append( HTTPD.EVENT, "Connection from " + clientSocket.getInetAddress() + " on port " + clientSocket.getPort() + " to port " + clientSocket.getLocalPort() + " of " + clientSocket.getLocalAddress() );
         
         // Allow only connections from the local host or from remote hosts on our ACL
         if ( clientSocket.getLocalAddress().equals( clientSocket.getInetAddress() ) || this.httpd.acl.allows( clientSocket.getInetAddress() ) ) {
           final InputStream inputStream = clientSocket.getInputStream();
           this.httpd.asyncRunner.exec( this.httpd.createClientHandler( clientSocket, inputStream ) );
         } else {
-          Log.append( HTTPD.EVENT, "Remote connection refused due to ACL restrictions" );
+          Log.append( HTTPD.EVENT, "Remote connection from " + clientSocket.getInetAddress() + " on port " + clientSocket.getPort() + " refused due to ACL restrictions" );
           HTTPD.safeClose( clientSocket );
         }
 

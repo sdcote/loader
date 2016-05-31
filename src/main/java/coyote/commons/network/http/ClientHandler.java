@@ -22,6 +22,8 @@ import coyote.loader.log.Log;
 
 /**
  * The runnable that will be used for every new client connection.
+ * 
+ * <p>This is the class which generates the HTTP Session
  */
 public class ClientHandler implements Runnable {
 
@@ -58,7 +60,7 @@ public class ClientHandler implements Runnable {
     try {
       outputStream = clientSocket.getOutputStream();
       final TempFileManager tempFileManager = httpd.tempFileManagerFactory.create();
-      final HTTPSession session = new HTTPSession( httpd, tempFileManager, inputStream, outputStream, clientSocket.getInetAddress() );
+      final HTTPSession session = new HTTPSession( httpd, tempFileManager, inputStream, outputStream, clientSocket.getInetAddress(),clientSocket.getPort() );
       while ( !clientSocket.isClosed() ) {
         session.execute();
       }
@@ -66,7 +68,7 @@ public class ClientHandler implements Runnable {
       // When the socket is closed by the client, we throw our own 
       // SocketException to break the "keep alive" loop above. If the exception 
       // was anything other than the expected SocketException OR a 
-      // SocketTimeoutException, print the stacktrace
+      // SocketTimeoutException, print the stack trace
       if ( !( ( e instanceof SocketException ) && "HTTPD Shutdown".equals( e.getMessage() ) ) && !( e instanceof SocketTimeoutException ) ) {
         Log.append( HTTPD.EVENT, "ERROR: Communication with the client broken, or an bug in the handler code", e );
       }

@@ -89,9 +89,9 @@ public class UriRouter {
 
     if ( Log.isLogging( HTTPD.EVENT ) ) {
       if ( error404Url == uriResource ) {
-        Log.append( HTTPD.EVENT, "No handler defined for '" + work + "'" );
+        Log.append( HTTPD.EVENT, "No handler defined for '" + work + "' from " + session.getRemoteIpAddress() + ":" + session.getRemoteIpPort() );
       } else {
-        Log.append( HTTPD.EVENT, "Servicing request for '" + work + "'" );
+        Log.append( HTTPD.EVENT, "Servicing request for '" + work + "' from " + session.getRemoteIpAddress() + ":" + session.getRemoteIpPort() );
       }
     }
     // Have the found (or default 404) URI resource process the session

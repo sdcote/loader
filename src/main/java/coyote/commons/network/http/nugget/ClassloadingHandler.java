@@ -62,8 +62,6 @@ public class ClassloadingHandler extends DefaultHandler {
       }
     }
 
-    Log.append( HTTPD.EVENT, getClass().getSimpleName() + " handling request for '" + coreRequest + "'" );
-
     // Retrieve the base directory in the classpath for our search
     String parentdirectory = uriResource.initParameter( String.class );
 
