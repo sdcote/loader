@@ -45,9 +45,9 @@ import coyote.loader.thread.ThreadPool;
  */
 public abstract class AbstractLoader extends ThreadJob implements Loader, Runnable {
 
-  protected static final BundleBaseName LOADER_MSG;
+  public static final BundleBaseName MSG;
   static {
-    LOADER_MSG = new BundleBaseName( "LoaderMsg" );
+    MSG = new BundleBaseName( "LoaderMsg" );
   }
 
   /** Constant to assist in determining the full class name of loggers */
@@ -153,13 +153,13 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
     try {
       Runtime.getRuntime().addShutdownHook( new Thread( "LoaderHook" ) {
         public void run() {
-          Log.debug( LogMsg.createMsg( LOADER_MSG, "Loader.runtime_terminating", new Date() ) );
+          Log.debug( LogMsg.createMsg( MSG, "Loader.runtime_terminating", new Date() ) );
 
           if ( loader != null ) {
             loader.shutdown();
           }
 
-          Log.debug( LogMsg.createMsg( LOADER_MSG, "Loader.runtime_terminated", new Date() ) );
+          Log.debug( LogMsg.createMsg( MSG, "Loader.runtime_terminated", new Date() ) );
         }
       } );
     } catch ( java.lang.NoSuchMethodError nsme ) {
@@ -304,20 +304,20 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
               try {
                 Log.addLogger( name, logger );
               } catch ( Exception e ) {
-                System.out.println( LogMsg.createMsg( LOADER_MSG, "Loader.Could not add configured logger", name, logger.getClass(), e.getMessage() ) );
+                System.out.println( LogMsg.createMsg( MSG, "Loader.Could not add configured logger", name, logger.getClass(), e.getMessage() ) );
                 System.exit( 11 );
               }
             } else {
-              System.err.println( LogMsg.createMsg( LOADER_MSG, "Loader.Could not create an instance of the specified logger" ) );
+              System.err.println( LogMsg.createMsg( MSG, "Loader.Could not create an instance of the specified logger" ) );
               System.exit( 11 );
             }
 
           } else {
-            System.err.println( LogMsg.createMsg( LOADER_MSG, "Loader.no_logger_classname", cfgFrame.toString() ) );
+            System.err.println( LogMsg.createMsg( MSG, "Loader.no_logger_classname", cfgFrame.toString() ) );
             System.exit( 11 );
           }
         } else {
-          System.err.println( LogMsg.createMsg( LOADER_MSG, "Loader.invalid_logger_configuration_section" ) );
+          System.err.println( LogMsg.createMsg( MSG, "Loader.invalid_logger_configuration_section" ) );
           System.exit( 11 );
         } // must be a frame/section
 
@@ -325,7 +325,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
     } // for each logger section
 
-    Log.debug( LogMsg.createMsg( LOADER_MSG, "Loader.logging_initiated", new Date() ) );
+    Log.debug( LogMsg.createMsg( MSG, "Loader.logging_initiated", new Date() ) );
 
   }
 
@@ -348,16 +348,16 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
             try {
               retval.setConfig( cfg );
             } catch ( Exception e ) {
-              Log.error( LogMsg.createMsg( LOADER_MSG, "Loader.could_not_configure_logger {} - {} : {}", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage() ) );
+              Log.error( LogMsg.createMsg( MSG, "Loader.could_not_configure_logger {} - {} : {}", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage() ) );
             }
           } else {
-            Log.warn( LogMsg.createMsg( LOADER_MSG, "Loader.instance_is_not_a_logger of {} is not configurable", className ) );
+            Log.warn( LogMsg.createMsg( MSG, "Loader.instance_is_not_a_logger of {} is not configurable", className ) );
           }
         } catch ( ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e ) {
-          Log.error( LogMsg.createMsg( LOADER_MSG, "Loader.Could not instantiate {} reason: {} - {}", className, e.getClass().getName(), e.getMessage() ) );
+          Log.error( LogMsg.createMsg( MSG, "Loader.Could not instantiate {} reason: {} - {}", className, e.getClass().getName(), e.getMessage() ) );
         }
       } else {
-        Log.error( LogMsg.createMsg( LOADER_MSG, "Loader.Configuration frame did not contain a class name" ) );
+        Log.error( LogMsg.createMsg( MSG, "Loader.Configuration frame did not contain a class name" ) );
       }
     }
 
@@ -443,16 +443,16 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
           // return the runnable
           retval = (Runnable)object;
         } else {
-          System.err.println( LogMsg.createMsg( LOADER_MSG, "Loader.class_is_not_logic_component", className ) );
+          System.err.println( LogMsg.createMsg( MSG, "Loader.class_is_not_logic_component", className ) );
         }
 
       } catch ( ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e ) {
-        System.err.println( LogMsg.createMsg( LOADER_MSG, "Loader.component_instantiation_error", className, e.getClass().getName(), e.getMessage() ) );
+        System.err.println( LogMsg.createMsg( MSG, "Loader.component_instantiation_error", className, e.getClass().getName(), e.getMessage() ) );
         System.exit( 8 );
       }
     } else {
-      Log.warn( LogMsg.createMsg( LOADER_MSG, "Loader.no_class_specified" ) );
-      Log.debug( LogMsg.createMsg( LOADER_MSG, "Loader.no_class_specified_debug", config.toString() ) );
+      Log.warn( LogMsg.createMsg( MSG, "Loader.no_class_specified" ) );
+      Log.debug( LogMsg.createMsg( MSG, "Loader.no_class_specified_debug", config.toString() ) );
     }
 
     return retval;
@@ -493,14 +493,14 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
           getThreadPool().handle( (ThreadJob)component );
           Thread.yield(); // allow component to run
         } catch ( InterruptedException e ) {
-          Log.error( LogMsg.createMsg( LOADER_MSG, "Loader.activation_threadjob_error", e.getMessage() ) );
+          Log.error( LogMsg.createMsg( MSG, "Loader.activation_threadjob_error", e.getMessage() ) );
         }
       } else if ( component instanceof Runnable ) {
         Log.trace( "Running " + component.getClass().getName() + " in the threadpool" );
         getThreadPool().run( (Runnable)component );
         Thread.yield(); // allow component to run
       } else {
-        Log.error( LogMsg.createMsg( LOADER_MSG, "Loader.activation_unrecognized_error", component.getClass().getName() ) );
+        Log.error( LogMsg.createMsg( MSG, "Loader.activation_unrecognized_error", component.getClass().getName() ) );
       }
 
     }
@@ -626,7 +626,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   protected void watchdog() {
     setActiveFlag( true );
 
-    Log.info( LogMsg.createMsg( LOADER_MSG, "Loader.operational" ) );
+    Log.info( LogMsg.createMsg( MSG, "Loader.operational" ) );
 
     while ( !isShutdown() ) {
 
@@ -641,7 +641,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
             // are waiting in the scheduler for their next execution.
 
             if ( !( cmpnt instanceof ScheduledJob ) && !( (ManagedComponent)cmpnt ).isActive() ) {
-              Log.info( LogMsg.createMsg( LOADER_MSG, "Loader.removing_inactive_cmpnt", cmpnt.toString() ) );
+              Log.info( LogMsg.createMsg( MSG, "Loader.removing_inactive_cmpnt", cmpnt.toString() ) );
 
               // get a reference to the components configuration
               final Config config = components.get( cmpnt );
@@ -674,13 +674,13 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
       // Monitor check-in map size; if it is too large, we have a problem
       if ( checkin.size() > components.size() ) {
-        Log.fatal( LogMsg.createMsg( LOADER_MSG, "Loader.check_in_map_size", checkin.size(), components.size() ) );
+        Log.fatal( LogMsg.createMsg( MSG, "Loader.check_in_map_size", checkin.size(), components.size() ) );
       }
 
       // If we have no components which are active, there is not need for this
       // loader to remain running
       if ( components.size() == 0 ) {
-        Log.warn( LogMsg.createMsg( LOADER_MSG, "Loader.no_components" ) );
+        Log.warn( LogMsg.createMsg( MSG, "Loader.no_components" ) );
         this.shutdown();
       }
 
@@ -690,7 +690,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
     }
 
     if ( Log.isLogging( Log.DEBUG_EVENTS ) ) {
-      Log.debug( LogMsg.createMsg( LOADER_MSG, "Loader.terminating" ) );
+      Log.debug( LogMsg.createMsg( MSG, "Loader.terminating" ) );
     }
 
     terminate();
@@ -744,7 +744,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
         scheduler = new Scheduler();
         scheduler.daemonize( Scheduler.CLASS );
       } catch ( Exception e ) {
-        Log.append( Log.WARN, LogMsg.createMsg( LOADER_MSG, "Loader.scheduler_creation_error", e.getClass().getName(), e.getMessage() ) );
+        Log.append( Log.WARN, LogMsg.createMsg( MSG, "Loader.scheduler_creation_error", e.getClass().getName(), e.getMessage() ) );
         scheduler = null;
       }
     }

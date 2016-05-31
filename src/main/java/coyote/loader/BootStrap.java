@@ -138,7 +138,7 @@ public class BootStrap extends AbstractLoader {
 
     // Make sure we have a configuration 
     if ( StringUtil.isBlank( cfgLoc ) ) {
-      System.err.println( LogMsg.createMsg( LOADER_MSG, "Loader.error_no_config" ) );
+      System.err.println( LogMsg.createMsg( MSG, "Loader.error_no_config" ) );
       System.exit( 8 );
     }
 
@@ -164,7 +164,7 @@ public class BootStrap extends AbstractLoader {
       configuration = Config.read( cfgUri );
       System.setProperty( ConfigTag.CONFIG_URI, cfgUri.toString() );
     } catch ( IOException | ConfigurationException e ) {
-      System.err.println( LogMsg.createMsg( LOADER_MSG, "Loader.error_reading_configuration", cfgUri, e.getLocalizedMessage(), ExceptionUtil.stackTrace( e ) ) );
+      System.err.println( LogMsg.createMsg( MSG, "Loader.error_reading_configuration", cfgUri, e.getLocalizedMessage(), ExceptionUtil.stackTrace( e ) ) );
       System.exit( 7 );
     }
 
@@ -207,15 +207,15 @@ public class BootStrap extends AbstractLoader {
               retval.setCommandLineArguments( args );
               retval.configure( configuration );
             } catch ( ConfigurationException e ) {
-              System.err.println( LogMsg.createMsg( LOADER_MSG, "Loader.could_not_config_loader", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage() ) );
+              System.err.println( LogMsg.createMsg( MSG, "Loader.could_not_config_loader", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage() ) );
               System.exit( 6 );
             }
           } else {
-            System.err.println( LogMsg.createMsg( LOADER_MSG, "Loader.class_is_not_loader", className ) );
+            System.err.println( LogMsg.createMsg( MSG, "Loader.class_is_not_loader", className ) );
             System.exit( 5 );
           }
         } catch ( ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e ) {
-          System.err.println( LogMsg.createMsg( LOADER_MSG, "Loader.instantiation_error", className, e.getClass().getName(), e.getMessage() ) );
+          System.err.println( LogMsg.createMsg( MSG, "Loader.instantiation_error", className, e.getClass().getName(), e.getMessage() ) );
           System.exit( 4 );
         }
 
@@ -278,11 +278,11 @@ public class BootStrap extends AbstractLoader {
       try {
         loader.start();
       } catch ( Throwable t ) {
-        System.err.println( LogMsg.createMsg( LOADER_MSG, "Loader.logic_error_from_loader", t.getLocalizedMessage(), ExceptionUtil.stackTrace( t ) ) );
+        System.err.println( LogMsg.createMsg( MSG, "Loader.logic_error_from_loader", t.getLocalizedMessage(), ExceptionUtil.stackTrace( t ) ) );
         System.exit( 3 );
       }
     } else {
-      System.err.println( LogMsg.createMsg( LOADER_MSG, "Loader.no_loader_configured" ) );
+      System.err.println( LogMsg.createMsg( MSG, "Loader.no_loader_configured" ) );
       System.exit( 2 );
     }
 
@@ -305,7 +305,7 @@ public class BootStrap extends AbstractLoader {
    */
   private static void confirmConfigurationLocation() {
     // start building error messages for user feedback
-    StringBuffer errMsg = new StringBuffer( LogMsg.createMsg( LOADER_MSG, "Loader.confirming_cfg_location", cfgLoc ) + StringUtil.CRLF );
+    StringBuffer errMsg = new StringBuffer( LogMsg.createMsg( MSG, "Loader.confirming_cfg_location", cfgLoc ) + StringUtil.CRLF );
 
     // process the configuration location if it exists
     if ( StringUtil.isNotBlank( cfgLoc ) ) {
@@ -333,7 +333,7 @@ public class BootStrap extends AbstractLoader {
             cfgUri = FileUtil.getFileURI( localfile );
           } else {
             // add the filename we checked unsuccessfully to the error message
-            errMsg.append( LogMsg.createMsg( LOADER_MSG, "Loader.no_local_cfg_file", localfile.getAbsolutePath() ) + StringUtil.CRLF );
+            errMsg.append( LogMsg.createMsg( MSG, "Loader.no_local_cfg_file", localfile.getAbsolutePath() ) + StringUtil.CRLF );
 
             // the file does not exist so if it is a relative filename 
             if ( !localfile.isAbsolute() ) {
@@ -365,26 +365,26 @@ public class BootStrap extends AbstractLoader {
                       cfgUri = FileUtil.getFileURI( cfgFile );
                     } else {
                       // we tried the local and shared locations, report error
-                      errMsg.append( LogMsg.createMsg( LOADER_MSG, "Loader.no_common_cfg_file", cfgFile.getAbsolutePath() ) + StringUtil.CRLF );
-                      errMsg.append( LogMsg.createMsg( LOADER_MSG, "Loader.cfg_file_not_found", cfgLoc ) + StringUtil.CRLF );
+                      errMsg.append( LogMsg.createMsg( MSG, "Loader.no_common_cfg_file", cfgFile.getAbsolutePath() ) + StringUtil.CRLF );
+                      errMsg.append( LogMsg.createMsg( MSG, "Loader.cfg_file_not_found", cfgLoc ) + StringUtil.CRLF );
                       System.out.println( errMsg.toString() );
                       System.exit( 9 );
                     }
                   } else {
                     // the specified config directory was not a directory
-                    errMsg.append( LogMsg.createMsg( LOADER_MSG, "Loader.cfg_dir_is_not_directory", appDir ) + StringUtil.CRLF );
+                    errMsg.append( LogMsg.createMsg( MSG, "Loader.cfg_dir_is_not_directory", appDir ) + StringUtil.CRLF );
                     System.out.println( errMsg.toString() );
                     System.exit( 10 );
                   }
                 } else {
                   // the specified config directory does not exist
-                  errMsg.append( LogMsg.createMsg( LOADER_MSG, "Loader.cfg_dir_does_not_exist", appDir ) + StringUtil.CRLF );
+                  errMsg.append( LogMsg.createMsg( MSG, "Loader.cfg_dir_does_not_exist", appDir ) + StringUtil.CRLF );
                   System.out.println( errMsg.toString() );
                   System.exit( 11 );
                 }
               } else {
                 // no shared config directory provided in system properties
-                errMsg.append( LogMsg.createMsg( LOADER_MSG, "Loader.cfg_dir_not_provided", APP_HOME ) + StringUtil.CRLF );
+                errMsg.append( LogMsg.createMsg( MSG, "Loader.cfg_dir_not_provided", APP_HOME ) + StringUtil.CRLF );
                 System.out.println( errMsg.toString() );
                 System.exit( 12 );
               }
@@ -403,20 +403,20 @@ public class BootStrap extends AbstractLoader {
           File test = UriUtil.getFile( cfgUri );
 
           if ( !test.exists() || !test.canRead() ) {
-            errMsg.append( LogMsg.createMsg( LOADER_MSG, "Loader.cfg_file_not_readable", test.getAbsolutePath() ) + StringUtil.CRLF );
+            errMsg.append( LogMsg.createMsg( MSG, "Loader.cfg_file_not_readable", test.getAbsolutePath() ) + StringUtil.CRLF );
             System.out.println( errMsg.toString() );
             System.exit( 13 );
           }
         }
       } else {
-        errMsg.append( LogMsg.createMsg( LOADER_MSG, "Loader.cfg_file_not_found", cfgLoc ) + StringUtil.CRLF );
+        errMsg.append( LogMsg.createMsg( MSG, "Loader.cfg_file_not_found", cfgLoc ) + StringUtil.CRLF );
         System.out.println( errMsg.toString() );
         System.exit( 9 );
 
       }
 
     } else {
-      System.err.println( LogMsg.createMsg( LOADER_MSG, "Loader.no_config_uri_defined" ) );
+      System.err.println( LogMsg.createMsg( MSG, "Loader.no_config_uri_defined" ) );
       System.exit( 1 );
     }
 
