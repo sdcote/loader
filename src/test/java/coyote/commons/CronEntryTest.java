@@ -339,7 +339,7 @@ public class CronEntryTest {
 
     subject = new CronEntry();
     int hr = cal.get( Calendar.HOUR_OF_DAY );
-    hr = ( hr<23)? hr+1: 0;
+    hr = ( hr < 23 ) ? hr + 1 : 0;
     String hrp = Integer.toString( hr );
     //System.out.println( "HRP:" + hrp );
     subject.setHourPattern( hrp ); // adjustment
