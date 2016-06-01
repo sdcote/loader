@@ -13,9 +13,9 @@ package coyote.commons.network.http;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 import coyote.loader.log.Log;
+
 
 /**
  * Default strategy for creating and cleaning up temporary files.
@@ -66,5 +66,5 @@ public class DefaultTempFileManager implements TempFileManager {
     tempFiles.add( tempFile );
     return tempFile;
   }
-  
+
 }
