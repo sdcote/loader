@@ -297,6 +297,9 @@ class HTTPSession implements IHTTPSession {
 
 
 
+  /**
+   * @see coyote.commons.network.http.IHTTPSession#execute()
+   */
   @Override
   public void execute() throws IOException {
     Response response = null;
