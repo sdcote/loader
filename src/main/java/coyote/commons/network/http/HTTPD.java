@@ -30,6 +30,7 @@ import javax.net.ssl.TrustManagerFactory;
 import coyote.commons.StringUtil;
 import coyote.commons.network.IpAcl;
 import coyote.commons.network.MimeType;
+import coyote.commons.security.OperationFrequency;
 import coyote.loader.log.Log;
 
 
@@ -73,6 +74,14 @@ public abstract class HTTPD {
    * addresses match the entries in this list. 
    */
   final IpAcl acl = new IpAcl( IpAcl.DENY );
+  
+  /**
+   * This is our Denial of Service tracker. It keeps a list of times a request
+   * is made and if requests come in to frequently from an address or network,
+   * the server can perform remediation such as blacklisting throttling and  of
+   * course security event notification.
+   */
+  final OperationFrequency dosTable = new OperationFrequency();
 
   /**
    * Pseudo-Parameter to use to store the actual query string in the

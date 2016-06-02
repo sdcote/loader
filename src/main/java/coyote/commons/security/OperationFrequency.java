@@ -11,11 +11,13 @@
  */
 package coyote.commons.security;
 
+import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import coyote.commons.network.IpAddress;
+import coyote.commons.network.IpAddressException;
 import coyote.commons.network.IpNetwork;
 
 
@@ -57,6 +59,17 @@ public class OperationFrequency {
     RequestTable retval = new RequestTable( limit, duration );
     addresses.put( addr, retval );
     return retval;
+  }
+
+
+
+
+  public boolean check( InetAddress addr ) {
+    try {
+      return check( new IpAddress( addr ) );
+    } catch ( IpAddressException ignore ) {
+      return false; // should never happen
+    }
   }
 
 
@@ -169,6 +182,14 @@ public class OperationFrequency {
 
   }
 
+  /**
+   * This is a class which allows us to track the times and occurrences of 
+   * checks.
+   * 
+   * <p>If the maximum number of requests have been received within the 
+   * interval, the check will fail. This allows us to track if too many 
+   * requests are being received in a particular interval.</p> 
+   */
   private class RequestTable {
     private final long[] times;
     private final long interval;
@@ -177,6 +198,12 @@ public class OperationFrequency {
 
 
 
+    /**
+     * Create a table with the given number of entries and interval window.
+     * 
+     * @param size the number of entries to allow in a particular interval
+     * @param interval the number of milliseconds for the window
+     */
     RequestTable( short size, long interval ) {
       times = new long[size];
       this.interval = interval;
@@ -185,6 +212,9 @@ public class OperationFrequency {
 
 
 
+    /**
+     * @return the time of the last check
+     */
     public long getLastCheck() {
       // find the current position in the list of times
       int index = (int)( ( count < 0 ) ? 0 : count % times.length );
@@ -197,7 +227,7 @@ public class OperationFrequency {
     /**
      * @param time the time in millis (Java epoch)
      * 
-     * @return true if
+     * @return true if the maximum number of requests have not been reached, false if too many requests have been reached
      */
     boolean check( long time ) {
       // in Java, overflows go negative not back to zero

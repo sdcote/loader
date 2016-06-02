@@ -59,16 +59,23 @@ public class ServerRunnable implements Runnable {
         }
 
         // Log.append( HTTPD.EVENT, "Connection from " + clientSocket.getInetAddress() + " on port " + clientSocket.getPort() + " to port " + clientSocket.getLocalPort() + " of " + clientSocket.getLocalAddress() );
-        
-        // Allow only connections from the local host or from remote hosts on our ACL
-        if ( clientSocket.getLocalAddress().equals( clientSocket.getInetAddress() ) || this.httpd.acl.allows( clientSocket.getInetAddress() ) ) {
-          final InputStream inputStream = clientSocket.getInputStream();
-          this.httpd.asyncRunner.exec( this.httpd.createClientHandler( clientSocket, inputStream ) );
+
+        // First check if the address has been calling us too frequently 
+        // indicating a possible denial of service attack
+        if ( this.httpd.dosTable.check( clientSocket.getInetAddress() ) ) {
+          // Allow only connections from the local host or from remote hosts on 
+          // our ACL
+          if ( clientSocket.getLocalAddress().equals( clientSocket.getInetAddress() ) || this.httpd.acl.allows( clientSocket.getInetAddress() ) ) {
+            final InputStream inputStream = clientSocket.getInputStream();
+            this.httpd.asyncRunner.exec( this.httpd.createClientHandler( clientSocket, inputStream ) );
+          } else {
+            Log.append( HTTPD.EVENT, "Remote connection from " + clientSocket.getInetAddress() + " on port " + clientSocket.getPort() + " refused due to ACL restrictions" );
+            HTTPD.safeClose( clientSocket );
+          }
         } else {
-          Log.append( HTTPD.EVENT, "Remote connection from " + clientSocket.getInetAddress() + " on port " + clientSocket.getPort() + " refused due to ACL restrictions" );
+          Log.append( HTTPD.EVENT, "Remote connection from " + clientSocket.getInetAddress() + " on port " + clientSocket.getPort() + " refused due to possible Denial of Service activity" );
           HTTPD.safeClose( clientSocket );
         }
-
       } catch ( final IOException e ) {
         Log.append( HTTPD.EVENT, "WARNING: Communication with the client broken", e );
       }
