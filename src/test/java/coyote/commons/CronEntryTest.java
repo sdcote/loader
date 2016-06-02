@@ -426,12 +426,15 @@ public class CronEntryTest {
     //System.out.println( "NOW:      " + DATEFORMAT.format( now.getTime() ) + " - " + CronEntry.toPattern( now ) );
     //System.out.println();
 
-    long nowmillis = now.getTimeInMillis();
-
     Calendar cal = new GregorianCalendar();
 
+    int hr = cal.get( Calendar.HOUR_OF_DAY );
+    hr = ( hr < 23 ) ? hr + 1 : 0;
+    String hrp = Integer.toString( hr );
+    //System.out.println( "HRP:" + hrp );
+
     // set the pattern to one hour in the future
-    subject.setHourPattern( Integer.toString( cal.get( Calendar.HOUR_OF_DAY ) + 1 ) ); // adjustment
+    subject.setHourPattern( hrp ); // adjustment
     //System.out.println( subject.dump() );
 
     millis = subject.getNextTime( now );
