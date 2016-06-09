@@ -12,6 +12,7 @@
 package coyote.commons.network;
 
 //import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -104,6 +105,27 @@ public class IpAclTest {
     } catch ( Exception ex ) {
       fail( "Could not construct: " + ex.getMessage() );
     }
+
+    // Test the ordering, 192.168.100 subnet is denied, but the rest of 192.168 
+    // is allowed
+    try {
+      IpAcl acl = new IpAcl( IpAcl.DENY );
+      acl.add( "192.168.100/24", false );
+      acl.add( "192.168/16", true );
+
+      String arg = "192.168.100.23";
+      assertFalse( "Should NOT allow '" + arg + "'", acl.allows( arg ) );
+
+      arg = "192.168.23.100";
+      assertTrue( "Should allow '" + arg + "'", acl.allows( arg ) );
+
+      arg = "10.8.107.12";
+      assertFalse( "Should NOT allow '" + arg + "'", acl.allows( arg ) );
+
+    } catch ( Exception ex ) {
+      fail( "Could not construct: " + ex.getMessage() );
+    }
+
   }
 
 }

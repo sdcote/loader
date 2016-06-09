@@ -29,6 +29,7 @@ import javax.net.ssl.TrustManagerFactory;
 
 import coyote.commons.StringUtil;
 import coyote.commons.network.IpAcl;
+import coyote.commons.network.IpNetwork;
 import coyote.commons.network.MimeType;
 import coyote.commons.security.OperationFrequency;
 import coyote.loader.log.Log;
@@ -74,7 +75,7 @@ public abstract class HTTPD {
    * addresses match the entries in this list. 
    */
   final IpAcl acl = new IpAcl( IpAcl.DENY );
-  
+
   /**
    * This is our Denial of Service tracker. It keeps a list of times a request
    * is made and if requests come in to frequently from an address or network,
@@ -399,6 +400,46 @@ public abstract class HTTPD {
     setTempFileManagerFactory( new DefaultTempFileManagerFactory() );
     setAsyncRunner( new DefaultAsyncRunner() );
     Log.append( EVENT, "Server initialized on port " + myPort );
+  }
+
+
+
+
+  /**
+   * Add an entry into this servers IP Access Control List.
+   * 
+   * @param network the network address for the entry
+   * @param allowed true to allow any address matching the given network to 
+   *        access the server, false to reject the socket connection from any 
+   *        address matching the network
+   */
+  protected void addToACL( final IpNetwork network, final boolean allowed ) {
+    if ( network != null ) {
+      acl.add( network, allowed );
+    }
+  }
+
+
+
+
+  /**
+   * Changes the default allow mode of the IP Access Control List. 
+   * 
+   * <p>This is what the check will return if it does not find an explicit rule 
+   * to match against.</p>
+   * 
+   * <p>Setting this to TRUE, turns the IP Access Control List into a blacklist 
+   * which allows everything unless it is granted access by an entry in this 
+   * list. Setting this to FALSE turns this into a whitelist which denies 
+   * everything unless it is allows by an entry on this list. This is the 
+   * default for the server and should not be changed unless there is a very 
+   * specific need.</p>
+   * 
+   * @param allow The new default mode: True = allow by default, false = deny 
+   *              by default.
+   */
+  protected void setDefaultAllow( final boolean allow ) {
+    acl.setDefaultAllow( allow );
   }
 
 
