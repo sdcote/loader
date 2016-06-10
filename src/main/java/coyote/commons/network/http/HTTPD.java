@@ -67,7 +67,7 @@ public abstract class HTTPD {
   /** Common MIME type for dynamic content: plain text */
   public static final String MIME_PLAINTEXT = "text/plain";
 
-  /** Common MIME type for dynamic content: html */
+  /** Common MIME type for dynamic content: HTML */
   public static final String MIME_HTML = "text/html";
 
   /** 
@@ -91,7 +91,7 @@ public abstract class HTTPD {
   private static final String QUERY_STRING_PARAMETER = "Httpd.QUERY_STRING";
   private static final String MIMETYPE_RESOURCE = "httpd/mimetypes.properties";
 
-  /** Hashtable mapping file extension to mime type */
+  /** Hashtable mapping file extension to MIME type */
   protected static Map<String, String> MIME_TYPES;
 
   final String hostname;

@@ -20,6 +20,9 @@ import coyote.loader.log.Log;
 
 /**
  * The runnable that will be used for the main listening thread.
+ * 
+ * <p>This class contains the security checks on initial connection for ACL and 
+ * Denial of Service.</p>
  */
 public class ServerRunnable implements Runnable {
 
@@ -75,6 +78,8 @@ public class ServerRunnable implements Runnable {
         } else {
           Log.append( HTTPD.EVENT, "Remote connection from " + clientSocket.getInetAddress() + " on port " + clientSocket.getPort() + " refused due to possible Denial of Service activity" );
           HTTPD.safeClose( clientSocket );
+          // TODO: track the number of breaches from this client and either throttle, or blacklist the IP
+          // TODO: track the number of events globally to detect a DDoS and terminate/retract/hide the server - it can be restarted later last gasp message to CO giving the new port
         }
       } catch ( final IOException e ) {
         Log.append( HTTPD.EVENT, "WARNING: Communication with the client broken", e );
