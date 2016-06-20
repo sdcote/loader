@@ -83,6 +83,8 @@ public final class Log {
   public static final long ERROR_EVENTS = LogKernel.getCode( Log.ERROR );
   /** The category mask for the FATAL category. */
   public static final long FATAL_EVENTS = LogKernel.getCode( Log.FATAL );
+  /** The category mask for all the events. */
+  public static final long ALL_EVENTS = -1L;
 
   /** 
    * The name of the default logger, or the name of the logger created and 
