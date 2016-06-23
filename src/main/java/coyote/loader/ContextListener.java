@@ -19,7 +19,7 @@ public interface ContextListener {
   /**
    * Signal when a context has started - i.e. logical operation has begun.
    * 
-   * <p>The concept of starting can be differrent depending on the type of 
+   * <p>The concept of starting can be different depending on the type of 
    * context it is. For some it means when the context was created, but it 
    * generally means that point in time just after initialization and just 
    * before operation is to begin.</p>
@@ -39,7 +39,7 @@ public interface ContextListener {
   /**
    * Signal when a context has ended - i.e. logical operation has completed.
    * 
-   * <p>The concept of ending can be differrent depending on the type of 
+   * <p>The concept of ending can be different depending on the type of 
    * context it is. It generally represents that point in time just after 
    * operation and just before termination activities begin.</p>
    * 

@@ -76,6 +76,8 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
   protected Scheduler scheduler = null;
 
+  protected final Context context = new LoaderContext();
+
 
 
 
@@ -427,6 +429,9 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
         if ( object instanceof ManagedComponent ) {
           ManagedComponent cmpnt = (ManagedComponent)object;
+
+          // set the shared operational context all component use to share data
+          cmpnt.setContext( getContext() );
 
           // configure the component
           cmpnt.setConfiguration( config );
@@ -807,6 +812,17 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
       configuration = new Config();
     }
     return configuration;
+  }
+
+
+
+
+  /**
+   * @see coyote.loader.Loader#getContext()
+   */
+  @Override
+  public Context getContext() {
+    return context;
   }
 
 }

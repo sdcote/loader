@@ -13,6 +13,7 @@ package coyote.loader.component;
 
 import coyote.commons.GUID;
 import coyote.dataframe.DataFrame;
+import coyote.loader.Context;
 import coyote.loader.Loader;
 import coyote.loader.cfg.Config;
 import coyote.loader.thread.ThreadJob;
@@ -34,6 +35,7 @@ public abstract class AbstractManagedComponent extends ThreadJob implements Mana
   protected String identifier = new GUID().toString();
   protected String componentName = AbstractManagedComponent.CLASS;
   protected Loader loader = null;
+  protected Context context = null;
 
 
 
@@ -283,6 +285,28 @@ public abstract class AbstractManagedComponent extends ThreadJob implements Mana
   @Override
   public void setLoader( Loader loader ) {
     this.loader = loader;
+  }
+
+
+
+
+  /**
+   * @see coyote.loader.component.ManagedComponent#setContext(coyote.loader.Context)
+   */
+  @Override
+  public void setContext( Context context ) {
+    this.context = context;
+  }
+
+
+
+
+  /**
+   * @see coyote.loader.component.Component#getContext()
+   */
+  @Override
+  public Context getContext() {
+    return context;
   }
 
 }

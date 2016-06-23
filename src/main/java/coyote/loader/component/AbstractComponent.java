@@ -12,6 +12,7 @@
 package coyote.loader.component;
 
 import coyote.dataframe.DataFrame;
+import coyote.loader.Context;
 
 
 /**
@@ -19,6 +20,7 @@ import coyote.dataframe.DataFrame;
  */
 public abstract class AbstractComponent implements Component {
   public static final String UNKNOWN = "Unknown";
+  protected Context context = null;
 
 
 
@@ -106,6 +108,18 @@ public abstract class AbstractComponent implements Component {
   @Override
   public String getSystemId() {
     return AbstractComponent.UNKNOWN;
+  }
+
+
+
+
+  /**
+   * @see coyote.loader.component.Component#getContext()
+   */
+  @Override
+  public Context getContext() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

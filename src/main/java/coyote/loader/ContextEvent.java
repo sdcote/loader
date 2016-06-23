@@ -51,6 +51,6 @@ public interface ContextEvent {
    * 
    * @return the context from which this event was fired.
    */
-  public Context getContext();
+  public AbstractContext getContext();
 
 }

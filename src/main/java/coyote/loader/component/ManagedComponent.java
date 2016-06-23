@@ -12,10 +12,17 @@
 package coyote.loader.component;
 
 import coyote.dataframe.DataFrame;
+import coyote.loader.Context;
 import coyote.loader.Loader;
 import coyote.loader.cfg.Config;
 
 
+/**
+ * Managed components have their life cycle managed by the loader. 
+ * 
+ * <p>They are started, stopped, paused, enabled, disabled, and otherwise 
+ * managed by the loader.</p>
+ */
 public interface ManagedComponent extends Component {
 
   /** Name used in various class identifying locations */
@@ -143,5 +150,18 @@ public interface ManagedComponent extends Component {
    *        be entered.
    */
   public void waitForActive( long timeout );
+
+
+
+
+  /**
+   * Allows for the setting of a shared operational context.
+   * 
+   * <p>The purpose of the context is to allow the component to share data with 
+   * other components in an abstract manner.</p>
+   * 
+   * @param context the shared operational context this component is to use.
+   */
+  public void setContext( Context context );
 
 }

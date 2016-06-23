@@ -12,6 +12,7 @@
 package coyote.loader.component;
 
 import coyote.dataframe.DataFrame;
+import coyote.loader.Context;
 import coyote.loader.cfg.Config;
 
 
@@ -193,4 +194,15 @@ public interface Component {
    */
   public boolean isLicensed();
 
+
+
+
+  /**
+   * Access this components shared operational context.
+   *  
+   * @return the shared operational context this component uses to share data, 
+   *         may be null.
+   */
+  public Context getContext();
+  
 }

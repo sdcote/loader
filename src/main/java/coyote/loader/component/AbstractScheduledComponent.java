@@ -20,6 +20,7 @@ import coyote.dataframe.DataField;
 import coyote.dataframe.DataFrame;
 import coyote.loader.AbstractLoader;
 import coyote.loader.ConfigTag;
+import coyote.loader.Context;
 import coyote.loader.Loader;
 import coyote.loader.cfg.Config;
 import coyote.loader.log.Log;
@@ -44,6 +45,7 @@ public class AbstractScheduledComponent extends ScheduledJob implements ManagedC
   protected String componentName = AbstractScheduledComponent.CLASS;
   protected Loader loader = null;
   protected CronEntry cronentry = null;
+  protected Context context = null;
 
 
 
@@ -367,4 +369,27 @@ public class AbstractScheduledComponent extends ScheduledJob implements ManagedC
   public void setLoader( Loader loader ) {
     this.loader = loader;
   }
+
+
+
+
+  /**
+   * @see coyote.loader.component.ManagedComponent#setContext(coyote.loader.Context)
+   */
+  @Override
+  public void setContext( Context context ) {
+    this.context = context;
+  }
+
+
+
+
+  /**
+   * @see coyote.loader.component.Component#getContext()
+   */
+  @Override
+  public Context getContext() {
+    return context;
+  }
+  
 }

@@ -58,6 +58,19 @@ public interface Loader extends WatchDog {
 
 
   /**
+   * Get a context reference for this loader.
+   * 
+   * <p>This will never return null. All loaders must return a reference to a 
+   * shared context for all components to use in the sharing of data.</p>
+   * 
+   * @return the currently set operational context for this loader 
+   */
+  public Context getContext();
+
+
+
+
+  /**
    * Start the loader running.
    * 
    * <p>This is a blocking call. The thread will remain in this method until 
