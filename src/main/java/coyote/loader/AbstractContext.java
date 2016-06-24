@@ -27,7 +27,7 @@ import coyote.commons.template.SymbolTable;
  * <p>This context allows components to share data amongst each other while 
  * remaining functionally separate and decoupled.</p>
  */
-public abstract class AbstractContext  implements Context{
+public abstract class AbstractContext implements Context {
   public static final String ERROR_STATUS = "Error";
   protected String status = null;
   protected String message = null;
@@ -51,6 +51,9 @@ public abstract class AbstractContext  implements Context{
    * @return the symbolTable for this context
    */
   public SymbolTable getSymbols() {
+    if ( symbols == null ) {
+      symbols = new SymbolTable();
+    }
     return symbols;
   }
 
@@ -440,11 +443,13 @@ public abstract class AbstractContext  implements Context{
         b.append( "null" );
       b.append( StringUtil.LINE_FEED );
     }
+    b.append( StringUtil.LINE_FEED );
     if ( symbols != null ) {
-      b.append( StringUtil.LINE_FEED );
       b.append( "Symbol Table:" );
       b.append( StringUtil.LINE_FEED );
       b.append( symbols.dump() );
+    } else {
+      b.append( "No Symbol Table Found" );
     }
     return b.toString();
   }
@@ -469,6 +474,32 @@ public abstract class AbstractContext  implements Context{
     if ( this != context ) {
       this.parent = context;
     }
+  }
+
+
+
+
+  /**
+   * Add the given name value pairs to our symbol table.
+   * 
+   * @param map name name value pairs to merge.
+   */
+  public void merge( HashMap<String, String> map ) {
+    getSymbols().merge( map );
+  }
+
+
+
+
+  /**
+   * Add the given name value pair to the symbol table for template resolution.
+   * 
+   * @param name name of the symbol
+   * @param value value of the symbol
+   */
+  @SuppressWarnings("unchecked")
+  public void addSymbol( String name, String value ) {
+    getSymbols().put( name, value );
   }
 
 }
