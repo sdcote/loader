@@ -76,7 +76,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
   protected Scheduler scheduler = null;
 
-  protected final Context context = new LoaderContext();
+  private final Context context = new LoaderContext();
 
 
 
@@ -788,6 +788,26 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
    */
   public String[] getCommandLineArguments() {
     return commandLineArguments;
+  }
+
+
+
+
+  /**
+   * Initialize the symbol table in the context with system properties and 
+   * other useful data.
+   */
+  public void initSymbolTable() {
+    if ( context != null ) {
+      if ( context.getSymbols() != null ) {
+        // Fill the symbol table with system properties
+        context.getSymbols().readSystemProperties();
+      } else {
+        Log.warn( "no symbols in context to initialize" );
+      }
+    } else {
+      Log.warn( "no context defined to init symbol table" );
+    }
   }
 
 

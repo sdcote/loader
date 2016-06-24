@@ -137,4 +137,12 @@ public interface Loader extends WatchDog {
    */
   public void setCommandLineArguments( String[] args );
 
+
+
+
+  /**
+   * Initialize the symbol table in the context with system properties and 
+   * other useful data.
+   */
+  public void initSymbolTable();
 }
