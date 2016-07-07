@@ -24,8 +24,7 @@ public class ConsoleFormatter implements Formatter {
   /**
    *
    */
-  public ConsoleFormatter() {
-  }
+  public ConsoleFormatter() {}
 
 
 
@@ -46,8 +45,43 @@ public class ConsoleFormatter implements Formatter {
     buffer.append( category );
     buffer.append( " | " );
 
-    if ( event != null )
+    if ( event != null ) {
       buffer.append( event.toString() );
+    }
+
+    if ( cause != null ) {
+      if ( event != null ) {
+        buffer.append( ' ' );
+      }
+
+      buffer.append( "EXCEPTION: " );
+      buffer.append( cause.getClass().getName() );
+      if ( cause.getMessage() != null ) {
+        buffer.append( " MSG: " );
+        buffer.append( cause.getMessage() );
+      }
+      buffer.append( " at " );
+
+      final StackTraceElement[] stack = ( cause ).getStackTrace();
+      StackTraceElement elem = stack[0];
+
+      buffer.append( elem.getClassName() );
+      buffer.append( "." );
+      buffer.append( elem.getMethodName() );
+      buffer.append( "(" );
+
+      if ( elem.getLineNumber() < 0 ) {
+        buffer.append( "Native Method" );
+      } else {
+        buffer.append( elem.getFileName() );
+        buffer.append( ":" );
+        buffer.append( elem.getLineNumber() );
+      }
+
+      buffer.append( ")" );
+      // --
+
+    }
 
     buffer.append( StringUtil.LINE_FEED );
 
