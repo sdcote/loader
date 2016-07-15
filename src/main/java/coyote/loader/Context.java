@@ -19,6 +19,13 @@ import coyote.commons.template.SymbolTable;
 /**
  * Represent a shared operational context multiple components in the runtime 
  * can use to share information.
+ * 
+ * <p><em>Note:</em> it is common practice for components to enter a {@code 
+ * wait()} on a context while waiting for other components to populate 
+ * references in the context. The populating components then issue a (@code 
+ * notifyAll()} on the context and allow other waiting threads to re-check the 
+ * context for the shared references they need. This is not required but simply 
+ * common practice which can be considered in your designs.</p>
  */
 public interface Context {
 

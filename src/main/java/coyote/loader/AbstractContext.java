@@ -47,10 +47,22 @@ public abstract class AbstractContext implements Context {
 
 
 
+  public AbstractContext() {}
+
+
+
+
+  public AbstractContext( List<ContextListener> listeners ) {
+    setListeners( listeners );
+  }
+
+
+
+
   /**
    * @return the symbolTable for this context
    */
-  public SymbolTable getSymbols() {
+  public synchronized SymbolTable getSymbols() {
     if ( symbols == null ) {
       symbols = new SymbolTable();
     }
@@ -63,20 +75,8 @@ public abstract class AbstractContext implements Context {
   /**
    * @param symbols the symbols to set in this context
    */
-  public void setSymbols( SymbolTable symbols ) {
+  public synchronized void setSymbols( SymbolTable symbols ) {
     this.symbols = symbols;
-  }
-
-
-
-
-  public AbstractContext() {}
-
-
-
-
-  public AbstractContext( List<ContextListener> listeners ) {
-    setListeners( listeners );
   }
 
 
@@ -107,7 +107,7 @@ public abstract class AbstractContext implements Context {
    * @return the value of the property, or null if the property was not found 
    *         with the given key of if the key was null or blank.
    */
-  public Object get( String key, boolean usecase ) {
+  public synchronized Object get( String key, boolean usecase ) {
     if ( StringUtil.isNotBlank( key ) ) {
       if ( usecase ) {
         return properties.get( key );
@@ -182,7 +182,7 @@ public abstract class AbstractContext implements Context {
    * @param key the name of the object to place
    * @param value the object to place (null results in the object being removed)
    */
-  public void set( String key, Object value ) {
+  public synchronized void set( String key, Object value ) {
     if ( key != null ) {
       if ( value != null ) {
         properties.put( key, value );
@@ -195,7 +195,7 @@ public abstract class AbstractContext implements Context {
 
 
 
-  public void setError( boolean flag ) {
+  public synchronized void setError( boolean flag ) {
     errorFlag = flag;
   }
 
@@ -207,7 +207,7 @@ public abstract class AbstractContext implements Context {
    * 
    * @param msg The message to place in the context.
    */
-  public void setError( String msg ) {
+  public synchronized void setError( String msg ) {
     errorFlag = true;
     status = ERROR_STATUS;
     message = msg;
@@ -216,7 +216,7 @@ public abstract class AbstractContext implements Context {
 
 
 
-  public boolean isInError() {
+  public synchronized boolean isInError() {
     return errorFlag;
   }
 
@@ -230,7 +230,7 @@ public abstract class AbstractContext implements Context {
    * 
    * @return true if the context is fine (without error) false if there is a problem.
    */
-  public boolean isNotInError() {
+  public synchronized boolean isNotInError() {
     return !errorFlag;
   }
 
@@ -242,7 +242,7 @@ public abstract class AbstractContext implements Context {
    * 
    * @return the status of this context
    */
-  public String getStatus() {
+  public synchronized String getStatus() {
     return status;
   }
 
@@ -254,7 +254,7 @@ public abstract class AbstractContext implements Context {
    * 
    * @param status the status to set
    */
-  public void setStatus( String status ) {
+  public synchronized void setStatus( String status ) {
     this.status = status;
   }
 
@@ -264,7 +264,7 @@ public abstract class AbstractContext implements Context {
   /**
    * @return the message describing the status of this context
    */
-  public String getMessage() {
+  public synchronized String getMessage() {
     return message;
   }
 
@@ -274,7 +274,7 @@ public abstract class AbstractContext implements Context {
   /**
    * @param message the message to set
    */
-  public void setMessage( String message ) {
+  public synchronized void setMessage( String message ) {
     this.message = message;
   }
 
@@ -284,7 +284,7 @@ public abstract class AbstractContext implements Context {
   /**
    * @return the startTime
    */
-  public long getStartTime() {
+  public synchronized long getStartTime() {
     return startTime;
   }
 
@@ -294,7 +294,7 @@ public abstract class AbstractContext implements Context {
   /**
    * @param startTime the startTime to set
    */
-  public void setStartTime( long startTime ) {
+  public synchronized void setStartTime( long startTime ) {
     this.startTime = startTime;
   }
 
@@ -304,7 +304,7 @@ public abstract class AbstractContext implements Context {
   /**
    * @return the endTime
    */
-  public long getEndTime() {
+  public synchronized long getEndTime() {
     return endTime;
   }
 
@@ -314,7 +314,7 @@ public abstract class AbstractContext implements Context {
   /**
    * @param endTime the endTime to set
    */
-  public void setEndTime( long endTime ) {
+  public synchronized void setEndTime( long endTime ) {
     this.endTime = endTime;
   }
 
@@ -324,7 +324,7 @@ public abstract class AbstractContext implements Context {
   /**
    * @return the elapsed time in milliseconds from start to end (or now) or 0 if not started. 
    */
-  public long getElapsed() {
+  public synchronized long getElapsed() {
 
     if ( startTime != 0 ) {
       if ( endTime != 0 ) {
@@ -342,7 +342,7 @@ public abstract class AbstractContext implements Context {
   /**
    * Set the start time to now.
    */
-  public void start() {
+  public synchronized void start() {
     startTime = System.currentTimeMillis();
     fireStart( this );
   }
@@ -353,7 +353,7 @@ public abstract class AbstractContext implements Context {
   /**
    * Set the end time to now.
    */
-  public void end() {
+  public synchronized void end() {
     endTime = System.currentTimeMillis();
     fireEnd( this );
   }
@@ -404,7 +404,7 @@ public abstract class AbstractContext implements Context {
 
 
 
-  public void setListeners( List<ContextListener> listeners ) {
+  public synchronized void setListeners( List<ContextListener> listeners ) {
     if ( listeners != null ) {
       this.listeners = listeners;
     }
@@ -413,7 +413,7 @@ public abstract class AbstractContext implements Context {
 
 
 
-  public void addListener( ContextListener listener ) {
+  public synchronized void addListener( ContextListener listener ) {
     if ( listener != null ) {
       if ( listeners == null ) {
         listeners = new ArrayList<ContextListener>();
