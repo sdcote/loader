@@ -93,7 +93,6 @@ public class CipherUtil {
    * <li>Four bytes of random salt is assumed to prepend the data so those 4 
    * bytes are removed.</li>
    * <li>The bytes are converted into a string using UTF-16 encoding.</li></ol>
-   * </p>
    * 
    * @param cipherText the text to decipher
    * 
@@ -345,7 +344,6 @@ public class CipherUtil {
    * <li>Use the default (Blowfish) cipher and initialize it with a default 16 
    * octet (128 bit) key and encrypt the salted data.</li>
    * <li>Encode the cipher data into a string using Base64 encoding.</li></ol>
-   * </p>
    * 
    * <p>The result is a text string which can be sent or stored on any media 
    * which supports strings.</p>
@@ -653,7 +651,7 @@ public class CipherUtil {
    * 
    * <p>The last byte of the stream is ALWAYS the number of bytes added to the 
    * end of the data. If the data ends on a boundary, then there will be eight
-   * bytes of padding:<code><pre>
+   * bytes of padding:<pre>
    * 88888888 - all of the last block is padding.
    * X7777777 - the last seven bytes are padding.
    * XX666666 - the last six bytes are padding.
@@ -661,7 +659,7 @@ public class CipherUtil {
    * XXXX4444 - etc.
    * XXXXX333 - etc.
    * XXXXXX22 - etc.
-   * XXXXXXX1 - only the last byte is padding.</pre></code></p>
+   * XXXXXXX1 - only the last byte is padding.</pre>
    * 
    * <p>According to RFC1423 section 1.1:<blockquote>The input to the DES CBC
    * encryption process shall be padded to a multiple of 8 octets, in the
@@ -671,7 +669,7 @@ public class CipherUtil {
    * hexadecimal, the possible paddings are: 01, 0202, 030303, 04040404, 
    * 0505050505, 060606060606, 07070707070707, and 0808080808080808. All input 
    * is padded with 1 to 8 octets to produce a multiple of 8 octets in length. 
-   * The padding can be removed unambiguously after decryption.</blockquote></p>
+   * The padding can be removed unambiguously after decryption.</blockquote>
    *  
    * @param data The source data
    * 

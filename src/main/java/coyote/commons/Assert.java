@@ -340,11 +340,11 @@ public final class Assert {
   /**
    * Assert a number is positive or zero.
    * 
-   * <pre class="code">Assert.isPositive(i);</pre>
+   * <pre>Assert.isPositive(i);</pre>
    * 
    * @param number a number to check
    * 
-   * @throws IllegalArgumentException if number is < 0
+   * @throws IllegalArgumentException if number is &lt; 0
    */
   public static void isPositive( final int number ) {
     isPositive( number, "[Assertion Failure] - this expression must be true" );
@@ -356,12 +356,12 @@ public final class Assert {
   /**
    * Assert a number is positive or zero.
    * 
-   * <pre class="code">Assert.isPositive(i, "The value must be greater than or equal to zero");</pre>
+   * <pre>Assert.isPositive(i, "The value must be greater than or equal to zero");</pre>
    * 
    * @param number a number to check
    * @param msg the exception message to use if the assertion fails
    * 
-   * @throws IllegalArgumentException if number is < 0
+   * @throws IllegalArgumentException if number is &lt; 0
    */
   public static void isPositive( final int number, final String msg ) {
     if ( number <= 0 ) {

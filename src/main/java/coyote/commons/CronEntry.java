@@ -108,15 +108,15 @@ public class CronEntry {
    * <li>day</li>
    * <li>month</li>
    * <li>day of week</li></ol>
-   * Any missing fields will be defaulted to ANY (i.e."*").</p>
+   * Any missing fields will be defaulted to ANY (i.e."*").
    * 
-   * <p>Only simple syntax is supported:
+   * <p>Only simple syntax is supported:<ol>
    * <li>* - any value</li>
    * <li>? - any value</li>
    * <li># - scalar value</li>
    * <li>#,#, - a list of scalars including intervals</li>
    * <li>#-# - a range of numbers</li>
-   * <li>/# - intervals</li></p>
+   * <li>/# - intervals</li></ol>
    * 
    * @param pattern The pattern to parse
    * 

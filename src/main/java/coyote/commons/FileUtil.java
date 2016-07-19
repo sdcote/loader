@@ -249,11 +249,11 @@ public final class FileUtil {
 
   /**
    * CleanDirs is a utility method for cleaning up temporary directories, used
-   * by various methods to hold & process files on the file system.
+   * by various methods to hold and process files on the file system.
    *
    * <p>CleanDir takes a directory name as an argument, and checks for any
    * empty directories within that directory. If it finds any, it remove the
-   * empty directory & checks again until no empty directories are found.</p>
+   * empty directory and checks again until no empty directories are found.</p>
    *
    * @param fileName
    *
@@ -292,7 +292,7 @@ public final class FileUtil {
 
 
   /**
-   * Utility method to copy a file from one place to another & delete the
+   * Utility method to copy a file from one place to another and delete the
    * original.
    *
    * <p>If we fail, we throw IOException, also reporting what username this
@@ -743,10 +743,10 @@ public final class FileUtil {
    * 
    * <p>This method will handle a file in either Unix or Windows format. The 
    * text after the last forward or backslash is returned.<pre>
-   * a/b/c.txt --> c.txt
-   * a.txt     --> a.txt
-   * a/b/c     --> c
-   * a/b/c/    --> ""
+   * a/b/c.txt --&gt; c.txt
+   * a.txt     --&gt; a.txt
+   * a/b/c     --&gt; c
+   * a/b/c/    --&gt; ""
    * </pre>
    * 
    * <p>The output will be the same irrespective of the machine on which the 
@@ -897,25 +897,27 @@ public final class FileUtil {
    * than the length of the input string.
    * <pre>
    * Windows:
-   * a\b\c.txt           --> ""          --> relative
-   * \a\b\c.txt          --> "\"         --> current drive absolute
-   * C:a\b\c.txt         --> "C:"        --> drive relative
-   * C:\a\b\c.txt        --> "C:\"       --> absolute
-   * \\server\a\b\c.txt  --> "\\server\" --> UNC
+   * a\b\c.txt           --&gt; ""          --&gt; relative
+   * \a\b\c.txt          --&gt; "\"         --&gt; current drive absolute
+   * C:a\b\c.txt         --&gt; "C:"        --&gt; drive relative
+   * C:\a\b\c.txt        --&gt; "C:\"       --&gt; absolute
+   * \\server\a\b\c.txt  --&gt; "\\server\" --&gt; UNC
    *
    * Unix:
-   * a/b/c.txt           --> ""          --> relative
-   * /a/b/c.txt          --> "/"         --> absolute
-   * ~/a/b/c.txt         --> "~/"        --> current user
-   * ~                   --> "~/"        --> current user (slash added)
-   * ~user/a/b/c.txt     --> "~user/"    --> named user
-   * ~user               --> "~user/"    --> named user (slash added)
+   * a/b/c.txt           --&gt; ""          --&gt; relative
+   * /a/b/c.txt          --&gt; "/"         --&gt; absolute
+   * ~/a/b/c.txt         --&gt; "~/"        --&gt; current user
+   * ~                   --&gt; "~/"        --&gt; current user (slash added)
+   * ~user/a/b/c.txt     --&gt; "~user/"    --&gt; named user
+   * ~user               --&gt; "~user/"    --&gt; named user (slash added)
    * </pre>
-   * <p>
-   * The output will be the same irrespective of the machine that the code is running on.
-   * ie. both Unix and Windows prefixes are matched regardless.
+   * 
+   * <p>The output will be the same irrespective of the machine that the code 
+   * is running on. I.e., both Unix and Windows prefixes are matched 
+   * regardless.</p>
    *
    * @param filename  the filename to find the prefix in, null returns -1
+   * 
    * @return the length of the prefix, -1 if invalid or null
    */
   public static int getPrefixLength( String filename ) {
@@ -3172,16 +3174,18 @@ public final class FileUtil {
 
 
   /**
-   * Construct a generational name from the given filename using the given int as the generation.
+   * Construct a generational name from the given filename using the given int 
+   * as the generation.
    * 
    * <p>This is designed to be called thusly:<pre>
    * int generation = 1;
-   * while(<some_test> )){
+   * while(&lt;some_test&gt; )){
    *   tgtFile = formatGenerationalName(tgtFile,generation++);
-   * }</pre></p>
+   * }</pre>
    * 
    * @param tgtFile
    * @param generation
+   * 
    * @return the generational name, never null, but may be blank 
    */
   public static String formatGenerationalName( String tgtFile, int generation ) {

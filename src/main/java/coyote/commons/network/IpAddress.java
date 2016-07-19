@@ -29,9 +29,7 @@ import java.net.UnknownHostException;
  *   ip.applyNetMask(oUser.NetMask);
  *   bResult=ip.equals(oUser.AllowedNetwork);
  * } catch (IpAddressException ipae) {
- * }
- * </PRE>
- * </p>
+ * }</PRE>
  */
 public class IpAddress {
   protected final static int IP4_OCTETS = 4;

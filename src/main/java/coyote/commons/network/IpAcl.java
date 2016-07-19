@@ -101,13 +101,13 @@ public class IpAcl {
    * Where "network" is a CIDR representation of a network against which a
    * match is to be made, and "allowed" is either 'ALLOW' or 'DENY'. There is a
    * special expression of 'DEFAULT' which represents the default rule (what
-   * should  happen if no expression is matched when performing a check).</p>
+   * should  happen if no expression is matched when performing a check).
    *
    * <p>The rules are a semicolon delimited list of CIDR networks with a 
    * directive of either ALLOW or DENY for that network. For 
    * example:<pre>192.168/16:ALLOW;150.159/16:DENY;DEFAULT:DENY</pre>Where 
    * everything coming from the 192.168.0.0/255.255.0.0 network is allowed, 
-   * 150.159.0.0/255.255.0.0 is denied and everything else is denied.</p>
+   * 150.159.0.0/255.255.0.0 is denied and everything else is denied.
    * 
    * @param rules the string containing the network specifications and their 
    *              ability to access.

@@ -50,8 +50,13 @@ public class StringUtil {
   /**
    * An "XML Safe" string require thats certain strings (or more correctly,
    * characters) be substituted for others. See page 257 of "XML by Example".
-   * <ul> <li>&amp; - &amp;amp; <li>&lt; - &amp;lt; <li>&gt; - &amp;gt;
-   * <li>&quote; - &amp;quote; <li>&apos; - &amp;apos; </ul>
+   * <ul> 
+   * <li>&amp; - &amp;&amp;</li> 
+   * <li>&lt; - &amp;&lt;</li>
+   * <li>&gt; - &amp;&gt;</li>
+   * <li>&quot; - &amp;&quot;</li> 
+   * <li>&#39; - &amp;&#39;</li>
+   * </ul>
    */
   public static final String XML_ENTITYREFS[] = { "&", "&amp;", "<", "&lt;", ">", "&gt;", "\"", "&quot;", "'", "&apos;", "\n", "&#xa;", "\r", "&#xd;", "\t", "&#x9;" };
 
@@ -686,18 +691,17 @@ public class StringUtil {
   /**
    * Replace a list of tokens in a string.
    * 
-   * <p> String {@code 2i} is replaced with String {@code 2i+1}.
-   * Order is very important. If you want to convert &lt; to &amp;lt; and you
-   * also want to convert &amp to &amp;amp; then it is important that you
-   * first convert &amp; to &amp;amp; before converting &lt; to &amp;lt;. If
-   * you do not, then the &amp in &amp;lt; will be converted to &amp;amp;lt;.
-   * </p>
+   * <p>String {@code 2i} is replaced with String {@code 2i+1}. Order is very 
+   * important. If you want to convert &lt; to &amp;&lt; and you also want to 
+   * convert &amp; to &amp;$amp; then it is important that you first convert 
+   * &amp; to &amp;&amp; before converting &lt; to &amp;&lt;. If you do not, 
+   * then the &amp; in &amp;&lt; will be converted to &amp;&amp;&lt;.</p>
    * 
    * @param tokens is an array of strings such that string {@code 2i} is
    *            replaced with string {@code 2i+1}.
    * @param string is the string to be searched.
    * @param fromStart If true, the substitution will be performed from the
-   *            begining , otherwise the replacement will begin from the end
+   *            beginning , otherwise the replacement will begin from the end
    *            of the array resulting in a reverse substitution
    * 
    * @return string with tokens replaced.

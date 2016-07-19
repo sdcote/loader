@@ -423,22 +423,22 @@ public class ThreadJob implements Runnable {
   /**
    * This "parks" the execution of this thread.
    *
-   * <p>When this object's <code>suspend()</code> method is called, the code
+   * <p>When this object's {@code suspend()} method is called, the code
    * will proceed to a place where it can stop processing. It will then call
-   * this method to wait until the <code>resume()</code> method is called or 
+   * this method to wait until the {@code resume()} method is called or 
    * the given number of milliseconds expire.</p>
    * 
    * <p>This method has two styles of parking. By default it will perform a 
-   * <code>wait()</code> operation on this jobs mutex. This is the least CPU
+   * {@code wait()} operation on this jobs mutex. This is the least CPU
    * taxing method. The second style of parking involves using the 
-   * <code>sleep()</code> and actually is less efficient than 
-   * <code>wait()</code>. The <code>sleep()</code> style is used in those JVMs
+   * {@code sleep()} and actually is less efficient than 
+   * {@code wait()}. The {@code sleep()} style is used in those JVMs
    * that have synchronization issues and tend to consume user-level CPU while
    * parked.</p>
    * 
-   * The style of sleeping is controlled by setting the park-sleep flag to true
-   * via the <code>setParkSleep(boolean)</code> method. The default is to 
-   * perform the more efficient <code>wait()</code> style.</p>
+   * <p>The style of sleeping is controlled by setting the park-sleep flag to 
+   * true via the {@code setParkSleep(boolean)} method. The default is to 
+   * perform the more efficient {@code wait()} style.</p>
    *  
    * @see #setParkSleep(boolean)
    * 
@@ -488,7 +488,7 @@ public class ThreadJob implements Runnable {
    * Sets the current thread to never idle, or run at full speed constantly.
    *
    * <p>If set to false, the thread will pause every iteration through the main
-   * <code>run()</code> loop and pause for a predetermined amount of time when
+   * {@code run()} loop and pause for a predetermined amount of time when
    * the code determines it no longer needs to process at full speed.</p>
    *
    * @param on the value of the flag to set.

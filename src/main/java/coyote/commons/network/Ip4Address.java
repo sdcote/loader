@@ -20,16 +20,14 @@ import java.util.StringTokenizer;
 public class Ip4Address extends IpAddress {
 
   /**
-   * Tests a string to see if it represents a valid IPv4 address. 
-   * <p>
-   * For a string to be considered valid, it must contain four numbers with 
+   * Tests a string to see if it represents a valid IPv4 address.
+   *  
+   * <p>For a string to be considered valid, it must contain four numbers with 
    * values between 0 and 255, separated by dots - i.e. standard IPv4 dotted-
-   * decimal notation.
-   * </p>
-   * <p>
-   * For instance, if <code>addr</code> contains the value "202.122.3.1",
-   * <code>isValidIP(addr)</code> will return 'true'.
-   * </p>
+   * decimal notation.</p>
+   * 
+   * <p>For instance, if {@code addr} contains the value "202.122.3.1",
+   * {@code isValidIP(addr)} will return 'true'.</p>
    * 
    * @param addr A string that may contain an IPv4 address in dotted-decimal
    *          notation.
@@ -46,8 +44,8 @@ public class Ip4Address extends IpAddress {
    * Tests a string to see if it represents a dotted-decimal address which may
    * be all or part of a valid IPv4 address. 
    * <p>
-   * For instance if <code>addr</code> contains the value "202.122.3", 
-   * <code>isIPv4DottedDecimal(addr)</code> will return 'true'.
+   * For instance if {@code addr} contains the value "202.122.3", 
+   * {@code isIPv4DottedDecimal(addr)} will return 'true'.
    * </p>
    * 
    * @param addr A string that may contain an IPv4 addresss in dotted-decimal
@@ -119,8 +117,8 @@ public class Ip4Address extends IpAddress {
    * Create a query string that is appropriate for use as the target of a PTR
    * query for an IPv4 address. 
    * <p>
-   * For instance if <code>addr</code> contains the value "202.122.3.1", 
-   * <code>IPv4ptrQueryString(addr)</code> will return
+   * For instance if {@code addr} contains the value "202.122.3.1", 
+   * {@code IPv4ptrQueryString(addr)} will return
    * '1.3.122.202.in-addr.arpa'.
    * </p>
    * 

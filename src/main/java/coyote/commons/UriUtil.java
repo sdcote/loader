@@ -395,15 +395,12 @@ public class UriUtil {
    * <p>This is handy for use in declarations and other static contexts where a
    * null check is fine for checking for a valid URI or URI syntax.</p>
    *
-   * <p> Consider:<br><tt>
-   * <pre>
+   * <p> Consider:<pre>
    * if( UriUtil.parse( text ) != null )
    * {
    *   System.out.println( &quot;The text '&quot; + text + &quot;' represents a valid URI&quot; );
    * }
-   * </pre><br></tt> As opposed to: <br>
-   * <tt>
-   * <pre>
+   * </pre><br>As opposed to:<pre>
    * try
    * {
    *   new URI( text );
@@ -413,8 +410,7 @@ public class UriUtil {
    * {
    *   // ignore
    * }
-   * </pre><br></tt>
-   * </p>
+   * </pre>
    *
    * @param text The text to parse into a URI
    *

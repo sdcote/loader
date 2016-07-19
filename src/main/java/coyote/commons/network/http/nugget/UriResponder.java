@@ -25,11 +25,11 @@ import coyote.commons.network.http.Response;
  * be retrieved through the {@code initParameter} attribute. The UriResponder 
  * must know beforehand the type of data placed in the initialization 
  * attribute:<pre>
- * File baseDirectory = uriResource.initParameter( File.class );</pre></p>
+ * File baseDirectory = uriResource.initParameter( File.class );</pre>
  * 
  * <p>The {@code initParameter} attribute is actually an array of objects which 
  * the UriResponder can retrieve via index:<pre>
- * File baseDirectory = uriResource.initParameter( 0, File.class );</pre></p>
+ * File baseDirectory = uriResource.initParameter( 0, File.class );</pre>
  * 
  * <p>All nuggets should implement this interface to support requests.</p>
  */

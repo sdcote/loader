@@ -124,7 +124,7 @@ public class SystemPropertyUtil {
    * <li>currently set class path</li>
    * <li>home directory of the user running the JVM</li>
    * <li>directory specified by the {@code cfg.dir} system property</li>
-   * <li>current working directory</li></ol></p>
+   * <li>current working directory</li></ol>
    * 
    * @param name base name of the file to load
    */

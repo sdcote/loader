@@ -147,7 +147,6 @@ public class DateUtil {
    * amount of offset from UT; the other uses common  3-character strings for
    * indicating time zones in North America.
    * </pre>
-   * </p>
    *
    * @param date
    *

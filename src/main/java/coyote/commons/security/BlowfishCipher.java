@@ -31,9 +31,9 @@ import coyote.commons.CipherUtil;
  * L17 = R16 XoR P18
  * R17 = L16 XoR P17
  * </pre>
- * Where P is the sub-keys and F is the complex function. L17 and R17 contain 
- * the ciphertext. Notice that there are 16 iterations hence 16 rounds of 
- * XoR'ing and operations of F.</p>
+ * <p>Where P is the sub-keys and F is the complex function. L17 and R17 
+ * contain the ciphertext. Notice that there are 16 iterations hence 16 rounds 
+ * of XoR'ing and operations of F.</p>
  * 
  * <h3>Blowfish Decryption</h3>
  * <p>Decryption for Blowfish is relatively straight forward. Ironically, 
@@ -91,13 +91,13 @@ import coyote.commons.CipherUtil;
  * that according to what we know of quantum mechanics today, that the entire 
  * energy output of the sun is insufficient to break a 197-bit key.</p>
  * 
- * <p>Here is a more generalized example:<br/>The most common key lengths used 
- * by today's web browsers are "40-bit" and "128-bit." As a comparison, a 
- * 40-bit key can be "cracked" within a few hours by an average personal 
- * computer. However, a 128-bit key would take one BILLION powerful computers, 
- * each capable of trying one BILLION keys per second. In other words, it would 
- * take MILLIONS of years to try every possible combination of bits in a 
- * 128-bit key.</p>
+ * <p>Here is a more generalized example: The most common key lengths used by 
+ * today's web browsers are "40-bit" and "128-bit." As a comparison, a 40-bit 
+ * key can be "cracked" within a few hours by an average personal computer. 
+ * However, a 128-bit key would take one BILLION powerful computers, each 
+ * capable of trying one BILLION keys per second. In other words, it would take 
+ * MILLIONS of years to try every possible combination of bits in a 128-bit 
+ * key.</p>
  * 
  * <p>In the preceding example, the 128-bit encryption is not just three times 
  * stronger than 40-bit encryption - it is 
@@ -108,8 +108,8 @@ import coyote.commons.CipherUtil;
  * <p>Ported to Java from the C-code reference implementation.</p>
  * 
  * <p>References:<ol>
- * <li>Applied Cryptography --2nd Edition. Bruce Schneier; John Wiley & Sons
- * 1996, 336-339.</ul></p>
+ * <li>Applied Cryptography --2nd Edition. Bruce Schneier; John Wiley &amp; Sons
+ * 1996, 336-339.</li>
  * <li><a href="http://www.counterpane.com/blowfish.html">The Blowfish 
  * Encryption Algorithm.</a></li>
  * </ol>
@@ -398,7 +398,7 @@ public class BlowfishCipher extends AbstractCipher implements Cipher {
 
 
   /**
-   * Constructs a BlowfishCipher cipher object.</p>
+   * Constructs a BlowfishCipher cipher object.
    */
   public BlowfishCipher() {}
 

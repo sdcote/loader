@@ -34,7 +34,7 @@ import coyote.commons.StringUtil;
  * 
  * <p>The following variables are ignored for security reasons:<ul>
  * <li>{@code http.proxyPassword} - potential password exposure</li>
- * </ul></p>
+ * </ul>
  */
 public class SymbolTable extends HashMap {
 
