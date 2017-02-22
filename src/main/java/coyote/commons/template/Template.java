@@ -38,7 +38,7 @@ import coyote.commons.StringUtil;
  * the tokens within the delimiters with the string values those tokens
  * represent.</p>
  *
- * <p> If the token is preceded with a &quot;$&quot;, then the token is treated
+ * <p>If the token is preceded with a &quot;$&quot;, then the token is treated
  * as a key to be used to lookup an object in a symbol table. That object's
  * <code>toString</code> method is called and the returning value placed in the
  * position where the token was found. This is analogous to a variable lookup.
@@ -51,10 +51,6 @@ import coyote.commons.StringUtil;
  * called and that value is used at that location in the template. If the class 
  * is not found, a string value of &quot;null&quot; is returned.</p>
  * 
- * <p>If the object token contains a &quot;.$&quot; character, the last token delimited by the 
- *
-
- *
  * <p>Pre-initialized class references may be placed into the class cache in an
  * effort to give the template visibility into component frameworks. This
  * allows templates to call into generic, sharable facilities such as Data
