@@ -371,7 +371,7 @@ public class CronEntryTest {
 
 
   /**
-   * Test method for {@link coyote.commons.CronEntry#getNext()}.
+   * Test method for {@link coyote.commons.CronEntry#getNext(TreeSet, int, int)}.
    */
   @Test
   public void testGetNext() {
