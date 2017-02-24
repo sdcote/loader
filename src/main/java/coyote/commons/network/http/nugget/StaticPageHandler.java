@@ -28,7 +28,7 @@ import coyote.commons.network.http.Status;
  * Generic nugget to retrieve the requested page from a file root.
  * 
  * <p>The first initialization parameter is the directory from which the files 
- * are to be serverd.</p>
+ * are to be served.</p>
  */
 public class StaticPageHandler extends DefaultHandler {
 
