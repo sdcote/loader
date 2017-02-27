@@ -24,6 +24,7 @@ import coyote.commons.StringUtil;
 public class DefaultFormatter implements Formatter {
   private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS zzz" );
   private volatile long lastevent = 0;
+  private static int stackDepth = 6;
 
 
 
@@ -33,6 +34,26 @@ public class DefaultFormatter implements Formatter {
    */
   public DefaultFormatter() {
     super();
+  }
+
+
+
+
+  /**
+   * @return the number of stack calls to skip to find where messages originate.
+   */
+  public static int getStackDepth() {
+    return stackDepth;
+  }
+
+
+
+
+  /**
+   * @param depth the number of stack calls to skip to find where messages originate.
+   */
+  public static void setStackDepth( int depth ) {
+    DefaultFormatter.stackDepth = depth;
   }
 
 
@@ -71,9 +92,7 @@ public class DefaultFormatter implements Formatter {
     if ( Log.TRACE.equals( category ) || Log.DEBUG.equals( category ) ) {
       final StackTraceElement[] stack = new Exception().fillInStackTrace().getStackTrace();
 
-      // get the 4th element, 0=DefaultFormatter.format(), 1=Appender.append(),
-      // 2=LogKernel.append(), 3=facade(append) 4=facade(Log/CategoryLogger), 5=source call
-      final StackTraceElement elem = stack[( stack.length <=5 ) ? stack.length-1 : 5];
+      final StackTraceElement elem = stack[( stack.length <= stackDepth ) ? stack.length - 1 : stackDepth];
 
       buffer.append( ExceptionUtil.getAbbreviatedClassname( elem.getClassName() ) );
       buffer.append( "." );
@@ -174,4 +193,5 @@ public class DefaultFormatter implements Formatter {
   public byte[] terminate() {
     return null;
   }
+
 }

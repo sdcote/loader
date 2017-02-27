@@ -119,7 +119,6 @@ public class ClassloadingHandler extends DefaultHandler {
    * Treat the given requestpath as a directory and try different options to pull an index request.
    * 
    * @param path
-   * @param parent
    * 
    * @return the new request which will return one of the index files
    */
