@@ -18,7 +18,14 @@ import coyote.commons.network.http.Response;
 
 /**
  * This represents a class which responds to a URI requested from the HTTP 
- * server.
+ * server, a.k.a a "nugget".
+ * 
+ * <p>Nuggets are classes which are instantiated for each request. They do not 
+ * have any state between requests and are therefore stateless in nature. Many 
+ * instances of a nugget can be created which will require garbage collecting 
+ * so design your nuggets accordingly. 
+ * 
+ * <p>All nuggets should implement this interface to support requests.</p>
  * 
  * <p>The UriResource can contain important data for the operation of the 
  * handler. This data is set when the routing was added to the server and can 
@@ -30,8 +37,6 @@ import coyote.commons.network.http.Response;
  * <p>The {@code initParameter} attribute is actually an array of objects which 
  * the UriResponder can retrieve via index:<pre>
  * File baseDirectory = uriResource.initParameter( 0, File.class );</pre>
- * 
- * <p>All nuggets should implement this interface to support requests.</p>
  */
 public interface UriResponder {
 

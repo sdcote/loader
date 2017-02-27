@@ -175,8 +175,11 @@ public class UriResource {
     if ( handler != null ) {
       try {
         final Object object = handler.newInstance();
+
+        // If this is a URI Responder, have it process the request
         if ( object instanceof UriResponder ) {
           final UriResponder responder = (UriResponder)object;
+
           switch ( session.getMethod() ) {
             case GET:
               return responder.get( this, urlParams, session );
@@ -190,12 +193,14 @@ public class UriResource {
               return responder.other( session.getMethod().toString(), this, urlParams, session );
           }
         } else {
+          // This is some other object...display it generically
           return HTTPD.newFixedLengthResponse( Status.OK, "text/plain", //
-              new StringBuilder( "Return: " )//
-                  .append( handler.getCanonicalName() )//
-                  .append( ".toString() -> " )//
-                  .append( object )//
-                  .toString() );
+              new StringBuilder( "Return: " ) //
+                  .append( handler.getCanonicalName() ) //
+                  .append( ".toString() -> " ) //
+                  .append( object ) //
+                  .toString() 
+              );
         }
       } catch ( final Exception e ) {
         error = "Error: " + e.getClass().getName() + " : " + e.getMessage();
