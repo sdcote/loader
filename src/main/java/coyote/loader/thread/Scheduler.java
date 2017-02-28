@@ -141,11 +141,6 @@ public class Scheduler extends ThreadJob {
             }
           }
 
-          
-          
-          
-          
-          
           // If we got here, it is time (or past the time) to execute the next
           // ScheduledJob referenced by nextJob
           try {
