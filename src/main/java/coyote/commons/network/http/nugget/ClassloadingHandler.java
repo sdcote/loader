@@ -27,7 +27,7 @@ import coyote.loader.log.Log;
  * loader.
  * 
  * <p>This is useful when there is no file system from which to serve content 
- * such as containerized applications or when the server is not allowed to 
+ * such as container-ized applications or when the server is not allowed to 
  * access the file system for security reasons. The ensures that only specific,
  * intended content is served.</p>
  *
@@ -65,7 +65,7 @@ public class ClassloadingHandler extends DefaultHandler {
     // Retrieve the base directory in the classpath for our search
     String parentdirectory = uriResource.initParameter( String.class );
 
-    // make sure we are configured with a properly formatted  parent directory
+    // make sure we are configured with a properly formatted parent directory
     if ( !parentdirectory.endsWith( "/" ) ) {
       parentdirectory = parentdirectory.concat( "/" );
     }
@@ -116,7 +116,7 @@ public class ClassloadingHandler extends DefaultHandler {
 
 
   /**
-   * Treat the given requestpath as a directory and try different options to pull an index request.
+   * Treat the given request path as a directory and try different options to pull an index request.
    * 
    * @param path
    * 
@@ -137,9 +137,9 @@ public class ClassloadingHandler extends DefaultHandler {
     } else {
       retval = path.concat( "index.htm" );
       if ( cLoader.getResource( retval ) != null ) {
-        return retval; // dound DOS index file
+        return retval; // found DOS index file
       } else {
-        return null; // did not fine either
+        return null; // did not find either
       }
     }
   }
