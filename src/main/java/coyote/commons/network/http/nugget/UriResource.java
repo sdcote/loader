@@ -149,7 +149,8 @@ public class UriResource {
    *  
    * @param url the URL to match
    * 
-   * @return parameters pulled from the URL based on this resource's matching pattern
+   * @return parameters pulled from the URL based on this resource's matching 
+   *     pattern (may be empty) or null if the URL did not match at all.
    */
   public Map<String, String> match( final String url ) {
     final Matcher matcher = uriPattern.matcher( url );
