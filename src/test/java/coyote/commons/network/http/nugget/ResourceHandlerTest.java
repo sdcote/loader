@@ -82,7 +82,6 @@ public class ResourceHandlerTest {
       fail( e.getMessage() );
     }
 
-    //pass( "Not yet implemented" ); // TODO
   }
 
 
@@ -110,6 +109,6 @@ public class ResourceHandlerTest {
     in.close();
 
     return response.toString();
-
   }
+  
 }
