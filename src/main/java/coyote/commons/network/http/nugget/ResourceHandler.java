@@ -11,10 +11,6 @@ import coyote.commons.network.http.IHTTPSession;
 import coyote.commons.network.http.IStatus;
 import coyote.commons.network.http.Response;
 import coyote.commons.network.http.Status;
-import coyote.commons.network.http.nugget.DefaultHandler;
-import coyote.commons.network.http.nugget.Error404UriHandler;
-import coyote.commons.network.http.nugget.HTTPDRouter;
-import coyote.commons.network.http.nugget.UriResource;
 import coyote.loader.log.Log;
 
 
@@ -81,8 +77,6 @@ public class ResourceHandler extends DefaultHandler {
 
     showRequest( uriResource, session );
 
-    redirectOnIndexedDir = uriResource.initParameter( 0, Boolean.class );
-
     final String baseUri = uriResource.getUri(); // the regex matcher URL
 
     String coreRequest = HTTPDRouter.normalizeUri( session.getUri() );
@@ -97,8 +91,23 @@ public class ResourceHandler extends DefaultHandler {
 
     // Retrieve the base directory in the classpath for our search
     String parentdirectory = uriResource.initParameter( 0, String.class );
-    if ( StringUtil.isBlank( parentdirectory ) ) {
-      parentdirectory = DEFAULT_ROOT;
+    try {
+      if ( StringUtil.isBlank( parentdirectory ) ) {
+        parentdirectory = DEFAULT_ROOT;
+      }
+    } catch ( Exception e ) {
+      Log.append( HTTPD.EVENT, "ResourceHandler initialization error: Parent Directory: " + e.getMessage() + " - defaulting to '" + DEFAULT_ROOT + "'" );
+    }
+
+    // Check if we should send a 301 redirect when the request is for a 
+    // directory and we found an inded file in that location whic can be 
+    // served instead
+    if ( uriResource.getInitParameterLength() > 1 ) {
+      try {
+        redirectOnIndexedDir = uriResource.initParameter( 1, Boolean.class );
+      } catch ( Exception e ) {
+        Log.append( HTTPD.EVENT, "ResourceHandler initialization error: Redirect On Indexed Directory: " + e.getMessage() + " - defaulting to true" );
+      }
     }
 
     // make sure we are configured with a properly formatted parent directory

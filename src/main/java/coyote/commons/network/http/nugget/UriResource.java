@@ -107,6 +107,16 @@ public class UriResource {
 
 
   /**
+   * @return the number of initialization parameters set in the resource.
+   */
+  public int getInitParameterLength() {
+    return initParameter.length;
+  }
+
+
+
+
+  /**
    * Cast the first initialization parameter to the given class.
    * 
    * @param paramClazz the class to perform the cast
@@ -200,8 +210,7 @@ public class UriResource {
                   .append( handler.getCanonicalName() ) //
                   .append( ".toString() -> " ) //
                   .append( object ) //
-                  .toString() 
-              );
+                  .toString() );
         }
       } catch ( final Exception e ) {
         error = "Error: " + e.getClass().getName() + " : " + e.getMessage();
