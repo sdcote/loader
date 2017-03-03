@@ -28,11 +28,20 @@ public class MimeType {
 
   private static final MimeType UNKNOWN = new MimeType( "unknown", "application/octet-stream", true );
   private static final List<MimeType> MIMES = new ArrayList<MimeType>();
+  
+  // handy constants for more readable code
+  public static final MimeType JSON = new MimeType( "json", "application/json", false );
+  public static final MimeType XML =  new MimeType( "xml", "application/xml", false );
+  public static final MimeType SOAP =  new MimeType( "xml", "application/soap+xml", false );
+  public static final MimeType TEXT =  new MimeType( "text", "text/plain", false ) ;
+  
 
   private String extension, type;
   private boolean binary;
 
   static {
+    MIMES.add( JSON );
+    MIMES.add( XML );
     MIMES.add( new MimeType( "3dm", "x-world/x-3dmf", true ) );
     MIMES.add( new MimeType( "3dmf", "x-world/x-3dmf", true ) );
     MIMES.add( new MimeType( "a", "application/octet-stream", true ) );
@@ -626,7 +635,7 @@ public class MimeType {
     MIMES.add( new MimeType( "texi", "application/x-texinfo", true ) );
     MIMES.add( new MimeType( "texinfo", "application/x-texinfo", true ) );
     MIMES.add( new MimeType( "text", "application/plain", true ) );
-    MIMES.add( new MimeType( "text", "text/plain", false ) );
+    MIMES.add( TEXT );
     MIMES.add( new MimeType( "tgz", "application/gnutar", true ) );
     MIMES.add( new MimeType( "tgz", "application/x-compressed", true ) );
     MIMES.add( new MimeType( "tif", "image/tiff", true ) );
@@ -762,8 +771,8 @@ public class MimeType {
     MIMES.add( new MimeType( "xlw", "application/x-excel", true ) );
     MIMES.add( new MimeType( "xlw", "application/x-msexcel", true ) );
     MIMES.add( new MimeType( "xm", "audio/xm", true ) );
-    MIMES.add( new MimeType( "xml", "application/xml", true ) );
     MIMES.add( new MimeType( "xml", "text/xml", false ) );
+    MIMES.add( SOAP );
     MIMES.add( new MimeType( "xmz", "xgl/movie", true ) );
     MIMES.add( new MimeType( "xpdl", "application/xml", true ) );
     MIMES.add( new MimeType( "xpix", "application/x-vnd.ls-xpix", true ) );
