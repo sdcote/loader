@@ -10,6 +10,8 @@
  */
 package coyote.commons.network.http.nugget;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -23,6 +25,7 @@ import coyote.commons.network.http.HTTPD;
 import coyote.commons.network.http.IHTTPSession;
 import coyote.commons.network.http.Response;
 import coyote.commons.network.http.Status;
+import coyote.commons.network.http.auth.Auth;
 import coyote.loader.log.Log;
 
 
@@ -195,6 +198,17 @@ public class UriResource {
           final UriResponder responder = (UriResponder)object;
 
           // TODO: Check for method level annotation
+          Method method = handler.getDeclaredMethod( "get" );
+          if (method.isAnnotationPresent(Auth.class)) {
+            Annotation annotation = method.getAnnotation(Auth.class);
+            Auth auth = (Auth) annotation;
+            if( auth.requireSSL()){
+              
+            }
+            if( auth.groups() != null){
+              
+            }
+          }
           
           switch ( session.getMethod() ) {
             case GET:
