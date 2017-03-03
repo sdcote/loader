@@ -12,7 +12,8 @@
 package coyote.commons.network.http.nugget;
 
 //import static org.junit.Assert.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -71,14 +72,22 @@ public class ResourceHandlerTest {
   @Test
   public void test() {
     server.addRoute( "/", Integer.MAX_VALUE, ResourceHandler.class, "content" );
-    server.addRoute( "/(.)+", Integer.MAX_VALUE, ResourceHandler.class, "content" );
+    server.addRoute( "/(.)+", Integer.MAX_VALUE, ResourceHandler.class, "content", true );
 
     try {
-      String data = sendGet( "http://localhost:" + PORT );
-      System.out.println( data );
-      // TODO: perfom some checks
+      TestResponse response = sendGet( "http://localhost:" + PORT );
+      System.out.println( response.getStatus() + ":" + response.getData() );
+      assertTrue( response.getStatus() == 200 );
+
+      response = sendGet( "http://localhost:" + PORT + "/" );
+      System.out.println( response.getStatus() + ":" + response.getData() );
+      assertTrue( response.getStatus() == 200 );
+
+      response = sendGet( "http://localhost:" + PORT + "/notfound.txt" );
+      System.out.println( response.getStatus() + ":" + response.getData() );
+      assertTrue( response.getStatus() == 404 );
+
     } catch ( Exception e ) {
-      e.printStackTrace();
       fail( e.getMessage() );
     }
 
@@ -87,8 +96,8 @@ public class ResourceHandlerTest {
 
 
 
-  //HTTP GET request
-  private String sendGet( String url ) throws Exception {
+  protected TestResponse sendGet( String url ) throws Exception {
+    TestResponse testResponse = new TestResponse( url );
 
     URL obj = new URL( url );
     HttpURLConnection con = (HttpURLConnection)obj.openConnection();
@@ -96,19 +105,20 @@ public class ResourceHandlerTest {
     con.setRequestProperty( "User-Agent", "Mozilla/5.0" );
 
     int responseCode = con.getResponseCode();
-    System.out.println( "\nSending 'GET' request to URL : " + url );
-    System.out.println( "Response Code : " + responseCode );
+    testResponse.setStatus( responseCode );
+    if ( responseCode < 300 ) {
+      BufferedReader in = new BufferedReader( new InputStreamReader( con.getInputStream() ) );
+      String inputLine;
+      StringBuffer response = new StringBuffer();
 
-    BufferedReader in = new BufferedReader( new InputStreamReader( con.getInputStream() ) );
-    String inputLine;
-    StringBuffer response = new StringBuffer();
+      while ( ( inputLine = in.readLine() ) != null ) {
+        response.append( inputLine );
+      }
+      in.close();
 
-    while ( ( inputLine = in.readLine() ) != null ) {
-      response.append( inputLine );
+      testResponse.setData( response.toString() );
     }
-    in.close();
-
-    return response.toString();
+    return testResponse;
   }
-  
+
 }
