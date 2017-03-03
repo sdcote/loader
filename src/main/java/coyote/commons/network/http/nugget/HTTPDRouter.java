@@ -60,8 +60,8 @@ public class HTTPDRouter extends HTTPD {
   public void addMappings() {
     router.setNotImplemented( NotImplementedHandler.class );
     router.setNotFoundHandler( Error404UriHandler.class );
-    router.addRoute( "/", Integer.MAX_VALUE / 2, IndexHandler.class );
-    router.addRoute( "/index.html", Integer.MAX_VALUE / 2, IndexHandler.class );
+    router.addRoute( "/", Integer.MAX_VALUE / 2, BlankPage.class );
+    router.addRoute( "/index.html", Integer.MAX_VALUE / 2, BlankPage.class );
   }
 
 

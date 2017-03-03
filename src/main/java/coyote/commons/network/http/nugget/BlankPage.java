@@ -15,9 +15,11 @@ import coyote.commons.network.http.Status;
 
 
 /**
- * Handling index
+ * This responds with a blank page.
+ * 
+ * <p>Useful to handle URLs which should respond, but not return any data.
  */
-public class IndexHandler extends DefaultHandler {
+public class BlankPage extends DefaultHandler {
 
   @Override
   public String getMimeType() {
@@ -37,7 +39,7 @@ public class IndexHandler extends DefaultHandler {
 
   @Override
   public String getText() {
-    return "<html><body><h3>Hi.</h3></body></html>";
+    return "<html><body></body></html>";
   }
 
 }
