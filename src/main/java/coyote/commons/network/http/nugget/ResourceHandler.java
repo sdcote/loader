@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import coyote.commons.StringUtil;
+import coyote.commons.network.MimeType;
 import coyote.commons.network.http.HTTPD;
 import coyote.commons.network.http.IHTTPSession;
 import coyote.commons.network.http.IStatus;
@@ -140,7 +141,7 @@ public class ResourceHandler extends DefaultHandler {
         if ( redirectOnIndexedDir ) {
           // We need to send a 301, indicating the new (proper) URL to use
           String redirectlocation = localPath.replace( parentdirectory.substring( 0, parentdirectory.length() - 1 ), "" ); // YUCK!!!
-          Response redirect = HTTPD.newFixedLengthResponse( Status.REDIRECT, "text/plain", null );
+          Response redirect = HTTPD.newFixedLengthResponse( Status.REDIRECT, MimeType.TEXT.getType(), null );
           redirect.addHeader( "Location", redirectlocation );
           return redirect;
         } else {
@@ -149,7 +150,7 @@ public class ResourceHandler extends DefaultHandler {
           try {
             return HTTPD.newChunkedResponse( Status.OK, HTTPD.getMimeTypeForFile( localPath ), cLoader.getResourceAsStream( localPath ) );
           } catch ( final Exception ioe ) {
-            return HTTPD.newFixedLengthResponse( Status.REQUEST_TIMEOUT, "text/plain", null );
+            return HTTPD.newFixedLengthResponse( Status.REQUEST_TIMEOUT, MimeType.TEXT.getType(), null );
           }
         }
       }
@@ -166,7 +167,7 @@ public class ResourceHandler extends DefaultHandler {
         try {
           return HTTPD.newChunkedResponse( Status.OK, HTTPD.getMimeTypeForFile( localPath ), cLoader.getResourceAsStream( localPath ) );
         } catch ( final Exception ioe ) {
-          return HTTPD.newFixedLengthResponse( Status.REQUEST_TIMEOUT, "text/plain", null );
+          return HTTPD.newFixedLengthResponse( Status.REQUEST_TIMEOUT, MimeType.TEXT.getType(), null );
         }
       }
     }
@@ -253,7 +254,7 @@ public class ResourceHandler extends DefaultHandler {
 
   @Override
   public String getMimeType() {
-    return "text/plain"; // this should never be called
+    return MimeType.TEXT.getType(); // this should never be called
   }
 
 }

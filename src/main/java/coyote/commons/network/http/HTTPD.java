@@ -64,11 +64,7 @@ public abstract class HTTPD {
    */
   public static final int SOCKET_READ_TIMEOUT = 5000;
 
-  /** Common MIME type for dynamic content: plain text */
-  public static final String MIME_PLAINTEXT = "text/plain";
 
-  /** Common MIME type for dynamic content: HTML */
-  public static final String MIME_HTML = "text/html";
 
   /** 
    * Our IP address Access Control List. It is set to deny everything unless 
@@ -354,7 +350,7 @@ public abstract class HTTPD {
    * Create a text response with known length.
    */
   public static Response newFixedLengthResponse( final String msg ) {
-    return newFixedLengthResponse( Status.OK, HTTPD.MIME_HTML, msg );
+    return newFixedLengthResponse( Status.OK, MimeType.HTML.getType(), msg );
   }
 
 
@@ -564,16 +560,16 @@ public abstract class HTTPD {
       try {
         session.parseBody( files );
       } catch ( final IOException ioe ) {
-        return newFixedLengthResponse( Status.INTERNAL_ERROR, HTTPD.MIME_PLAINTEXT, "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage() );
+        return newFixedLengthResponse( Status.INTERNAL_ERROR, MimeType.TEXT.getType(), "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage() );
       } catch ( final ResponseException re ) {
-        return newFixedLengthResponse( re.getStatus(), HTTPD.MIME_PLAINTEXT, re.getMessage() );
+        return newFixedLengthResponse( re.getStatus(), MimeType.TEXT.getType(), re.getMessage() );
       }
     }
 
     final Map<String, String> parms = session.getParms();
     parms.put( HTTPD.QUERY_STRING_PARAMETER, session.getQueryParameterString() );
 
-    return newFixedLengthResponse( Status.NOT_FOUND, HTTPD.MIME_PLAINTEXT, "Not Found" );
+    return newFixedLengthResponse( Status.NOT_FOUND, MimeType.TEXT.getType(), "Not Found" );
   }
 
 

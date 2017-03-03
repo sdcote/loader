@@ -14,6 +14,7 @@ import java.net.URL;
 import java.util.Map;
 
 import coyote.commons.StringUtil;
+import coyote.commons.network.MimeType;
 import coyote.commons.network.http.HTTPD;
 import coyote.commons.network.http.IHTTPSession;
 import coyote.commons.network.http.IStatus;
@@ -107,7 +108,7 @@ public class ClassloadingHandler extends DefaultHandler {
       try {
         return HTTPD.newChunkedResponse( getStatus(), HTTPD.getMimeTypeForFile( localPath ), cLoader.getResourceAsStream( localPath ) );
       } catch ( final Exception ioe ) {
-        return HTTPD.newFixedLengthResponse( Status.REQUEST_TIMEOUT, "text/plain", null );
+        return HTTPD.newFixedLengthResponse( Status.REQUEST_TIMEOUT, MimeType.TEXT.getType(), null );
       }
     }
   }

@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import coyote.commons.network.MimeType;
 import coyote.commons.network.http.HTTPD;
 import coyote.commons.network.http.IHTTPSession;
 import coyote.commons.network.http.Response;
@@ -187,10 +188,14 @@ public class UriResource {
       try {
         final Object object = handler.newInstance();
 
+        // TODO: Check for Class Annotation
+        
         // If this is a URI Responder, have it process the request
         if ( object instanceof UriResponder ) {
           final UriResponder responder = (UriResponder)object;
 
+          // TODO: Check for method level annotation
+          
           switch ( session.getMethod() ) {
             case GET:
               return responder.get( this, urlParams, session );
@@ -205,7 +210,7 @@ public class UriResource {
           }
         } else {
           // This is some other object...display it generically
-          return HTTPD.newFixedLengthResponse( Status.OK, "text/plain", //
+          return HTTPD.newFixedLengthResponse( Status.OK, MimeType.TEXT.getType(), //
               new StringBuilder( "Return: " ) //
                   .append( handler.getCanonicalName() ) //
                   .append( ".toString() -> " ) //
@@ -217,7 +222,7 @@ public class UriResource {
         Log.append( HTTPD.EVENT, error, e );
       }
     }
-    return HTTPD.newFixedLengthResponse( Status.INTERNAL_ERROR, "text/plain", error );
+    return HTTPD.newFixedLengthResponse( Status.INTERNAL_ERROR, MimeType.TEXT.getType(), error );
   }
 
 

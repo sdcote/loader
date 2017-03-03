@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
+import coyote.commons.network.MimeType;
 import coyote.commons.network.http.HTTPD;
 import coyote.commons.network.http.IHTTPSession;
 import coyote.commons.network.http.IStatus;
@@ -94,7 +95,7 @@ public class StaticPageHandler extends DefaultHandler {
       try {
         return HTTPD.newChunkedResponse( getStatus(), HTTPD.getMimeTypeForFile( requestedFile.getName() ), fileToInputStream( requestedFile ) );
       } catch ( final IOException ioe ) {
-        return HTTPD.newFixedLengthResponse( Status.REQUEST_TIMEOUT, "text/plain", null );
+        return HTTPD.newFixedLengthResponse( Status.REQUEST_TIMEOUT, MimeType.TEXT.getType(), null );
       }
     }
   }

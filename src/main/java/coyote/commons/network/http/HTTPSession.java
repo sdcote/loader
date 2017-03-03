@@ -36,6 +36,7 @@ import java.util.regex.Matcher;
 
 import javax.net.ssl.SSLException;
 
+import coyote.commons.network.MimeType;
 import coyote.loader.log.Log;
 
 
@@ -402,15 +403,15 @@ class HTTPSession implements IHTTPSession {
       // the stream & finalAccept object by throwing exceptions up the stack.
       throw ste;
     } catch ( final SSLException ssle ) {
-      final Response resp = HTTPD.newFixedLengthResponse( Status.INTERNAL_ERROR, HTTPD.MIME_PLAINTEXT, "SSL PROTOCOL FAILURE: " + ssle.getMessage() );
+      final Response resp = HTTPD.newFixedLengthResponse( Status.INTERNAL_ERROR, MimeType.TEXT.getType(), "SSL PROTOCOL FAILURE: " + ssle.getMessage() );
       resp.send( outputStream );
       HTTPD.safeClose( outputStream );
     } catch ( final IOException ioe ) {
-      final Response resp = HTTPD.newFixedLengthResponse( Status.INTERNAL_ERROR, HTTPD.MIME_PLAINTEXT, "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage() );
+      final Response resp = HTTPD.newFixedLengthResponse( Status.INTERNAL_ERROR, MimeType.TEXT.getType(), "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage() );
       resp.send( outputStream );
       HTTPD.safeClose( outputStream );
     } catch ( final ResponseException re ) {
-      final Response resp = HTTPD.newFixedLengthResponse( re.getStatus(), HTTPD.MIME_PLAINTEXT, re.getMessage() );
+      final Response resp = HTTPD.newFixedLengthResponse( re.getStatus(), MimeType.TEXT.getType(), re.getMessage() );
       resp.send( outputStream );
       HTTPD.safeClose( outputStream );
     }

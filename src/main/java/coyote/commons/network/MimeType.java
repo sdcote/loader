@@ -28,13 +28,13 @@ public class MimeType {
 
   private static final MimeType UNKNOWN = new MimeType( "unknown", "application/octet-stream", true );
   private static final List<MimeType> MIMES = new ArrayList<MimeType>();
-  
+
   // handy constants for more readable code
   public static final MimeType JSON = new MimeType( "json", "application/json", false );
-  public static final MimeType XML =  new MimeType( "xml", "application/xml", false );
-  public static final MimeType SOAP =  new MimeType( "xml", "application/soap+xml", false );
-  public static final MimeType TEXT =  new MimeType( "text", "text/plain", false ) ;
-  
+  public static final MimeType XML = new MimeType( "xml", "application/xml", false );
+  public static final MimeType SOAP = new MimeType( "xml", "application/soap+xml", false );
+  public static final MimeType TEXT = new MimeType( "text", "text/plain", false );
+  public static final MimeType HTML = new MimeType( "html", "text/html", false );
 
   private String extension, type;
   private boolean binary;
@@ -224,7 +224,7 @@ public class MimeType {
     MIMES.add( new MimeType( "hta", "application/hta", true ) );
     MIMES.add( new MimeType( "htc", "text/x-component", false ) );
     MIMES.add( new MimeType( "htm", "text/html", false ) );
-    MIMES.add( new MimeType( "html", "text/html", false ) );
+    MIMES.add( HTML );
     MIMES.add( new MimeType( "htmls", "text/html", false ) );
     MIMES.add( new MimeType( "htt", "text/webviewhtml", false ) );
     MIMES.add( new MimeType( "htx", "text/html", false ) );

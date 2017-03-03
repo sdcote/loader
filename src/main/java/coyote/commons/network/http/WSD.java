@@ -5,6 +5,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import coyote.commons.network.MimeType;
+
 
 /**
  * Web Socket Daemon
@@ -131,11 +133,11 @@ public abstract class WSD extends HTTPD {
     final Map<String, String> headers = session.getHeaders();
     if ( isWebsocketRequested( session ) ) {
       if ( !WSD.HEADER_WEBSOCKET_VERSION_VALUE.equalsIgnoreCase( headers.get( WSD.HEADER_WEBSOCKET_VERSION ) ) ) {
-        return newFixedLengthResponse( Status.BAD_REQUEST, HTTPD.MIME_PLAINTEXT, "Invalid Websocket-Version " + headers.get( WSD.HEADER_WEBSOCKET_VERSION ) );
+        return newFixedLengthResponse( Status.BAD_REQUEST, MimeType.TEXT.getType(), "Invalid Websocket-Version " + headers.get( WSD.HEADER_WEBSOCKET_VERSION ) );
       }
 
       if ( !headers.containsKey( WSD.HEADER_WEBSOCKET_KEY ) ) {
-        return newFixedLengthResponse( Status.BAD_REQUEST, HTTPD.MIME_PLAINTEXT, "Missing Websocket-Key" );
+        return newFixedLengthResponse( Status.BAD_REQUEST, MimeType.TEXT.getType(), "Missing Websocket-Key" );
       }
 
       final WebSocket webSocket = openWebSocket( session );
@@ -143,7 +145,7 @@ public abstract class WSD extends HTTPD {
       try {
         handshakeResponse.addHeader( WSD.HEADER_WEBSOCKET_ACCEPT, makeAcceptKey( headers.get( WSD.HEADER_WEBSOCKET_KEY ) ) );
       } catch ( final NoSuchAlgorithmException e ) {
-        return newFixedLengthResponse( Status.INTERNAL_ERROR, HTTPD.MIME_PLAINTEXT, "The SHA-1 Algorithm required for websockets is not available on the server." );
+        return newFixedLengthResponse( Status.INTERNAL_ERROR, MimeType.TEXT.getType(), "The SHA-1 Algorithm required for websockets is not available on the server." );
       }
 
       if ( headers.containsKey( WSD.HEADER_WEBSOCKET_PROTOCOL ) ) {
