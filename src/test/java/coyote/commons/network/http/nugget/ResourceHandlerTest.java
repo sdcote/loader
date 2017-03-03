@@ -26,6 +26,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import coyote.commons.network.http.HTTPD;
+import coyote.commons.network.http.TestResponse;
+import coyote.commons.network.http.TestRouter;
 
 
 /**

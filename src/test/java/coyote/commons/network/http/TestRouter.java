@@ -9,7 +9,9 @@
  *   Stephan D. Cote 
  *      - Initial concept and initial implementation
  */
-package coyote.commons.network.http.nugget;
+package coyote.commons.network.http;
+
+import coyote.commons.network.http.nugget.HTTPDRouter;
 
 /**
  * 

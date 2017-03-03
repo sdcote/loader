@@ -1,6 +1,6 @@
-package coyote.commons.network.http.nugget;
+package coyote.commons.network.http;
 
-class TestResponse {
+public class TestResponse {
   String location = null;
   int status = 0;
   String data = null;
@@ -8,7 +8,7 @@ class TestResponse {
 
 
 
-  TestResponse( final String url ) {
+  public TestResponse( final String url ) {
     location = url;
   }
 
