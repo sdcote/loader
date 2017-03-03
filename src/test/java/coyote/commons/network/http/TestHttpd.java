@@ -12,13 +12,15 @@
 package coyote.commons.network.http;
 
 //import static org.junit.Assert.*;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import coyote.commons.NetUtil;
 
 
 /**
@@ -27,6 +29,7 @@ import org.junit.Test;
 public class TestHttpd {
 
   private static HTTPD server = null;
+  private static int port = 54321;
 
 
 
@@ -37,7 +40,8 @@ public class TestHttpd {
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
 
-    server = new TestingServer( 62300 );
+    port = NetUtil.getNextAvailablePort( port );
+    server = new TestingServer( port );
 
     try {
       server.start( HTTPD.SOCKET_READ_TIMEOUT, true );
@@ -66,6 +70,7 @@ public class TestHttpd {
   @Test
   public void test() {
     assertNotNull( server );
+    assertTrue( port == server.getPort() );
   }
 
 }
