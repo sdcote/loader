@@ -456,8 +456,8 @@ class HTTPSession implements IHTTPSession {
    * bytes.
    */
   public long getBodySize() {
-    if ( requestHeaders.containsKey( "content-length" ) ) {
-      return Long.parseLong( requestHeaders.get( "content-length" ) );
+    if ( requestHeaders.containsKey( HTTP.HDR_CONTENT_LENGTH.toLowerCase() ) ) {
+      return Long.parseLong( requestHeaders.get( HTTP.HDR_CONTENT_LENGTH.toLowerCase() ) );
     } else if ( splitbyte < rlen ) {
       return rlen - splitbyte;
     }

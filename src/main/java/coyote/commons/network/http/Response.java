@@ -136,15 +136,14 @@ public class Response implements Closeable {
   /**
    * Indicate to close the connection after the Response has been sent.
    * 
-   * @param close
-   *            {@code true} to hint connection closing, {@code false} to
-   *            let connection be closed by client.
+   * @param close {@code true} to hint connection closing, {@code false} to let
+   *         connection be closed by client.
    */
   public void closeConnection( final boolean close ) {
     if ( close ) {
-      header.put( "connection", "close" );
+      header.put( HTTP.HDR_CONNECTION.toLowerCase(), HTTP.CLOSE );
     } else {
-      header.remove( "connection" );
+      header.remove( HTTP.HDR_CONNECTION.toLowerCase() );
     }
   }
 
@@ -191,7 +190,7 @@ public class Response implements Closeable {
    *         Response has been sent.
    */
   public boolean isCloseConnection() {
-    return "close".equals( getHeader( "connection" ) );
+    return HTTP.CLOSE.equals( getHeader( HTTP.HDR_CONNECTION.toLowerCase() ) );
   }
 
 
@@ -219,27 +218,27 @@ public class Response implements Closeable {
       final PrintWriter pw = new PrintWriter( new BufferedWriter( new OutputStreamWriter( outputStream, new ContentType( mimeType ).getEncoding() ) ), false );
       pw.append( "HTTP/1.1 " ).append( status.getDescription() ).append( " \r\n" );
       if ( mimeType != null ) {
-        printHeader( pw, "Content-Type", mimeType );
+        printHeader( pw, HTTP.HDR_CONTENT_TYPE, mimeType );
       }
-      if ( getHeader( "date" ) == null ) {
-        printHeader( pw, "Date", gmtFrmt.format( new Date() ) );
+      if ( getHeader( HTTP.HDR_DATE.toLowerCase() ) == null ) {
+        printHeader( pw, HTTP.HDR_DATE, gmtFrmt.format( new Date() ) );
       }
       for ( final Entry<String, String> entry : header.entrySet() ) {
         printHeader( pw, entry.getKey(), entry.getValue() );
       }
-      if ( getHeader( "connection" ) == null ) {
-        printHeader( pw, "Connection", ( keepAlive ? "keep-alive" : "close" ) );
+      if ( getHeader( HTTP.HDR_CONNECTION.toLowerCase() ) == null ) {
+        printHeader( pw, HTTP.HDR_CONNECTION, ( keepAlive ? HTTP.KEEP_ALIVE : HTTP.CLOSE ) );
       }
-      if ( getHeader( "content-length" ) != null ) {
+      if ( getHeader( HTTP.HDR_CONTENT_LENGTH.toLowerCase() ) != null ) {
         encodeAsGzip = false;
       }
       if ( encodeAsGzip ) {
-        printHeader( pw, "Content-Encoding", "gzip" );
+        printHeader( pw, HTTP.HDR_CONTENT_ENCODING, HTTP.GZIP );
         setChunkedTransfer( true );
       }
       long pending = data != null ? contentLength : 0;
       if ( ( requestMethod != Method.HEAD ) && chunkedTransfer ) {
-        printHeader( pw, "Transfer-Encoding", "chunked" );
+        printHeader( pw, HTTP.HDR_TRANSFER_ENCODING, HTTP.CHUNKED );
       } else if ( !encodeAsGzip ) {
         pending = sendContentLengthHeaderIfNotAlreadyPresent( pw, pending );
       }
@@ -261,13 +260,11 @@ public class Response implements Closeable {
    * limits the maximum amounts of bytes sent unless it is -1, in which
    * case everything is sent.
    * 
-   * @param outputStream
-   *            the OutputStream to send data to
-   * @param pending
-   *            -1 to send everything, otherwise sets a max limit to the
-   *            number of bytes sent
-   * @throws IOException
-   *             if something goes wrong while sending the data.
+   * @param outputStream the OutputStream to send data to
+   * @param pending -1 to send everything, otherwise sets a max limit to the 
+   *        number of bytes sent
+   *
+   * @throws IOException if something goes wrong while sending the data.
    */
   private void sendBody( final OutputStream outputStream, long pending ) throws IOException {
     final long BUFFER_SIZE = 16 * 1024;
@@ -316,7 +313,7 @@ public class Response implements Closeable {
 
 
   protected long sendContentLengthHeaderIfNotAlreadyPresent( final PrintWriter pw, final long defaultSize ) {
-    final String contentLengthString = getHeader( "content-length" );
+    final String contentLengthString = getHeader( HTTP.HDR_CONTENT_LENGTH.toLowerCase() );
     long size = defaultSize;
     if ( contentLengthString != null ) {
       try {
@@ -325,7 +322,7 @@ public class Response implements Closeable {
         Log.append( HTTPD.EVENT, "ERROR: content-length was not a number " + contentLengthString );
       }
     }
-    pw.print( "Content-Length: " + size + "\r\n" );
+    pw.print( HTTP.HDR_CONTENT_LENGTH + ": " + size + "\r\n" );
     return size;
   }
 
