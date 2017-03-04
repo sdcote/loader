@@ -434,4 +434,21 @@ public class Response implements Closeable {
     return createFixedLengthResponse( Status.OK, MimeType.HTML.getType(), msg );
   }
 
+
+
+
+  /**
+   * Add and possibly overwrite all the headers of the given map to the 
+   * response headers map.
+   * 
+   * @param responseHeaders the map of headers to place in the output 
+   */
+  public void addHeaders( Map<String, String> responseHeaders ) {
+    if ( responseHeaders != null ) {
+      for ( Map.Entry<String, String> entry : responseHeaders.entrySet() ) {
+        addHeader( entry.getKey(), entry.getValue() );
+      }
+    }
+  }
+
 }

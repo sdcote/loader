@@ -177,7 +177,7 @@ public class ResourceHandler extends DefaultHandler {
 
 
   private void showRequest( UriResource uriResource, IHTTPSession session ) {
-    Map<String, String> header = session.getHeaders();
+    Map<String, String> header = session.getRequestHeaders();
     Map<String, String> parms = session.getParms();
     String uri = session.getUri();
 

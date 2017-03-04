@@ -31,7 +31,18 @@ public interface IHTTPSession {
 
 
 
-  Map<String, String> getHeaders();
+  /**
+   * @return a reference to the request header map; the headers in the request message.
+   */
+  Map<String, String> getRequestHeaders();
+
+
+
+
+  /**
+   * @return a reference to the response header map; the headers to go into the response message.
+   */
+  Map<String, String> getResponseHeaders();
 
 
 

@@ -113,7 +113,7 @@ public abstract class WSD extends HTTPD {
 
 
   protected boolean isWebsocketRequested( final IHTTPSession session ) {
-    final Map<String, String> headers = session.getHeaders();
+    final Map<String, String> headers = session.getRequestHeaders();
     final String upgrade = headers.get( WSD.HEADER_UPGRADE );
     final boolean isCorrectConnection = isWebSocketConnectionHeader( headers );
     final boolean isUpgrade = WSD.HEADER_UPGRADE_VALUE.equalsIgnoreCase( upgrade );
@@ -130,7 +130,7 @@ public abstract class WSD extends HTTPD {
 
   @Override
   public Response serve( final IHTTPSession session ) throws SecurityResponseException {
-    final Map<String, String> headers = session.getHeaders();
+    final Map<String, String> headers = session.getRequestHeaders();
     if ( isWebsocketRequested( session ) ) {
       if ( !WSD.HEADER_WEBSOCKET_VERSION_VALUE.equalsIgnoreCase( headers.get( WSD.HEADER_WEBSOCKET_VERSION ) ) ) {
         return Response.createFixedLengthResponse( Status.BAD_REQUEST, MimeType.TEXT.getType(), "Invalid Websocket-Version " + headers.get( WSD.HEADER_WEBSOCKET_VERSION ) );

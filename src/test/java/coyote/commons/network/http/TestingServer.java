@@ -43,7 +43,7 @@ public class TestingServer extends HTTPD {
     sb.append( "<h1>Testing Server</h1>" );
     sb.append( "<p><blockquote><b>URI</b> = " ).append( String.valueOf( session.getUri() ) ).append( "<br />" );
     sb.append( "<b>Method</b> = " ).append( String.valueOf( session.getMethod() ) ).append( "</blockquote>" );
-    sb.append( "<h3>Headers</h3><p><blockquote>" ).append( toString( session.getHeaders() ) ).append( "</blockquote>" );
+    sb.append( "<h3>Headers</h3><p><blockquote>" ).append( toString( session.getRequestHeaders() ) ).append( "</blockquote>" );
     sb.append( "<h3>Parms</h3><p><blockquote>" ).append( toString( session.getParms() ) ).append( "</blockquote>" );
     sb.append( "<h3>Parms (multi values?)</h3><p><blockquote>" ).append( toString( decodedQueryParameters ) ).append( "</blockquote>" );
 

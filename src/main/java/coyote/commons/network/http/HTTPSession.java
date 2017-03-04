@@ -68,7 +68,11 @@ class HTTPSession implements IHTTPSession {
 
   private Map<String, String> parms;
 
-  private Map<String, String> headers;
+  /** Request Headers */
+  private Map<String, String> requestHeaders;
+
+  /** Response Headers */
+  private Map<String, String> responseHeaders;
 
   private CookieHandler cookies;
 
@@ -90,20 +94,18 @@ class HTTPSession implements IHTTPSession {
     this.tempFileManager = tempFileManager;
     this.inputStream = new BufferedInputStream( inputStream, HTTPSession.BUFSIZE );
     this.outputStream = outputStream;
+    requestHeaders = new HashMap<String, String>();
+    responseHeaders = new HashMap<String, String>();
   }
 
 
 
 
   public HTTPSession( HTTPD httpd, final TempFileManager tempFileManager, final InputStream inputStream, final OutputStream outputStream, final InetAddress inetAddress, final int port ) {
-    this.httpd = httpd;
-    this.tempFileManager = tempFileManager;
-    this.inputStream = new BufferedInputStream( inputStream, HTTPSession.BUFSIZE );
-    this.outputStream = outputStream;
+    this( httpd, tempFileManager, inputStream, outputStream );
     remotePort = port;
     remoteIp = inetAddress.isLoopbackAddress() || inetAddress.isAnyLocalAddress() ? "127.0.0.1" : inetAddress.getHostAddress().toString();
     remoteHostname = inetAddress.isLoopbackAddress() || inetAddress.isAnyLocalAddress() ? "localhost" : inetAddress.getHostName().toString();
-    headers = new HashMap<String, String>();
   }
 
 
@@ -342,10 +344,10 @@ class HTTPSession implements IHTTPSession {
       }
 
       parms = new HashMap<String, String>();
-      if ( null == headers ) {
-        headers = new HashMap<String, String>();
+      if ( null == requestHeaders ) {
+        requestHeaders = new HashMap<String, String>();
       } else {
-        headers.clear();
+        requestHeaders.clear();
       }
 
       // Create a BufferedReader for parsing the header.
@@ -353,11 +355,11 @@ class HTTPSession implements IHTTPSession {
 
       // Decode the header into parms and header java properties
       final Map<String, String> pre = new HashMap<String, String>();
-      decodeHeader( hin, pre, parms, headers );
+      decodeHeader( hin, pre, parms, requestHeaders );
 
       if ( null != remoteIp ) {
-        headers.put( "remote-addr", remoteIp );
-        headers.put( "http-client-ip", remoteIp );
+        requestHeaders.put( "remote-addr", remoteIp );
+        requestHeaders.put( "http-client-ip", remoteIp );
       }
 
       method = Method.lookup( pre.get( "method" ) );
@@ -367,12 +369,10 @@ class HTTPSession implements IHTTPSession {
 
       uri = pre.get( "uri" );
 
-      cookies = new CookieHandler( headers );
+      cookies = new CookieHandler( requestHeaders );
 
-      final String connection = headers.get( "connection" );
+      final String connection = requestHeaders.get( "connection" );
       final boolean keepAlive = "HTTP/1.1".equals( protocolVersion ) && ( ( connection == null ) || !connection.matches( "(?i).*close.*" ) );
-
-      // Ok, now do the serve()
 
       // TODO: long body_size = getBodySize();
       // TODO: long pos_before_serve = this.inputStream.totalRead()
@@ -383,22 +383,23 @@ class HTTPSession implements IHTTPSession {
       if ( response == null ) {
         throw new ResponseException( Status.INTERNAL_ERROR, "SERVER INTERNAL ERROR: Serve() returned a null response." );
       } else {
-        final String acceptEncoding = headers.get( "accept-encoding" );
+        final String acceptEncoding = requestHeaders.get( "accept-encoding" );
         cookies.unloadQueue( response );
         response.setRequestMethod( method );
         response.setGzipEncoding( this.httpd.useGzipWhenAccepted( response ) && ( acceptEncoding != null ) && acceptEncoding.contains( "gzip" ) );
         response.setKeepAlive( keepAlive );
+        response.addHeaders( responseHeaders );
         response.send( outputStream );
       }
       if ( !keepAlive || response.isCloseConnection() ) {
         throw new SocketException( "HTTPD Shutdown" );
       }
     } catch ( final SocketException e ) {
-      // throw it out to close socket object (finalAccept)
+      // re-throw it to close socket in (finalAccept)
       throw e;
     } catch ( final SocketTimeoutException ste ) {
       // treat socket timeouts the same way we treat socket exceptions: close 
-      // the stream & finalAccept object by throwing exceptions up the stack.
+      // the stream & finalAccept object by re-throwing exceptions up the stack.
       throw ste;
     } catch ( final SSLException ssle ) {
       final Response resp = Response.createFixedLengthResponse( Status.INTERNAL_ERROR, MimeType.TEXT.getType(), "SSL PROTOCOL FAILURE: " + ssle.getMessage() );
@@ -455,8 +456,8 @@ class HTTPSession implements IHTTPSession {
    * bytes.
    */
   public long getBodySize() {
-    if ( headers.containsKey( "content-length" ) ) {
-      return Long.parseLong( headers.get( "content-length" ) );
+    if ( requestHeaders.containsKey( "content-length" ) ) {
+      return Long.parseLong( requestHeaders.get( "content-length" ) );
     } else if ( splitbyte < rlen ) {
       return rlen - splitbyte;
     }
@@ -526,9 +527,23 @@ class HTTPSession implements IHTTPSession {
 
 
 
+  /**
+   * @see coyote.commons.network.http.IHTTPSession#getRequestHeaders()
+   */
   @Override
-  public final Map<String, String> getHeaders() {
-    return headers;
+  public final Map<String, String> getRequestHeaders() {
+    return requestHeaders;
+  }
+
+
+
+
+  /**
+   * @see coyote.commons.network.http.IHTTPSession#getResponseHeaders()
+   */
+  @Override
+  public Map<String, String> getResponseHeaders() {
+    return responseHeaders;
   }
 
 
@@ -657,7 +672,7 @@ class HTTPSession implements IHTTPSession {
       // If the method is POST, there may be parameters
       // in data section, too, read it:
       if ( Method.POST.equals( method ) ) {
-        final ContentType contentType = new ContentType( headers.get( "content-type" ) );
+        final ContentType contentType = new ContentType( requestHeaders.get( "content-type" ) );
         if ( contentType.isMultipart() ) {
           final String boundary = contentType.getBoundary();
           if ( boundary == null ) {
