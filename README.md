@@ -25,13 +25,13 @@ What this project is not:
 
   * The best way to do `X` - Everyone's needs will be different and this is just what has been found to solve many common problems in this area. YMMV
   * Containerization - This is a JRE toolkit not a self-contained environment to run in the cloud.
-  * Application Server - While it serves the same role as many App Servers, this is not intended to be the full-blown environments on the market.
-  * Intended To Lock You In - This is a way to run your components your way, not ours.
+  * Application Server - While it serves the same role as many App Servers, this is not intended to be the full-blown environments you find on the market today.
+  * Intended To Lock You In - This is a way to run your components your way, not ours. This project strives to let you load POJOs and not specialized components.
 
 # Capabilities
  * Configuration File Driven - No coding, just specify a file to direct operation.
  * Component Life Cycle Management - Creation, monitoring and cleanup of components.
- * HTTP Server - Lightweight message exchange for component communications.
+ * HTTP Server - Lightweight and secure message exchange for component communications.
 
 ## Prerequisites:
 
