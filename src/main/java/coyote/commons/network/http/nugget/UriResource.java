@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import coyote.commons.StringUtil;
 import coyote.commons.network.MimeType;
 import coyote.commons.network.http.HTTPD;
 import coyote.commons.network.http.IHTTPSession;
@@ -191,36 +192,54 @@ public class UriResource {
       try {
         final Object object = handler.newInstance();
 
-        // TODO: Check for Class Annotation
-        
         // If this is a URI Responder, have it process the request
         if ( object instanceof UriResponder ) {
           final UriResponder responder = (UriResponder)object;
 
-          // TODO: Check for method level annotation
-          Method method = handler.getDeclaredMethod( "get" );
-          if (method.isAnnotationPresent(Auth.class)) {
-            Annotation annotation = method.getAnnotation(Auth.class);
-            Auth auth = (Auth) annotation;
-            if( auth.requireSSL()){
-              
-            }
-            if( auth.groups() != null){
-              
-            }
-          }
-          
+          // determine which method to call
+          Class[] params = { UriResource.class, Map.class, IHTTPSession.class };
+          Method method = null;
           switch ( session.getMethod() ) {
             case GET:
-              return responder.get( this, urlParams, session );
+              method = handler.getMethod( "get", params );
+              break;
             case POST:
-              return responder.post( this, urlParams, session );
+              method = handler.getMethod( "post", params );
+              break;
             case PUT:
-              return responder.put( this, urlParams, session );
+              method = handler.getMethod( "put", params );
+              break;
             case DELETE:
-              return responder.delete( this, urlParams, session );
+              method = handler.getMethod( "delete", params );
+              break;
             default:
-              return responder.other( session.getMethod().toString(), this, urlParams, session );
+              method = handler.getMethod( "other", String.class, UriResource.class, Map.class, IHTTPSession.class );
+          }
+
+          // Check for method level authentication and authorization annotation
+          if ( method.isAnnotationPresent( Auth.class ) ) {
+            Annotation annotation = method.getAnnotation( Auth.class );
+            Auth auth = (Auth)annotation;
+            if ( auth.requireSSL() && !HTTPD.getAuthProvider().isValidConnection( session ) ) {
+              return HTTPD.newFixedLengthResponse( Status.FORBIDDEN, MimeType.TEXT.getType(), "Requires Secure Connection" );
+            }
+            if ( auth.required() && !HTTPD.getAuthProvider().isAuthenticated( session ) ) {
+              return HTTPD.newFixedLengthResponse( Status.FORBIDDEN, MimeType.TEXT.getType(), "Requires Secure Connection" );
+            }
+            if ( StringUtil.isNotBlank( auth.groups() ) && !HTTPD.getAuthProvider().isAuthorized( session, auth.groups() ) ) {
+              return HTTPD.newFixedLengthResponse( Status.UNAUTHORIZED, MimeType.TEXT.getType(), "Not Authorized" );
+            }
+          }
+
+          // All auth checks have passed, invoke processing
+          switch ( session.getMethod() ) {
+            case GET:
+            case POST:
+            case PUT:
+            case DELETE:
+              return (Response)method.invoke( responder, this, urlParams, session );
+            default:
+              return (Response)method.invoke( responder, session.getMethod().toString(), this, urlParams, session );
           }
         } else {
           // This is some other object...display it generically

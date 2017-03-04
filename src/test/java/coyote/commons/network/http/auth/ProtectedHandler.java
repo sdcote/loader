@@ -29,7 +29,7 @@ import coyote.commons.network.http.nugget.UriResource;
 public class ProtectedHandler extends DefaultHandler {
 
   /**
-   * @see coyote.batch.http.nugget.AbstractBatchNugget#post(coyote.commons.network.http.nugget.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
+   * @see coyote.commons.network.http.nugget.DefaultStreamHandler#post(coyote.commons.network.http.nugget.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
    */
   @Override
   @Auth(groups = "sysop", requireSSL = false)

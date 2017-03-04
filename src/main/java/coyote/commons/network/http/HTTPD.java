@@ -33,6 +33,8 @@ import coyote.commons.network.IpNetwork;
 import coyote.commons.network.MimeType;
 import coyote.commons.security.OperationFrequency;
 import coyote.loader.log.Log;
+import coyote.commons.network.http.auth.AuthProvider;
+import coyote.commons.network.http.auth.DefaultAuthProvider;
 
 
 /**
@@ -64,8 +66,6 @@ public abstract class HTTPD {
    */
   public static final int SOCKET_READ_TIMEOUT = 5000;
 
-
-
   /** 
    * Our IP address Access Control List. It is set to deny everything unless 
    * addresses match the entries in this list. 
@@ -80,6 +80,12 @@ public abstract class HTTPD {
    */
   final OperationFrequency dosTable = new OperationFrequency();
 
+  /**
+   * The component responsible for providing authentication and authorization
+   * processing for the server.
+   */
+  private static AuthProvider authProvider = new DefaultAuthProvider();
+  
   /**
    * Pseudo-Parameter to use to store the actual query string in the
    * parameters map for later re-processing.
@@ -697,6 +703,28 @@ public abstract class HTTPD {
 
   public final boolean wasStarted() {
     return ( myServerSocket != null ) && ( myThread != null );
+  }
+
+
+
+
+  /**
+   * @return the component responsible for providing authentication and 
+   *         authorization processing to the server.
+   */
+  public static AuthProvider getAuthProvider() {
+    return authProvider;
+  }
+
+
+
+
+  /**
+   * @param provider the component responsible for providing authentication 
+   *        and authorization processing to the server
+   */
+  public static void setAuthProvider( AuthProvider provider ) {
+    authProvider = provider;
   }
 
 }
