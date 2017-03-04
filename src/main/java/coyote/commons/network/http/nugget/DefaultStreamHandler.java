@@ -35,7 +35,7 @@ public abstract class DefaultStreamHandler implements UriResponder {
 
   @Override
   public Response get( final UriResource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
-    return Response.newChunkedResponse( getStatus(), getMimeType(), getData() );
+    return Response.createChunkedResponse( getStatus(), getMimeType(), getData() );
   }
 
 

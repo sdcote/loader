@@ -511,16 +511,16 @@ public abstract class HTTPD {
       try {
         session.parseBody( files );
       } catch ( final IOException ioe ) {
-        return Response.newFixedLengthResponse( Status.INTERNAL_ERROR, MimeType.TEXT.getType(), "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage() );
+        return Response.createFixedLengthResponse( Status.INTERNAL_ERROR, MimeType.TEXT.getType(), "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage() );
       } catch ( final ResponseException re ) {
-        return Response.newFixedLengthResponse( re.getStatus(), MimeType.TEXT.getType(), re.getMessage() );
+        return Response.createFixedLengthResponse( re.getStatus(), MimeType.TEXT.getType(), re.getMessage() );
       }
     }
 
     final Map<String, String> parms = session.getParms();
     parms.put( HTTPD.QUERY_STRING_PARAMETER, session.getQueryParameterString() );
 
-    return Response.newFixedLengthResponse( Status.NOT_FOUND, MimeType.TEXT.getType(), "Not Found" );
+    return Response.createFixedLengthResponse( Status.NOT_FOUND, MimeType.TEXT.getType(), "Not Found" );
   }
 
 

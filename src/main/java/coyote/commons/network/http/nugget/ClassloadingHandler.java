@@ -106,9 +106,9 @@ public class ClassloadingHandler extends DefaultHandler {
       // Hopefully it is not a directory...
       // <sigh/> not sure how to detect those with a class loader TODO 
       try {
-        return Response.newChunkedResponse( getStatus(), HTTPD.getMimeTypeForFile( localPath ), cLoader.getResourceAsStream( localPath ) );
+        return Response.createChunkedResponse( getStatus(), HTTPD.getMimeTypeForFile( localPath ), cLoader.getResourceAsStream( localPath ) );
       } catch ( final Exception ioe ) {
-        return Response.newFixedLengthResponse( Status.REQUEST_TIMEOUT, MimeType.TEXT.getType(), null );
+        return Response.createFixedLengthResponse( Status.REQUEST_TIMEOUT, MimeType.TEXT.getType(), null );
       }
     }
   }

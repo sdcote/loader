@@ -44,7 +44,7 @@ public class GeneralHandler extends DefaultHandler {
     } else {
       text.append( "<p>no params in url</p><br>" );
     }
-    return Response.newFixedLengthResponse( getStatus(), getMimeType(), text.toString() );
+    return Response.createFixedLengthResponse( getStatus(), getMimeType(), text.toString() );
   }
 
 

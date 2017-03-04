@@ -401,17 +401,17 @@ class HTTPSession implements IHTTPSession {
       // the stream & finalAccept object by throwing exceptions up the stack.
       throw ste;
     } catch ( final SSLException ssle ) {
-      final Response resp = Response.newFixedLengthResponse( Status.INTERNAL_ERROR, MimeType.TEXT.getType(), "SSL PROTOCOL FAILURE: " + ssle.getMessage() );
+      final Response resp = Response.createFixedLengthResponse( Status.INTERNAL_ERROR, MimeType.TEXT.getType(), "SSL PROTOCOL FAILURE: " + ssle.getMessage() );
       resp.send( outputStream );
       HTTPD.safeClose( outputStream );
     } catch ( final IOException ioe ) {
-      final Response resp = Response.newFixedLengthResponse( Status.INTERNAL_ERROR, MimeType.TEXT.getType(), "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage() );
+      final Response resp = Response.createFixedLengthResponse( Status.INTERNAL_ERROR, MimeType.TEXT.getType(), "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage() );
       resp.send( outputStream );
       HTTPD.safeClose( outputStream );
     } catch ( final SecurityResponseException sre ) {
       HTTPD.safeClose( outputStream );
     } catch ( final ResponseException re ) {
-      final Response resp = Response.newFixedLengthResponse( re.getStatus(), MimeType.TEXT.getType(), re.getMessage() );
+      final Response resp = Response.createFixedLengthResponse( re.getStatus(), MimeType.TEXT.getType(), re.getMessage() );
       resp.send( outputStream );
       HTTPD.safeClose( outputStream );
     }

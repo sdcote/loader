@@ -141,16 +141,16 @@ public class ResourceHandler extends DefaultHandler {
         if ( redirectOnIndexedDir ) {
           // We need to send a 301, indicating the new (proper) URL to use
           String redirectlocation = localPath.replace( parentdirectory.substring( 0, parentdirectory.length() - 1 ), "" ); // YUCK!!!
-          Response redirect = Response.newFixedLengthResponse( Status.REDIRECT, MimeType.TEXT.getType(), null );
+          Response redirect = Response.createFixedLengthResponse( Status.REDIRECT, MimeType.TEXT.getType(), null );
           redirect.addHeader( "Location", redirectlocation );
           return redirect;
         } else {
           // hide the fact that we are serving the index page and just serve 
           // the index page
           try {
-            return Response.newChunkedResponse( Status.OK, HTTPD.getMimeTypeForFile( localPath ), cLoader.getResourceAsStream( localPath ) );
+            return Response.createChunkedResponse( Status.OK, HTTPD.getMimeTypeForFile( localPath ), cLoader.getResourceAsStream( localPath ) );
           } catch ( final Exception ioe ) {
-            return Response.newFixedLengthResponse( Status.REQUEST_TIMEOUT, MimeType.TEXT.getType(), null );
+            return Response.createFixedLengthResponse( Status.REQUEST_TIMEOUT, MimeType.TEXT.getType(), null );
           }
         }
       }
@@ -165,9 +165,9 @@ public class ResourceHandler extends DefaultHandler {
       } else {
         // Success - Found the resource - 
         try {
-          return Response.newChunkedResponse( Status.OK, HTTPD.getMimeTypeForFile( localPath ), cLoader.getResourceAsStream( localPath ) );
+          return Response.createChunkedResponse( Status.OK, HTTPD.getMimeTypeForFile( localPath ), cLoader.getResourceAsStream( localPath ) );
         } catch ( final Exception ioe ) {
-          return Response.newFixedLengthResponse( Status.REQUEST_TIMEOUT, MimeType.TEXT.getType(), null );
+          return Response.createFixedLengthResponse( Status.REQUEST_TIMEOUT, MimeType.TEXT.getType(), null );
         }
       }
     }

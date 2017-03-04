@@ -384,7 +384,7 @@ public class Response implements Closeable {
   /**
    * Create a response with unknown length (using HTTP 1.1 chunking).
    */
-  public static Response newChunkedResponse( final IStatus status, final String mimeType, final InputStream data ) {
+  public static Response createChunkedResponse( final IStatus status, final String mimeType, final InputStream data ) {
     return new Response( status, mimeType, data, -1 );
   }
 
@@ -394,7 +394,7 @@ public class Response implements Closeable {
   /**
    * Create a response with known length.
    */
-  public static Response newFixedLengthResponse( final IStatus status, final String mimeType, final InputStream data, final long totalBytes ) {
+  public static Response createFixedLengthResponse( final IStatus status, final String mimeType, final InputStream data, final long totalBytes ) {
     return new Response( status, mimeType, data, totalBytes );
   }
 
@@ -404,10 +404,10 @@ public class Response implements Closeable {
   /**
    * Create a text response with known length.
    */
-  public static Response newFixedLengthResponse( final IStatus status, final String mimeType, final String txt ) {
+  public static Response createFixedLengthResponse( final IStatus status, final String mimeType, final String txt ) {
     ContentType contentType = new ContentType( mimeType );
     if ( txt == null ) {
-      return newFixedLengthResponse( status, mimeType, new ByteArrayInputStream( new byte[0] ), 0 );
+      return createFixedLengthResponse( status, mimeType, new ByteArrayInputStream( new byte[0] ), 0 );
     } else {
       byte[] bytes;
       try {
@@ -420,7 +420,7 @@ public class Response implements Closeable {
         Log.append( HTTPD.EVENT, "encoding problem", e );
         bytes = new byte[0];
       }
-      return newFixedLengthResponse( status, contentType.getContentTypeHeader(), new ByteArrayInputStream( bytes ), bytes.length );
+      return createFixedLengthResponse( status, contentType.getContentTypeHeader(), new ByteArrayInputStream( bytes ), bytes.length );
     }
   }
 
@@ -430,8 +430,8 @@ public class Response implements Closeable {
   /**
    * Create a text response with known length.
    */
-  public static Response newFixedLengthResponse( final String msg ) {
-    return newFixedLengthResponse( Status.OK, MimeType.HTML.getType(), msg );
+  public static Response createFixedLengthResponse( final String msg ) {
+    return createFixedLengthResponse( Status.OK, MimeType.HTML.getType(), msg );
   }
 
 }

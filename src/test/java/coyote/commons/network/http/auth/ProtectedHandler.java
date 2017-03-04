@@ -34,7 +34,7 @@ public class ProtectedHandler extends DefaultHandler {
   @Override
   @Auth(groups = "sysop", requireSSL = true)
   public Response post( UriResource uriResource, Map<String, String> urlParams, IHTTPSession session ) {
-    return Response.newFixedLengthResponse( getStatus(), getMimeType(), getText() );
+    return Response.createFixedLengthResponse( getStatus(), getMimeType(), getText() );
   }
 
 
@@ -46,7 +46,7 @@ public class ProtectedHandler extends DefaultHandler {
   @Override
   @Auth(groups = "devop", requireSSL = false)
   public Response get( UriResource uriResource, Map<String, String> urlParams, IHTTPSession session ) {
-    return Response.newFixedLengthResponse( getStatus(), getMimeType(), getText() );
+    return Response.createFixedLengthResponse( getStatus(), getMimeType(), getText() );
   }
 
 
