@@ -226,10 +226,10 @@ public class UriResource {
               throw new SecurityResponseException( "Resource requires secure connection" );
             }
             if ( auth.required() && !HTTPD.getAuthProvider().isAuthenticated( session ) ) {
-              return HTTPD.newFixedLengthResponse( Status.FORBIDDEN, MimeType.TEXT.getType(), "Requires Secure Connection" );
+              return Response.newFixedLengthResponse( Status.FORBIDDEN, MimeType.TEXT.getType(), "Requires Secure Connection" );
             }
             if ( StringUtil.isNotBlank( auth.groups() ) && !HTTPD.getAuthProvider().isAuthorized( session, auth.groups() ) ) {
-              return HTTPD.newFixedLengthResponse( Status.UNAUTHORIZED, MimeType.TEXT.getType(), "Not Authorized" );
+              return Response.newFixedLengthResponse( Status.UNAUTHORIZED, MimeType.TEXT.getType(), "Not Authorized" );
             }
           }
 
@@ -245,7 +245,7 @@ public class UriResource {
           }
         } else {
           // This is some other object...display it generically
-          return HTTPD.newFixedLengthResponse( Status.OK, MimeType.TEXT.getType(), //
+          return Response.newFixedLengthResponse( Status.OK, MimeType.TEXT.getType(), //
               new StringBuilder( "Return: " ) //
                   .append( handler.getCanonicalName() ) //
                   .append( ".toString() -> " ) //
@@ -260,7 +260,7 @@ public class UriResource {
         }
       }
     }
-    return HTTPD.newFixedLengthResponse( Status.INTERNAL_ERROR, MimeType.TEXT.getType(), error );
+    return Response.newFixedLengthResponse( Status.INTERNAL_ERROR, MimeType.TEXT.getType(), error );
   }
 
 

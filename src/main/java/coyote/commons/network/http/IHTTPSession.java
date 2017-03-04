@@ -97,8 +97,7 @@ public interface IHTTPSession {
   /**
    * Adds the files in the request body to the files map.
    * 
-   * @param files
-   *            map to modify
+   * @param files map to modify
    */
   void parseBody( Map<String, String> files ) throws IOException, ResponseException;
 }

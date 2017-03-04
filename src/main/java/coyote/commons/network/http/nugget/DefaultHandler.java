@@ -27,7 +27,7 @@ public abstract class DefaultHandler extends DefaultStreamHandler {
 
   @Override
   public Response get( final UriResource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
-    return HTTPD.newFixedLengthResponse( getStatus(), getMimeType(), getText() );
+    return Response.newFixedLengthResponse( getStatus(), getMimeType(), getText() );
   }
 
 

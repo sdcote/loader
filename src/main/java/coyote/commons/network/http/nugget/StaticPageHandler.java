@@ -93,9 +93,9 @@ public class StaticPageHandler extends DefaultHandler {
 
       // return the found file
       try {
-        return HTTPD.newChunkedResponse( getStatus(), HTTPD.getMimeTypeForFile( requestedFile.getName() ), fileToInputStream( requestedFile ) );
+        return Response.newChunkedResponse( getStatus(), HTTPD.getMimeTypeForFile( requestedFile.getName() ), fileToInputStream( requestedFile ) );
       } catch ( final IOException ioe ) {
-        return HTTPD.newFixedLengthResponse( Status.REQUEST_TIMEOUT, MimeType.TEXT.getType(), null );
+        return Response.newFixedLengthResponse( Status.REQUEST_TIMEOUT, MimeType.TEXT.getType(), null );
       }
     }
   }

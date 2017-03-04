@@ -306,62 +306,6 @@ public abstract class HTTPD {
 
 
 
-  /**
-   * Create a response with unknown length (using HTTP 1.1 chunking).
-   */
-  public static Response newChunkedResponse( final IStatus status, final String mimeType, final InputStream data ) {
-    return new Response( status, mimeType, data, -1 );
-  }
-
-
-
-
-  /**
-   * Create a response with known length.
-   */
-  public static Response newFixedLengthResponse( final IStatus status, final String mimeType, final InputStream data, final long totalBytes ) {
-    return new Response( status, mimeType, data, totalBytes );
-  }
-
-
-
-
-  /**
-   * Create a text response with known length.
-   */
-  public static Response newFixedLengthResponse( final IStatus status, final String mimeType, final String txt ) {
-    ContentType contentType = new ContentType( mimeType );
-    if ( txt == null ) {
-      return newFixedLengthResponse( status, mimeType, new ByteArrayInputStream( new byte[0] ), 0 );
-    } else {
-      byte[] bytes;
-      try {
-        final CharsetEncoder newEncoder = Charset.forName( contentType.getEncoding() ).newEncoder();
-        if ( !newEncoder.canEncode( txt ) ) {
-          contentType = contentType.tryUTF8();
-        }
-        bytes = txt.getBytes( contentType.getEncoding() );
-      } catch ( final UnsupportedEncodingException e ) {
-        Log.append( EVENT, "encoding problem", e );
-        bytes = new byte[0];
-      }
-      return newFixedLengthResponse( status, contentType.getContentTypeHeader(), new ByteArrayInputStream( bytes ), bytes.length );
-    }
-  }
-
-
-
-
-  /**
-   * Create a text response with known length.
-   */
-  public static Response newFixedLengthResponse( final String msg ) {
-    return newFixedLengthResponse( Status.OK, MimeType.HTML.getType(), msg );
-  }
-
-
-
-
   static final void safeClose( final Object closeable ) {
     try {
       if ( closeable != null ) {
@@ -567,16 +511,16 @@ public abstract class HTTPD {
       try {
         session.parseBody( files );
       } catch ( final IOException ioe ) {
-        return newFixedLengthResponse( Status.INTERNAL_ERROR, MimeType.TEXT.getType(), "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage() );
+        return Response.newFixedLengthResponse( Status.INTERNAL_ERROR, MimeType.TEXT.getType(), "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage() );
       } catch ( final ResponseException re ) {
-        return newFixedLengthResponse( re.getStatus(), MimeType.TEXT.getType(), re.getMessage() );
+        return Response.newFixedLengthResponse( re.getStatus(), MimeType.TEXT.getType(), re.getMessage() );
       }
     }
 
     final Map<String, String> parms = session.getParms();
     parms.put( HTTPD.QUERY_STRING_PARAMETER, session.getQueryParameterString() );
 
-    return newFixedLengthResponse( Status.NOT_FOUND, MimeType.TEXT.getType(), "Not Found" );
+    return Response.newFixedLengthResponse( Status.NOT_FOUND, MimeType.TEXT.getType(), "Not Found" );
   }
 
 

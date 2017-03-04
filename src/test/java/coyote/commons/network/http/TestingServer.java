@@ -57,7 +57,7 @@ public class TestingServer extends HTTPD {
 
     sb.append( "</body>" );
     sb.append( "</html>" );
-    return newFixedLengthResponse( sb.toString() );
+    return Response.newFixedLengthResponse( sb.toString() );
   }
 
 

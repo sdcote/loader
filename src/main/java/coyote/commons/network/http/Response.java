@@ -18,6 +18,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,10 +28,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TimeZone;
-import java.util.logging.Level;
 import java.util.zip.GZIPOutputStream;
 
+import coyote.commons.network.MimeType;
 import coyote.loader.log.Log;
+
 
 /**
  * HTTP response. Return one of these from serve().
@@ -92,7 +96,7 @@ public class Response implements Closeable {
   /**
    * Creates a fixed length response if totalBytes&gt;=0, otherwise chunked.
    */
-  public Response( final IStatus status, final String mimeType, final InputStream data, final long totalBytes ) {
+  Response( final IStatus status, final String mimeType, final InputStream data, final long totalBytes ) {
     this.status = status;
     this.mimeType = mimeType;
     if ( data == null ) {
@@ -373,4 +377,61 @@ public class Response implements Closeable {
   public void setStatus( final IStatus status ) {
     this.status = status;
   }
+
+
+
+
+  /**
+   * Create a response with unknown length (using HTTP 1.1 chunking).
+   */
+  public static Response newChunkedResponse( final IStatus status, final String mimeType, final InputStream data ) {
+    return new Response( status, mimeType, data, -1 );
+  }
+
+
+
+
+  /**
+   * Create a response with known length.
+   */
+  public static Response newFixedLengthResponse( final IStatus status, final String mimeType, final InputStream data, final long totalBytes ) {
+    return new Response( status, mimeType, data, totalBytes );
+  }
+
+
+
+
+  /**
+   * Create a text response with known length.
+   */
+  public static Response newFixedLengthResponse( final IStatus status, final String mimeType, final String txt ) {
+    ContentType contentType = new ContentType( mimeType );
+    if ( txt == null ) {
+      return newFixedLengthResponse( status, mimeType, new ByteArrayInputStream( new byte[0] ), 0 );
+    } else {
+      byte[] bytes;
+      try {
+        final CharsetEncoder newEncoder = Charset.forName( contentType.getEncoding() ).newEncoder();
+        if ( !newEncoder.canEncode( txt ) ) {
+          contentType = contentType.tryUTF8();
+        }
+        bytes = txt.getBytes( contentType.getEncoding() );
+      } catch ( final UnsupportedEncodingException e ) {
+        Log.append( HTTPD.EVENT, "encoding problem", e );
+        bytes = new byte[0];
+      }
+      return newFixedLengthResponse( status, contentType.getContentTypeHeader(), new ByteArrayInputStream( bytes ), bytes.length );
+    }
+  }
+
+
+
+
+  /**
+   * Create a text response with known length.
+   */
+  public static Response newFixedLengthResponse( final String msg ) {
+    return newFixedLengthResponse( Status.OK, MimeType.HTML.getType(), msg );
+  }
+
 }

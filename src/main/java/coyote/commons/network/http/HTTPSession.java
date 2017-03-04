@@ -142,8 +142,7 @@ class HTTPSession implements IHTTPSession {
         uri = HTTPD.decodePercent( uri );
       }
 
-      // If there's another token, its protocol version,
-      // followed by HTTP headers.
+      // If there's another token, its protocol version, followed by HTTP headers.
       // NOTE: this now forces header names lower case since they are
       // case insensitive and vary by client.
       if ( st.hasMoreTokens() ) {
@@ -402,17 +401,17 @@ class HTTPSession implements IHTTPSession {
       // the stream & finalAccept object by throwing exceptions up the stack.
       throw ste;
     } catch ( final SSLException ssle ) {
-      final Response resp = HTTPD.newFixedLengthResponse( Status.INTERNAL_ERROR, MimeType.TEXT.getType(), "SSL PROTOCOL FAILURE: " + ssle.getMessage() );
+      final Response resp = Response.newFixedLengthResponse( Status.INTERNAL_ERROR, MimeType.TEXT.getType(), "SSL PROTOCOL FAILURE: " + ssle.getMessage() );
       resp.send( outputStream );
       HTTPD.safeClose( outputStream );
     } catch ( final IOException ioe ) {
-      final Response resp = HTTPD.newFixedLengthResponse( Status.INTERNAL_ERROR, MimeType.TEXT.getType(), "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage() );
+      final Response resp = Response.newFixedLengthResponse( Status.INTERNAL_ERROR, MimeType.TEXT.getType(), "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage() );
       resp.send( outputStream );
       HTTPD.safeClose( outputStream );
     } catch ( final SecurityResponseException sre ) {
       HTTPD.safeClose( outputStream );
     } catch ( final ResponseException re ) {
-      final Response resp = HTTPD.newFixedLengthResponse( re.getStatus(), MimeType.TEXT.getType(), re.getMessage() );
+      final Response resp = Response.newFixedLengthResponse( re.getStatus(), MimeType.TEXT.getType(), re.getMessage() );
       resp.send( outputStream );
       HTTPD.safeClose( outputStream );
     }
