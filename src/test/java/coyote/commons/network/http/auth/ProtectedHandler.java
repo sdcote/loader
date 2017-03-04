@@ -32,9 +32,9 @@ public class ProtectedHandler extends DefaultHandler {
    * @see coyote.commons.network.http.nugget.DefaultStreamHandler#post(coyote.commons.network.http.nugget.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
    */
   @Override
-  @Auth(groups = "sysop", requireSSL = false)
+  @Auth(groups = "sysop", requireSSL = true)
   public Response post( UriResource uriResource, Map<String, String> urlParams, IHTTPSession session ) {
-    return HTTPD.newChunkedResponse( getStatus(), getMimeType(), getData() );
+    return HTTPD.newFixedLengthResponse( getStatus(), getMimeType(), getText() );
   }
 
 
@@ -46,7 +46,7 @@ public class ProtectedHandler extends DefaultHandler {
   @Override
   @Auth(groups = "devop", requireSSL = false)
   public Response get( UriResource uriResource, Map<String, String> urlParams, IHTTPSession session ) {
-    return HTTPD.newChunkedResponse( getStatus(), getMimeType(), getData() );
+    return HTTPD.newFixedLengthResponse( getStatus(), getMimeType(), getText() );
   }
 
 

@@ -379,8 +379,7 @@ class HTTPSession implements IHTTPSession {
       // TODO: long pos_before_serve = this.inputStream.totalRead()
       // (requires implementation for totalRead())
       response = this.httpd.serve( this );
-      // TODO: this.inputStream.skip(body_size -
-      // (this.inputStream.totalRead() - pos_before_serve))
+      // TODO: this.inputStream.skip(body_size - (this.inputStream.totalRead() - pos_before_serve))
 
       if ( response == null ) {
         throw new ResponseException( Status.INTERNAL_ERROR, "SERVER INTERNAL ERROR: Serve() returned a null response." );
@@ -409,6 +408,8 @@ class HTTPSession implements IHTTPSession {
     } catch ( final IOException ioe ) {
       final Response resp = HTTPD.newFixedLengthResponse( Status.INTERNAL_ERROR, MimeType.TEXT.getType(), "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage() );
       resp.send( outputStream );
+      HTTPD.safeClose( outputStream );
+    } catch ( final SecurityResponseException sre ) {
       HTTPD.safeClose( outputStream );
     } catch ( final ResponseException re ) {
       final Response resp = HTTPD.newFixedLengthResponse( re.getStatus(), MimeType.TEXT.getType(), re.getMessage() );

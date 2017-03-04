@@ -20,6 +20,7 @@ import java.util.Map;
 import coyote.commons.network.http.HTTPD;
 import coyote.commons.network.http.IHTTPSession;
 import coyote.commons.network.http.Response;
+import coyote.commons.network.http.SecurityResponseException;
 import coyote.loader.log.Log;
 
 
@@ -70,8 +71,9 @@ public class UriRouter {
    * @param session
    * 
    * @return the Response from the URI resource processing
+   * @throws SecurityResponseException if precessing request generated a security exception
    */
-  public Response process( final IHTTPSession session ) {
+  public Response process( final IHTTPSession session ) throws SecurityResponseException {
 
     final String work = HTTPDRouter.normalizeUri( session.getUri() );
 

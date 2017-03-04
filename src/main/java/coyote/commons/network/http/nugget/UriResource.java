@@ -25,6 +25,7 @@ import coyote.commons.network.MimeType;
 import coyote.commons.network.http.HTTPD;
 import coyote.commons.network.http.IHTTPSession;
 import coyote.commons.network.http.Response;
+import coyote.commons.network.http.SecurityResponseException;
 import coyote.commons.network.http.Status;
 import coyote.commons.network.http.auth.Auth;
 import coyote.loader.log.Log;
@@ -186,7 +187,7 @@ public class UriResource {
 
 
 
-  public Response process( final Map<String, String> urlParams, final IHTTPSession session ) {
+  public Response process( final Map<String, String> urlParams, final IHTTPSession session ) throws SecurityResponseException {
     String error = "Error: Problems while processing URI resource";
     if ( handler != null ) {
       try {
@@ -221,7 +222,8 @@ public class UriResource {
             Annotation annotation = method.getAnnotation( Auth.class );
             Auth auth = (Auth)annotation;
             if ( auth.requireSSL() && !HTTPD.getAuthProvider().isValidConnection( session ) ) {
-              return HTTPD.newFixedLengthResponse( Status.FORBIDDEN, MimeType.TEXT.getType(), "Requires Secure Connection" );
+              // RFC and OWASP differ in their recommendations. I prefer OWASP's version - don't respond to the request and just drop the packet.
+              throw new SecurityResponseException( "Resource requires secure connection" );
             }
             if ( auth.required() && !HTTPD.getAuthProvider().isAuthenticated( session ) ) {
               return HTTPD.newFixedLengthResponse( Status.FORBIDDEN, MimeType.TEXT.getType(), "Requires Secure Connection" );
@@ -253,6 +255,9 @@ public class UriResource {
       } catch ( final Exception e ) {
         error = "Error: " + e.getClass().getName() + " : " + e.getMessage();
         Log.append( HTTPD.EVENT, error, e );
+        if( e instanceof SecurityResponseException ){
+          throw (SecurityResponseException)e;
+        }
       }
     }
     return HTTPD.newFixedLengthResponse( Status.INTERNAL_ERROR, MimeType.TEXT.getType(), error );

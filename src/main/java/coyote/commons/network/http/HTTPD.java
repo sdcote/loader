@@ -558,8 +558,9 @@ public abstract class HTTPD {
    * @param session The HTTP session
    * 
    * @return HTTP response, see class Response for details
+   * @throws SecurityResponseException if processing the request generated a security exception
    */
-  public Response serve( final IHTTPSession session ) {
+  public Response serve( final IHTTPSession session ) throws SecurityResponseException {
     final Map<String, String> files = new HashMap<String, String>();
     final Method method = session.getMethod();
     if ( Method.PUT.equals( method ) || Method.POST.equals( method ) ) {

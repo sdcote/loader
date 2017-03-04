@@ -129,7 +129,7 @@ public abstract class WSD extends HTTPD {
 
 
   @Override
-  public Response serve( final IHTTPSession session ) {
+  public Response serve( final IHTTPSession session ) throws SecurityResponseException {
     final Map<String, String> headers = session.getHeaders();
     if ( isWebsocketRequested( session ) ) {
       if ( !WSD.HEADER_WEBSOCKET_VERSION_VALUE.equalsIgnoreCase( headers.get( WSD.HEADER_WEBSOCKET_VERSION ) ) ) {
@@ -161,7 +161,7 @@ public abstract class WSD extends HTTPD {
 
 
 
-  protected Response serveHttp( final IHTTPSession session ) {
+  protected Response serveHttp( final IHTTPSession session ) throws SecurityResponseException {
     return super.serve( session );
   }
 

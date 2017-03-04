@@ -3,6 +3,7 @@ package coyote.commons.network.http.nugget;
 import coyote.commons.network.http.HTTPD;
 import coyote.commons.network.http.IHTTPSession;
 import coyote.commons.network.http.Response;
+import coyote.commons.network.http.SecurityResponseException;
 
 
 /**
@@ -104,10 +105,11 @@ public class HTTPDRouter extends HTTPD {
 
 
   /**
+   * @throws SecurityResponseException if processing the request generated a security exception
    * @see coyote.commons.network.http.HTTPD#serve(coyote.commons.network.http.IHTTPSession)
    */
   @Override
-  public Response serve( final IHTTPSession session ) {
+  public Response serve( final IHTTPSession session ) throws SecurityResponseException {
     // Try to find match
     return router.process( session );
   }
