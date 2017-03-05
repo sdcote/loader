@@ -21,10 +21,10 @@ import coyote.commons.network.http.IHTTPSession;
 public class DefaultAuthProvider implements AuthProvider {
 
   /**
-   * @see coyote.commons.network.http.auth.AuthProvider#isValidConnection(coyote.commons.network.http.IHTTPSession)
+   * @see coyote.commons.network.http.auth.AuthProvider#isSecureConnection(coyote.commons.network.http.IHTTPSession)
    */
   @Override
-  public boolean isValidConnection( IHTTPSession session ) {
+  public boolean isSecureConnection( IHTTPSession session ) {
     return false;
   }
 

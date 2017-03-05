@@ -28,7 +28,7 @@ public interface AuthProvider {
    * @return true if the session is using secure, encrypted connection, false 
    *         otherwise.
    */
-  boolean isValidConnection( IHTTPSession session );
+  boolean isSecureConnection( IHTTPSession session );
 
 
 

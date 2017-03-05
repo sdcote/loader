@@ -221,7 +221,7 @@ public class UriResource {
           if ( method.isAnnotationPresent( Auth.class ) ) {
             Annotation annotation = method.getAnnotation( Auth.class );
             Auth auth = (Auth)annotation;
-            if ( auth.requireSSL() && !HTTPD.getAuthProvider().isValidConnection( session ) ) {
+            if ( auth.requireSSL() && !HTTPD.getAuthProvider().isSecureConnection( session ) ) {
               // RFC and OWASP differ in their recommendations. I prefer OWASP's version - don't respond to the request and just drop the packet.
               throw new SecurityResponseException( "Resource requires secure connection" );
             }
