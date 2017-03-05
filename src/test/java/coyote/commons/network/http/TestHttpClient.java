@@ -17,6 +17,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
 
+import coyote.commons.ByteUtil;
+import coyote.commons.StringUtil;
+
 
 /**
  * Various client methods to make HTTP requests.
@@ -24,6 +27,8 @@ import java.util.Map;
 public class TestHttpClient {
   private static final String GET = "GET";
   private static final String POST = "POST";
+
+  protected static final String BASIC = "Basic";
 
 
 
@@ -143,6 +148,30 @@ public class TestHttpClient {
     }
 
     return testResponse;
+  }
+
+
+
+
+  /**
+   * Create an Authorization header for a username and password
+   */
+  public String calculateHeaderData( String username, String password ) {
+    if ( StringUtil.isNotBlank( username ) || StringUtil.isNotBlank( password ) ) {
+      StringBuffer b = new StringBuffer();
+
+      if ( StringUtil.isNotBlank( username ) ) {
+        b.append( username );
+      }
+      b.append( ":" );
+
+      if ( StringUtil.isNotBlank( password ) ) {
+        b.append( password );
+      }
+
+      return BASIC + " " + ByteUtil.toBase64( StringUtil.getBytes( b.toString() ) );
+    }
+    return null;
   }
 
 }
