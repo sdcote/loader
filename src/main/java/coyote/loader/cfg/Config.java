@@ -30,6 +30,7 @@ import coyote.commons.UriUtil;
 import coyote.dataframe.DataField;
 import coyote.dataframe.DataFrame;
 import coyote.dataframe.marshal.JSONMarshaler;
+import coyote.dataframe.marshal.MarshalException;
 
 
 /**
@@ -62,19 +63,65 @@ public class Config extends DataFrame implements Cloneable, Serializable {
 
 
 
+  /**
+   * Default constructor
+   */
   public Config() {}
 
 
 
 
   /**
+   * Read a configuration from the given string.
    * 
-   * @param file
+   * <p>This assumes the string contains a valid UTF-8 JSON format.
    * 
-   * @return TODO Complete Documentation
+   * @param data the string to read
    * 
-   * @throws IOException
-   * @throws ConfigurationException
+   * @throws ConfigurationException if there were issues creating a configuration object from the data read in from the file.
+   */
+  public Config( String data ) throws ConfigurationException {
+    try {
+      if ( data != null ) {
+        List<DataFrame> config = JSONMarshaler.marshal( data );
+        if ( config.size() > 0 && config.get( 0 ) != null ) {
+          populate( config.get( 0 ) );
+        }
+      }
+    } catch ( MarshalException e ) {
+      throw new ConfigurationException( "Could not read UTF-8", e );
+    }
+  }
+
+
+
+
+  /**
+   * Create a new Config from a DataFrame.
+   * 
+   * <p>This essentially wraps a clone of the frame with the Config accessor 
+   * methods.
+   *  
+   * @param frame the frame to use as a source of data.
+   */
+  public Config( DataFrame frame ) {
+    populate( frame );
+  }
+
+
+
+
+  /**
+   * Read a configuration from the given file.
+   * 
+   * <p>This assumes the file contains a valid UTF-8 JSON format.
+   * 
+   * @param file the file to read
+   * 
+   * @return A usable Config reference.
+   * 
+   * @throws IOException if there were problems reading the file
+   * @throws ConfigurationException if there were issues creating a configuration object from the data read in from the file.
    */
   public static Config read( final File file ) throws IOException, ConfigurationException {
     return Config.read( new FileInputStream( file ) );
@@ -130,13 +177,16 @@ public class Config extends DataFrame implements Cloneable, Serializable {
 
 
   /**
+   * Read a configuration from the given named file.
    * 
-   * @param filename
+   * <p>This assumes the file contains a valid UTF-8 JSON format.
    * 
-   * @return TODO Complete Documentation
+   * @param filename the name of the file to read
    * 
-   * @throws IOException
-   * @throws ConfigurationException
+   * @return A usable Config reference.
+   * 
+   * @throws IOException if there were problems reading the file
+   * @throws ConfigurationException if there were issues creating a configuration object from the data read in from the file.
    */
   public static Config read( final String filename ) throws IOException, ConfigurationException {
     return Config.read( new FileInputStream( filename ) );
@@ -146,13 +196,17 @@ public class Config extends DataFrame implements Cloneable, Serializable {
 
 
   /**
+   * Read a configuration from the given URI.
    * 
-   * @param uri
+   * <p>This assumes the URI represents a stream of valid UTF-8 JSON formattted 
+   * data.
    * 
-   * @return TODO Complete Documentation
+   * @param uri the URI of the stream to read
    * 
-   * @throws IOException
-   * @throws ConfigurationException
+   * @return A usable Config reference.
+   * 
+   * @throws IOException if there were problems reading the file
+   * @throws ConfigurationException if there were issues creating a configuration object from the data read in from the URI.
    */
   public static Config read( final URI uri ) throws IOException, ConfigurationException {
     if ( StringUtil.isNotBlank( uri.getScheme() ) ) {
@@ -238,7 +292,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
 
 
   /**
-   * @return the id
+   * @return the id of this config
    */
   public String getId() {
     return getAsString( ID_TAG );
@@ -248,7 +302,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
 
 
   /**
-   * @param id the id to set
+   * @param id the id of the config to set
    */
   public void setId( final String id ) {
     this.put( ID_TAG, id );
@@ -258,7 +312,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
 
 
   /**
-   * @return the name
+   * @return the name of this config
    */
   public String getName() {
     return getAsString( NAME_TAG );
@@ -268,7 +322,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
 
 
   /**
-   * @param name the name to set
+   * @param name the name of the config to set
    */
   public void setName( final String name ) {
     this.put( NAME_TAG, name );
@@ -278,7 +332,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
 
 
   /**
-   * @return the class
+   * @return the value of the class tag, if present
    */
   public String getClassName() {
     return getAsString( CLASS_TAG );
@@ -288,7 +342,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
 
 
   /**
-   * @param name the class name to set
+   * @param name the class name to set in this config
    */
   public void setClassName( final String name ) {
     put( Config.CLASS_TAG, name );
@@ -346,7 +400,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
   /**
    * Return all the configuration sections with the given name.
    * 
-   * <p>This performs a case-insensitive search for the sections.</p>
+   * <p>This performs a case-insensitive search for the sections.
    * 
    * @param tag The name of the section for which to search
    * 
@@ -377,7 +431,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
   /**
    * Return the first section with the given name.
    * 
-   * <p>This performs a case-insensitive search for the section.</p>
+   * <p>This performs a case-insensitive search for the section.
    * 
    * @param tag The name of the section for which to search
    * 
@@ -406,7 +460,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
   /**
    * Return all the configuration sections within this section
    * 
-   * <p>This will not return scalar attributes, just the embedded sections.</p>
+   * <p>This will not return scalar attributes, just the embedded sections.
    * 
    * @return The list of sections. May be empty, but never null;
    */
