@@ -12,6 +12,7 @@ package coyote.commons.network.http;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 
 
@@ -63,6 +64,49 @@ public interface IHTTPSession {
 
 
   String getQueryParameterString();
+
+
+
+
+  /**
+   * Set the name of the user associated with this session.
+   * 
+   * <p>This is expected to be populated by the Auth Provider, but it will 
+   * usually be null as not all resources will invoke the AuthProvider.
+   * 
+   * @param user the name of the user associated with this session, may be null.
+   */
+  void setUserName( String user );
+
+
+
+
+  /**
+   * Retrive the name of the user associated with this session.
+   * 
+   * <p>This is expected to be populated by the Auth Provider, but it will 
+   * usually be null as not all resources will invoke the AuthProvider.
+   */
+  String getUserName();
+
+
+
+
+  /**
+   * Set the names of groups associated to the user associated to this session.
+   * 
+   * @param groups List of group names associated to the user in this session.
+   */
+  void setUserGroups( List<String> groups );
+
+
+
+
+  /**
+   * @return the list of group names associated to the user associated to this 
+   *         session. Should not be null, but may be an empty list.
+   */
+  List<String> getUserGroups();
 
 
 

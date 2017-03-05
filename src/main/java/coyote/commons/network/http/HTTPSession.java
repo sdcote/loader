@@ -28,7 +28,9 @@ import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -51,6 +53,8 @@ class HTTPSession implements IHTTPSession {
   public static final int BUFSIZE = 8192;
 
   public static final int MAX_HEADER_SIZE = 1024;
+
+  private static final List<String> EMPTY_LIST = new ArrayList<String>( 0 );;
 
   private final TempFileManager tempFileManager;
 
@@ -85,6 +89,10 @@ class HTTPSession implements IHTTPSession {
   private String remoteHostname;
 
   private String protocolVersion;
+
+  private String username;
+
+  private List<String> usergroups;
 
 
 
@@ -740,6 +748,55 @@ class HTTPSession implements IHTTPSession {
       index++;
     }
     return ++index;
+  }
+
+
+
+
+  /**
+   * @see coyote.commons.network.http.IHTTPSession#setUserName(java.lang.String)
+   */
+  @Override
+  public void setUserName( String user ) {
+    username = user;
+  }
+
+
+
+
+  /**
+   * @see coyote.commons.network.http.IHTTPSession#getUserName()
+   */
+  @Override
+  public String getUserName() {
+    return username;
+  }
+
+
+
+
+  /**
+   * @see coyote.commons.network.http.IHTTPSession#setUserGroups(java.util.List)
+   */
+  @Override
+  public void setUserGroups( List<String> groups ) {
+    if ( groups != null ) {
+      usergroups = groups;
+    } else {
+      usergroups = EMPTY_LIST;
+    }
+  }
+
+
+
+
+  /**
+   * @see coyote.commons.network.http.IHTTPSession#getUserGroups()
+   */
+  @Override
+  public List<String> getUserGroups() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }
