@@ -90,9 +90,9 @@ class HTTPSession implements IHTTPSession {
 
   private String protocolVersion;
 
-  private String username;
+  private String username = null;
 
-  private List<String> usergroups;
+  private List<String> usergroups = EMPTY_LIST;
 
 
 
@@ -795,8 +795,7 @@ class HTTPSession implements IHTTPSession {
    */
   @Override
   public List<String> getUserGroups() {
-    // TODO Auto-generated method stub
-    return null;
+    return usergroups;
   }
 
 }
