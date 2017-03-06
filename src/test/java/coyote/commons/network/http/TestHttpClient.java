@@ -127,6 +127,7 @@ public class TestHttpClient {
       URL obj = new URL( url );
       HttpURLConnection con = (HttpURLConnection)obj.openConnection();
       con.setRequestMethod( method );
+      con.setRequestProperty( "User-Agent", "Mozilla/5.0" );
 
       int responseCode = con.getResponseCode();
       testResponse.setStatus( responseCode );

@@ -15,17 +15,15 @@ package coyote.commons.network.http.auth;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import coyote.commons.NetUtil;
 import coyote.commons.network.http.HTTPD;
+import coyote.commons.network.http.TestHttpClient;
 import coyote.commons.network.http.TestResponse;
 import coyote.commons.network.http.TestRouter;
 
@@ -36,7 +34,7 @@ import coyote.commons.network.http.TestRouter;
 public class AuthAnnotationTest {
 
   private static TestRouter server = null;
-  private static final int PORT = 3233;
+  private static int port = 3233;
 
 
 
@@ -46,14 +44,24 @@ public class AuthAnnotationTest {
    */
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
-    server = new TestRouter( PORT );
+    port = NetUtil.getNextAvailablePort( port );
+    server = new TestRouter( port );
     server.addMappings();
 
+    // try to start the server, waiting only 2 seconds before giving up
     try {
       server.start( HTTPD.SOCKET_READ_TIMEOUT, true );
+      long start = System.currentTimeMillis();
+      Thread.sleep( 100L );
+      while ( !server.wasStarted() ) {
+        Thread.sleep( 100L );
+        if ( System.currentTimeMillis() - start > 2000 ) {
+          server.stop();
+          fail( "could not start server" );
+        }
+      }
     } catch ( IOException ioe ) {
-      System.err.println( "Couldn't start server:\n" + ioe );
-      System.exit( -1 );
+      fail( "could not start server" );
     }
   }
 
@@ -77,45 +85,20 @@ public class AuthAnnotationTest {
     server.addRoute( "/", Integer.MAX_VALUE, ProtectedHandler.class );
 
     try {
-      TestResponse response = sendGet( "http://localhost:" + PORT );
+      TestResponse response = TestHttpClient.sendGet( "http://localhost:" + port );
       System.out.println( response.getStatus() + ":" + response.getData() );
       assertTrue( response.getStatus() == 200 );
+      assertTrue( server.isAlive() );
 
-      response = sendGet( "http://localhost:" + PORT + "/" );
+      response = TestHttpClient.sendGet( "http://localhost:" + port + "/" );
       System.out.println( response.getStatus() + ":" + response.getData() );
       assertTrue( response.getStatus() == 200 );
+      assertTrue( server.isAlive() );
 
     } catch ( Exception e ) {
       fail( e.getMessage() );
     }
 
-  }
-
-
-
-
-  protected TestResponse sendGet( String url ) throws Exception {
-    TestResponse testResponse = new TestResponse( url );
-
-    URL obj = new URL( url );
-    HttpURLConnection con = (HttpURLConnection)obj.openConnection();
-    con.setRequestMethod( "GET" );
-
-    int responseCode = con.getResponseCode();
-    testResponse.setStatus( responseCode );
-    if ( responseCode < 300 ) {
-      BufferedReader in = new BufferedReader( new InputStreamReader( con.getInputStream() ) );
-      String inputLine;
-      StringBuffer response = new StringBuffer();
-
-      while ( ( inputLine = in.readLine() ) != null ) {
-        response.append( inputLine );
-      }
-      in.close();
-
-      testResponse.setData( response.toString() );
-    }
-    return testResponse;
   }
 
 }

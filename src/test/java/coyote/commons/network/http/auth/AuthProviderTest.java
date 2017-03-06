@@ -15,6 +15,7 @@ package coyote.commons.network.http.auth;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
@@ -56,11 +57,20 @@ public class AuthProviderTest {
     // add a protected uri resource 
     server.addRoute( "/", Integer.MAX_VALUE, ProtectedHandler.class );
 
+    // try to start the server, waiting only 2 seconds before giving up
     try {
       server.start( HTTPD.SOCKET_READ_TIMEOUT, true );
+      long start = System.currentTimeMillis();
+      Thread.sleep( 100L );
+      while ( !server.wasStarted() ) {
+        Thread.sleep( 100L );
+        if ( System.currentTimeMillis() - start > 2000 ) {
+          server.stop();
+          fail( "could not start server" );
+        }
+      }
     } catch ( IOException ioe ) {
-      System.err.println( "Couldn't start server:\n" + ioe );
-      System.exit( -1 );
+      fail( "could not start server" );
     }
   }
 
@@ -86,12 +96,14 @@ public class AuthProviderTest {
     TestResponse response = TestHttpClient.sendGet( "http://localhost:" + port );
     assertTrue( response.isComplete() );
     assertEquals( response.getStatus(), 200 );
+    assertTrue( server.isAlive() );
 
     // Make sure the server drops the connection if SSL is not enabled.
     // No status should be returned so the response should be incomplete.
     AUTH_PROVIDER.rejectAllConnections();
     response = TestHttpClient.sendPost( "http://localhost:" + port );
     assertFalse( response.isComplete() );
+    assertTrue( server.isAlive() );
 
   }
 
