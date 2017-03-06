@@ -42,7 +42,7 @@ public class Scheduler extends ThreadJob {
   private final Object mutex = new Object();
   private ThreadPool threadpool = null;
   private long WAIT_TIME = 50;
-  private static final long SCHED = Log.getCode( "SCHEDULER" );
+  public static final long SCHED = Log.getCode( "SCHEDULER" );
 
   public static final long SECOND_INTERVAL = 1000l;
   public static final long MINUTE_INTERVAL = SECOND_INTERVAL * 60;
@@ -271,7 +271,7 @@ public class Scheduler extends ThreadJob {
    * @param starts when the job is to next run
    */
   public void schedule( Runnable task, long starts ) {
-    schedule( task, System.currentTimeMillis(), starts, 0, 0 );
+    schedule( task, starts, 0, 0, 0 );
   }
 
 
@@ -284,7 +284,7 @@ public class Scheduler extends ThreadJob {
    * @param starts when the job is to next run
    */
   public void schedule( Runnable task, Date starts ) {
-    schedule( task, System.currentTimeMillis(), starts.getTime(), 0, 0 );
+    schedule( task, starts.getTime(), 0, 0, 0 );
   }
 
 
@@ -297,7 +297,7 @@ public class Scheduler extends ThreadJob {
    * @param starts when the job is to next run
    */
   public void schedule( Runnable task, Calendar starts ) {
-    schedule( task, System.currentTimeMillis(), starts.getTime().getTime(), 0, 0 );
+    schedule( task, starts.getTime().getTime(), 0, 0, 0 );
   }
 
 
