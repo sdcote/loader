@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2006 Stephan D. Cote' - All rights reserved.
- * 
- * This program and the accompanying materials are made available under the 
- * terms of the MIT License which accompanies this distribution, and is 
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which accompanies this distribution, and is
  * available at http://creativecommons.org/licenses/MIT/
  *
  * Contributors:
- *   Stephan D. Cote 
+ *   Stephan D. Cote
  *      - Initial concept and implementation
  */
 package coyote.i13n;
 
 /**
- * The TimingTimer class models an actual working implementation of an 
+ * The TimingTimer class models an actual working implementation of an
  * Timer as opposed to the NullTimer.
  */
 public class TimingTimer extends TimerBase {
@@ -34,7 +34,7 @@ public class TimingTimer extends TimerBase {
 
 
   /**
-   * 
+   *
    */
   public TimingTimer( final TimingMaster master ) {
     super( master );
@@ -43,24 +43,14 @@ public class TimingTimer extends TimerBase {
 
 
 
-  public void start() {
-    if ( !_isRunningFlag ) {
-      _startTime = System.currentTimeMillis();
-      _isRunningFlag = true;
-      _master.start( this );
-    }
-  }
-
-
-
-
-  public void stop() {
-    if ( _isRunningFlag ) {
-      increase( timeElapsedSinceLastStart() );
-      _master.increase( _accrued );
-      _master.stop( this );
-      _isRunningFlag = false;
-    }
+  /**
+   * Returns the time that the Timer has been running
+   *
+   * @return
+   */
+  @Override
+  public long getAccrued() {
+    return _accrued + timeElapsedSinceLastStart();
   }
 
 
@@ -68,9 +58,9 @@ public class TimingTimer extends TimerBase {
 
   /**
    * Increase the time by the specified amount of milliseconds.
-   * 
-   * <p>This is the method that keeps track of the various statistics being 
-   * tracked.</p>
+   *
+   * <p>This is the method that keeps track of the various statistics being
+   * tracked.
    *
    * @param value the amount to increase the accrued value.
    */
@@ -83,13 +73,26 @@ public class TimingTimer extends TimerBase {
 
 
 
-  /**
-   * Returns the time that the Timer has been running
-   *
-   * @return
-   */
-  public long getAccrued() {
-    return _accrued + timeElapsedSinceLastStart();
+  @Override
+  public void start() {
+    if ( !_isRunningFlag ) {
+      _startTime = System.currentTimeMillis();
+      _isRunningFlag = true;
+      _master.start( this );
+    }
+  }
+
+
+
+
+  @Override
+  public void stop() {
+    if ( _isRunningFlag ) {
+      increase( timeElapsedSinceLastStart() );
+      _master.increase( _accrued );
+      _master.stop( this );
+      _isRunningFlag = false;
+    }
   }
 
 

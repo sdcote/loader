@@ -31,9 +31,9 @@ import java.util.StringTokenizer;
  * on the host platform.
  * 
  * <p>IpInterfaces contain a single name, IP address and an optional netmask 
- * and broadcast address if the netmask could be determined.</p>
+ * and broadcast address if the netmask could be determined.
  * 
- * <p>The static accessors are used to get instances of this class.</p>
+ * <p>The static accessors are used to get instances of this class.
  */
 public class IpInterface {
   String name = null;
@@ -472,7 +472,7 @@ public class IpInterface {
    * 
    * <p>This is the only place where the interfaces are populated from the 
    * discovery processes. This means this method must be called at least once 
-   * before all the interfaces are discovered on the system.</p>
+   * before all the interfaces are discovered on the system.
    * 
    * @return and array of discovered IP interfaces on this host.
    */
@@ -582,10 +582,10 @@ public class IpInterface {
    * Get the IP Address by which the rest of the world knows us.
    *
    * <p>This is useful in helping insure that we don't accidently start binding
-   * to or otherwise using the local loopback address.</p>
+   * to or otherwise using the local loopback address.
    *
    * <p>This requires some type of IP address resolver to be installed, like
-   * DNS, NIS or at least hostname lookup.</p>
+   * DNS, NIS or at least hostname lookup.
    *
    * @return The InetAddress representing the host on the network and NOT the
    *         loopback address.
@@ -751,12 +751,12 @@ public class IpInterface {
    * Get the DNS name of this interface.
    * 
    * <p>The name will be calculated the first time this method is called and 
-   * its value will be cached for all future accesses.<p>
+   * its value will be cached for all future accesses.
    * 
    * <p>It is important to keep in mind that the return value will depend upon 
    * this host name resolver. If the IP address assigned to this interface is 
    * located in a local host resolver file, then the return value will be 
-   * whatever is specified in that file and a DNS lookup may not take place.</p>
+   * whatever is specified in that file and a DNS lookup may not take place.
    * 
    * @return The name to which this interfaces IP address resolves on this 
    *         hosts resolver, or null if the address is not valid or in DNS or 
@@ -1027,10 +1027,10 @@ public class IpInterface {
    * the NL sequence is observed.
    *
    * <p>All CR characters will be ignored and stripped from the returned
-   * string.</p>
+   * string.
    *
    * <p>This will NOT work on Macintosh files which only use CR as a line
-   * terminator.</p>
+   * terminator.
    *
    * @param inputstream The stream to read
    *
@@ -1069,7 +1069,7 @@ public class IpInterface {
    * Return a new array that is a copy of the array plus a new element.
    *
    * <p>The component type of the array must be the same as that type of the
-   * element.</p>
+   * element.
    *
    * @param array An array
    * @param element The element to append.

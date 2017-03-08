@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2006 Stephan D. Cote' - All rights reserved.
- * 
- * This program and the accompanying materials are made available under the 
- * terms of the MIT License which accompanies this distribution, and is 
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which accompanies this distribution, and is
  * available at http://creativecommons.org/licenses/MIT/
  *
  * Contributors:
- *   Stephan D. Cote 
+ *   Stephan D. Cote
  *      - Initial concept and implementation
  */
 package coyote.i13n;
 
 /**
- * The Gauge interface models a component that is designed to be updated 
+ * The Gauge interface models a component that is designed to be updated
  * regularly to show performance rates.
  */
 public interface Gauge {

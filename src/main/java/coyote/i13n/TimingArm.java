@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2006 Stephan D. Cote' - All rights reserved.
- * 
- * This program and the accompanying materials are made available under the 
- * terms of the MIT License which accompanies this distribution, and is 
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which accompanies this distribution, and is
  * available at http://creativecommons.org/licenses/MIT/
  *
  * Contributors:
- *   Stephan D. Cote 
+ *   Stephan D. Cote
  *      - Initial concept and implementation
  */
 package coyote.i13n;
@@ -16,7 +16,7 @@ import java.util.HashMap;
 
 
 /**
- * The TimingArm class models an Application Response Measurement transaction 
+ * The TimingArm class models an Application Response Measurement transaction
  * that actually measures the transaction and updates the ARM Master.
  */
 public final class TimingArm extends NullArm {
@@ -55,6 +55,7 @@ public final class TimingArm extends NullArm {
   /**
    * @see coyote.i13n.ArmTransaction#decrease(java.lang.String, long)
    */
+  @Override
   public long decrease( final String tag, final long value ) {
     return getCounter( tag ).decrease( value );
   }
@@ -65,6 +66,7 @@ public final class TimingArm extends NullArm {
   /**
    * @see coyote.i13n.ArmTransaction#decrement(java.lang.String)
    */
+  @Override
   public long decrement( final String tag ) {
     return getCounter( tag ).decrement();
   }
@@ -75,6 +77,7 @@ public final class TimingArm extends NullArm {
   /* (non-Javadoc)
    * @see coyote.i13n.ArmTransaction#destroy()
    */
+  @Override
   public void destroy() {
     // TODO Auto-generated method stub
   }
@@ -84,12 +87,12 @@ public final class TimingArm extends NullArm {
 
   /**
    * Return the counter with the given name.
-   * 
-   * <p>If the counter does not exist, one will be created and added to the 
-   * static list of counters for later retrieval.</p>
-   * 
+   *
+   * <p>If the counter does not exist, one will be created and added to the
+   * static list of counters for later retrieval.
+   *
    * @param name The name of the counter to return.
-   * 
+   *
    * @return The counter with the given name.
    */
   public Counter getCounter( final String name ) {
@@ -108,11 +111,12 @@ public final class TimingArm extends NullArm {
 
 
   /**
-   * Return the amount of time this transaction has not been waiting for 
+   * Return the amount of time this transaction has not been waiting for
    * another transaction.
-   * 
+   *
    * @see coyote.i13n.NullArm#getOverheadTime()
    */
+  @Override
   public long getOverheadTime() {
     return getTotalTime() - getWaitTime();
   }
@@ -122,9 +126,10 @@ public final class TimingArm extends NullArm {
 
   /**
    * Get the epoch GMT time in milliseconds this transaction was started.
-   * 
+   *
    * @see coyote.i13n.NullArm#getStartTime()
    */
+  @Override
   public long getStartTime() {
     return _startTime;
   }
@@ -134,9 +139,10 @@ public final class TimingArm extends NullArm {
 
   /**
    * Get the epoch GMT time in milliseconds this transaction was stopped.
-   * 
+   *
    * @see coyote.i13n.NullArm#getStopTime()
    */
+  @Override
   public long getStopTime() {
     return _stopTime;
   }
@@ -144,6 +150,7 @@ public final class TimingArm extends NullArm {
 
 
 
+  @Override
   public long getTotalTime() {
     return _accrued + timeElapsedSinceLastStart();
   }
@@ -152,14 +159,15 @@ public final class TimingArm extends NullArm {
 
 
   /**
-   * Return the total number of milliseconds this transaction has been waiting 
+   * Return the total number of milliseconds this transaction has been waiting
    * for callout (child) transactions.
-   * 
+   *
    * @see coyote.i13n.NullArm#getWaitTime()
    */
+  @Override
   public long getWaitTime() {
     long retval = 0;
-    for ( int x = 0; x < children.size(); retval += ( (ArmTransaction)( children.get( x++ ) ) ).getTotalTime() ) {
+    for ( int x = 0; x < children.size(); retval += ( children.get( x++ ) ).getTotalTime() ) {
       ;
     }
     return retval;
@@ -171,9 +179,9 @@ public final class TimingArm extends NullArm {
 
   /**
    * Increase the time by the specified amount of milliseconds.
-   * 
-   * <p>This is the method that keeps track of the various statistics being 
-   * tracked.</p>
+   *
+   * <p>This is the method that keeps track of the various statistics being
+   * tracked.
    *
    * @param value the amount to increase the accrued value.
    */
@@ -189,6 +197,7 @@ public final class TimingArm extends NullArm {
   /**
    * @see coyote.i13n.ArmTransaction#increase(java.lang.String, long)
    */
+  @Override
   public long increase( final String tag, final long value ) {
     return getCounter( tag ).increase( value );
   }
@@ -199,6 +208,7 @@ public final class TimingArm extends NullArm {
   /**
    * @see coyote.i13n.ArmTransaction#increment(java.lang.String)
    */
+  @Override
   public long increment( final String tag ) {
     return getCounter( tag ).increment();
   }
@@ -209,6 +219,7 @@ public final class TimingArm extends NullArm {
   /* (non-Javadoc)
    * @see coyote.i13n.ArmTransaction#start()
    */
+  @Override
   public void start() {
     if ( !_isRunningFlag ) {
       _startTime = System.currentTimeMillis();
@@ -226,6 +237,7 @@ public final class TimingArm extends NullArm {
   /**
    * @see coyote.i13n.ArmTransaction#startArm(java.lang.String)
    */
+  @Override
   public ArmTransaction startArm( final String name ) {
     return startArm( name, null );
   }
@@ -236,6 +248,7 @@ public final class TimingArm extends NullArm {
   /**
    * @see coyote.i13n.ArmTransaction#startArm(java.lang.String,java.lang.String)
    */
+  @Override
   public ArmTransaction startArm( final String name, final String crid ) {
     // create an arm
     final ArmTransaction retval = new TimingArm( null, name, crid );
@@ -256,6 +269,7 @@ public final class TimingArm extends NullArm {
   /* (non-Javadoc)
    * @see coyote.i13n.ArmTransaction#stop()
    */
+  @Override
   public long stop() {
     if ( _isRunningFlag ) {
       _stopTime = System.currentTimeMillis();
@@ -274,6 +288,7 @@ public final class TimingArm extends NullArm {
 
 
 
+  @Override
   public long stop( final short status ) {
     final long retval = stop();
 
@@ -303,9 +318,10 @@ public final class TimingArm extends NullArm {
 
   /**
    * Return the string representation of the timer.
-   * 
+   *
    * @see java.lang.Object#toString()
    */
+  @Override
   public String toString() {
     final StringBuffer b = new StringBuffer();
     if ( _master != null ) {
@@ -335,6 +351,7 @@ public final class TimingArm extends NullArm {
   /* (non-Javadoc)
    * @see coyote.i13n.ArmTransaction#update(java.lang.String, java.lang.Object)
    */
+  @Override
   public void update( final String name, final Object value ) {
     // TODO Auto-generated method stub
   }

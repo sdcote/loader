@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2006 Stephan D. Cote' - All rights reserved.
- * 
- * This program and the accompanying materials are made available under the 
- * terms of the MIT License which accompanies this distribution, and is 
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which accompanies this distribution, and is
  * available at http://creativecommons.org/licenses/MIT/
  *
  * Contributors:
- *   Stephan D. Cote 
+ *   Stephan D. Cote
  *      - Initial concept and implementation
  */
 package coyote.i13n;
@@ -22,7 +22,7 @@ public class Metric {
 
 
   /**
-   * 
+   *
    */
   public Metric( final String name ) {
     _name = name;
@@ -53,7 +53,7 @@ public class Metric {
 
   /**
    * Included for balance but it should not be used by the uninitiated.
-   * 
+   *
    * @param name The new name to set.
    */
   void setName( final String name ) {

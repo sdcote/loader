@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2006 Stephan D. Cote' - All rights reserved.
- * 
- * This program and the accompanying materials are made available under the 
- * terms of the MIT License which accompanies this distribution, and is 
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which accompanies this distribution, and is
  * available at http://creativecommons.org/licenses/MIT/
  *
  * Contributors:
- *   Stephan D. Cote 
+ *   Stephan D. Cote
  *      - Initial concept and implementation
  */
 package coyote.i13n;
@@ -29,6 +29,7 @@ public class NullMaster implements TimerMaster {
   /**
    * @return The name of this timer set.
    */
+  @Override
   public String getName() {
     return "";
   }
@@ -36,16 +37,19 @@ public class NullMaster implements TimerMaster {
 
 
 
+  @Override
   public void increase( final long value ) {}
 
 
 
 
+  @Override
   public void start( final Timer mon ) {}
 
 
 
 
+  @Override
   public void stop( final Timer mon ) {}
 
 }

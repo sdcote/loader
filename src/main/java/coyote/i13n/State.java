@@ -1,26 +1,26 @@
 /*
  * Copyright (c) 2006 Stephan D. Cote' - All rights reserved.
- * 
- * This program and the accompanying materials are made available under the 
- * terms of the MIT License which accompanies this distribution, and is 
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which accompanies this distribution, and is
  * available at http://creativecommons.org/licenses/MIT/
  *
  * Contributors:
- *   Stephan D. Cote 
+ *   Stephan D. Cote
  *      - Initial concept and implementation
  */
 package coyote.i13n;
 
 /**
- * The State class models a metric that stores a discrete, scalar value. 
- * 
- * <p>Each fixture manages a dynamic set of named scalar values that record the 
- * state of any named condition. Similar to counters, the named states allow 
- * developers to use state machine patterns in their application designs 
- * without having to write extra code.</p>
- * 
- * <p>This class is thread-safe in that all the methods synchronize on the name 
- * of the state to avoid double synchronizations.</p>
+ * The State class models a metric that stores a discrete, scalar value.
+ *
+ * <p>Each fixture manages a dynamic set of named scalar values that record the
+ * state of any named condition. Similar to counters, the named states allow
+ * developers to use state machine patterns in their application designs
+ * without having to write extra code.
+ *
+ * <p>This class is thread-safe in that all the methods synchronize on the name
+ * of the state to avoid double synchronizations.
  */
 public class State extends Metric {
   public static final short UNKNOWN_TYPE = 0;
@@ -81,7 +81,7 @@ public class State extends Metric {
 
 
   /**
-   * @return The object value of this state; with float and double being 
+   * @return The object value of this state; with float and double being
    *         returned as their respective wrapper types.
    */
   public Object getValue() {
@@ -102,10 +102,10 @@ public class State extends Metric {
 
   /**
    * Set the state to the given double value.
-   * 
+   *
    * @param val The value to set in the state.
-   * 
-   * @throws IllegalArgumentException if the existing data if of type LONG or 
+   *
+   * @throws IllegalArgumentException if the existing data if of type LONG or
    *         OBJECT.
    */
   public void set( final double val ) {
@@ -127,10 +127,10 @@ public class State extends Metric {
 
   /**
    * Set the state to the given long value.
-   * 
+   *
    * @param val The value to set in the state.
-   * 
-   * @throws IllegalArgumentException if the existing data if of type DOUBLE or 
+   *
+   * @throws IllegalArgumentException if the existing data if of type DOUBLE or
    *         OBJECT.
    */
   public void set( final long val ) {
@@ -152,10 +152,10 @@ public class State extends Metric {
 
   /**
    * Set the state to the given object value.
-   * 
+   *
    * @param val The value to set in the state.
-   * 
-   * @throws IllegalArgumentException if the existing data if of type LONG or 
+   *
+   * @throws IllegalArgumentException if the existing data if of type LONG or
    *         DOUBLE.
    */
   public void set( final Object val ) {
@@ -182,6 +182,7 @@ public class State extends Metric {
   /**
    * @return The human-readable representation of this object as a string.
    */
+  @Override
   public String toString() {
     synchronized( _name ) {
       final StringBuffer buff = new StringBuffer( _name );

@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2006 Stephan D. Cote' - All rights reserved.
- * 
- * This program and the accompanying materials are made available under the 
- * terms of the MIT License which accompanies this distribution, and is 
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which accompanies this distribution, and is
  * available at http://creativecommons.org/licenses/MIT/
  *
  * Contributors:
- *   Stephan D. Cote 
+ *   Stephan D. Cote
  *      - Initial concept and implementation
  */
 package coyote.i13n;
@@ -18,17 +18,15 @@ import java.util.Date;
 
 
 /**
- * The TimingMaster class models the master of all timers with a given name. 
- * 
- * <p>This class is used to summarize all the timers in its list.</p>
+ * The TimingMaster class models the master of all timers with a given name.
+ *
+ * <p>This class is used to summarize all the timers in its list.
  */
 public class TimingMaster implements TimerMaster {
   public static final String CLASS_TAG = "Timer";
 
   /** The number of global timers currently active. */
   private static volatile long globalCounter;
-
-  static private final String TIMER = "Timer";
 
   static private final String MILLISECONDS = "ms";
 
@@ -99,7 +97,7 @@ public class TimingMaster implements TimerMaster {
 
 
   /**
-   * 
+   *
    */
   public TimingMaster( final String name ) {
     _name = name;
@@ -127,7 +125,7 @@ public class TimingMaster implements TimerMaster {
 
   /**
    * Create a new instance of a timer that will track times and other datum.
-   * 
+   *
    * @return A Timer that can be stopped at some time to generate datum.
    */
   public Timer createTimer() {
@@ -188,7 +186,7 @@ public class TimingMaster implements TimerMaster {
 
   /**
    * Access the number of timers active for this timer master.
-   * 
+   *
    * @return Returns the number of timers currently active (started) for this
    *         master timer.
    */
@@ -227,10 +225,11 @@ public class TimingMaster implements TimerMaster {
    * @return
    */
   protected String getDisplayString( final String type, final String value, final String units ) {
-    if ( TimingMaster.NONE.equals( units ) )
+    if ( TimingMaster.NONE.equals( units ) ) {
       return type + "=" + value + ", ";
-    else
+    } else {
       return type + "=" + value + " " + units + ", ";
+    }
   }
 
 
@@ -238,7 +237,7 @@ public class TimingMaster implements TimerMaster {
 
   /**
    * Access the number of timers started in the runtime environment.
-   * 
+   *
    * @return Returns the number of timers currently active (started) for all
    *         master timers.
    */
@@ -252,6 +251,7 @@ public class TimingMaster implements TimerMaster {
   /**
    * @return The name of this timer set.
    */
+  @Override
   public String getName() {
     return _name;
   }
@@ -260,10 +260,10 @@ public class TimingMaster implements TimerMaster {
 
 
   /**
-   * Access the current standard deviation for all stopped timers using the 
+   * Access the current standard deviation for all stopped timers using the
    * Sum of Squares algorithm.
    *
-   * @return The amount of one standard deviation of all the interval times. 
+   * @return The amount of one standard deviation of all the interval times.
    */
   private long getStandardDeviation() {
     long stdDeviation = 0;
@@ -284,12 +284,13 @@ public class TimingMaster implements TimerMaster {
 
   /**
    * Increase the time by the specified amount of milliseconds.
-   * 
-   * <p>This is the method that keeps track of the various statistics being 
-   * tracked.</p>
+   *
+   * <p>This is the method that keeps track of the various statistics being
+   * tracked.
    *
    * @param value the amount to increase the accrued value.
    */
+  @Override
   public synchronized void increase( final long value ) {
     // calculate min
     if ( value < min ) {
@@ -324,10 +325,10 @@ public class TimingMaster implements TimerMaster {
 
 
   /**
-   * Reset all variables for this master timer instance.  
-   * 
-   * <p>The effect of this is to reset this objects variables to the state they 
-   * were in when the object was first created.</p>
+   * Reset all variables for this master timer instance.
+   *
+   * <p>The effect of this is to reset this objects variables to the state they
+   * were in when the object was first created.
    */
   synchronized protected void resetThis() {
     min = Long.MAX_VALUE;
@@ -341,7 +342,7 @@ public class TimingMaster implements TimerMaster {
 
   /**
    * Enable or disable all the timers in this list.
-   * 
+   *
    * @param flag True to enable the timer, false to keep it from processing.
    */
   public synchronized void setEnabled( final boolean flag ) {
@@ -353,11 +354,12 @@ public class TimingMaster implements TimerMaster {
 
   /**
    * Start the timer in the context of this master timer.
-   * 
+   *
    * @param timr the timer to start.
-   * 
+   *
    * @see coyote.i13n.TimerMaster#start(coyote.i13n.Timer)
    */
+  @Override
   public synchronized void start( final Timer timr ) {
     activeCounter++;
     TimingMaster.globalCounter++;
@@ -382,11 +384,12 @@ public class TimingMaster implements TimerMaster {
 
   /**
    * Stop the timer in the context of this master timer.
-   * 
+   *
    * @param mon the timer to stop.
-   * 
+   *
    * @see coyote.i13n.TimerMaster#stop(coyote.i13n.Timer)
    */
+  @Override
   public synchronized void stop( final Timer mon ) {
     activeCounter--;
     TimingMaster.globalCounter--;
@@ -401,6 +404,7 @@ public class TimingMaster implements TimerMaster {
    *
    * @return
    */
+  @Override
   public String toString() {
     final StringBuffer message = new StringBuffer( _name );
     message.append( ": " );

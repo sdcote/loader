@@ -1,30 +1,30 @@
 /*
  * Copyright (c) 2006 Stephan D. Cote' - All rights reserved.
- * 
- * This program and the accompanying materials are made available under the 
- * terms of the MIT License which accompanies this distribution, and is 
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which accompanies this distribution, and is
  * available at http://creativecommons.org/licenses/MIT/
  *
  * Contributors:
- *   Stephan D. Cote 
+ *   Stephan D. Cote
  *      - Initial concept and implementation
  */
 package coyote.i13n;
 
 /**
- * The GaugeBase class allow for the creation of objects that track rates of 
- * change in some performance. 
- * 
- * <p>A linked list of samples is managed to calculate the current rate per 
- * second. This list will grow in size to accommodate the highest sampling rate 
- * and will not shrink. The nodes will, however, be re-used as they expire,  
- * allowing gauge to keep from creating and destroying temporary objects and 
- * causing unnecessary garbage collection.  
- * 
- * <p>This class also uses a circular array of one-second samples to provide a 
+ * The GaugeBase class allow for the creation of objects that track rates of
+ * change in some performance.
+ *
+ * <p>A linked list of samples is managed to calculate the current rate per
+ * second. This list will grow in size to accommodate the highest sampling rate
+ * and will not shrink. The nodes will, however, be re-used as they expire,
+ * allowing gauge to keep from creating and destroying temporary objects and
+ * causing unnecessary garbage collection.
+ *
+ * <p>This class also uses a circular array of one-second samples to provide a
  * minute-based rate calculation.
- * 
- * <p>Preliminary performance tests show gauges are quite a bit slower than 
+ *
+ * <p>Preliminary performance tests show gauges are quite a bit slower than
  * other metric structures:
  * <ul>
  *  <li>Null factory test: 1.5E-5 ms/c Avg (66,666,668 cps)</li>
@@ -34,10 +34,10 @@ package coyote.i13n;
  */
 public class GaugeBase extends NullGauge {
   /**
-   * The NetworkService class models a time-spamped sampling of data. 
-   * 
-   * <p>This class is designed to be used in a linked list pattern, allowing 
-   * for smooth movement from one node to the next without having to check 
+   * The NetworkService class models a time-spamped sampling of data.
+   *
+   * <p>This class is designed to be used in a linked list pattern, allowing
+   * for smooth movement from one node to the next without having to check
    * array indexes for wraps in circular arrays.
    */
   private class Node {
@@ -45,14 +45,13 @@ public class GaugeBase extends NullGauge {
     long value;
     Node nextNode;
     Node prevNode;
-    Gauge gauge;
 
 
 
 
     /**
      * A sample of occurrences.
-     * 
+     *
      * @param time Time the node represents
      * @param sample The number of occurrences in this node
      * @param prev The previous node for linking
@@ -166,7 +165,6 @@ public class GaugeBase extends NullGauge {
   private long firstAccess;
   private long lastAccess;
   private long totalCount;
-  private long size = 0;
   private final StringBuffer buffer = new StringBuffer();
   private Node firstSample = null;
   private Node lastSample = null;
@@ -200,7 +198,7 @@ public class GaugeBase extends NullGauge {
       lastMinuteNode = new Node( 0, 0, lastMinuteNode );
     }
 
-    // link the start and end nodes to complete the circle 
+    // link the start and end nodes to complete the circle
     start.prevNode = lastMinuteNode;
     lastMinuteNode.nextNode = start;
   }
@@ -213,7 +211,7 @@ public class GaugeBase extends NullGauge {
    */
   @Override
   public float getAvgValuePerSecond() {
-    if ( lastAccess - firstAccess > 0 ) {
+    if ( ( lastAccess - firstAccess ) > 0 ) {
       return (float)( totalCount / ( lastAccess - firstAccess ) ) * 1000;
     }
 
@@ -228,7 +226,7 @@ public class GaugeBase extends NullGauge {
    */
   @Override
   public float getElapsedSeconds() {
-    if ( lastAccess - firstAccess > 0 ) {
+    if ( ( lastAccess - firstAccess ) > 0 ) {
       return (float)( lastAccess - firstAccess ) / 1000;
     }
     return 0.0F;
@@ -337,7 +335,7 @@ public class GaugeBase extends NullGauge {
   public float getValuePerMinute() {
     // TODO complete this
     final float retval = 0.0F;
-    if ( lastAccess - firstAccess < 60000 ) {
+    if ( ( lastAccess - firstAccess ) < 60000 ) {
       // extrapolate vpm since we have not been running for a whole minute yet
     }
     return retval;
@@ -390,15 +388,13 @@ public class GaugeBase extends NullGauge {
     } else {
       node.nextNode.prevNode = node.prevNode;
     }
-
-    size--;
   }
 
 
 
 
   /**
-   * Reset all samples and counters effectively returning this gauge to a state 
+   * Reset all samples and counters effectively returning this gauge to a state
    * similar to that of a new gauge.
    */
   @Override
@@ -422,7 +418,7 @@ public class GaugeBase extends NullGauge {
       }
 
       // reset totals
-      firstAccess = lastAccess = totalCount = size = 0;
+      firstAccess = lastAccess = totalCount = 0;
 
       maxvps = Long.MIN_VALUE;
       minvps = Long.MAX_VALUE;
@@ -451,18 +447,18 @@ public class GaugeBase extends NullGauge {
 
   /**
    * Update the sample data with the given value.
-   * 
+   *
    * <p>This method assumes it will be called at regular intervals during
    * periods of activity and not be called if there is nothing to measure. This
    * implies that the value of any update call will only be applied to the last
-   * 1000 milliseconds of time. If this method was not called for 29 seconds 
-   * and then called with a value of 60 in the 30th second, then the entire 
-   * value of 60 will be applied to the last second of time, resulting in a 
-   * rate of 60 events per second and not 2 events per second as would be the 
+   * 1000 milliseconds of time. If this method was not called for 29 seconds
+   * and then called with a value of 60 in the 30th second, then the entire
+   * value of 60 will be applied to the last second of time, resulting in a
+   * rate of 60 events per second and not 2 events per second as would be the
    * case of the activity was averaged out over the missing updates.
-   * 
+   *
    * <p>Last profiler metric: 0.001187 ms per call - 847,459cps
-   * 
+   *
    * @param val the value of the last sample since the last update was called.
    */
   @Override
@@ -476,12 +472,10 @@ public class GaugeBase extends NullGauge {
         lastSample = new Node( lastAccess, val, null );
         firstSample = lastSample;
         firstAccess = lastAccess;
-        size++;
       } else {
         if ( lastSample.nextNode == null ) {
           // We are at the end of our list of samples, create a new node
           lastSample = new Node( lastAccess, val, lastSample );
-          size++;
         } else {
           // reuse the next node in the list
           lastSample = lastSample.nextNode;
@@ -499,9 +493,9 @@ public class GaugeBase extends NullGauge {
         lastMinuteNode.timestamp = lastSample.timestamp;
       }
 
-      // Now check to see if it is time to update the minute sample array with 
+      // Now check to see if it is time to update the minute sample array with
       // one or more seconds worth of data
-      if ( lastAccess - lastMinuteNode.timestamp >= 1000 ) {
+      if ( ( lastAccess - lastMinuteNode.timestamp ) >= 1000 ) {
         // move to the next minute node
         lastMinuteNode = lastMinuteNode.nextNode;
         // update the timestamp

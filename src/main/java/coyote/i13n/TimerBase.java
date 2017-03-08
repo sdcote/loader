@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2006 Stephan D. Cote' - All rights reserved.
- * 
- * This program and the accompanying materials are made available under the 
- * terms of the MIT License which accompanies this distribution, and is 
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which accompanies this distribution, and is
  * available at http://creativecommons.org/licenses/MIT/
  *
  * Contributors:
- *   Stephan D. Cote 
+ *   Stephan D. Cote
  *      - Initial concept and implementation
  */
 package coyote.i13n;
@@ -28,7 +28,7 @@ class TimerBase implements Timer {
 
 
   /**
-   * 
+   *
    */
   public TimerBase( final TimerMaster master ) {
     super();
@@ -51,7 +51,7 @@ class TimerBase implements Timer {
 
   /**
    * Implemented to meet Timer interface requirements.
-   * 
+   *
    * @see coyote.i13n.Timer#getMaster()
    */
   @Override
@@ -65,6 +65,17 @@ class TimerBase implements Timer {
   @Override
   public String getName() {
     return _master.getName();
+  }
+
+
+
+
+  /**
+   * @see coyote.i13n.Timer#isRunning()
+   */
+  @Override
+  public boolean isRunning() {
+    return _isRunningFlag;
   }
 
 
@@ -90,7 +101,7 @@ class TimerBase implements Timer {
 
   /**
    * Return the string representation of the timer.
-   * 
+   *
    * @see java.lang.Object#toString()
    */
   @Override
@@ -100,16 +111,5 @@ class TimerBase implements Timer {
     }
 
     return "";
-  }
-
-
-
-
-  /**
-   * @see coyote.i13n.Timer#isRunning()
-   */
-  @Override
-  public boolean isRunning() {
-    return _isRunningFlag;
   }
 }
