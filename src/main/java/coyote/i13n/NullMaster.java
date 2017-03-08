@@ -14,14 +14,12 @@ package coyote.i13n;
 /**
  * The NullMaster class models...
  */
-public class NullMaster implements TimerMaster
-{
+public class NullMaster implements TimerMaster {
 
   /**
    * @param args
    */
-  public static void main( final String[] args )
-  {
+  public static void main( final String[] args ) {
 
   }
 
@@ -31,30 +29,23 @@ public class NullMaster implements TimerMaster
   /**
    * @return The name of this timer set.
    */
-  public String getName()
-  {
+  public String getName() {
     return "";
   }
 
 
 
 
-  public void increase( final long value )
-  {
-  }
+  public void increase( final long value ) {}
 
 
 
 
-  public void start( final Timer mon )
-  {
-  }
+  public void start( final Timer mon ) {}
 
 
 
 
-  public void stop( final Timer mon )
-  {
-  }
+  public void stop( final Timer mon ) {}
 
 }

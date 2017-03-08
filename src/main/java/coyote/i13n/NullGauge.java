@@ -14,16 +14,14 @@ package coyote.i13n;
 /**
  * The NullGauge class models a gauge that does nothing.
  */
-public class NullGauge implements Gauge
-{
+public class NullGauge implements Gauge {
 
   protected String name = null;
 
 
 
 
-  public NullGauge( final String name )
-  {
+  public NullGauge( final String name ) {
     this.name = name;
   }
 
@@ -33,8 +31,7 @@ public class NullGauge implements Gauge
   /**
    * @see coyote.i13n.Gauge#getAvgValuePerSecond()
    */
-  public float getAvgValuePerSecond()
-  {
+  public float getAvgValuePerSecond() {
     return 0;
   }
 
@@ -44,8 +41,7 @@ public class NullGauge implements Gauge
   /**
    * @see coyote.i13n.Gauge#getElapsedSeconds()
    */
-  public float getElapsedSeconds()
-  {
+  public float getElapsedSeconds() {
     return 0;
   }
 
@@ -55,8 +51,7 @@ public class NullGauge implements Gauge
   /**
    * @see coyote.i13n.Gauge#getLastValuePerSecond()
    */
-  public long getLastValuePerSecond()
-  {
+  public long getLastValuePerSecond() {
     return 0;
   }
 
@@ -66,8 +61,7 @@ public class NullGauge implements Gauge
   /**
    * @see coyote.i13n.Gauge#getMaxValuePerSecond()
    */
-  public long getMaxValuePerSecond()
-  {
+  public long getMaxValuePerSecond() {
     return 0;
   }
 
@@ -77,8 +71,7 @@ public class NullGauge implements Gauge
   /**
    * @see coyote.i13n.Gauge#getMinuteTotal()
    */
-  public long getMinuteTotal()
-  {
+  public long getMinuteTotal() {
     return 0;
   }
 
@@ -88,8 +81,7 @@ public class NullGauge implements Gauge
   /**
    * @see coyote.i13n.Gauge#getMinValuePerSecond()
    */
-  public long getMinValuePerSecond()
-  {
+  public long getMinValuePerSecond() {
     return 0;
   }
 
@@ -99,8 +91,7 @@ public class NullGauge implements Gauge
   /**
    * @see  coyote.i13n.Gauge#getName()
    */
-  public String getName()
-  {
+  public String getName() {
     return name;
   }
 
@@ -110,8 +101,7 @@ public class NullGauge implements Gauge
   /**
    * @see coyote.i13n.Gauge#getTotal()
    */
-  public long getTotal()
-  {
+  public long getTotal() {
     return 0;
   }
 
@@ -121,8 +111,7 @@ public class NullGauge implements Gauge
   /**
    * @see coyote.i13n.Gauge#getValuePerMinute()
    */
-  public float getValuePerMinute()
-  {
+  public float getValuePerMinute() {
     return 0;
   }
 
@@ -132,8 +121,7 @@ public class NullGauge implements Gauge
   /**
    * @see coyote.i13n.Gauge#getValuePerSecond()
    */
-  public float getValuePerSecond()
-  {
+  public float getValuePerSecond() {
     return 0;
   }
 
@@ -143,20 +131,16 @@ public class NullGauge implements Gauge
   /**
    * @see coyote.i13n.Gauge#reset()
    */
-  public void reset()
-  {
-  }
+  public void reset() {}
 
 
 
 
   /**
-   * <p>Last profiler metric: 0.000443 ms per call - 2,257,336cps</p>
+   * <p>Last profiler metric: 0.000443 ms per call - 2,257,336cps
    * 
    * @see coyote.i13n.Gauge#update(long)
    */
-  public void update( final long val )
-  {
-  }
+  public void update( final long val ) {}
 
 }

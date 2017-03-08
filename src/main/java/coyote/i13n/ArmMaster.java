@@ -21,8 +21,7 @@ import java.util.Date;
  * The ArmMaster class models the master of all ARM transactions with a given 
  * name. 
  */
-public class ArmMaster
-{
+public class ArmMaster {
   /** The name of this master set of transactions. */
   String _name = null;
 
@@ -76,8 +75,7 @@ public class ArmMaster
   /**
    * @param name
    */
-  public ArmMaster( final String name )
-  {
+  public ArmMaster( final String name ) {
     _name = name;
   }
 
@@ -87,8 +85,7 @@ public class ArmMaster
   /**
    * @return True if the ARM set is enabled, false otherwise.
    */
-  public synchronized boolean isEnabled()
-  {
+  public synchronized boolean isEnabled() {
     return _enabled;
   }
 
@@ -100,24 +97,19 @@ public class ArmMaster
    * 
    * @param flag True to enable the ARMs, false to keep it from processing.
    */
-  public synchronized void setEnabled( final boolean flag )
-  {
+  public synchronized void setEnabled( final boolean flag ) {
     _enabled = flag;
   }
 
 
 
 
-  public ArmTransaction createArm( final String name, final String crid )
-  {
+  public ArmTransaction createArm( final String name, final String crid ) {
     ArmTransaction retval;
-    if( _enabled )
-    {
+    if ( _enabled ) {
       retval = new TimingArm( this, name, crid );
       hits++;
-    }
-    else
-    {
+    } else {
       retval = new NullArm( this, name, crid );
     }
 
@@ -128,13 +120,11 @@ public class ArmMaster
 
 
 
-  public synchronized void start( final ArmTransaction arm )
-  {
+  public synchronized void start( final ArmTransaction arm ) {
     activeCounter++;
     ArmMaster.globalCounter++;
 
-    if( activeCounter > maxActive )
-    {
+    if ( activeCounter > maxActive ) {
       maxActive = activeCounter;
     }
 
@@ -143,8 +133,7 @@ public class ArmMaster
     final long now = System.currentTimeMillis();
     lastAccessTime = now;
 
-    if( isFirstAccess )
-    {
+    if ( isFirstAccess ) {
       isFirstAccess = false;
       firstAccessTime = now;
     }
@@ -157,21 +146,18 @@ public class ArmMaster
    * Increase the time by the specified amount of milliseconds.
    * 
    * <p>This is the method that keeps track of the various statistics being 
-   * tracked.</p>
+   * tracked.
    *
    * @param value the amount to increase the accrued value.
    */
-  public synchronized void increase( final long value )
-  {
+  public synchronized void increase( final long value ) {
     // calculate min
-    if( value < min )
-    {
+    if ( value < min ) {
       min = value;
     }
 
     // calculate max
-    if( value > max )
-    {
+    if ( value > max ) {
       max = value;
     }
 
@@ -187,8 +173,7 @@ public class ArmMaster
 
 
 
-  public synchronized void stop( final ArmTransaction arm )
-  {
+  public synchronized void stop( final ArmTransaction arm ) {
     activeCounter--;
     ArmMaster.globalCounter--;
     accrued += arm.getTotalTime();
@@ -200,17 +185,13 @@ public class ArmMaster
   /**
    * @return the average time for all stopped transactions for this master list.
    */
-  private long getAverage()
-  {
+  private long getAverage() {
     // we can only average the total number of closures not just the hits
     final long closures = ( hits - activeCounter );
 
-    if( closures == 0 )
-    {
+    if ( closures == 0 ) {
       return 0;
-    }
-    else
-    {
+    } else {
       return total / closures;
     }
   }
@@ -221,14 +202,10 @@ public class ArmMaster
   /**
    * @return the average number of active for the life of this master list.
    */
-  final float getAvgActive()
-  {
-    if( hits == 0 )
-    {
+  final float getAvgActive() {
+    if ( hits == 0 ) {
       return 0;
-    }
-    else
-    {
+    } else {
       return (float)totalActive / hits;
     }
   }
@@ -242,11 +219,9 @@ public class ArmMaster
    *
    * @return The amount of one standard deviation of all the interval times. 
    */
-  private long getStandardDeviation()
-  {
+  private long getStandardDeviation() {
     long stdDeviation = 0;
-    if( hits != 0 )
-    {
+    if ( hits != 0 ) {
       final long sumOfX = total;
       final int n = hits;
       final int nMinus1 = ( n <= 1 ) ? 1 : n - 1; // avoid 0 divides;
@@ -268,8 +243,7 @@ public class ArmMaster
    *
    * @return
    */
-  protected String convertToString( final long value )
-  {
+  protected String convertToString( final long value ) {
     final DecimalFormat numberFormat = (DecimalFormat)NumberFormat.getNumberInstance();
     numberFormat.applyPattern( "#,###" );
 
@@ -286,8 +260,7 @@ public class ArmMaster
    *
    * @return
    */
-  protected static String convertToString( final double value )
-  {
+  protected static String convertToString( final double value ) {
     final DecimalFormat numberFormat = (DecimalFormat)NumberFormat.getNumberInstance();
     numberFormat.applyPattern( "#,###.#" );
     return numberFormat.format( value );
@@ -303,14 +276,10 @@ public class ArmMaster
    *
    * @return
    */
-  private String getDateString( final long time )
-  {
-    if( time == 0 )
-    {
+  private String getDateString( final long time ) {
+    if ( time == 0 ) {
       return "";
-    }
-    else
-    {
+    } else {
       return DateFormat.getDateTimeInstance( DateFormat.SHORT, DateFormat.DEFAULT ).format( new Date( time ) );
     }
   }
@@ -327,22 +296,19 @@ public class ArmMaster
    *
    * @return
    */
-  protected String getDisplayString( final String type, final String value, final String units )
-  {
+  protected String getDisplayString( final String type, final String value, final String units ) {
     return type + "=" + value + " " + units + " ";
   }
 
 
 
 
-  public String toString()
-  {
+  public String toString() {
     final StringBuffer message = new StringBuffer( _name );
     message.append( ": " );
     message.append( getDisplayString( ArmMaster.CALLS, convertToString( hits ), ArmMaster.NONE ) );
 
-    if( ( hits - activeCounter ) > 0 )
-    {
+    if ( ( hits - activeCounter ) > 0 ) {
       message.append( getDisplayString( ArmMaster.AVG, convertToString( getAverage() ), ArmMaster.MILLISECONDS ) );
       message.append( getDisplayString( ArmMaster.TOTAL, convertToString( total ), ArmMaster.MILLISECONDS ) );
       message.append( getDisplayString( ArmMaster.STANDARD_DEVIATION, convertToString( getStandardDeviation() ), ArmMaster.MILLISECONDS ) );

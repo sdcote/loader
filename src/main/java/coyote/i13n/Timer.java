@@ -17,16 +17,16 @@ package coyote.i13n;
  * 
  * <p>Timers measure the time between phases of execution. Once a Timer is 
  * started, its stores the time and waits for a call to stop(). Once stopped, 
- * it calculates the total elapsed time for that run.</p>
+ * it calculates the total elapsed time for that run.
  * 
  * <p>Later a Timer (actually the entire set) can be rolled-up to provide the 
  * number of invocations, mean, long and short elapsed intervals and several 
  * other phase-oriented metrics in a manner similar to those of counters and 
- * states.</p>
+ * states.
  * 
  * <p>The fixture tracks a Timer by its name where each name represents a 
  * Master Timer that is used to accrue all the data of Timers with the same 
- * name.</p>
+ * name.
  * 
  * <p>There are two types of Timers, a Timed Timer and a Null Timer. During 
  * normal operation the fixture issues a Timed Timer that tracks the time 
@@ -35,14 +35,13 @@ package coyote.i13n;
  * fixture or for a specific named Timer, then a Null Timer is issued. It 
  * implements the exact same interface as the timed Timer, but the Null Timer 
  * contains no logic thereby saving on processing when monitoring is not 
- * desired.</p>
+ * desired.
  * 
  * <p>A single Timer reference can be started and stopped several times, each 
  * interval between the start-stop calls being added to the accrued value of 
- * the Timer.</p>
+ * the Timer.
  */
-public interface Timer
-{
+public interface Timer {
 
   /**
    * Access the datum collected.
@@ -84,8 +83,6 @@ public interface Timer
 
   /**
    * Stop this timer from collecting datum.
-   * 
-   * @return the number of milliseconds accrued by this timer.
    */
   public void stop();
 

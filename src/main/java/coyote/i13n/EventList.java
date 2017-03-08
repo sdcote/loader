@@ -74,7 +74,7 @@ public class EventList {
    */
   public void setMaxEvents( final int max ) {
     _maxEvents = max;
-    while( _list.size() > _maxEvents ) {
+    while ( _list.size() > _maxEvents ) {
       _list.removeFirst();
     }
   }
@@ -84,7 +84,7 @@ public class EventList {
 
   public synchronized void add( final AppEvent event ) {
     _list.add( event );
-    while( _list.size() > _maxEvents ) {
+    while ( _list.size() > _maxEvents ) {
       _list.removeFirst();
     }
   }
@@ -113,18 +113,18 @@ public class EventList {
    */
   public synchronized AppEvent get( final long seq ) {
     // make sure the event exists
-    if( ( (AppEvent)( _list.getFirst() ) ).getSequence() <= seq ) {
-      if( ( ( (AppEvent)_list.getLast() ) ).getSequence() >= seq ) {
+    if ( ( (AppEvent)( _list.getFirst() ) ).getSequence() <= seq ) {
+      if ( ( ( (AppEvent)_list.getLast() ) ).getSequence() >= seq ) {
         // perform a binary search on the event list.
         int indx = 0;
         int size = _list.size() - 1;
-        while( indx <= size ) {
+        while ( indx <= size ) {
           final int i = ( indx + size ) >> 1;
           final AppEvent retval = (AppEvent)_list.get( i );
           final long value = retval.getSequence();
-          if( value < seq ) {
+          if ( value < seq ) {
             indx = i + 1;
-          } else if( value > seq ) {
+          } else if ( value > seq ) {
             size = i - 1;
           } else {
             return (AppEvent)_list.get( i );
@@ -180,7 +180,7 @@ public class EventList {
    * Create an event and add it to the list.
    * 
    * <p>This is the preferred call when generating an event because it will 
-   * explicitly set all the values in the returned event.</p>
+   * explicitly set all the values in the returned event.
    * 
    * @param appid A correlating identifier for an application.
    * @param sysid A correlating identifier for a sub-system within an application.
@@ -208,7 +208,7 @@ public class EventList {
    * 
    * <p>The event will contain a severity of 0 (indeterminate) and will not be 
    * flagged as an error. All identifiers and codes will either not be filled 
-   * in or set to 0 (zero).</p>
+   * in or set to 0 (zero).
    * 
    * @param msg The message text to place within the event.
    * 
@@ -222,13 +222,15 @@ public class EventList {
 
 
   /**
-   * Create an event with a message and major & minor codes and add it to the 
+   * Create an event with a message and major and minor codes and add it to the 
    * list.
    * 
    * <p>The event will contain a severity of 0 (indeterminate) and will not be 
-   * flagged as an error. All other identifiers will be set to null.</p>
+   * flagged as an error. All other identifiers will be set to null.
    * 
    * @param msg The message text to place within the event.
+   * @param majorcode
+   * @param minorcode
    * 
    * @return A sequenced event with the appropriate values filled-in.
    */

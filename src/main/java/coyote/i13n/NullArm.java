@@ -11,13 +11,13 @@
  */
 package coyote.i13n;
 
+import coyote.loader.log.Log;
 
 
 /**
  * The NullArm class models an ARM transaction that performs no work.
  */
-public class NullArm implements ArmTransaction
-{
+public class NullArm implements ArmTransaction {
   protected static final long ARM_EVENTS = Log.getCode( ArmTransaction.LOG_CATEGORY );
 
   /** The master timer that accumulates our data. */
@@ -34,17 +34,13 @@ public class NullArm implements ArmTransaction
 
 
 
-  public NullArm( final ArmMaster master, final String name, final String crid )
-  {
+  public NullArm( final ArmMaster master, final String name, final String crid ) {
     _master = master;
     _crid = crid;
 
-    if( ( name == null ) && ( _master != null ) )
-    {
+    if ( ( name == null ) && ( _master != null ) ) {
       _name = _master._name;
-    }
-    else
-    {
+    } else {
       _name = name;
     }
   }
@@ -52,17 +48,13 @@ public class NullArm implements ArmTransaction
 
 
 
-  public NullArm( final ArmMaster master, final String name, final String crid, final ArmTransaction parent )
-  {
+  public NullArm( final ArmMaster master, final String name, final String crid, final ArmTransaction parent ) {
     _master = master;
     _crid = crid;
     _parent = parent;
-    if( ( name == null ) && ( _master != null ) )
-    {
+    if ( ( name == null ) && ( _master != null ) ) {
       _name = _master._name;
-    }
-    else
-    {
+    } else {
       _name = name;
     }
   }
@@ -71,10 +63,9 @@ public class NullArm implements ArmTransaction
 
 
   /**
-   * @see net.coyote.i13n.NullArm#decrement(java.lang.String, long)
+   * see coyote.i13n.NullArm#decrement(java.lang.String, long)
    */
-  public long decrease( final String name, final long value )
-  {
+  public long decrease( final String name, final long value ) {
     return 0;
   }
 
@@ -82,10 +73,9 @@ public class NullArm implements ArmTransaction
 
 
   /**
-   * @see net.coyote.i13n.NullArm#decrement(java.lang.String)
+   * @see coyote.i13n.NullArm#decrement(java.lang.String)
    */
-  public long decrement( final String name )
-  {
+  public long decrement( final String name ) {
     return 0;
   }
 
@@ -93,11 +83,9 @@ public class NullArm implements ArmTransaction
 
 
   /**
-   * @see net.coyote.i13n.NullArm#destroy()
+   * @see coyote.i13n.NullArm#destroy()
    */
-  public void destroy()
-  {
-  }
+  public void destroy() {}
 
 
 
@@ -105,8 +93,7 @@ public class NullArm implements ArmTransaction
   /**
    * @see coyote.i13n.ArmTransaction#getCRID()
    */
-  public String getCRID()
-  {
+  public String getCRID() {
     return _crid;
   }
 
@@ -116,8 +103,7 @@ public class NullArm implements ArmTransaction
   /**
    * @see coyote.i13n.ArmTransaction#getMaster()
    */
-  public ArmMaster getMaster()
-  {
+  public ArmMaster getMaster() {
     return _master;
   }
 
@@ -127,8 +113,7 @@ public class NullArm implements ArmTransaction
   /**
    * @see coyote.i13n.ArmTransaction#getName()
    */
-  public String getName()
-  {
+  public String getName() {
     return _name;
   }
 
@@ -138,8 +123,7 @@ public class NullArm implements ArmTransaction
   /**
    * @see coyote.i13n.ArmTransaction#getOverheadTime()
    */
-  public long getOverheadTime()
-  {
+  public long getOverheadTime() {
     return 0;
   }
 
@@ -149,8 +133,7 @@ public class NullArm implements ArmTransaction
   /**
    * @see coyote.i13n.ArmTransaction#getStartTime()
    */
-  public long getStartTime()
-  {
+  public long getStartTime() {
     return 0;
   }
 
@@ -160,8 +143,7 @@ public class NullArm implements ArmTransaction
   /**
    * @see coyote.i13n.ArmTransaction#getStatus()
    */
-  public short getStatus()
-  {
+  public short getStatus() {
     return _status;
   }
 
@@ -171,8 +153,7 @@ public class NullArm implements ArmTransaction
   /**
    * @see coyote.i13n.ArmTransaction#getStopTime()
    */
-  public long getStopTime()
-  {
+  public long getStopTime() {
     return 0;
   }
 
@@ -182,8 +163,7 @@ public class NullArm implements ArmTransaction
   /**
    * @see coyote.i13n.ArmTransaction#getTotalTime()
    */
-  public long getTotalTime()
-  {
+  public long getTotalTime() {
     return 0;
   }
 
@@ -193,8 +173,7 @@ public class NullArm implements ArmTransaction
   /**
    * @see coyote.i13n.ArmTransaction#getWaitTime()
    */
-  public long getWaitTime()
-  {
+  public long getWaitTime() {
     return 0;
   }
 
@@ -202,10 +181,9 @@ public class NullArm implements ArmTransaction
 
 
   /**
-   * @see net.coyote.i13n.NullArm#increase(java.lang.String, long)
+   * @see coyote.i13n.NullArm#increase(java.lang.String, long)
    */
-  public long increase( final String name, final long value )
-  {
+  public long increase( final String name, final long value ) {
     return 0;
   }
 
@@ -213,10 +191,9 @@ public class NullArm implements ArmTransaction
 
 
   /**
-   * @see net.coyote.i13n.NullArm#increment(java.lang.String)
+   * @see coyote.i13n.NullArm#increment(java.lang.String)
    */
-  public long increment( final String name )
-  {
+  public long increment( final String name ) {
     return 0;
   }
 
@@ -226,8 +203,7 @@ public class NullArm implements ArmTransaction
   /**
    * @see coyote.i13n.ArmTransaction#setCRID(java.lang.String)
    */
-  public void setCRID( final String crid )
-  {
+  public void setCRID( final String crid ) {
     _crid = crid;
   }
 
@@ -235,31 +211,28 @@ public class NullArm implements ArmTransaction
 
 
   /**
-   * @see net.coyote.i13n.NullArm#start()
+   * @see coyote.i13n.NullArm#start()
    */
-  public void start()
-  {
-  }
+  public void start() {}
 
 
 
 
   /**
    * Create a child ARM.
+   * 
    * @param name
-   * @param crid the coorelation identifier to use for this arm.
-   * @return
+   * 
+   * @return a new no-op ARM
    */
-  public ArmTransaction startArm( final String name )
-  {
+  public ArmTransaction startArm( final String name ) {
     return new NullArm( null, null, null );
   }
 
 
 
 
-  public ArmTransaction startArm( final String name, final String crid )
-  {
+  public ArmTransaction startArm( final String name, final String crid ) {
     return new NullArm( null, null, null );
   }
 
@@ -267,10 +240,9 @@ public class NullArm implements ArmTransaction
 
 
   /**
-   * @see net.coyote.i13n.NullArm#stop()
+   * @see coyote.i13n.NullArm#stop()
    */
-  public long stop()
-  {
+  public long stop() {
     return 0;
   }
 
@@ -278,10 +250,9 @@ public class NullArm implements ArmTransaction
 
 
   /**
-   * @see net.coyote.i13n.NullArm#stop(short)
+   * @see coyote.i13n.NullArm#stop(short)
    */
-  public long stop( final short status )
-  {
+  public long stop( final short status ) {
     return 0;
   }
 
@@ -293,10 +264,8 @@ public class NullArm implements ArmTransaction
    * 
    * @see java.lang.Object#toString()
    */
-  public String toString()
-  {
-    if( _master != null )
-    {
+  public String toString() {
+    if ( _master != null ) {
       return _master.toString();
     }
 
@@ -307,10 +276,8 @@ public class NullArm implements ArmTransaction
 
 
   /**
-   * @see net.coyote.i13n.NullArm#update(java.lang.String, java.lang.Object)
+   * @see coyote.i13n.NullArm#update(java.lang.String, java.lang.Object)
    */
-  public void update( final String name, final Object value )
-  {
-  }
+  public void update( final String name, final Object value ) {}
 
 }

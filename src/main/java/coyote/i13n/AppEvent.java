@@ -17,13 +17,13 @@ package coyote.i13n;
  * <p>AppEvents are used to store significant events in an application. These 
  * are often errors which can easily get list in log files. The Scorecard holds
  * events separately and allow the system to handle them in a manner apart from 
- * simply recording them to a log file for later analysis.</p>
+ * simply recording them to a log file for later analysis.
  * 
  * <p>A basic assumption is bade that all applications are made up of systems 
  * and those systems are made up of components. Each of these tiers can be 
  * identified and the composite business key of application-system-component 
  * can be used to identify the source of events in very large, complex 
- * environments.</p>
+ * environments.
  * 
  * <p>It is also assumed that operations uses the concept of codes to represent 
  * events in a language independent manner. Events can contain a message for 
@@ -33,15 +33,14 @@ package coyote.i13n;
  * event can speed resolution workflows and automated processing while minor 
  * event codes can give more details. It is very common in large data centers 
  * to see troubleshooting manuals list resolutions by event codes and this 
- * class continues support for this effective approach.</p>
+ * class continues support for this effective approach.
  * 
  * <p>Scorecards hold a reference to a buffer of events. When an event is added 
  * and the buffer is full, the oldest event is dropped to make room for the new
  * one. This keeps memory under control, but can cause problems during garbage 
- * collection if the application is experiencing an event storm.</p>
+ * collection if the application is experiencing an event storm.
  */
-public class AppEvent
-{
+public class AppEvent {
   /** 
    * Critical Severity.<p>Indicates that a service affecting fault condition 
    * has occurred which prevents system function, and an immediate corrective 
@@ -81,14 +80,10 @@ public class AppEvent
 
 
 
-  public static String getSeverityString( final int sev )
-  {
-    if( ( sev > -1 ) && ( sev < AppEvent.severities.length ) )
-    {
+  public static String getSeverityString( final int sev ) {
+    if ( ( sev > -1 ) && ( sev < AppEvent.severities.length ) ) {
       return AppEvent.severities[sev];
-    }
-    else
-    {
+    } else {
       return AppEvent.severities[0];
     }
   }
@@ -136,8 +131,7 @@ public class AppEvent
    * @param cls The classification of the event (e.g. 'Network Error')
    * @param list The event list to which this event belongs.
    */
-  AppEvent( final long seq, final String appid, final String sysid, final String cmpid, final String msg, final int sv, final int maj, final int min, final String cls, final EventList list )
-  {
+  AppEvent( final long seq, final String appid, final String sysid, final String cmpid, final String msg, final int sv, final int maj, final int min, final String cls, final EventList list ) {
     _time = System.currentTimeMillis();
     _appId = appid;
     _sysId = sysid;
@@ -160,7 +154,7 @@ public class AppEvent
    * runtime.
    * 
    * <p>There is no reference to a list and the sequence number is NOT 
-   * automatically assigned.</p>
+   * automatically assigned.
    * 
    * @param seq the sequence of this event in the scorecard.
    * @param appid
@@ -172,8 +166,7 @@ public class AppEvent
    * @param min
    * @param cls
    */
-  public AppEvent( final long seq, final String appid, final String sysid, final String cmpid, final String msg, final int sv, final int maj, final int min, final String cls )
-  {
+  public AppEvent( final long seq, final String appid, final String sysid, final String cmpid, final String msg, final int sv, final int maj, final int min, final String cls ) {
     _time = System.currentTimeMillis();
     _appId = appid;
     _sysId = sysid;
@@ -193,11 +186,9 @@ public class AppEvent
   /**
    * Clear the event so it is no longer pending.
    */
-  public void clear()
-  {
+  public void clear() {
     _clrd = System.currentTimeMillis();
-    if( _lst != null )
-    {
+    if ( _lst != null ) {
       _lst.remove( this );
     }
   }
@@ -210,8 +201,7 @@ public class AppEvent
    * 
    * @param reason Reason why the event was cleared.
    */
-  public void clear( final String reason )
-  {
+  public void clear( final String reason ) {
     clear();
     _rsn = reason;
   }
@@ -222,8 +212,7 @@ public class AppEvent
   /**
    * @return  Returns the application ID.
    */
-  public String get_appId()
-  {
+  public String get_appId() {
     return _appId;
   }
 
@@ -233,8 +222,7 @@ public class AppEvent
   /**
    * @return  Returns the component ID.
    */
-  public String get_cmpId()
-  {
+  public String get_cmpId() {
     return _cmpId;
   }
 
@@ -244,8 +232,7 @@ public class AppEvent
   /**
    * @return  Returns the system ID.
    */
-  public String get_sysId()
-  {
+  public String get_sysId() {
     return _sysId;
   }
 
@@ -255,8 +242,7 @@ public class AppEvent
   /**
    * @return Returns the Classification of this event.
    */
-  public String getClassification()
-  {
+  public String getClassification() {
     return _cls;
   }
 
@@ -266,8 +252,7 @@ public class AppEvent
   /**
    * @return Returns the major event code.
    */
-  public int getMajorCode()
-  {
+  public int getMajorCode() {
     return _maj;
   }
 
@@ -277,8 +262,7 @@ public class AppEvent
   /**
    * @return Returns the message.
    */
-  public String getMessage()
-  {
+  public String getMessage() {
     return _msg;
   }
 
@@ -288,8 +272,7 @@ public class AppEvent
   /**
    * @return Returns the minor event code.
    */
-  public int getMinorCode()
-  {
+  public int getMinorCode() {
     return _min;
   }
 
@@ -300,8 +283,7 @@ public class AppEvent
    * @return The reason the event was cleared or null if the event has not been 
    *         cleared or no reason was given.
    */
-  public String getReasonCleared()
-  {
+  public String getReasonCleared() {
     return _rsn;
   }
 
@@ -311,8 +293,7 @@ public class AppEvent
   /**
    * @return Returns the sequence.
    */
-  public long getSequence()
-  {
+  public long getSequence() {
     return _seq;
   }
 
@@ -322,16 +303,14 @@ public class AppEvent
   /**
    * @return Returns the severity of the event.
    */
-  public int getSeverity()
-  {
+  public int getSeverity() {
     return _sev;
   }
 
 
 
 
-  public String getSeverityString()
-  {
+  public String getSeverityString() {
     return AppEvent.getSeverityString( _sev );
 
   }
@@ -342,8 +321,7 @@ public class AppEvent
   /**
    * @return The epoch time in milliseconds.
    */
-  public long getTime()
-  {
+  public long getTime() {
     return _time;
   }
 
@@ -354,8 +332,7 @@ public class AppEvent
    * @return The epoch time in milliseconds when the event was cleared or 0 if 
    *         the event has not been cleared.
    */
-  public long getTimeCleared()
-  {
+  public long getTimeCleared() {
     return _clrd;
   }
 
@@ -365,8 +342,7 @@ public class AppEvent
   /**
    * @param msg The message text to set.
    */
-  public void setMessage( final String msg )
-  {
+  public void setMessage( final String msg ) {
     _msg = msg;
   }
 
@@ -376,8 +352,7 @@ public class AppEvent
   /**
    * @param sev The severity to set.
    */
-  public void setSeverity( final int sev )
-  {
+  public void setSeverity( final int sev ) {
     this._sev = sev;
   }
 
@@ -387,16 +362,14 @@ public class AppEvent
   /**
    * @param millis The current epoch time in milliseconds to set.
    */
-  public void setTime( final long millis )
-  {
+  public void setTime( final long millis ) {
     _time = millis;
   }
 
 
 
 
-  public String toString()
-  {
+  public String toString() {
     return new String( "TabEvent[" + _cls + "|" + _appId + "|" + _sysId + "|" + _cmpId + "]:" + _seq + ":" + _sev + ":" + ":" + _maj + "." + _min + ":" + _time + ":" + _msg );
   }
 }

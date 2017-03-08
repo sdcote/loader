@@ -15,8 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 
-import coyote.i13n.Log;
 import coyote.i13n.Platform;
+import coyote.loader.log.Log;
 
 
 /**
@@ -158,7 +158,7 @@ public class DefaultPlatform implements Platform
    * suffix or extension of ".tmp" where X will represent the Tabs Identifier.
    * 
    * <p>Every attempt will be made to delete the file when the runtime exits 
-   * normally but the file will probably remain if the VM is halted.</p>
+   * normally but the file will probably remain if the VM is halted.
    * 
    * @return A file reference that will be deleted when the VM exits, or null 
    *         if the file could not be created for any reason.
@@ -177,7 +177,7 @@ public class DefaultPlatform implements Platform
    * represent the Tabs Identifier.
    * 
    * <p>Every attempt will be made to delete the file when the runtime exits 
-   * normally but the file will probably remain if the VM is halted.</p>
+   * normally but the file will probably remain if the VM is halted.
    * 
    * @return A file reference that will be deleted when the VM exits, or null 
    *         if the file could not be created for any reason.

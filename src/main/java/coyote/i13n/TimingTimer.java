@@ -15,8 +15,7 @@ package coyote.i13n;
  * The TimingTimer class models an actual working implementation of an 
  * Timer as opposed to the NullTimer.
  */
-public class TimingTimer extends TimerBase
-{
+public class TimingTimer extends TimerBase {
   volatile private long _startTime = 0;
 
   volatile long _accrued;
@@ -27,8 +26,7 @@ public class TimingTimer extends TimerBase
   /**
    * Create a new timer with a null master.
    */
-  public TimingTimer()
-  {
+  public TimingTimer() {
     super( TimerBase.NULL_MASTER );
   }
 
@@ -38,18 +36,15 @@ public class TimingTimer extends TimerBase
   /**
    * 
    */
-  public TimingTimer( final TimingMaster master )
-  {
+  public TimingTimer( final TimingMaster master ) {
     super( master );
   }
 
 
 
 
-  public void start()
-  {
-    if( !_isRunningFlag )
-    {
+  public void start() {
+    if ( !_isRunningFlag ) {
       _startTime = System.currentTimeMillis();
       _isRunningFlag = true;
       _master.start( this );
@@ -59,10 +54,8 @@ public class TimingTimer extends TimerBase
 
 
 
-  public void stop()
-  {
-    if( _isRunningFlag )
-    {
+  public void stop() {
+    if ( _isRunningFlag ) {
       increase( timeElapsedSinceLastStart() );
       _master.increase( _accrued );
       _master.stop( this );
@@ -81,10 +74,8 @@ public class TimingTimer extends TimerBase
    *
    * @param value the amount to increase the accrued value.
    */
-  public void increase( final long value )
-  {
-    if( isRunning() )
-    {
+  public void increase( final long value ) {
+    if ( isRunning() ) {
       _accrued += value;
     }
   }
@@ -97,8 +88,7 @@ public class TimingTimer extends TimerBase
    *
    * @return
    */
-  public long getAccrued()
-  {
+  public long getAccrued() {
     return _accrued + timeElapsedSinceLastStart();
   }
 
@@ -110,14 +100,10 @@ public class TimingTimer extends TimerBase
    *
    * @return the number of milliseconds since the last start.
    */
-  private long timeElapsedSinceLastStart()
-  {
-    if( isRunning() )
-    {
+  private long timeElapsedSinceLastStart() {
+    if ( isRunning() ) {
       return System.currentTimeMillis() - _startTime;
-    }
-    else
-    {
+    } else {
       return 0;
     }
   }

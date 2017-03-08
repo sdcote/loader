@@ -11,22 +11,20 @@
  */
 package coyote.i13n;
 
-
 /**
  * The Counter class models an object that tracks a numerical value.
  * 
  * <p>Each fixture manages a dynamic set of named numeric counters accessible 
  * by a name. These counters allow applications to increment, decrement and 
- * reset these values allowing for easy metric collection.</p>
+ * reset these values allowing for easy metric collection.
  * 
  * <p>This class is thread-safe in that all the methods synchronize on the name 
- * of the counter to avoid double synchronization on the class itself.</p>
+ * of the counter to avoid double synchronization on the class itself.
  * 
  * @author Stephan D. Cote' - Enterprise Architecture
  * @version $Revision$
  */
-public class Counter extends Metric implements Cloneable
-{
+public class Counter extends Metric implements Cloneable {
   private String _units = null;
   private long _value = 0;
   private long _minValue = 0;
@@ -38,8 +36,7 @@ public class Counter extends Metric implements Cloneable
   /**
    * Create a counter with a name.
    */
-  public Counter( final String name )
-  {
+  public Counter( final String name ) {
     super( name );
   }
 
@@ -49,8 +46,7 @@ public class Counter extends Metric implements Cloneable
   /**
    * Create a deep copy of this counter.
    */
-  public Object clone()
-  {
+  public Object clone() {
     final Counter retval = new Counter( this._name );
     retval._units = this._units;
     retval._value = this._value;
@@ -70,18 +66,14 @@ public class Counter extends Metric implements Cloneable
    * 
    * @return The final value of the counter after the operation.
    */
-  public long decrease( final long amt )
-  {
-    synchronized( _name )
-    {
+  public long decrease( final long amt ) {
+    synchronized( _name ) {
       _updateCount++;
       _value -= amt;
-      if( _value < _minValue )
-      {
+      if ( _value < _minValue ) {
         _minValue = _value;
       }
-      if( _value > _maxValue )
-      {
+      if ( _value > _maxValue ) {
         _maxValue = _value;
       }
       return _value;
@@ -96,14 +88,11 @@ public class Counter extends Metric implements Cloneable
    * 
    * @return The final value of the counter after the operation.
    */
-  public long decrement()
-  {
-    synchronized( _name )
-    {
+  public long decrement() {
+    synchronized( _name ) {
       _updateCount++;
       _value--;
-      if( _value < _minValue )
-      {
+      if ( _value < _minValue ) {
         _minValue = _value;
       }
       return _value;
@@ -116,10 +105,8 @@ public class Counter extends Metric implements Cloneable
   /**
    * @return Returns the maximum value the counter ever represented.
    */
-  public long getMaxValue()
-  {
-    synchronized( _name )
-    {
+  public long getMaxValue() {
+    synchronized( _name ) {
       return _maxValue;
     }
   }
@@ -130,10 +117,8 @@ public class Counter extends Metric implements Cloneable
   /**
    * @return Returns the minimum value the counter ever represented.
    */
-  public long getMinValue()
-  {
-    synchronized( _name )
-    {
+  public long getMinValue() {
+    synchronized( _name ) {
       return _minValue;
     }
   }
@@ -144,8 +129,7 @@ public class Counter extends Metric implements Cloneable
   /**
    * @return Returns the units the counter measures.
    */
-  public String getUnits()
-  {
+  public String getUnits() {
     return _units;
   }
 
@@ -155,10 +139,8 @@ public class Counter extends Metric implements Cloneable
   /**
    * @return Returns the current value of the counter.
    */
-  public long getValue()
-  {
-    synchronized( _name )
-    {
+  public long getValue() {
+    synchronized( _name ) {
       return _value;
     }
   }
@@ -173,18 +155,14 @@ public class Counter extends Metric implements Cloneable
    * 
    * @return The final value of the counter after the operation.
    */
-  public long increase( final long amt )
-  {
-    synchronized( _name )
-    {
+  public long increase( final long amt ) {
+    synchronized( _name ) {
       _updateCount++;
       _value += amt;
-      if( _value < _minValue )
-      {
+      if ( _value < _minValue ) {
         _minValue = _value;
       }
-      if( _value > _maxValue )
-      {
+      if ( _value > _maxValue ) {
         _maxValue = _value;
       }
       return _value;
@@ -199,14 +177,11 @@ public class Counter extends Metric implements Cloneable
    * 
    * @return The final value of the counter after the operation.
    */
-  public long increment()
-  {
-    synchronized( _name )
-    {
+  public long increment() {
+    synchronized( _name ) {
       _updateCount++;
       _value++;
-      if( _value > _maxValue )
-      {
+      if ( _value > _maxValue ) {
         _maxValue = _value;
       }
       return _value;
@@ -221,14 +196,12 @@ public class Counter extends Metric implements Cloneable
    * 
    * <p>The return value will represent a copy of the counter prior to the 
    * reset and is useful for applications that desire delta values. These delta
-   * values are simply the return values of successive reset calls.</p>
+   * values are simply the return values of successive reset calls.
    * 
    * @return a counter representing the state prior to the reset.
    */
-  public Counter reset()
-  {
-    synchronized( _name )
-    {
+  public Counter reset() {
+    synchronized( _name ) {
       final Counter retval = (Counter)clone();
 
       _value = 0;
@@ -248,10 +221,8 @@ public class Counter extends Metric implements Cloneable
    * 
    * @param units The units to set.
    */
-  public void setUnits( final String units )
-  {
-    synchronized( _name )
-    {
+  public void setUnits( final String units ) {
+    synchronized( _name ) {
       _units = units;
     }
   }
@@ -262,15 +233,12 @@ public class Counter extends Metric implements Cloneable
   /**
    * Return the human-readable form of this counter.
    */
-  public String toString()
-  {
-    synchronized( _name )
-    {
+  public String toString() {
+    synchronized( _name ) {
       final StringBuffer buff = new StringBuffer( _name );
       buff.append( "=" );
       buff.append( Long.toString( _value ) );
-      if( _units != null )
-      {
+      if ( _units != null ) {
         buff.append( _units );
       }
       buff.append( "[min=" );

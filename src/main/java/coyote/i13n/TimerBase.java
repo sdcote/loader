@@ -14,8 +14,7 @@ package coyote.i13n;
 /**
  * The TimerBase class models the base class for all timers.
  */
-class TimerBase implements Timer
-{
+class TimerBase implements Timer {
   /** Our master timer used to correlate all timer metrics */
   protected static final TimerMaster NULL_MASTER = new NullMaster();
 
@@ -31,8 +30,7 @@ class TimerBase implements Timer
   /**
    * 
    */
-  public TimerBase( final TimerMaster master )
-  {
+  public TimerBase( final TimerMaster master ) {
     super();
     _master = master;
   }
@@ -44,8 +42,7 @@ class TimerBase implements Timer
    * Implemented to meet Timer interface requirements.
    */
   @Override
-  public long getAccrued()
-  {
+  public long getAccrued() {
     return 0;
   }
 
@@ -58,8 +55,7 @@ class TimerBase implements Timer
    * @see coyote.i13n.Timer#getMaster()
    */
   @Override
-  public TimerMaster getMaster()
-  {
+  public TimerMaster getMaster() {
     return _master;
   }
 
@@ -67,8 +63,7 @@ class TimerBase implements Timer
 
 
   @Override
-  public String getName()
-  {
+  public String getName() {
     return _master.getName();
   }
 
@@ -79,9 +74,7 @@ class TimerBase implements Timer
    * Implemented to meet Timer interface requirements.
    */
   @Override
-  public void start()
-  {
-  }
+  public void start() {}
 
 
 
@@ -90,9 +83,7 @@ class TimerBase implements Timer
    * Implemented to meet Timer interface requirements.
    */
   @Override
-  public void stop()
-  {
-  }
+  public void stop() {}
 
 
 
@@ -103,10 +94,8 @@ class TimerBase implements Timer
    * @see java.lang.Object#toString()
    */
   @Override
-  public String toString()
-  {
-    if( _master != null )
-    {
+  public String toString() {
+    if ( _master != null ) {
       return _master.toString();
     }
 
@@ -120,8 +109,7 @@ class TimerBase implements Timer
    * @see coyote.i13n.Timer#isRunning()
    */
   @Override
-  public boolean isRunning()
-  {
+  public boolean isRunning() {
     return _isRunningFlag;
   }
 }

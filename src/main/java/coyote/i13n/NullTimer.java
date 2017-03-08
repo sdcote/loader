@@ -11,28 +11,22 @@
  */
 package coyote.i13n;
 
-
 /**
  * Creates a do-nothing timer to facilitate the disabling of timers while
  * not affecting the compiled code of any callers.
  * 
  * <p>When a NullTimer is returned, performs no logic when it is stopped and
- * therefore allows for very fast operation when the timer is disabled.</p>
+ * therefore allows for very fast operation when the timer is disabled.
  * 
  * <p>See Martin Fowler's refactoring book for details on using Null Objects in
- * software.</p>
- * 
- * @author Stephan D. Cote' - Enterprise Architecture
- * @version $Revision$
+ * software.
  */
-public class NullTimer extends TimerBase
-{
+public class NullTimer extends TimerBase {
 
   /**
    * Create a new timer with a null master.
    */
-  public NullTimer()
-  {
+  public NullTimer() {
     super( TimerBase.NULL_MASTER );
   }
 
@@ -42,15 +36,12 @@ public class NullTimer extends TimerBase
   /**
    * @param master
    */
-  public NullTimer( final TimingMaster master )
-  {
+  public NullTimer( final TimingMaster master ) {
     super( master );
   }
 
 
 
 
-  public static void main( final String[] args )
-  {
-  }
+  public static void main( final String[] args ) {}
 }

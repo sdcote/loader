@@ -13,14 +13,13 @@ package coyote.i13n;
 
 import coyote.i13n.platform.DefaultPlatform;
 
+
 /**
  * Returns the appropriate platform class based on system properties.
  */
-class PlatformSelector
-{
+class PlatformSelector {
 
-  Platform retrievePlatform()
-  {
+  Platform retrievePlatform() {
     return new DefaultPlatform();
   }
 }

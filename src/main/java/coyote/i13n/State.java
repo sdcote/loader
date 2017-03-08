@@ -11,7 +11,6 @@
  */
 package coyote.i13n;
 
-
 /**
  * The State class models a metric that stores a discrete, scalar value. 
  * 
@@ -23,8 +22,7 @@ package coyote.i13n;
  * <p>This class is thread-safe in that all the methods synchronize on the name 
  * of the state to avoid double synchronizations.</p>
  */
-public class State extends Metric
-{
+public class State extends Metric {
   public static final short UNKNOWN_TYPE = 0;
 
   public static final short OBJECT_TYPE = 1;
@@ -44,8 +42,7 @@ public class State extends Metric
   /**
    * Create an empty state that can be set to any type initially.
    */
-  public State( final String name )
-  {
+  public State( final String name ) {
     super( name );
   }
 
@@ -55,8 +52,7 @@ public class State extends Metric
   /**
    * @return  Returns the time the state was last updated.
    */
-  public long getLastUpdated()
-  {
+  public long getLastUpdated() {
     return lastUpdated;
   }
 
@@ -66,12 +62,9 @@ public class State extends Metric
   /**
    * @return The value of this state metric as a string.
    */
-  public String getStringValue()
-  {
-    synchronized( _name )
-    {
-      switch( _type )
-      {
+  public String getStringValue() {
+    synchronized( _name ) {
+      switch ( _type ) {
         case OBJECT_TYPE:
           return _objectValue.toString();
         case LONG_TYPE:
@@ -91,12 +84,9 @@ public class State extends Metric
    * @return The object value of this state; with float and double being 
    *         returned as their respective wrapper types.
    */
-  public Object getValue()
-  {
-    synchronized( _name )
-    {
-      switch( _type )
-      {
+  public Object getValue() {
+    synchronized( _name ) {
+      switch ( _type ) {
         case LONG_TYPE:
           return new Long( _longValue );
         case DOUBLE_TYPE:
@@ -118,20 +108,15 @@ public class State extends Metric
    * @throws IllegalArgumentException if the existing data if of type LONG or 
    *         OBJECT.
    */
-  public void set( final double val )
-  {
-    synchronized( _name )
-    {
+  public void set( final double val ) {
+    synchronized( _name ) {
       lastUpdated = System.currentTimeMillis();
 
-      if( ( _type == State.UNKNOWN_TYPE ) || ( _type == State.DOUBLE_TYPE ) )
-      {
+      if ( ( _type == State.UNKNOWN_TYPE ) || ( _type == State.DOUBLE_TYPE ) ) {
         _type = State.DOUBLE_TYPE;
         _doubleValue = val;
         _updateCount++;
-      }
-      else
-      {
+      } else {
         throw new IllegalArgumentException( "State metric is not a double type" );
       }
     }
@@ -148,20 +133,15 @@ public class State extends Metric
    * @throws IllegalArgumentException if the existing data if of type DOUBLE or 
    *         OBJECT.
    */
-  public void set( final long val )
-  {
-    synchronized( _name )
-    {
+  public void set( final long val ) {
+    synchronized( _name ) {
       lastUpdated = System.currentTimeMillis();
 
-      if( ( _type == State.UNKNOWN_TYPE ) || ( _type == State.LONG_TYPE ) )
-      {
+      if ( ( _type == State.UNKNOWN_TYPE ) || ( _type == State.LONG_TYPE ) ) {
         _type = State.LONG_TYPE;
         _longValue = val;
         _updateCount++;
-      }
-      else
-      {
+      } else {
         throw new IllegalArgumentException( "State metric is not a long type" );
       }
     }
@@ -178,25 +158,19 @@ public class State extends Metric
    * @throws IllegalArgumentException if the existing data if of type LONG or 
    *         DOUBLE.
    */
-  public void set( final Object val )
-  {
-    if( val == null )
-    {
+  public void set( final Object val ) {
+    if ( val == null ) {
       return;
     }
 
-    synchronized( _name )
-    {
+    synchronized( _name ) {
       lastUpdated = System.currentTimeMillis();
 
-      if( ( _type == State.UNKNOWN_TYPE ) || ( _type == State.OBJECT_TYPE ) )
-      {
+      if ( ( _type == State.UNKNOWN_TYPE ) || ( _type == State.OBJECT_TYPE ) ) {
         _type = State.OBJECT_TYPE;
         _objectValue = val;
         _updateCount++;
-      }
-      else
-      {
+      } else {
         throw new IllegalArgumentException( "State metric is not an object type" );
       }
     }
@@ -208,10 +182,8 @@ public class State extends Metric
   /**
    * @return The human-readable representation of this object as a string.
    */
-  public String toString()
-  {
-    synchronized( _name )
-    {
+  public String toString() {
+    synchronized( _name ) {
       final StringBuffer buff = new StringBuffer( _name );
       buff.append( "=" );
       buff.append( getStringValue() );

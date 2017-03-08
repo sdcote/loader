@@ -15,8 +15,7 @@ package coyote.i13n;
  * The Gauge interface models a component that is designed to be updated 
  * regularly to show performance rates.
  */
-public interface Gauge
-{
+public interface Gauge {
 
   /**
    * @return the average value per second

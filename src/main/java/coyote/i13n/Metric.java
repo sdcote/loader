@@ -14,8 +14,7 @@ package coyote.i13n;
 /**
  * The Metric class models a basic metric.
  */
-public class Metric
-{
+public class Metric {
   protected String _name = null;
   protected long _updateCount = 0;
 
@@ -25,8 +24,7 @@ public class Metric
   /**
    * 
    */
-  public Metric( final String name )
-  {
+  public Metric( final String name ) {
     _name = name;
   }
 
@@ -36,8 +34,7 @@ public class Metric
   /**
    * @return The currently set name of this object.
    */
-  public String getName()
-  {
+  public String getName() {
     return _name;
   }
 
@@ -47,8 +44,7 @@ public class Metric
   /**
    * @return The number of times the value was updated.
    */
-  public long getUpdateCount()
-  {
+  public long getUpdateCount() {
     return _updateCount;
   }
 
@@ -60,8 +56,7 @@ public class Metric
    * 
    * @param name The new name to set.
    */
-  void setName( final String name )
-  {
+  void setName( final String name ) {
     _name = name;
   }
 }

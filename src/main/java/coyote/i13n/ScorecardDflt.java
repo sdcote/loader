@@ -21,10 +21,9 @@ import java.util.UUID;
  * This is the default implementation of a scorecard.
  * 
  * <p>Some find it useful to make this globally accessible so that many 
- * different components can use this in a coordinated manner.</p>
+ * different components can use this in a coordinated manner.
  */
-public class ScorecardDflt implements Scorecard
-{
+public class ScorecardDflt implements Scorecard {
   private String CARDID = UUID.randomUUID().toString().toLowerCase();
 
   /** The time this scorecard was create/started. */
@@ -63,17 +62,16 @@ public class ScorecardDflt implements Scorecard
   /** Re-usable null gauge to save object creation and GC'n */
   private static final Gauge NULL_GAUGE = new NullGauge( null );
 
-
-
-
   // TODO: NullCounter? EnableCounters? Enable Counter?
 
   // TODO: NullState?  EnableStates? EnableState?
 
+
+
+
   // TODO: NullGauge? MasterGauges?
 
-  public ScorecardDflt()
-  {
+  public ScorecardDflt() {
     startedTimestamp = System.currentTimeMillis();
   }
 
@@ -86,8 +84,7 @@ public class ScorecardDflt implements Scorecard
    * 
    * @return The identifier for this scorecard.
    */
-  public String getId()
-  {
+  public String getId() {
     return CARDID;
   }
 
@@ -99,8 +96,7 @@ public class ScorecardDflt implements Scorecard
    * 
    * @param id the unique identifier to set
    */
-  public void setId( String id )
-  {
+  public void setId( String id ) {
     CARDID = id;
   }
 
@@ -110,8 +106,7 @@ public class ScorecardDflt implements Scorecard
   /**
    * @return The epoch time in milliseconds this fixture was started.
    */
-  public long getStartedTime()
-  {
+  public long getStartedTime() {
     return startedTimestamp;
   }
 
@@ -125,12 +120,11 @@ public class ScorecardDflt implements Scorecard
    * <p>Significant measurements means if the number of seconds extend past 24 
    * hours, then only report the days and hours skipping the minutes and 
    * seconds. Examples include <tt>4m 23s</tt> or <tt>22d 4h</tt>. The format 
-   * is designed to make reporting fixture up-time more polished.</p>
+   * is designed to make reporting fixture up-time more polished.
    * 
    * @return the time the fixture has been active in a reportable format.
    */
-  public String getUptimeString()
-  {
+  public String getUptimeString() {
     return formatSignificantElapsedTime( ( System.currentTimeMillis() - startedTimestamp ) / 1000 );
   }
 
@@ -140,24 +134,20 @@ public class ScorecardDflt implements Scorecard
   /**
    * Start a timer with the given name.
    * 
-   * <p>Use the returned Timer to stop the interval measurement.</p>
+   * <p>Use the returned Timer to stop the interval measurement.
    *  
    * @param tag The name of the timer instance to start.
    * 
    * @return The timer instance that should be stopped when the interval is 
    *         completed.
    */
-  public Timer startTimer( String tag )
-  {
+  public Timer startTimer( String tag ) {
     Timer retval = null;
-    if( timingEnabled )
-    {
-      synchronized( masterTimers )
-      {
+    if ( timingEnabled ) {
+      synchronized( masterTimers ) {
         // get an existing master timer or create a new one
         TimingMaster master = (TimingMaster)masterTimers.get( tag );
-        if( master == null )
-        {
+        if ( master == null ) {
           master = new TimingMaster( tag );
           masterTimers.put( tag, master );
         }
@@ -168,9 +158,7 @@ public class ScorecardDflt implements Scorecard
         //start the timer instance
         retval.start();
       }
-    }
-    else
-    {
+    } else {
       // just return the do-nothing timer
       retval = NULL_TIMER;
     }
@@ -186,18 +174,15 @@ public class ScorecardDflt implements Scorecard
    * Enable the timer with the given name.
    * 
    * <p>If a timer is enabled that has not already been created, a new 
-   * timer will be created in memory.</p>
+   * timer will be created in memory.
    * 
    * @param tag The name of the timer to enable.
    */
-  public void enableTimer( String tag )
-  {
-    synchronized( masterTimers )
-    {
+  public void enableTimer( String tag ) {
+    synchronized( masterTimers ) {
       // get an existing master timer or create a new one
       TimingMaster master = (TimingMaster)masterTimers.get( tag );
-      if( master == null )
-      {
+      if ( master == null ) {
         master = new TimingMaster( tag );
         masterTimers.put( tag, master );
       }
@@ -214,21 +199,18 @@ public class ScorecardDflt implements Scorecard
    * <p>Disabling a timer will cause all new timers with the given name to 
    * skip processing reducing the amount of processing performed by the 
    * timers without losing the existing data in the timer. Any existing 
-   * timers will continue to accumulate data.</p>
+   * timers will continue to accumulate data.
    * 
    * <p>If a timer is disabled that has not already been created, a disabled 
-   * timer will be created in memory that can be enabled at a later time.</p>
+   * timer will be created in memory that can be enabled at a later time.
    * 
    * @param tag The name of the timer to disable.
    */
-  public void disableTimer( String tag )
-  {
-    synchronized( masterTimers )
-    {
+  public void disableTimer( String tag ) {
+    synchronized( masterTimers ) {
       // get an existing master timer or create a new one
       TimingMaster master = (TimingMaster)masterTimers.get( tag );
-      if( master == null )
-      {
+      if ( master == null ) {
         master = new TimingMaster( tag );
         masterTimers.put( tag, master );
       }
@@ -245,12 +227,10 @@ public class ScorecardDflt implements Scorecard
    * <p>When timing is enabled, functional timers are returned and their 
    * metrics are collected for later reporting. when timing is disabled, null 
    * timers are be returned each time a timer is requested. This keeps all code 
-   * operational regardless of the runtime status of timing.</p>
+   * operational regardless of the runtime status of timing.
    */
-  public void enableTiming( boolean flag )
-  {
-    synchronized( masterTimers )
-    {
+  public void enableTiming( boolean flag ) {
+    synchronized( masterTimers ) {
       timingEnabled = flag;
     }
   }
@@ -262,10 +242,8 @@ public class ScorecardDflt implements Scorecard
    * Removes all timers from the scorecard and frees them up for garbage 
    * collection.
    */
-  public void resetTimers()
-  {
-    synchronized( masterTimers )
-    {
+  public void resetTimers() {
+    synchronized( masterTimers ) {
       masterTimers.clear();
     }
   }
@@ -276,13 +254,10 @@ public class ScorecardDflt implements Scorecard
   /**
    * Get an iterator over all the Master Timers in the scorecard.
    */
-  public Iterator<TimingMaster> getTimerIterator()
-  {
+  public Iterator<TimingMaster> getTimerIterator() {
     final ArrayList<TimingMaster> list = new ArrayList<TimingMaster>();
-    synchronized( masterTimers )
-    {
-      for( final Iterator<TimingMaster> it = masterTimers.values().iterator(); it.hasNext(); list.add( it.next() ) )
-      {
+    synchronized( masterTimers ) {
+      for ( final Iterator<TimingMaster> it = masterTimers.values().iterator(); it.hasNext(); list.add( it.next() ) ) {
         ;
       }
     }
@@ -300,11 +275,9 @@ public class ScorecardDflt implements Scorecard
    * @return The master timer with the given name or null if that timer 
    *         does not exist.
    */
-  public TimingMaster getTimerMaster( final String tag )
-  {
-    synchronized( masterTimers )
-    {
-      return (TimingMaster)masterTimers.get( tag );
+  public TimingMaster getTimerMaster( final String name ) {
+    synchronized( masterTimers ) {
+      return (TimingMaster)masterTimers.get( name );
     }
   }
 
@@ -315,20 +288,17 @@ public class ScorecardDflt implements Scorecard
    * Return the counter with the given name.
    * 
    * <p>If the counter does not exist, one will be created and added to the 
-   * static list of counters for later retrieval.</p>
+   * static list of counters for later retrieval.
    * 
    * @param name The name of the counter to return.
    * 
    * @return The counter with the given name.
    */
-  public Counter getCounter( final String name )
-  {
+  public Counter getCounter( final String name ) {
     Counter counter = null;
-    synchronized( counters )
-    {
+    synchronized( counters ) {
       counter = counters.get( name );
-      if( counter == null )
-      {
+      if ( counter == null ) {
         counter = new Counter( name );
         counters.put( name, counter );
       }
@@ -342,8 +312,7 @@ public class ScorecardDflt implements Scorecard
   /**
    * @return The number of counters in the scorecard at the present time.
    */
-  public int getCounterCount()
-  {
+  public int getCounterCount() {
     return counters.size();
   }
 
@@ -357,15 +326,13 @@ public class ScorecardDflt implements Scorecard
    * call on the iterator will only affect the returned iterator and not the 
    * counter collection in the scorecard. If you wish to remove a counter, you 
    * MUST call removeCounter(Counter) with the reference returned from this 
-   * iterator as well.</p>
+   * iterator as well.
    * 
    * @return a detached iterator over the counters.
    */
-  public Iterator<Counter> getCounterIterator()
-  {
+  public Iterator<Counter> getCounterIterator() {
     final ArrayList<Counter> list = new ArrayList<Counter>();
-    for( final Iterator<Counter> it = counters.values().iterator(); it.hasNext(); list.add( it.next() ) )
-    {
+    for ( final Iterator<Counter> it = counters.values().iterator(); it.hasNext(); list.add( it.next() ) ) {
       ;
     }
     return list.iterator();
@@ -381,10 +348,8 @@ public class ScorecardDflt implements Scorecard
    * 
    * @return The removed counter.
    */
-  public Counter removeCounter( final String name )
-  {
-    synchronized( counters )
-    {
+  public Counter removeCounter( final String name ) {
+    synchronized( counters ) {
       return (Counter)counters.remove( name );
     }
   }
@@ -398,20 +363,18 @@ public class ScorecardDflt implements Scorecard
    * 
    * <p>The return value will represent a copy of the counter prior to the 
    * reset and is useful for applications that desire delta values. These delta
-   * values are simply the return values of successive reset calls.</p>
+   * values are simply the return values of successive reset calls.
    * 
    * <p>If the counter does not exist, it will be created prior to being reset.
-   * The return value will reflect an empty counter with the given name.</p>
+   * The return value will reflect an empty counter with the given name.
    *
    * @param name The name of the counter to reset.
    *  
    * @return a counter containing the values of the counter prior to the reset.
    */
-  public Counter resetCounter( final String name )
-  {
+  public Counter resetCounter( final String name ) {
     Counter retval = null;
-    synchronized( counters )
-    {
+    synchronized( counters ) {
       retval = getCounter( name ).reset();
     }
 
@@ -426,14 +389,13 @@ public class ScorecardDflt implements Scorecard
    * 
    * <p>This method retrieves the counter with the given name or creates one by 
    * that name if it does not yet exist. The retrieved counter is then 
-   * decreased by the given amount.</p> 
+   * decreased by the given amount. 
    * 
    * @param tag The name of the counter to decrease.
    * 
    * @return The final value of the counter after the operation.
    */
-  public long decrease( final String tag, final long value )
-  {
+  public long decrease( final String tag, final long value ) {
     return getCounter( tag ).decrease( value );
   }
 
@@ -445,14 +407,13 @@ public class ScorecardDflt implements Scorecard
    * 
    * <p>This method retrieves the counter with the given name or creates one by 
    * that name if it does not yet exist. The retrieved counter is then 
-   * decreased by one (1).</p> 
+   * decreased by one (1). 
    * 
    * @param tag The name of the counter to decrement.
    * 
    * @return The final value of the counter after the operation.
    */
-  public long decrement( final String tag )
-  {
+  public long decrement( final String tag ) {
     return getCounter( tag ).decrement();
   }
 
@@ -464,14 +425,13 @@ public class ScorecardDflt implements Scorecard
    * 
    * <p>This method retrieves the counter with the given name or creates one by 
    * that name if it does not yet exist. The retrieved counter is then 
-   * increased by the given amount.</p> 
+   * increased by the given amount. 
    * 
    * @param tag The name of the counter to increase.
    * 
    * @return The final value of the counter after the operation.
    */
-  public long increase( final String tag, final long value )
-  {
+  public long increase( final String tag, final long value ) {
     return getCounter( tag ).increase( value );
   }
 
@@ -483,14 +443,13 @@ public class ScorecardDflt implements Scorecard
    * 
    * <p>This method retrieves the counter with the given name or creates one by 
    * that name if it does not yet exist. The retrieved counter is then 
-   * increased by one (1).</p> 
+   * increased by one (1). 
    * 
    * @param tag The name of the counter to increment.
    * 
    * @return The final value of the counter after the operation.
    */
-  public long increment( final String tag )
-  {
+  public long increment( final String tag ) {
     return getCounter( tag ).increment();
   }
 
@@ -501,14 +460,11 @@ public class ScorecardDflt implements Scorecard
    * Deactivate a particular class of Application Response Measurement calls 
    * from this point on.
    */
-  public void disableArmClass( final String name )
-  {
-    synchronized( armMasters )
-    {
+  public void disableArmClass( final String name ) {
+    synchronized( armMasters ) {
       // get an existing master ARM or create a new one
       ArmMaster master = armMasters.get( name );
-      if( master == null )
-      {
+      if ( master == null ) {
         master = new ArmMaster( name );
         armMasters.put( name, master );
       }
@@ -522,10 +478,8 @@ public class ScorecardDflt implements Scorecard
   /**
    * Activate all Application Response Measurement calls from this point on.
    */
-  public void enableArm( final boolean flag )
-  {
-    synchronized( armMasters )
-    {
+  public void enableArm( final boolean flag ) {
+    synchronized( armMasters ) {
       armEnabled = flag;
     }
   }
@@ -537,14 +491,11 @@ public class ScorecardDflt implements Scorecard
    * Activate a particular class of Application Response Measurement calls from 
    * this point on.
    */
-  public void enableArmClass( final String name )
-  {
-    synchronized( armMasters )
-    {
+  public void enableArmClass( final String name ) {
+    synchronized( armMasters ) {
       // get an existing master ARM or create a new one
       ArmMaster master = armMasters.get( name );
-      if( master == null )
-      {
+      if ( master == null ) {
         master = new ArmMaster( name );
         armMasters.put( name, master );
       }
@@ -558,13 +509,10 @@ public class ScorecardDflt implements Scorecard
   /**
    * Get an iterator over all the ARM Masters in the scorecard.
    */
-  public Iterator<ArmMaster> getArmIterator()
-  {
+  public Iterator<ArmMaster> getArmIterator() {
     final ArrayList<ArmMaster> list = new ArrayList<ArmMaster>();
-    synchronized( armMasters )
-    {
-      for( final Iterator<ArmMaster> it = armMasters.values().iterator(); it.hasNext(); list.add( it.next() ) )
-      {
+    synchronized( armMasters ) {
+      for ( final Iterator<ArmMaster> it = armMasters.values().iterator(); it.hasNext(); list.add( it.next() ) ) {
         ;
       }
     }
@@ -583,17 +531,13 @@ public class ScorecardDflt implements Scorecard
    * 
    * @return A transaction to collect ARM data.
    */
-  public ArmTransaction startArm( final String tag, final String crid )
-  {
+  public ArmTransaction startArm( final String tag, final String crid ) {
     ArmTransaction retval = null;
-    if( armEnabled )
-    {
-      synchronized( armMasters )
-      {
+    if ( armEnabled ) {
+      synchronized( armMasters ) {
         // get an existing ARM master or create a new one
         ArmMaster master = armMasters.get( tag );
-        if( master == null )
-        {
+        if ( master == null ) {
           master = new ArmMaster( tag );
           armMasters.put( tag, master );
         }
@@ -604,9 +548,7 @@ public class ScorecardDflt implements Scorecard
         //start the ARM transaction
         retval.start();
       }
-    }
-    else
-    {
+    } else {
       // just return the do-nothing timer
       retval = NULL_ARM;
     }
@@ -624,8 +566,7 @@ public class ScorecardDflt implements Scorecard
    * 
    * @return A transaction to collect ARM data.
    */
-  public ArmTransaction startArm( final String tag )
-  {
+  public ArmTransaction startArm( final String tag ) {
     return startArm( tag, null );
   }
 
@@ -636,20 +577,17 @@ public class ScorecardDflt implements Scorecard
    * Return the state with the given name.
    * 
    * <p>If the state does not exist, one will be created and added to the 
-   * static list of states for later retrieval.</p>
+   * static list of states for later retrieval.
    * 
    * @param name The name of the state to return.
    * 
    * @return The state with the given name.
    */
-  public State getState( final String name )
-  {
+  public State getState( final String name ) {
     State state = null;
-    synchronized( states )
-    {
+    synchronized( states ) {
       state = states.get( name );
-      if( state == null )
-      {
+      if ( state == null ) {
         state = new State( name );
         states.put( name, state );
       }
@@ -663,8 +601,7 @@ public class ScorecardDflt implements Scorecard
   /**
    * @return The number of states in the scorecard at the present time.
    */
-  public int getStateCount()
-  {
+  public int getStateCount() {
     return states.size();
   }
 
@@ -678,15 +615,13 @@ public class ScorecardDflt implements Scorecard
    * call on the iterator will only affect the returned iterator and not the 
    * state collection in the scorecard. If you wish to remove a state, you MUST 
    * call removeState(Counter) with the reference returned from this iterator 
-   * as well.</p>
+   * as well.
    * 
    * @return a detached iterator over the states.
    */
-  public Iterator<State> getStateIterator()
-  {
+  public Iterator<State> getStateIterator() {
     final ArrayList<State> list = new ArrayList<State>();
-    for( final Iterator<State> it = states.values().iterator(); it.hasNext(); list.add( it.next() ) )
-    {
+    for ( final Iterator<State> it = states.values().iterator(); it.hasNext(); list.add( it.next() ) ) {
       ;
     }
     return list.iterator();
@@ -702,15 +637,12 @@ public class ScorecardDflt implements Scorecard
    * 
    * @return The removed state.
    */
-  public State removeState( final String name )
-  {
-    if( name == null )
-    {
+  public State removeState( final String name ) {
+    if ( name == null ) {
       return null;
     }
 
-    synchronized( states )
-    {
+    synchronized( states ) {
       return states.remove( name );
     }
   }
@@ -725,8 +657,7 @@ public class ScorecardDflt implements Scorecard
    * 
    * @param value The value to set in the state.
    */
-  public void setState( final String name, final double value )
-  {
+  public void setState( final String name, final double value ) {
     getState( name ).set( value );
   }
 
@@ -740,8 +671,7 @@ public class ScorecardDflt implements Scorecard
    * 
    * @param value The value to set in the state.
    */
-  public void setState( final String name, final long value )
-  {
+  public void setState( final String name, final long value ) {
     getState( name ).set( value );
   }
 
@@ -755,19 +685,14 @@ public class ScorecardDflt implements Scorecard
    * 
    * @param value The value to set in the state.
    */
-  public void setState( final String name, final String value )
-  {
-    if( ( name == null ) || ( name.length() == 0 ) )
-    {
+  public void setState( final String name, final String value ) {
+    if ( ( name == null ) || ( name.length() == 0 ) ) {
       return;
     }
 
-    if( value == null )
-    {
+    if ( value == null ) {
       removeState( name );
-    }
-    else
-    {
+    } else {
       getState( name ).set( value );
     }
   }
@@ -778,10 +703,8 @@ public class ScorecardDflt implements Scorecard
   /**
    * Activate all gauges calls from this point on.
    */
-  public void enableGauges( final boolean flag )
-  {
-    synchronized( gauges )
-    {
+  public void enableGauges( final boolean flag ) {
+    synchronized( gauges ) {
       gaugesEnabled = flag;
     }
   }
@@ -795,7 +718,7 @@ public class ScorecardDflt implements Scorecard
    * <p>This will always return an object; it may be a stub, or a working 
    * implementation depending upon the state of the scorecard at the time. If 
    * gauges are enabled, then a working gauge is returned, otherwise a null 
-   * gauge is returned.</p>
+   * gauge is returned.
    * 
    * <p>Because the state of gauge operation can change over the operation of 
    * the scorecard, it is not advisable to hold on to the reference between calls 
@@ -807,28 +730,21 @@ public class ScorecardDflt implements Scorecard
    * 
    * @throws IllegalArgumentException if the name of the gauge is null
    */
-  public Gauge getGauge( final String name )
-  {
-    if( name == null )
-    {
+  public Gauge getGauge( final String name ) {
+    if ( name == null ) {
       throw new IllegalArgumentException( "Gauge name is null" );
     }
 
     Gauge retval = null;
-    if( gaugesEnabled )
-    {
-      synchronized( gauges )
-      {
+    if ( gaugesEnabled ) {
+      synchronized( gauges ) {
         retval = gauges.get( name );
-        if( retval == null )
-        {
+        if ( retval == null ) {
           retval = new GaugeBase( name );
           gauges.put( name, retval );
         }
       }
-    }
-    else
-    {
+    } else {
       // just return the do-nothing gauge
       retval = NULL_GAUGE;
     }
@@ -842,13 +758,10 @@ public class ScorecardDflt implements Scorecard
   /**
    * Get an iterator over all the gauges in the scorecard.
    */
-  public Iterator<Gauge> getGaugeIterator()
-  {
+  public Iterator<Gauge> getGaugeIterator() {
     final ArrayList<Gauge> list = new ArrayList<Gauge>();
-    synchronized( gauges )
-    {
-      for( final Iterator<Gauge> it = gauges.values().iterator(); it.hasNext(); list.add( it.next() ) )
-      {
+    synchronized( gauges ) {
+      for ( final Iterator<Gauge> it = gauges.values().iterator(); it.hasNext(); list.add( it.next() ) ) {
         ;
       }
     }
@@ -865,15 +778,12 @@ public class ScorecardDflt implements Scorecard
    * 
    * @return The removed gauge.
    */
-  public Gauge removeGauge( final String name )
-  {
-    if( name == null )
-    {
+  public Gauge removeGauge( final String name ) {
+    if ( name == null ) {
       return null;
     }
 
-    synchronized( gauges )
-    {
+    synchronized( gauges ) {
       return gauges.remove( name );
     }
   }
@@ -886,10 +796,8 @@ public class ScorecardDflt implements Scorecard
    * 
    * @param name The name of the gauge to clear out.
    */
-  public void resetGauge( final String name )
-  {
-    if( ( name != null ) && ( name.length() > 0 ) )
-    {
+  public void resetGauge( final String name ) {
+    if ( ( name != null ) && ( name.length() > 0 ) ) {
       getGauge( name ).reset();
     }
   }
@@ -903,10 +811,8 @@ public class ScorecardDflt implements Scorecard
    * @param name The name of the gauge to update.
    * @param value The value with which to update the gauge.
    */
-  public void updateGauge( final String name, final long value )
-  {
-    if( ( name != null ) && ( name.length() > 0 ) )
-    {
+  public void updateGauge( final String name, final long value ) {
+    if ( ( name != null ) && ( name.length() > 0 ) ) {
       getGauge( name ).update( value );
     }
   }
@@ -917,8 +823,7 @@ public class ScorecardDflt implements Scorecard
   /**
    * @return The number of gauges in the scorecard at the present time.
    */
-  public int getGaugeCount()
-  {
+  public int getGaugeCount() {
     return gauges.size();
   }
 
@@ -931,18 +836,17 @@ public class ScorecardDflt implements Scorecard
    * <p>This is the two most significant units of time. Form will be something
    * like "3h 26m" indicating 3 hours 26 minutes and some insignificant number
    * of seconds. Formats are Xd Xh (days-hours), Xh Xm (Hours-minutes), Xm Xs
-   * (minutes-seconds) and Xs (seconds).</p>
+   * (minutes-seconds) and Xs (seconds).
    *
    * @param seconds number of elapsed seconds NOT milliseconds.
    *
    * @return formatted string
    */
-  private static String formatSignificantElapsedTime( final long seconds )
-  {
+  private static String formatSignificantElapsedTime( final long seconds ) {
     final long days = seconds / 86400;
     final StringBuffer buffer = new StringBuffer();
 
-    if( days > 0 ) // Display days and hours
+    if ( days > 0 ) // Display days and hours
     {
       buffer.append( days );
       buffer.append( "d " );
@@ -954,7 +858,7 @@ public class ScorecardDflt implements Scorecard
 
     final int hours = (int)( ( seconds / 3600 ) % 24 );
 
-    if( hours > 0 ) // Display hours and minutes
+    if ( hours > 0 ) // Display hours and minutes
     {
       buffer.append( hours );
       buffer.append( "h " );
@@ -966,7 +870,7 @@ public class ScorecardDflt implements Scorecard
 
     final int minutes = (int)( ( seconds / 60 ) % 60 );
 
-    if( minutes > 0 ) // Display minutes and seconds
+    if ( minutes > 0 ) // Display minutes and seconds
     {
       buffer.append( minutes );
       buffer.append( "m " );

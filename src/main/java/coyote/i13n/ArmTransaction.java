@@ -11,12 +11,10 @@
  */
 package coyote.i13n;
 
-
 /**
  * The ArmTransaction interface models an Application Response Measurement
  */
-public interface ArmTransaction
-{
+public interface ArmTransaction {
   /** 
    * The logging category for ARM transactions. It can be used to start and 
    * stop logging of ARM transactions via <pre>
@@ -53,7 +51,7 @@ public interface ArmTransaction
    * 
    * <p>This method retrieves the counter with the given name or creates one by 
    * that name if it does not yet exist. The retrieved counter is then 
-   * increased by one (1).</p> 
+   * increased by one (1). 
    * 
    * @param name The name of the counter to increment.
    * 
@@ -69,7 +67,7 @@ public interface ArmTransaction
    * 
    * <p>This method retrieves the counter with the given name or creates one by 
    * that name if it does not yet exist. The retrieved counter is then 
-   * decreased by one (1).</p> 
+   * decreased by one (1). 
    * 
    * @param name The name of the counter to decrement.
    * 
@@ -85,7 +83,7 @@ public interface ArmTransaction
    * 
    * <p>This method retrieves the counter with the given name or creates one by 
    * that name if it does not yet exist. The retrieved counter is then 
-   * increased by the given amount.</p> 
+   * increased by the given amount. 
    * 
    * @param name The name of the counter to increase.
    * 
@@ -101,7 +99,7 @@ public interface ArmTransaction
    * 
    * <p>This method retrieves the counter with the given name or creates one by 
    * that name if it does not yet exist. The retrieved counter is then 
-   * decreased by the given amount.</p> 
+   * decreased by the given amount. 
    * 
    * @param name The name of the counter to decrease.
    * 

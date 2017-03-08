@@ -17,8 +17,7 @@ import java.util.Iterator;
 /**
  * A scorecard hold all the collected metrics.
  */
-public interface Scorecard
-{
+public interface Scorecard {
 
   /**
    * Return the identifier the card is using to differentiate itself from other 
@@ -46,7 +45,7 @@ public interface Scorecard
    * of sorts, for the system as a whole.
    * 
    * <p>Assuming the scorecard is created when the system loads, it can be used 
-   * to determine how long the system has been operational.</p>
+   * to determine how long the system has been operational.
    * 
    * @return The epoch time in milliseconds this scorecard was started.
    */
@@ -62,7 +61,7 @@ public interface Scorecard
    * <p>Significant measurements means if the number of seconds extend past 24 
    * hours, then only report the days and hours skipping the minutes and 
    * seconds. Examples include <tt>4m 23s</tt> or <tt>22d 4h</tt>. The format 
-   * is designed to make reporting scorecard uptime more polished.</p>
+   * is designed to make reporting scorecard uptime more polished.
    * 
    * @return the time the scorecard has been active in a print-ready format.
    */
@@ -74,7 +73,7 @@ public interface Scorecard
   /**
    * Start a timer with the given name.
    * 
-   * <p>Use the returned Timer to stop the interval measurement.</p>
+   * <p>Use the returned Timer to stop the interval measurement.
    *  
    * @param tag The name of the timer instance to start.
    * 
@@ -90,7 +89,7 @@ public interface Scorecard
    * Enable the timer with the given name.
    * 
    * <p>If a timer is enabled that has not already been created, a new 
-   * timer will be created in memory.</p>
+   * timer will be created in memory.
    * 
    * @param tag The name of the timer to enable.
    */
@@ -105,10 +104,10 @@ public interface Scorecard
    * <p>Disabling a timer will cause all new timers with the given name to 
    * skip processing reducing the amount of processing performed by the 
    * timers without losing the existing data in the timer. Any existing 
-   * timers will continue to accumulate data.</p>
+   * timers will continue to accumulate data.
    * 
    * <p>If a timer is disabled that has not already been created, a disabled 
-   * timer will be created in memory that can be enabled at a later time.</p>
+   * timer will be created in memory that can be enabled at a later time.
    * 
    * @param tag The name of the timer to disable.
    */
@@ -123,7 +122,7 @@ public interface Scorecard
    * <p>When timing is enabled, functional timers are returned and their 
    * metrics are collected for later reporting. when timing is disabled, null 
    * timers are be returned each time a timer is requested. This keeps all code 
-   * operational regardless of the runtime status of timing.</p>
+   * operational regardless of the runtime status of timing.
    */
   public void enableTiming( boolean flag );
 
@@ -155,7 +154,7 @@ public interface Scorecard
    * @return The master timer with the given name or null if that timer 
    *         does not exist.
    */
-  public TimingMaster getTimerMaster( final String tag );
+  public TimingMaster getTimerMaster( final String name );
 
 
 
@@ -164,7 +163,7 @@ public interface Scorecard
    * Return the counter with the given name.
    * 
    * <p>If the counter does not exist, one will be created and added to the 
-   * static list of counters for later retrieval.</p>
+   * static list of counters for later retrieval.
    * 
    * @param name The name of the counter to return.
    * 
@@ -190,7 +189,7 @@ public interface Scorecard
    * call on the iterator will only affect the returned iterator and not the 
    * counter collection in the scorecard. If you wish to remove a counter, you 
    * MUST call removeCounter(Counter) with the reference returned from this 
-   * iterator as well.</p>
+   * iterator as well.
    * 
    * @return a detached iterator over the counters.
    */
@@ -217,10 +216,10 @@ public interface Scorecard
    * 
    * <p>The return value will represent a copy of the counter prior to the 
    * reset and is useful for applications that desire delta values. These delta
-   * values are simply the return values of successive reset calls.</p>
+   * values are simply the return values of successive reset calls.
    * 
    * <p>If the counter does not exist, it will be created prior to being reset.
-   * The return value will reflect an empty counter with the given name.</p>
+   * The return value will reflect an empty counter with the given name.
    *
    * @param name The name of the counter to reset.
    *  
@@ -236,7 +235,7 @@ public interface Scorecard
    * 
    * <p>This method retrieves the counter with the given name or creates one by 
    * that name if it does not yet exist. The retrieved counter is then 
-   * decreased by the given amount.</p> 
+   * decreased by the given amount. 
    * 
    * @param tag The name of the counter to decrease.
    * 
@@ -252,7 +251,7 @@ public interface Scorecard
    * 
    * <p>This method retrieves the counter with the given name or creates one by 
    * that name if it does not yet exist. The retrieved counter is then 
-   * decreased by one (1).</p> 
+   * decreased by one (1). 
    * 
    * @param tag The name of the counter to decrement.
    * 
@@ -268,7 +267,7 @@ public interface Scorecard
    * 
    * <p>This method retrieves the counter with the given name or creates one by 
    * that name if it does not yet exist. The retrieved counter is then 
-   * increased by the given amount.</p> 
+   * increased by the given amount. 
    * 
    * @param tag The name of the counter to increase.
    * 
@@ -284,7 +283,7 @@ public interface Scorecard
    * 
    * <p>This method retrieves the counter with the given name or creates one by 
    * that name if it does not yet exist. The retrieved counter is then 
-   * increased by one (1).</p> 
+   * increased by one (1). 
    * 
    * @param tag The name of the counter to increment.
    * 
@@ -359,7 +358,7 @@ public interface Scorecard
    * Return the state with the given name.
    * 
    * <p>If the state does not exist, one will be created and added to the 
-   * static list of states for later retrieval.</p>
+   * static list of states for later retrieval.
    * 
    * @param name The name of the state to return.
    * 
@@ -385,7 +384,7 @@ public interface Scorecard
    * call on the iterator will only affect the returned iterator and not the 
    * state collection in the scorecard. If you wish to remove a state, you MUST 
    * call removeState(Counter) with the reference returned from this iterator 
-   * as well.</p>
+   * as well.
    * 
    * @return a detached iterator over the states.
    */
@@ -460,7 +459,7 @@ public interface Scorecard
    * <p>This will always return an object; it may be a stub, or a working 
    * implementation depending upon the state of the scorecard at the time. If 
    * gauges are enabled, then a working gauge is returned, otherwise a null 
-   * gauge is returned.</p>
+   * gauge is returned.
    * 
    * <p>Because the state of gauge operation can change over the operation of 
    * the scorecard, it is not advisable to hold on to the reference between calls 

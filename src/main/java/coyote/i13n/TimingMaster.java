@@ -22,8 +22,7 @@ import java.util.Date;
  * 
  * <p>This class is used to summarize all the timers in its list.</p>
  */
-public class TimingMaster implements TimerMaster
-{
+public class TimingMaster implements TimerMaster {
   public static final String CLASS_TAG = "Timer";
 
   /** The number of global timers currently active. */
@@ -63,8 +62,7 @@ public class TimingMaster implements TimerMaster
    *
    * @return
    */
-  protected static String convertToString( final double value )
-  {
+  protected static String convertToString( final double value ) {
     final DecimalFormat numberFormat = (DecimalFormat)NumberFormat.getNumberInstance();
     numberFormat.applyPattern( "#,###.#" );
     return numberFormat.format( value );
@@ -103,8 +101,7 @@ public class TimingMaster implements TimerMaster
   /**
    * 
    */
-  public TimingMaster( final String name )
-  {
+  public TimingMaster( final String name ) {
     _name = name;
   }
 
@@ -118,8 +115,7 @@ public class TimingMaster implements TimerMaster
    *
    * @return
    */
-  protected String convertToString( final long value )
-  {
+  protected String convertToString( final long value ) {
     final DecimalFormat numberFormat = (DecimalFormat)NumberFormat.getNumberInstance();
     numberFormat.applyPattern( "#,###" );
 
@@ -134,16 +130,12 @@ public class TimingMaster implements TimerMaster
    * 
    * @return A Timer that can be stopped at some time to generate datum.
    */
-  public Timer createTimer()
-  {
+  public Timer createTimer() {
     Timer retval;
-    if( _enabled )
-    {
+    if ( _enabled ) {
       retval = new TimingTimer( this );
       hits++;
-    }
-    else
-    {
+    } else {
       retval = new NullTimer( this );
     }
 
@@ -156,8 +148,7 @@ public class TimingMaster implements TimerMaster
   /**
    * @return  Returns the accrued datum for all stopped timers.
    */
-  public long getAccrued()
-  {
+  public long getAccrued() {
     return accrued;
   }
 
@@ -167,17 +158,13 @@ public class TimingMaster implements TimerMaster
   /**
    * @return the average time for all stopped timers for this master list.
    */
-  private long getAverage()
-  {
+  private long getAverage() {
     // we can only average the total number of closures not just the hits
     final long closures = ( hits - activeCounter );
 
-    if( closures == 0 )
-    {
+    if ( closures == 0 ) {
       return 0;
-    }
-    else
-    {
+    } else {
       return total / closures;
     }
   }
@@ -188,14 +175,10 @@ public class TimingMaster implements TimerMaster
   /**
    * @return the average number of active for the life of this master list.
    */
-  private final float getAvgActive()
-  {
-    if( hits == 0 )
-    {
+  private final float getAvgActive() {
+    if ( hits == 0 ) {
       return 0;
-    }
-    else
-    {
+    } else {
       return (float)totalActive / hits;
     }
   }
@@ -209,8 +192,7 @@ public class TimingMaster implements TimerMaster
    * @return Returns the number of timers currently active (started) for this
    *         master timer.
    */
-  public long getCurrentActive()
-  {
+  public long getCurrentActive() {
     return activeCounter;
   }
 
@@ -224,14 +206,10 @@ public class TimingMaster implements TimerMaster
    *
    * @return
    */
-  private String getDateString( final long time )
-  {
-    if( time == 0 )
-    {
+  private String getDateString( final long time ) {
+    if ( time == 0 ) {
       return "";
-    }
-    else
-    {
+    } else {
       return DateFormat.getDateTimeInstance( DateFormat.SHORT, DateFormat.DEFAULT ).format( new Date( time ) );
     }
   }
@@ -248,9 +226,8 @@ public class TimingMaster implements TimerMaster
    *
    * @return
    */
-  protected String getDisplayString( final String type, final String value, final String units )
-  {
-    if( TimingMaster.NONE.equals( units ) )
+  protected String getDisplayString( final String type, final String value, final String units ) {
+    if ( TimingMaster.NONE.equals( units ) )
       return type + "=" + value + ", ";
     else
       return type + "=" + value + " " + units + ", ";
@@ -265,8 +242,7 @@ public class TimingMaster implements TimerMaster
    * @return Returns the number of timers currently active (started) for all
    *         master timers.
    */
-  public long getGloballyActive()
-  {
+  public long getGloballyActive() {
     return TimingMaster.globalCounter;
   }
 
@@ -276,8 +252,7 @@ public class TimingMaster implements TimerMaster
   /**
    * @return The name of this timer set.
    */
-  public String getName()
-  {
+  public String getName() {
     return _name;
   }
 
@@ -290,11 +265,9 @@ public class TimingMaster implements TimerMaster
    *
    * @return The amount of one standard deviation of all the interval times. 
    */
-  private long getStandardDeviation()
-  {
+  private long getStandardDeviation() {
     long stdDeviation = 0;
-    if( hits != 0 )
-    {
+    if ( hits != 0 ) {
       final long sumOfX = total;
       final int n = hits;
       final int nMinus1 = ( n <= 1 ) ? 1 : n - 1; // avoid 0 divides;
@@ -317,17 +290,14 @@ public class TimingMaster implements TimerMaster
    *
    * @param value the amount to increase the accrued value.
    */
-  public synchronized void increase( final long value )
-  {
+  public synchronized void increase( final long value ) {
     // calculate min
-    if( value < min )
-    {
+    if ( value < min ) {
       min = value;
     }
 
     // calculate max
-    if( value > max )
-    {
+    if ( value > max ) {
       max = value;
     }
 
@@ -346,8 +316,7 @@ public class TimingMaster implements TimerMaster
   /**
    * @return True if the timer set is enabled, false otherwise.
    */
-  public synchronized boolean isEnabled()
-  {
+  public synchronized boolean isEnabled() {
     return _enabled;
   }
 
@@ -360,8 +329,7 @@ public class TimingMaster implements TimerMaster
    * <p>The effect of this is to reset this objects variables to the state they 
    * were in when the object was first created.</p>
    */
-  synchronized protected void resetThis()
-  {
+  synchronized protected void resetThis() {
     min = Long.MAX_VALUE;
     max = Long.MIN_VALUE;
     total = accrued = sumOfSquares = maxActive = totalActive = hits = 0;
@@ -376,8 +344,7 @@ public class TimingMaster implements TimerMaster
    * 
    * @param flag True to enable the timer, false to keep it from processing.
    */
-  public synchronized void setEnabled( final boolean flag )
-  {
+  public synchronized void setEnabled( final boolean flag ) {
     _enabled = flag;
   }
 
@@ -391,13 +358,11 @@ public class TimingMaster implements TimerMaster
    * 
    * @see coyote.i13n.TimerMaster#start(coyote.i13n.Timer)
    */
-  public synchronized void start( final Timer timr )
-  {
+  public synchronized void start( final Timer timr ) {
     activeCounter++;
     TimingMaster.globalCounter++;
 
-    if( activeCounter > maxActive )
-    {
+    if ( activeCounter > maxActive ) {
       maxActive = activeCounter;
     }
 
@@ -406,8 +371,7 @@ public class TimingMaster implements TimerMaster
     final long now = System.currentTimeMillis();
     lastAccessTime = now;
 
-    if( isFirstAccess )
-    {
+    if ( isFirstAccess ) {
       isFirstAccess = false;
       firstAccessTime = now;
     }
@@ -423,8 +387,7 @@ public class TimingMaster implements TimerMaster
    * 
    * @see coyote.i13n.TimerMaster#stop(coyote.i13n.Timer)
    */
-  public synchronized void stop( final Timer mon )
-  {
+  public synchronized void stop( final Timer mon ) {
     activeCounter--;
     TimingMaster.globalCounter--;
     accrued += mon.getAccrued();
@@ -438,14 +401,12 @@ public class TimingMaster implements TimerMaster
    *
    * @return
    */
-  public String toString()
-  {
+  public String toString() {
     final StringBuffer message = new StringBuffer( _name );
     message.append( ": " );
     message.append( getDisplayString( TimingMaster.HITS, convertToString( hits ), TimingMaster.NONE ) );
 
-    if( ( hits - activeCounter ) > 0 )
-    {
+    if ( ( hits - activeCounter ) > 0 ) {
       message.append( getDisplayString( TimingMaster.AVG, convertToString( getAverage() ), TimingMaster.MILLISECONDS ) );
       message.append( getDisplayString( TimingMaster.TOTAL, convertToString( total ), TimingMaster.MILLISECONDS ) );
       message.append( getDisplayString( TimingMaster.STANDARD_DEVIATION, convertToString( getStandardDeviation() ), TimingMaster.MILLISECONDS ) );

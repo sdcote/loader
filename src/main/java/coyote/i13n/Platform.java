@@ -14,7 +14,6 @@ package coyote.i13n;
 /**
  * 
  */
-public interface Platform
-{
+public interface Platform {
 
 }

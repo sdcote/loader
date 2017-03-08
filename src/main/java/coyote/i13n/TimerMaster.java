@@ -14,8 +14,7 @@ package coyote.i13n;
 /**
  * The TimerMaster class models the master of all timers with a given name. 
  */
-public interface TimerMaster
-{
+public interface TimerMaster {
   /**
    * @return The name of this timer set.
    */
