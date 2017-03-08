@@ -34,7 +34,7 @@ package coyote.i13n;
  */
 public class GaugeBase extends NullGauge {
   /**
-   * The NetworkService class models a time-spamped sampling of data.
+   * The NetworkService class models a time-stamped sampling of data.
    *
    * <p>This class is designed to be used in a linked list pattern, allowing
    * for smooth movement from one node to the next without having to check

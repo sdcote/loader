@@ -26,11 +26,11 @@ public interface Scorecard {
    * that name if it does not yet exist. The retrieved counter is then
    * decreased by the given amount.
    *
-   * @param tag The name of the counter to decrease.
+   * @param name The name of the counter to decrease.
    *
    * @return The final value of the counter after the operation.
    */
-  public long decrease( String tag, long value );
+  public long decrease( String name, long value );
 
 
 
@@ -42,11 +42,11 @@ public interface Scorecard {
    * that name if it does not yet exist. The retrieved counter is then
    * decreased by one (1).
    *
-   * @param tag The name of the counter to decrement.
+   * @param name The name of the counter to decrement.
    *
    * @return The final value of the counter after the operation.
    */
-  public long decrement( String tag );
+  public long decrement( String name );
 
 
 
@@ -71,9 +71,9 @@ public interface Scorecard {
    * <p>If a timer is disabled that has not already been created, a disabled
    * timer will be created in memory that can be enabled at a later time.
    *
-   * @param tag The name of the timer to disable.
+   * @param name The name of the timer to disable.
    */
-  public void disableTimer( String tag );
+  public void disableTimer( String name );
 
 
 
@@ -109,9 +109,9 @@ public interface Scorecard {
    * <p>If a timer is enabled that has not already been created, a new
    * timer will be created in memory.
    *
-   * @param tag The name of the timer to enable.
+   * @param name The name of the timer to enable.
    */
-  public void enableTimer( String tag );
+  public void enableTimer( String name );
 
 
 
@@ -323,11 +323,11 @@ public interface Scorecard {
    * that name if it does not yet exist. The retrieved counter is then
    * increased by the given amount.
    *
-   * @param tag The name of the counter to increase.
+   * @param name The name of the counter to increase.
    *
    * @return The final value of the counter after the operation.
    */
-  public long increase( String tag, long value );
+  public long increase( String name, long value );
 
 
 
@@ -339,11 +339,11 @@ public interface Scorecard {
    * that name if it does not yet exist. The retrieved counter is then
    * increased by one (1).
    *
-   * @param tag The name of the counter to increment.
+   * @param name The name of the counter to increment.
    *
    * @return The final value of the counter after the operation.
    */
-  public long increment( String tag );
+  public long increment( String name );
 
 
 
@@ -476,11 +476,11 @@ public interface Scorecard {
   /**
    * Start an Application Response Measurement transaction.
    *
-   * @param tag Grouping tag.
+   * @param name Grouping name.
    *
    * @return A transaction to collect ARM data.
    */
-  public ArmTransaction startArm( String tag );
+  public ArmTransaction startArm( String name );
 
 
 
@@ -489,12 +489,12 @@ public interface Scorecard {
    * Start an Application Response Measurement transaction using a particular
    * correlation identifier.
    *
-   * @param tag Grouping tag.
+   * @param name Grouping name.
    * @param crid correlation identifier
    *
    * @return A transaction to collect ARM data.
    */
-  public ArmTransaction startArm( String tag, String crid );
+  public ArmTransaction startArm( String name, String crid );
 
 
 
@@ -504,12 +504,12 @@ public interface Scorecard {
    *
    * <p>Use the returned Timer to stop the interval measurement.
    *
-   * @param tag The name of the timer instance to start.
+   * @param name The name of the timer instance to start.
    *
    * @return The timer instance that should be stopped when the interval is
    *         completed.
    */
-  public Timer startTimer( String tag );
+  public Timer startTimer( String name );
 
 
 

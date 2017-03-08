@@ -15,11 +15,11 @@ package coyote.i13n;
  * The AppEvent class models an base class for an occurrence to be noted.
  *
  * <p>AppEvents are used to store significant events in an application. These
- * are often errors which can easily get list in log files. The Scorecard holds
+ * are often errors which can easily get lost in log files. The Scorecard holds
  * events separately and allow the system to handle them in a manner apart from
  * simply recording them to a log file for later analysis.
  *
- * <p>A basic assumption is bade that all applications are made up of systems
+ * <p>A basic assumption is made that all applications are made up of systems
  * and those systems are made up of components. Each of these tiers can be
  * identified and the composite business key of application-system-component
  * can be used to identify the source of events in very large, complex
@@ -28,8 +28,8 @@ package coyote.i13n;
  * <p>It is also assumed that operations uses the concept of codes to represent
  * events in a language independent manner. Events can contain a message for
  * local operations staff, but using a major-minor code key into a resource
- * file enabled the use of language specific resources to be used in
- * representing the meaning of the event.Using a major code to categorize the
+ * file enables the use of language specific resources to be used in
+ * representing the meaning of the event. Using a major code to categorize the
  * event can speed resolution workflows and automated processing while minor
  * event codes can give more details. It is very common in large data centers
  * to see troubleshooting manuals list resolutions by event codes and this
@@ -371,6 +371,6 @@ public class AppEvent {
 
   @Override
   public String toString() {
-    return new String( "TabEvent[" + _cls + "|" + _appId + "|" + _sysId + "|" + _cmpId + "]:" + _seq + ":" + _sev + ":" + ":" + _maj + "." + _min + ":" + _time + ":" + _msg );
+    return new String( "Event[" + _cls + "|" + _appId + "|" + _sysId + "|" + _cmpId + "]:" + _seq + ":" + _sev + ":" + ":" + _maj + "." + _min + ":" + _time + ":" + _msg );
   }
 }

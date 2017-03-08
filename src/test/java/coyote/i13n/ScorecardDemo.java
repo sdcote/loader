@@ -23,7 +23,7 @@ import org.junit.Test;
  * regular operations.
  * 
  * <p>Demo tests are used to illustrate how to use public portions of the code 
- * and are intended to be illustrative and interrogatory.</p>
+ * and are intended to be illustrative and interrogatory.
  */
 public class ScorecardDemo {
 

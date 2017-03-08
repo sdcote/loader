@@ -154,8 +154,8 @@ public class DefaultPlatform implements Platform
 
 
   /**
-   * This method will create a temporary file with a prefix of TabsX and a 
-   * suffix or extension of ".tmp" where X will represent the Tabs Identifier.
+   * This method will create a temporary file with a prefix of i13nX and a 
+   * suffix or extension of ".tmp" where X will represent the i13n Identifier.
    * 
    * <p>Every attempt will be made to delete the file when the runtime exits 
    * normally but the file will probably remain if the VM is halted.
@@ -172,9 +172,9 @@ public class DefaultPlatform implements Platform
 
 
   /**
-   * This method will create a temporary file with a prefix of TabsX and a 
+   * This method will create a temporary file with a prefix of i13nX and a 
    * suffix or extension of ".tmp" in the given directory where X will 
-   * represent the Tabs Identifier.
+   * represent the i13n Identifier.
    * 
    * <p>Every attempt will be made to delete the file when the runtime exits 
    * normally but the file will probably remain if the VM is halted.
@@ -186,7 +186,7 @@ public class DefaultPlatform implements Platform
   {
     try
     {
-      final File retval = File.createTempFile( "Tabs + Tabs.getId() + -", null, dir );
+      final File retval = File.createTempFile( "i13n + i13n.getId() + -", null, dir );
       retval.deleteOnExit();
       return retval;
     }

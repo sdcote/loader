@@ -18,7 +18,7 @@ import java.util.LinkedList;
  * The EventList class models a synchronized list of application events.
  */
 public class EventList {
-  /** The maximum number of events to keep in our TabEvent list. */
+  /** The maximum number of events to keep in our Event list. */
   private static int _maxEvents = 1000;
   private final Object _lock = new Object();
 

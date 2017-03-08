@@ -65,7 +65,7 @@ public class TimerDemo {
     t1.stop();
 
     // Timers can be re-started and stopped as necessary to accrue total time
-    // this is helpful when trying to measure ony the time spent in methods and
+    // this is helpful when trying to measure only the time spent in methods and
     // not waiting for calls to external systems.
     t1.start();
     t1.stop();
@@ -85,10 +85,7 @@ public class TimerDemo {
 
     try {
       Thread.sleep( 1000 );
-    } catch ( InterruptedException e ) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    } catch ( InterruptedException e ) {}
 
   }
 

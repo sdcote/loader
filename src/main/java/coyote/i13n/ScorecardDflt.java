@@ -146,13 +146,13 @@ public class ScorecardDflt implements Scorecard {
    * that name if it does not yet exist. The retrieved counter is then
    * decreased by the given amount.
    *
-   * @param tag The name of the counter to decrease.
+   * @param name The name of the counter to decrease.
    *
    * @return The final value of the counter after the operation.
    */
   @Override
-  public long decrease( final String tag, final long value ) {
-    return getCounter( tag ).decrease( value );
+  public long decrease( final String name, final long value ) {
+    return getCounter( name ).decrease( value );
   }
 
 
@@ -165,13 +165,13 @@ public class ScorecardDflt implements Scorecard {
    * that name if it does not yet exist. The retrieved counter is then
    * decreased by one (1).
    *
-   * @param tag The name of the counter to decrement.
+   * @param name The name of the counter to decrement.
    *
    * @return The final value of the counter after the operation.
    */
   @Override
-  public long decrement( final String tag ) {
-    return getCounter( tag ).decrement();
+  public long decrement( final String name ) {
+    return getCounter( name ).decrement();
   }
 
 
@@ -208,16 +208,16 @@ public class ScorecardDflt implements Scorecard {
    * <p>If a timer is disabled that has not already been created, a disabled
    * timer will be created in memory that can be enabled at a later time.
    *
-   * @param tag The name of the timer to disable.
+   * @param name The name of the timer to disable.
    */
   @Override
-  public void disableTimer( final String tag ) {
+  public void disableTimer( final String name ) {
     synchronized( masterTimers ) {
       // get an existing master timer or create a new one
-      TimingMaster master = masterTimers.get( tag );
+      TimingMaster master = masterTimers.get( name );
       if ( master == null ) {
-        master = new TimingMaster( tag );
-        masterTimers.put( tag, master );
+        master = new TimingMaster( name );
+        masterTimers.put( name, master );
       }
       master.setEnabled( false );
     }
@@ -278,16 +278,16 @@ public class ScorecardDflt implements Scorecard {
    * <p>If a timer is enabled that has not already been created, a new
    * timer will be created in memory.
    *
-   * @param tag The name of the timer to enable.
+   * @param name The name of the timer to enable.
    */
   @Override
-  public void enableTimer( final String tag ) {
+  public void enableTimer( final String name ) {
     synchronized( masterTimers ) {
       // get an existing master timer or create a new one
-      TimingMaster master = masterTimers.get( tag );
+      TimingMaster master = masterTimers.get( name );
       if ( master == null ) {
-        master = new TimingMaster( tag );
-        masterTimers.put( tag, master );
+        master = new TimingMaster( name );
+        masterTimers.put( name, master );
       }
       master.setEnabled( true );
     }
@@ -465,7 +465,7 @@ public class ScorecardDflt implements Scorecard {
 
   /**
    * Return the identifier the card is using to differentiate itself from other
-   * cards on this host.
+   * cards on this host and the system overall.
    *
    * @return The identifier for this scorecard.
    */
@@ -609,13 +609,13 @@ public class ScorecardDflt implements Scorecard {
    * that name if it does not yet exist. The retrieved counter is then
    * increased by the given amount.
    *
-   * @param tag The name of the counter to increase.
+   * @param name The name of the counter to increase.
    *
    * @return The final value of the counter after the operation.
    */
   @Override
-  public long increase( final String tag, final long value ) {
-    return getCounter( tag ).increase( value );
+  public long increase( final String name, final long value ) {
+    return getCounter( name ).increase( value );
   }
 
 
@@ -628,13 +628,13 @@ public class ScorecardDflt implements Scorecard {
    * that name if it does not yet exist. The retrieved counter is then
    * increased by one (1).
    *
-   * @param tag The name of the counter to increment.
+   * @param name The name of the counter to increment.
    *
    * @return The final value of the counter after the operation.
    */
   @Override
-  public long increment( final String tag ) {
-    return getCounter( tag ).increment();
+  public long increment( final String name ) {
+    return getCounter( name ).increment();
   }
 
 
@@ -825,13 +825,13 @@ public class ScorecardDflt implements Scorecard {
   /**
    * Start an Application Response Measurement transaction.
    *
-   * @param tag Grouping tag.
+   * @param name Grouping name.
    *
    * @return A transaction to collect ARM data.
    */
   @Override
-  public ArmTransaction startArm( final String tag ) {
-    return startArm( tag, null );
+  public ArmTransaction startArm( final String name ) {
+    return startArm( name, null );
   }
 
 
@@ -841,25 +841,25 @@ public class ScorecardDflt implements Scorecard {
    * Start an Application Response Measurement transaction using a particular
    * correlation identifier.
    *
-   * @param tag Grouping tag.
+   * @param name Grouping name.
    * @param crid correlation identifier
    *
    * @return A transaction to collect ARM data.
    */
   @Override
-  public ArmTransaction startArm( final String tag, final String crid ) {
+  public ArmTransaction startArm( final String name, final String crid ) {
     ArmTransaction retval = null;
     if ( armEnabled ) {
       synchronized( armMasters ) {
         // get an existing ARM master or create a new one
-        ArmMaster master = armMasters.get( tag );
+        ArmMaster master = armMasters.get( name );
         if ( master == null ) {
-          master = new ArmMaster( tag );
-          armMasters.put( tag, master );
+          master = new ArmMaster( name );
+          armMasters.put( name, master );
         }
 
         // have the master ARM return a transaction instance
-        retval = master.createArm( tag, crid );
+        retval = master.createArm( name, crid );
 
         //start the ARM transaction
         retval.start();
@@ -880,21 +880,21 @@ public class ScorecardDflt implements Scorecard {
    *
    * <p>Use the returned Timer to stop the interval measurement.
    *
-   * @param tag The name of the timer instance to start.
+   * @param name The name of the timer instance to start.
    *
    * @return The timer instance that should be stopped when the interval is
    *         completed.
    */
   @Override
-  public Timer startTimer( final String tag ) {
+  public Timer startTimer( final String name ) {
     Timer retval = null;
     if ( timingEnabled ) {
       synchronized( masterTimers ) {
         // get an existing master timer or create a new one
-        TimingMaster master = masterTimers.get( tag );
+        TimingMaster master = masterTimers.get( name );
         if ( master == null ) {
-          master = new TimingMaster( tag );
-          masterTimers.put( tag, master );
+          master = new TimingMaster( name );
+          masterTimers.put( name, master );
         }
 
         // have the master timer return a timer instance
