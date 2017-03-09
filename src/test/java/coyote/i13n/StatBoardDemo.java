@@ -19,13 +19,13 @@ import org.junit.Test;
 
 
 /**
- * This is a set of tests which demonstrate how to use the Scorecard class in
+ * This is a set of tests which demonstrate how to use the StatBoard class in
  * regular operations.
  * 
  * <p>Demo tests are used to illustrate how to use public portions of the code 
  * and are intended to be illustrative and interrogatory.
  */
-public class ScorecardDemo {
+public class StatBoardDemo {
 
   /**
    * @throws java.lang.Exception
@@ -46,11 +46,11 @@ public class ScorecardDemo {
 
 
   /**
-   * Test method for {@link coyote.i13n.ScorecardDflt#getId()}.
+   * Test method for {@link coyote.i13n.StatBoardImpl#getId()}.
    */
   @Test
   public void testGetId() {
-    Scorecard scorecard = new ScorecardDflt();
+    StatBoard scorecard = new StatBoardImpl();
 
     // All scorecards should have an identifier
     assertNotNull( scorecard.getId() );

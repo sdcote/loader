@@ -20,12 +20,12 @@ import coyote.commons.DateUtil;
 
 
 /**
- * This is the default implementation of a scorecard.
+ * This is the default implementation of a statboard.
  *
  * <p>Some find it useful to make this globally accessible so that many
  * different components can use this in a coordinated manner.
  */
-public class ScorecardDflt implements Scorecard {
+public class StatBoardImpl implements StatBoard {
   /** Re-usable null timer to save object creation and GC'n */
   private static final Timer NULL_TIMER = new NullTimer( null );
 
@@ -35,13 +35,9 @@ public class ScorecardDflt implements Scorecard {
   /** Re-usable null gauge to save object creation and GC'n */
   private static final Gauge NULL_GAUGE = new NullGauge( null );
 
-
-
-
-  
   private String CARDID = UUID.randomUUID().toString().toLowerCase();
 
-  /** The time this scorecard was create/started. */
+  /** The time this statboard was create/started. */
   private long startedTimestamp = 0;
 
   /** Timing is disabled by default */
@@ -77,7 +73,7 @@ public class ScorecardDflt implements Scorecard {
 
 
 
-  public ScorecardDflt() {
+  public StatBoardImpl() {
     startedTimestamp = System.currentTimeMillis();
   }
 
@@ -260,7 +256,7 @@ public class ScorecardDflt implements Scorecard {
 
 
   /**
-   * Get an iterator over all the ARM Masters in the scorecard.
+   * Get an iterator over all the ARM Masters in the statboard.
    */
   @Override
   public Iterator<ArmMaster> getArmIterator() {
@@ -303,7 +299,7 @@ public class ScorecardDflt implements Scorecard {
 
 
   /**
-   * @return The number of counters in the scorecard at the present time.
+   * @return The number of counters in the statboard at the present time.
    */
   @Override
   public int getCounterCount() {
@@ -318,7 +314,7 @@ public class ScorecardDflt implements Scorecard {
    *
    * <p>NOTE: this iterator is detached from the counters in that the remove()
    * call on the iterator will only affect the returned iterator and not the
-   * counter collection in the scorecard. If you wish to remove a counter, you
+   * counter collection in the statboard. If you wish to remove a counter, you
    * MUST call removeCounter(Counter) with the reference returned from this
    * iterator as well.
    *
@@ -340,12 +336,12 @@ public class ScorecardDflt implements Scorecard {
    * Return the reference to the named gauge.
    *
    * <p>This will always return an object; it may be a stub, or a working
-   * implementation depending upon the state of the scorecard at the time. If
+   * implementation depending upon the state of the statboard at the time. If
    * gauges are enabled, then a working gauge is returned, otherwise a null
    * gauge is returned.
    *
    * <p>Because the state of gauge operation can change over the operation of
-   * the scorecard, it is not advisable to hold on to the reference between calls
+   * the statboard, it is not advisable to hold on to the reference between calls
    * to the gauge. Always get the appropriate reference to the gauge
    *
    * @param name the name of the gauge to return.
@@ -381,7 +377,7 @@ public class ScorecardDflt implements Scorecard {
 
 
   /**
-   * @return The number of gauges in the scorecard at the present time.
+   * @return The number of gauges in the statboard at the present time.
    */
   @Override
   public int getGaugeCount() {
@@ -392,7 +388,7 @@ public class ScorecardDflt implements Scorecard {
 
 
   /**
-   * Get an iterator over all the gauges in the scorecard.
+   * Get an iterator over all the gauges in the statboard.
    */
   @Override
   public Iterator<Gauge> getGaugeIterator() {
@@ -412,7 +408,7 @@ public class ScorecardDflt implements Scorecard {
    * Return the identifier the card is using to differentiate itself from other
    * cards on this host and the system overall.
    *
-   * @return The identifier for this scorecard.
+   * @return The identifier for this statboard.
    */
   @Override
   public String getId() {
@@ -460,7 +456,7 @@ public class ScorecardDflt implements Scorecard {
 
 
   /**
-   * @return The number of states in the scorecard at the present time.
+   * @return The number of states in the statboard at the present time.
    */
   @Override
   public int getStateCount() {
@@ -475,7 +471,7 @@ public class ScorecardDflt implements Scorecard {
    *
    * <p>NOTE: this iterator is detached from the states in that the remove()
    * call on the iterator will only affect the returned iterator and not the
-   * state collection in the scorecard. If you wish to remove a state, you MUST
+   * state collection in the statboard. If you wish to remove a state, you MUST
    * call removeState(Counter) with the reference returned from this iterator
    * as well.
    *
@@ -494,7 +490,7 @@ public class ScorecardDflt implements Scorecard {
 
 
   /**
-   * Get an iterator over all the Master Timers in the scorecard.
+   * Get an iterator over all the Master Timers in the statboard.
    */
   @Override
   public Iterator<TimingMaster> getTimerIterator() {
@@ -688,7 +684,7 @@ public class ScorecardDflt implements Scorecard {
 
 
   /**
-   * Removes all timers from the scorecard and frees them up for garbage
+   * Removes all timers from the statboard and frees them up for garbage
    * collection.
    */
   @Override
@@ -702,7 +698,7 @@ public class ScorecardDflt implements Scorecard {
 
 
   /**
-   * Assign a unique identifier to this scorecard.
+   * Assign a unique identifier to this statboard.
    *
    * @param id the unique identifier to set
    */

@@ -14,14 +14,14 @@ package coyote.i13n;
 /**
  * 
  */
-public class ScorecardPerfTest {
+public class StatBoardPerfTest {
 
   /**
    * Run a 10 second test.
    * 
    * @return the actual elapsed time.
    */
-  private static long runTest( Scorecard scorecard ) {
+  private static long runTest( StatBoard scorecard ) {
     long started = System.currentTimeMillis();
     long end = started + 10000;
     while ( System.currentTimeMillis() <= end ) {
@@ -34,7 +34,7 @@ public class ScorecardPerfTest {
 
 
   public static void main( String[] args ) {
-    Scorecard scorecard = new ScorecardDflt();
+    StatBoard scorecard = new StatBoardImpl();
 
     System.out.println( "Initialized - starting test..." );
 

@@ -47,7 +47,7 @@ public class TimerDemo {
   public void simpleDemo() {
 
     // Use a scorecard to get a timer
-    Scorecard scorecard = new ScorecardDflt();
+    StatBoard scorecard = new StatBoardImpl();
 
     // timing instrumentation is disabled by default so we have to explicitly 
     // enable it

@@ -22,7 +22,7 @@ import org.junit.Test;
 /**
  * 
  */
-public class DefaultScorecardTests {
+public class DefaultStatBoardTests {
 
   /**
    * @throws java.lang.Exception
@@ -45,7 +45,7 @@ public class DefaultScorecardTests {
   @Test
   public void test() {
 
-    Scorecard scorecard = new ScorecardDflt();
+    StatBoard scorecard = new StatBoardImpl();
 
     // All scorecards should have an identifier
     assertNotNull( scorecard.getId() );

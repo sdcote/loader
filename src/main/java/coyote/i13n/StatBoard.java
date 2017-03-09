@@ -15,9 +15,13 @@ import java.util.Iterator;
 
 
 /**
- * A scorecard hold all the collected metrics.
+ * A statistics board hold collected metrics for some application, component or
+ * event.
+ * 
+ * <p>Create a Statistics Board (statboard) for anything which you want to 
+ * gather operational statistics. 
  */
-public interface Scorecard {
+public interface StatBoard {
 
   /**
    * Decrease the value with the given name by the given amount.
@@ -130,7 +134,7 @@ public interface Scorecard {
 
 
   /**
-   * Get an iterator over all the ARM Masters in the scorecard.
+   * Get an iterator over all the ARM Masters in the statboard.
    */
   public Iterator<ArmMaster> getArmIterator();
 
@@ -153,7 +157,7 @@ public interface Scorecard {
 
 
   /**
-   * @return The number of counters in the scorecard at the present time.
+   * @return The number of counters in the statboard at the present time.
    */
   public int getCounterCount();
 
@@ -165,7 +169,7 @@ public interface Scorecard {
    *
    * <p>NOTE: this iterator is detached from the counters in that the remove()
    * call on the iterator will only affect the returned iterator and not the
-   * counter collection in the scorecard. If you wish to remove a counter, you
+   * counter collection in the statboard. If you wish to remove a counter, you
    * MUST call removeCounter(Counter) with the reference returned from this
    * iterator as well.
    *
@@ -180,12 +184,12 @@ public interface Scorecard {
    * Return the reference to the named gauge.
    *
    * <p>This will always return an object; it may be a stub, or a working
-   * implementation depending upon the state of the scorecard at the time. If
+   * implementation depending upon the state of the statboard at the time. If
    * gauges are enabled, then a working gauge is returned, otherwise a null
    * gauge is returned.
    *
    * <p>Because the state of gauge operation can change over the operation of
-   * the scorecard, it is not advisable to hold on to the reference between calls
+   * the statboard, it is not advisable to hold on to the reference between calls
    * to the gauge. Always get the appropriate reference to the gauge
    *
    * @param name the name of the gauge to return.
@@ -200,7 +204,7 @@ public interface Scorecard {
 
 
   /**
-   * @return The number of gauges in the scorecard at the present time.
+   * @return The number of gauges in the statboard at the present time.
    */
   public int getGaugeCount();
 
@@ -208,7 +212,7 @@ public interface Scorecard {
 
 
   /**
-   * Get an iterator over all the gauges in the scorecard.
+   * Get an iterator over all the gauges in the statboard.
    */
   public Iterator<Gauge> getGaugeIterator();
 
@@ -219,7 +223,7 @@ public interface Scorecard {
    * Return the identifier the card is using to differentiate itself from other
    * cards on this host.
    *
-   * @return The identifier for this scorecard.
+   * @return The identifier for this statboard.
    */
   public String getId();
 
@@ -227,13 +231,13 @@ public interface Scorecard {
 
 
   /**
-   * The Scorecard records the time it was instantiated and serves as a timer,
+   * The statboard records the time it was instantiated and serves as a timer,
    * of sorts, for the system as a whole.
    *
-   * <p>Assuming the scorecard is created when the system loads, it can be used
+   * <p>Assuming the statboard is created when the system loads, it can be used
    * to determine how long the system has been operational.
    *
-   * @return The epoch time in milliseconds this scorecard was started.
+   * @return The epoch time in milliseconds this statboard was started.
    */
   public long getStartedTime();
 
@@ -256,7 +260,7 @@ public interface Scorecard {
 
 
   /**
-   * @return The number of states in the scorecard at the present time.
+   * @return The number of states in the statboard at the present time.
    */
   public int getStateCount();
 
@@ -268,7 +272,7 @@ public interface Scorecard {
    *
    * <p>NOTE: this iterator is detached from the states in that the remove()
    * call on the iterator will only affect the returned iterator and not the
-   * state collection in the scorecard. If you wish to remove a state, you MUST
+   * state collection in the statboard. If you wish to remove a state, you MUST
    * call removeState(Counter) with the reference returned from this iterator
    * as well.
    *
@@ -280,7 +284,7 @@ public interface Scorecard {
 
 
   /**
-   * Get an iterator over all the Master Timers in the scorecard.
+   * Get an iterator over all the Master Timers in the statboard.
    */
   public Iterator<TimingMaster> getTimerIterator();
 
@@ -301,15 +305,15 @@ public interface Scorecard {
 
 
   /**
-   * Return how long the scorecard has been active in a format using only the
+   * Return how long the statboard has been active in a format using only the
    * significant time measurements.
    *
    * <p>Significant measurements means if the number of seconds extend past 24
    * hours, then only report the days and hours skipping the minutes and
    * seconds. Examples include <tt>4m 23s</tt> or <tt>22d 4h</tt>. The format
-   * is designed to make reporting scorecard uptime more polished.
+   * is designed to make reporting statboard uptime more polished.
    *
-   * @return the time the scorecard has been active in a print-ready format.
+   * @return the time the statboard has been active in a print-ready format.
    */
   public String getUptimeString();
 
@@ -415,7 +419,7 @@ public interface Scorecard {
 
 
   /**
-   * Removes all timers from the scorecard and frees them up for garbage
+   * Removes all timers from the statboard and frees them up for garbage
    * collection.
    */
   public void resetTimers();
@@ -424,7 +428,7 @@ public interface Scorecard {
 
 
   /**
-   * Assign a unique identifier to this scorecard.
+   * Assign a unique identifier to this statboard.
    *
    * @param id the unique identifier to set
    */
