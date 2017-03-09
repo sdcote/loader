@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.UUID;
 
+import coyote.commons.DateUtil;
+
 
 /**
  * This is the default implementation of a scorecard.
@@ -36,64 +38,7 @@ public class ScorecardDflt implements Scorecard {
 
 
 
-  /**
-   * Print only the most significant portion of the time.
-   *
-   * <p>This is the two most significant units of time. Form will be something
-   * like "3h 26m" indicating 3 hours 26 minutes and some insignificant number
-   * of seconds. Formats are Xd Xh (days-hours), Xh Xm (Hours-minutes), Xm Xs
-   * (minutes-seconds) and Xs (seconds).
-   *
-   * @param seconds number of elapsed seconds NOT milliseconds.
-   *
-   * @return formatted string
-   */
-  private static String formatSignificantElapsedTime( final long seconds ) {
-    final long days = seconds / 86400;
-    final StringBuffer buffer = new StringBuffer();
-
-    if ( days > 0 ) // Display days and hours
-    {
-      buffer.append( days );
-      buffer.append( "d " );
-      buffer.append( ( ( seconds / 3600 ) % 24 ) ); // hours
-      buffer.append( "h" );
-
-      return buffer.toString();
-    }
-
-    final int hours = (int)( ( seconds / 3600 ) % 24 );
-
-    if ( hours > 0 ) // Display hours and minutes
-    {
-      buffer.append( hours );
-      buffer.append( "h " );
-      buffer.append( ( ( seconds / 60 ) % 60 ) ); // minutes
-      buffer.append( "m" );
-
-      return buffer.toString();
-    }
-
-    final int minutes = (int)( ( seconds / 60 ) % 60 );
-
-    if ( minutes > 0 ) // Display minutes and seconds
-    {
-      buffer.append( minutes );
-      buffer.append( "m " );
-      buffer.append( ( seconds % 60 ) ); // seconds
-      buffer.append( "s" );
-
-      return buffer.toString();
-    }
-
-    final int secs = (int)( seconds % 60 );
-    buffer.append( secs ); // seconds
-    buffer.append( "s" );
-
-    return buffer.toString();
-
-  }
-
+  
   private String CARDID = UUID.randomUUID().toString().toLowerCase();
 
   /** The time this scorecard was create/started. */
@@ -596,7 +541,7 @@ public class ScorecardDflt implements Scorecard {
    */
   @Override
   public String getUptimeString() {
-    return formatSignificantElapsedTime( ( System.currentTimeMillis() - startedTimestamp ) / 1000 );
+    return DateUtil.formatSignificantElapsedTime( ( System.currentTimeMillis() - startedTimestamp ) / 1000 );
   }
 
 

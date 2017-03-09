@@ -402,7 +402,7 @@ public class TimingMaster implements TimerMaster {
   /**
    * Method toString
    *
-   * @return
+   * @return a string representing the timer.
    */
   @Override
   public String toString() {

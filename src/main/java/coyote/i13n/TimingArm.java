@@ -348,7 +348,7 @@ public final class TimingArm extends NullArm {
 
 
 
-  /* (non-Javadoc)
+  /**
    * @see coyote.i13n.ArmTransaction#update(java.lang.String, java.lang.Object)
    */
   @Override

@@ -24,7 +24,7 @@ public class EventList {
 
   private volatile long _nextEventSequence = 0;
 
-  LinkedList<AppEvent> _list = new LinkedList<AppEvent>();
+  static LinkedList<AppEvent> _list = new LinkedList<AppEvent>();
 
 
 
@@ -172,7 +172,7 @@ public class EventList {
   /**
    * @return  Returns the maximum number of events to keep in the list.
    */
-  public int getMaxEvents() {
+  public static int getMaxEvents() {
     return EventList._maxEvents;
   }
 
@@ -231,7 +231,7 @@ public class EventList {
    *
    * @param max  The maximum number of events to keep.
    */
-  public void setMaxEvents( final int max ) {
+  public static void setMaxEvents( final int max ) {
     _maxEvents = max;
     while ( _list.size() > _maxEvents ) {
       _list.removeFirst();

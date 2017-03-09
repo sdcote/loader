@@ -44,9 +44,7 @@ public class TimingTimer extends TimerBase {
 
 
   /**
-   * Returns the time that the Timer has been running
-   *
-   * @return
+   * @return the time that the Timer has been running in milliseconds 
    */
   @Override
   public long getAccrued() {
