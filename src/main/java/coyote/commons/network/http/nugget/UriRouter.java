@@ -71,18 +71,18 @@ public class UriRouter {
    * @param session
    * 
    * @return the Response from the URI resource processing
-   * @throws SecurityResponseException if precessing request generated a security exception
+   * @throws SecurityResponseException if processing request generated a security exception
    */
   public Response process( final IHTTPSession session ) throws SecurityResponseException {
 
-    final String work = HTTPDRouter.normalizeUri( session.getUri() );
+    final String request = HTTPDRouter.normalizeUri( session.getUri() );
 
     Map<String, String> params = null;
     UriResource uriResource = error404Url;
 
     // For all the resources, see which one matches first
     for ( final UriResource resource : mappings ) {
-      params = resource.match( work );
+      params = resource.match( request );
       if ( params != null ) {
         uriResource = resource;
         break;
@@ -91,9 +91,9 @@ public class UriRouter {
 
     if ( Log.isLogging( HTTPD.EVENT ) ) {
       if ( error404Url == uriResource ) {
-        Log.append( HTTPD.EVENT, "No handler defined for '" + work + "' from " + session.getRemoteIpAddress() + ":" + session.getRemoteIpPort() );
+        Log.append( HTTPD.EVENT, "No handler defined for '" + request + "' from " + session.getRemoteIpAddress() + ":" + session.getRemoteIpPort() );
       } else {
-        Log.append( HTTPD.EVENT, "Servicing request for '" + work + "' from " + session.getRemoteIpAddress() + ":" + session.getRemoteIpPort() );
+        Log.append( HTTPD.EVENT, "Handler '"+uriResource+"' servicing '"+session.getMethod()+"' request for '" + request + "' from " + session.getRemoteIpAddress() + ":" + session.getRemoteIpPort() );
       }
     }
     // Have the found (or default 404) URI resource process the session
