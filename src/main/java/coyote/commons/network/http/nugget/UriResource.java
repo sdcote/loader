@@ -226,7 +226,7 @@ public class UriResource {
               throw new SecurityResponseException( "Resource requires secure connection" );
             }
             if ( auth.required() && !HTTPD.getAuthProvider().isAuthenticated( session ) ) {
-              return Response.createFixedLengthResponse( Status.UNAUTHORIZED, MimeType.TEXT.getType(), "Requires Authentication" );
+              return Response.createFixedLengthResponse( Status.UNAUTHORIZED, MimeType.TEXT.getType(), "Authentication Required" );
             }
             if ( StringUtil.isNotBlank( auth.groups() ) && !HTTPD.getAuthProvider().isAuthorized( session, auth.groups() ) ) {
               return Response.createFixedLengthResponse( Status.FORBIDDEN, MimeType.TEXT.getType(), "Not Authorized" );
