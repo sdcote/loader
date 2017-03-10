@@ -31,6 +31,7 @@ import coyote.commons.StringUtil;
 import coyote.commons.network.IpAcl;
 import coyote.commons.network.IpNetwork;
 import coyote.commons.network.MimeType;
+import coyote.commons.security.BlowfishCipher;
 import coyote.commons.security.OperationFrequency;
 import coyote.loader.log.Log;
 import coyote.commons.network.http.auth.AuthProvider;
@@ -46,6 +47,8 @@ import coyote.commons.network.http.auth.DefaultAuthProvider;
 public abstract class HTTPD {
   public static final String CLASS = "HTTPD";
   public static final long EVENT = Log.getCode( CLASS );
+  public static final String CIPHER_KEY = "CoyoteLoader";
+  public static final String CIPHER_NAME = BlowfishCipher.CIPHER_NAME;
 
   private static final String CONTENT_DISPOSITION_REGEX = "([ |\t]*Content-Disposition[ |\t]*:)(.*)";
 

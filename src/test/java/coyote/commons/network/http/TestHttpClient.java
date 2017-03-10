@@ -157,7 +157,7 @@ public class TestHttpClient {
   /**
    * Create an Authorization header for a username and password
    */
-  public String calculateHeaderData( String username, String password ) {
+  public static String calculateHeaderData( String username, String password ) {
     if ( StringUtil.isNotBlank( username ) || StringUtil.isNotBlank( password ) ) {
       StringBuffer b = new StringBuffer();
 
@@ -175,4 +175,5 @@ public class TestHttpClient {
     return null;
   }
 
+  
 }
