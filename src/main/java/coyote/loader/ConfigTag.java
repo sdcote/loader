@@ -53,6 +53,12 @@ public class ConfigTag {
   /** Name ({@value}) of the configuration attribute specifying the component to load. */
   public static final String COMPONENT = "Component";
 
+  /** Name ({@value}) of the configuration section specifying the Internet Protocol Access Control List (IPACL). */
+  public static final String IPACL = "IpACL";
+
+  /** Name ({@value}) of the configuration attribute specifying the Denial of Service (DoD) frequency table. */
+  public static final String FREQUENCY = "Frequency";
+
   // These tags are legacy configuration elements -- may be deprecated
   public static final String LOG_TAG = "Log";
   public static final String ENABLED_TAG = "Enabled";

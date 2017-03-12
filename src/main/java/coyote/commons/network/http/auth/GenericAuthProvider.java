@@ -127,14 +127,14 @@ public class GenericAuthProvider implements AuthProvider {
           if ( userfield.getName() != null ) {
             if ( userfield.getName().endsWith( NAME ) ) {
               if ( userfield.getName().startsWith( ENCRYPTED ) ) {
-                user.setName( decrypt( userfield.getStringValue() ) );
+                user.setName( CipherUtil.decrypt( userfield.getStringValue() ) );
               } else {
                 user.setName( userfield.getStringValue() );
               }
             } else if ( userfield.getName().endsWith( PASSWORD ) ) {
               String passwd;
               if ( userfield.getName().startsWith( ENCRYPTED ) ) {
-                passwd = decrypt( userfield.getStringValue() );
+                passwd = CipherUtil.decrypt( userfield.getStringValue() );
               } else {
                 passwd = userfield.getStringValue();
               }
@@ -144,7 +144,7 @@ public class GenericAuthProvider implements AuthProvider {
             } else if ( userfield.getName().endsWith( GROUPS ) ) {
               String groups;
               if ( userfield.getName().startsWith( ENCRYPTED ) ) {
-                groups = decrypt( userfield.getStringValue() );
+                groups = CipherUtil.decrypt( userfield.getStringValue() );
               } else {
                 groups = userfield.getStringValue();
               }
@@ -352,46 +352,7 @@ public class GenericAuthProvider implements AuthProvider {
     return digestRounds;
   }
   
-  /**
-   * Common utility to encrypt data.
-   * 
-   * <p>Note that this uses the libraries from the Loader package and is 
-   * intended to use the default key and encryption algorithm therein.</p>
-   * 
-   * @param cleartext the text to encrypt
-   * 
-   * @return encrypted text
-   */
-  public static String encrypt( String cleartext ) {
-    String retval = null;
-    String key = System.getProperty( ConfigTag.CIPHER_KEY, CipherUtil.getKey( HTTPD.CIPHER_KEY ) );
-    String cipherName = System.getProperty( ConfigTag.CIPHER_NAME, Loader.CIPHER_NAME );
-    retval = CipherUtil.encipher( cleartext, cipherName, key );
-    return retval;
-  }
-
-
-
-
-  /**
-   * Common utility to decrypt data
-   * 
-   * <p>Note that this uses the libraries from the Loader package and is 
-   * intended to use the default key and encryption algorithm therein.</p>
-   * 
-   * @param ciphertext encrypted text
-   * 
-   * @return decrypted text
-   */
-  public static String decrypt( String ciphertext ) {
-    String retval = null;
-    String key = System.getProperty( ConfigTag.CIPHER_KEY, CipherUtil.getKey( HTTPD.CIPHER_KEY ) );
-    String cipherName = System.getProperty( ConfigTag.CIPHER_NAME, Loader.CIPHER_NAME );
-    retval = CipherUtil.decipher( ciphertext, cipherName, key );
-    return retval;
-  }
-
-
+  
 
   /**
   * Class to hold user data

@@ -28,6 +28,7 @@ import coyote.commons.network.http.Response;
 import coyote.commons.network.http.SecurityResponseException;
 import coyote.commons.network.http.Status;
 import coyote.commons.network.http.auth.Auth;
+import coyote.commons.network.http.auth.AuthProvider;
 import coyote.loader.log.Log;
 
 
@@ -57,6 +58,8 @@ public class UriResource {
 
   private final List<String> uriParams = new ArrayList<String>();
 
+  private final AuthProvider authProvider;
+
 
 
 
@@ -66,10 +69,12 @@ public class UriResource {
    * @param uri the 
    * @param priority
    * @param handler
+   * @param authProvider
    * @param initParameter
    */
-  public UriResource( final String uri, final int priority, final Class<?> handler, final Object... initParameter ) {
+  public UriResource( final String uri, final int priority, final Class<?> handler, final AuthProvider authProvider, final Object... initParameter ) {
     this.handler = handler;
+    this.authProvider = authProvider;
     this.initParameter = initParameter;
     if ( uri != null ) {
       this.uri = HTTPDRouter.normalizeUri( uri );
@@ -221,15 +226,22 @@ public class UriResource {
           if ( method.isAnnotationPresent( Auth.class ) ) {
             Annotation annotation = method.getAnnotation( Auth.class );
             Auth auth = (Auth)annotation;
-            if ( auth.requireSSL() && !HTTPD.getAuthProvider().isSecureConnection( session ) ) {
-              // RFC and OWASP differ in their recommendations. I prefer OWASP's version - don't respond to the request and just drop the packet.
-              throw new SecurityResponseException( "Resource requires secure connection" );
-            }
-            if ( auth.required() && !HTTPD.getAuthProvider().isAuthenticated( session ) ) {
-              return Response.createFixedLengthResponse( Status.UNAUTHORIZED, MimeType.TEXT.getType(), "Authentication Required" );
-            }
-            if ( StringUtil.isNotBlank( auth.groups() ) && !HTTPD.getAuthProvider().isAuthorized( session, auth.groups() ) ) {
-              return Response.createFixedLengthResponse( Status.FORBIDDEN, MimeType.TEXT.getType(), "Not Authorized" );
+            if ( authProvider != null ) {
+              if ( auth.requireSSL() && !authProvider.isSecureConnection( session ) ) {
+                // RFC and OWASP differ in their recommendations. I prefer OWASP's version - don't respond to the request and just drop the packet.
+                throw new SecurityResponseException( "Resource requires secure connection" );
+              }
+              if ( auth.required() && !authProvider.isAuthenticated( session ) ) {
+                return Response.createFixedLengthResponse( Status.UNAUTHORIZED, MimeType.TEXT.getType(), "Authentication Required" );
+              }
+              if ( StringUtil.isNotBlank( auth.groups() ) && !authProvider.isAuthorized( session, auth.groups() ) ) {
+                return Response.createFixedLengthResponse( Status.FORBIDDEN, MimeType.TEXT.getType(), "Not Authorized" );
+              }
+            } else {
+              // should never happen, but who knows?
+              Log.append( HTTPD.EVENT, "ERROR: No Authentication Handler Set: while processing for '" + session.getUri() + "' from " + session.getRemoteIpAddress() + ":" + session.getRemoteIpPort() );
+              Log.error( "No Authentication Handler Set in Server: check HTTP log for more details" );
+              return Response.createFixedLengthResponse( Status.INTERNAL_ERROR, MimeType.TEXT.getType(), "Server Error" );
             }
           }
 
@@ -255,7 +267,7 @@ public class UriResource {
       } catch ( final Exception e ) {
         error = "Error: " + e.getClass().getName() + " : " + e.getMessage();
         Log.append( HTTPD.EVENT, error, e );
-        if( e instanceof SecurityResponseException ){
+        if ( e instanceof SecurityResponseException ) {
           throw (SecurityResponseException)e;
         }
       }

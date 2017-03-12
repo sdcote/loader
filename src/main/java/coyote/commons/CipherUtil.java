@@ -20,12 +20,15 @@ import coyote.commons.security.BlowfishCipher;
 import coyote.commons.security.Cipher;
 import coyote.commons.security.NullCipher;
 import coyote.commons.security.XTEACipher;
+import coyote.loader.ConfigTag;
 
 
 /**
  * Very basic cipher utilities to assist with privacy.
  */
 public class CipherUtil {
+  public static final String CIPHER_KEY = "CoyoteLoader";
+  public static final String CIPHER_NAME = BlowfishCipher.CIPHER_NAME;
 
   // The amount of salt we add to the data we encrypt
   private static final int SALT_SIZE = 4;
@@ -77,6 +80,42 @@ public class CipherUtil {
     for ( int i = 0; i < 64; i++ ) {
       niblMap[charMap[i]] = (byte)i;
     }
+  }
+
+
+
+
+  /**
+   * Common utility to encrypt data.
+   * 
+   * @param cleartext the text to encrypt
+   * 
+   * @return encrypted text
+   */
+  public static String encrypt( String cleartext ) {
+    String retval = null;
+    String key = System.getProperty( ConfigTag.CIPHER_KEY, CipherUtil.getKey( CIPHER_KEY ) );
+    String cipherName = System.getProperty( ConfigTag.CIPHER_NAME, CIPHER_NAME );
+    retval = CipherUtil.encipher( cleartext, cipherName, key );
+    return retval;
+  }
+
+
+
+
+  /**
+   * Common utility to decrypt data
+   * 
+   * @param ciphertext encrypted text
+   * 
+   * @return decrypted text
+   */
+  public static String decrypt( String ciphertext ) {
+    String retval = null;
+    String key = System.getProperty( ConfigTag.CIPHER_KEY, CipherUtil.getKey( CIPHER_KEY ) );
+    String cipherName = System.getProperty( ConfigTag.CIPHER_NAME, CIPHER_NAME );
+    retval = CipherUtil.decipher( ciphertext, cipherName, key );
+    return retval;
   }
 
 

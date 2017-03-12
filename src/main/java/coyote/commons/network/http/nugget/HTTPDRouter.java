@@ -61,8 +61,8 @@ public class HTTPDRouter extends HTTPD {
   public void addMappings() {
     router.setNotImplemented( NotImplementedHandler.class );
     router.setNotFoundHandler( Error404UriHandler.class );
-    router.addRoute( "/", Integer.MAX_VALUE / 2, BlankPage.class );
-    router.addRoute( "/index.html", Integer.MAX_VALUE / 2, BlankPage.class );
+    router.addRoute( "/", Integer.MAX_VALUE / 2, BlankPage.class,authProvider );
+    router.addRoute( "/index.html", Integer.MAX_VALUE / 2, BlankPage.class, authProvider );
   }
 
 
@@ -76,7 +76,7 @@ public class HTTPDRouter extends HTTPD {
    * @param initParams the array of objects to pass to the handler upon in
    */
   public void addRoute( final String urlPattern, final Class<?> handler, final Object... initParams ) {
-    router.addRoute( urlPattern, 100, handler, initParams );
+    router.addRoute( urlPattern, 100, handler,authProvider, initParams );
   }
 
 
@@ -91,7 +91,7 @@ public class HTTPDRouter extends HTTPD {
    * @param initParams the array of objects to pass to the handler upon in
    */
   public void addRoute( final String urlPattern, int priority, final Class<?> handler, final Object... initParams ) {
-    router.addRoute( urlPattern, priority, handler, initParams );
+    router.addRoute( urlPattern, priority, handler,authProvider, initParams );
   }
 
 

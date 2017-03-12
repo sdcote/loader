@@ -52,7 +52,7 @@ public class AuthProviderTest {
     server = new TestRouter( port );
 
     // set a test auth provider in the base server
-    HTTPDRouter.setAuthProvider( AUTH_PROVIDER );
+    server.setAuthProvider( AUTH_PROVIDER );
 
     // add a protected uri resource 
     server.addRoute( "/", Integer.MAX_VALUE, ProtectedHandler.class );

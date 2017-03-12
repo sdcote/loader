@@ -21,6 +21,7 @@ import coyote.commons.network.http.HTTPD;
 import coyote.commons.network.http.IHTTPSession;
 import coyote.commons.network.http.Response;
 import coyote.commons.network.http.SecurityResponseException;
+import coyote.commons.network.http.auth.AuthProvider;
 import coyote.loader.log.Log;
 
 
@@ -38,6 +39,7 @@ public class UriRouter {
 
 
 
+  //
   public UriRouter() {
     mappings = new ArrayList<UriResource>();
   }
@@ -45,12 +47,12 @@ public class UriRouter {
 
 
 
-  void addRoute( final String url, final int priority, final Class<?> handler, final Object... initParameter ) {
+  void addRoute( final String url, final int priority, final Class<?> handler, final AuthProvider authProvider, final Object... initParameter ) {
     if ( url != null ) {
       if ( handler != null ) {
-        mappings.add( new UriResource( url, priority + mappings.size(), handler, initParameter ) );
+        mappings.add( new UriResource( url, priority + mappings.size(), handler, authProvider, initParameter ) );
       } else {
-        mappings.add( new UriResource( url, priority + mappings.size(), notImplemented ) );
+        mappings.add( new UriResource( url, priority + mappings.size(), notImplemented, authProvider ) );
       }
       sortMappings();
     }
@@ -93,7 +95,7 @@ public class UriRouter {
       if ( error404Url == uriResource ) {
         Log.append( HTTPD.EVENT, "No handler defined for '" + request + "' from " + session.getRemoteIpAddress() + ":" + session.getRemoteIpPort() );
       } else {
-        Log.append( HTTPD.EVENT, "Handler '"+uriResource+"' servicing '"+session.getMethod()+"' request for '" + request + "' from " + session.getRemoteIpAddress() + ":" + session.getRemoteIpPort() );
+        Log.append( HTTPD.EVENT, "Handler '" + uriResource + "' servicing '" + session.getMethod() + "' request for '" + request + "' from " + session.getRemoteIpAddress() + ":" + session.getRemoteIpPort() );
       }
     }
     // Have the found (or default 404) URI resource process the session
@@ -119,7 +121,7 @@ public class UriRouter {
 
 
   public void setNotFoundHandler( final Class<?> handler ) {
-    error404Url = new UriResource( null, 100, handler );
+    error404Url = new UriResource( null, 100, handler, null );
   }
 
 

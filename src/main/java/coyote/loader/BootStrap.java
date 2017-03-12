@@ -64,8 +64,8 @@ public class BootStrap extends AbstractLoader {
    */
   private static void encrypt( String[] args ) {
     String token = null;
-    String key = System.getProperty( ConfigTag.CIPHER_KEY, CipherUtil.getKey( CIPHER_KEY ) );
-    String cipherName = System.getProperty( ConfigTag.CIPHER_NAME, CIPHER_NAME );
+    String key = System.getProperty( ConfigTag.CIPHER_KEY, CipherUtil.getKey( CipherUtil.CIPHER_KEY ) );
+    String cipherName = System.getProperty( ConfigTag.CIPHER_NAME, CipherUtil.CIPHER_NAME );
     if ( args.length < 2 ) {
       System.err.println( "Nothing to encrypt" );
       return;

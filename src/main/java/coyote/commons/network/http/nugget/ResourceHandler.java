@@ -33,7 +33,7 @@ public class ResourceHandler extends DefaultHandler {
 
   private static final String ROOT_URL = "/";
   private static final String DEFAULT_ROOT = "content";
-  private boolean redirectOnIndexedDir = true;
+  private boolean redirectOnIndexedDir = false;
 
   // The class loader object associated with this Class
   ClassLoader cLoader = this.getClass().getClassLoader();
@@ -76,7 +76,7 @@ public class ResourceHandler extends DefaultHandler {
   @Override
   public Response get( final UriResource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
 
-    showRequest( uriResource, session );
+    // logRequestDetails( uriResource, session );
 
     final String baseUri = uriResource.getUri(); // the regex matcher URL
 
@@ -176,7 +176,7 @@ public class ResourceHandler extends DefaultHandler {
 
 
 
-  private void showRequest( UriResource uriResource, IHTTPSession session ) {
+  private void logRequestDetails( UriResource uriResource, IHTTPSession session ) {
     Map<String, String> header = session.getRequestHeaders();
     Map<String, String> parms = session.getParms();
     String uri = session.getUri();
@@ -204,10 +204,9 @@ public class ResourceHandler extends DefaultHandler {
       Log.append( HTTPD.EVENT, b.toString() );
     }
 
-    Log.append( HTTPD.EVENT, "Servicing request for " + baseUri );
+    Log.append( HTTPD.EVENT, "ResourceHandler servicing request for " + baseUri );
 
     String realUri = HTTPDRouter.normalizeUri( session.getUri() );
-    Log.append( HTTPD.EVENT, "Servicing request for real URI  '" + realUri + "'" );
 
     for ( int index = 0; index < Math.min( baseUri.length(), realUri.length() ); index++ ) {
       if ( baseUri.charAt( index ) != realUri.charAt( index ) ) {
@@ -215,7 +214,7 @@ public class ResourceHandler extends DefaultHandler {
         break;
       }
     }
-    Log.append( HTTPD.EVENT, "Processed request for real URI '" + realUri + "'" );
+    Log.append( HTTPD.EVENT, "ResourceHandler processed request for real URI '" + realUri + "'" );
   }
 
 
