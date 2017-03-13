@@ -36,6 +36,14 @@ public interface AuthProvider {
   /**
    * Perform authentication of the identity represented in the given session.
    * 
+   * <p>It is also generally expected that the authentication operation will 
+   * populate the session with user name and groups so as to perform 
+   * subsequent role based access control (RBAC) on the group names 
+   * associated with the use in this session. Also, if the Auth annotation
+   * specifies that Authentication is not required for the resource, the 
+   * existence of a user name is probably expected to indicate the session 
+   * represents a logged-in user and that additional processing may be enabled.    
+   * 
    * @param session the session to authenticate
    * 
    * @return true if the data in the given session represents an 
