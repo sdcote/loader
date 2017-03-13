@@ -231,8 +231,10 @@ public class UriResource {
                 // RFC and OWASP differ in their recommendations. I prefer OWASP's version - don't respond to the request and just drop the packet.
                 throw new SecurityResponseException( "Resource requires secure connection" );
               }
-              if ( auth.required() && !authProvider.isAuthenticated( session ) ) {
-                return Response.createFixedLengthResponse( Status.UNAUTHORIZED, MimeType.TEXT.getType(), "Authentication Required" );
+              if ( !authProvider.isAuthenticated( session ) ) {
+                if ( auth.required() ) {
+                  return Response.createFixedLengthResponse( Status.UNAUTHORIZED, MimeType.TEXT.getType(), "Authentication Required" );
+                }
               }
               if ( StringUtil.isNotBlank( auth.groups() ) && !authProvider.isAuthorized( session, auth.groups() ) ) {
                 return Response.createFixedLengthResponse( Status.FORBIDDEN, MimeType.TEXT.getType(), "Not Authorized" );
