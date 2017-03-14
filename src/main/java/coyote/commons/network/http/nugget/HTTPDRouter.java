@@ -4,6 +4,9 @@ import coyote.commons.network.http.HTTPD;
 import coyote.commons.network.http.IHTTPSession;
 import coyote.commons.network.http.Response;
 import coyote.commons.network.http.SecurityResponseException;
+import coyote.i13n.ArmTransaction;
+import coyote.i13n.StatBoard;
+import coyote.i13n.StatBoardImpl;
 
 
 /**
@@ -17,6 +20,9 @@ import coyote.commons.network.http.SecurityResponseException;
 public class HTTPDRouter extends HTTPD {
 
   private final UriRouter router;
+
+  //The ARM statistics board
+  StatBoard stats;
 
 
 
@@ -48,6 +54,17 @@ public class HTTPDRouter extends HTTPD {
   public HTTPDRouter( final int port ) {
     super( port );
     router = new UriRouter();
+    stats = new StatBoardImpl();
+  }
+
+
+
+
+  /**
+   * @return the StatBoard for this server.
+   */
+  public StatBoard getStatBoard() {
+    return stats;
   }
 
 
@@ -61,7 +78,7 @@ public class HTTPDRouter extends HTTPD {
   public void addMappings() {
     router.setNotImplemented( NotImplementedHandler.class );
     router.setNotFoundHandler( Error404UriHandler.class );
-    router.addRoute( "/", Integer.MAX_VALUE / 2, BlankPage.class,authProvider );
+    router.addRoute( "/", Integer.MAX_VALUE / 2, BlankPage.class, authProvider );
     router.addRoute( "/index.html", Integer.MAX_VALUE / 2, BlankPage.class, authProvider );
   }
 
@@ -76,7 +93,7 @@ public class HTTPDRouter extends HTTPD {
    * @param initParams the array of objects to pass to the handler upon in
    */
   public void addRoute( final String urlPattern, final Class<?> handler, final Object... initParams ) {
-    router.addRoute( urlPattern, 100, handler,authProvider, initParams );
+    router.addRoute( urlPattern, 100, handler, authProvider, initParams );
   }
 
 
@@ -91,7 +108,7 @@ public class HTTPDRouter extends HTTPD {
    * @param initParams the array of objects to pass to the handler upon in
    */
   public void addRoute( final String urlPattern, int priority, final Class<?> handler, final Object... initParams ) {
-    router.addRoute( urlPattern, priority, handler,authProvider, initParams );
+    router.addRoute( urlPattern, priority, handler, authProvider, initParams );
   }
 
 
@@ -106,11 +123,17 @@ public class HTTPDRouter extends HTTPD {
 
   /**
    * @throws SecurityResponseException if processing the request generated a security exception
+   * 
    * @see coyote.commons.network.http.HTTPD#serve(coyote.commons.network.http.IHTTPSession)
    */
   @Override
   public Response serve( final IHTTPSession session ) throws SecurityResponseException {
-    // Try to find match
-    return router.process( session );
+    ArmTransaction arm = stats.startArm( session.getUri() == null ? "" : session.getUri() );
+    try {
+      return router.process( session );
+    }
+    finally {
+      arm.stop();
+    }
   }
 }

@@ -118,9 +118,7 @@ public class ArmMaster {
     } else {
       retval = new NullArm( this, name, crid );
     }
-
     return retval;
-
   }
 
 
