@@ -1,4 +1,4 @@
-package coyote.commons.network.http.nugget;
+package coyote.commons.network.http.handler;
 
 import coyote.commons.network.http.HTTPD;
 import coyote.commons.network.http.IHTTPSession;
@@ -10,12 +10,12 @@ import coyote.i13n.StatBoardImpl;
 
 
 /**
- * This is a HTTPD which routes requests to request handlers (a.k.a. nuggets) 
- * based on the request URI.
+ * This is a HTTPD which routes requests to request handlers based on the 
+ * request URI.
  * 
  * <p>This allows the server to implement a pluggable approach to handling 
  * requests. For example, it is possible to implement microservices with 
- * simple classes. </p>
+ * simple classes.
  */
 public class HTTPDRouter extends HTTPD {
 
@@ -78,8 +78,8 @@ public class HTTPDRouter extends HTTPD {
   public void addMappings() {
     router.setNotImplemented( NotImplementedHandler.class );
     router.setNotFoundHandler( Error404UriHandler.class );
-    router.addRoute( "/", Integer.MAX_VALUE / 2, BlankPage.class, authProvider );
-    router.addRoute( "/index.html", Integer.MAX_VALUE / 2, BlankPage.class, authProvider );
+    router.addRoute( "/", Integer.MAX_VALUE / 2, BlankPageHandler.class, authProvider );
+    router.addRoute( "/index.html", Integer.MAX_VALUE / 2, BlankPageHandler.class, authProvider );
   }
 
 

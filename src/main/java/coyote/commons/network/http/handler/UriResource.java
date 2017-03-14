@@ -8,7 +8,7 @@
  * Contributors:
  *   Stephan D. Cote 
  */
-package coyote.commons.network.http.nugget;
+package coyote.commons.network.http.handler;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -50,7 +50,7 @@ public class UriResource {
 
   final int priority;
 
-  // The class to use handling the URI (i.e. Nugget)
+  // The class to use handling the URI
   private final Class<?> handler;
 
   // the initialization parameters for the handler

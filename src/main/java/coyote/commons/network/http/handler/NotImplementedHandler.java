@@ -8,7 +8,7 @@
  * Contributors:
  *   Stephan D. Cote 
  */
-package coyote.commons.network.http.nugget;
+package coyote.commons.network.http.handler;
 
 import coyote.commons.network.http.IStatus;
 import coyote.commons.network.http.Status;

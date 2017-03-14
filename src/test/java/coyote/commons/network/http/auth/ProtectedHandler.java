@@ -19,8 +19,8 @@ import coyote.commons.network.http.IHTTPSession;
 import coyote.commons.network.http.IStatus;
 import coyote.commons.network.http.Response;
 import coyote.commons.network.http.Status;
-import coyote.commons.network.http.nugget.DefaultHandler;
-import coyote.commons.network.http.nugget.UriResource;
+import coyote.commons.network.http.handler.DefaultHandler;
+import coyote.commons.network.http.handler.UriResource;
 
 
 /**
@@ -29,7 +29,7 @@ import coyote.commons.network.http.nugget.UriResource;
 public class ProtectedHandler extends DefaultHandler {
 
   /**
-   * @see coyote.commons.network.http.nugget.DefaultStreamHandler#post(coyote.commons.network.http.nugget.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
+   * @see coyote.commons.network.http.handler.DefaultStreamHandler#post(coyote.commons.network.http.handler.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
    */
   @Override
   @Auth(groups = "sysop", requireSSL = true)
@@ -41,7 +41,7 @@ public class ProtectedHandler extends DefaultHandler {
 
 
   /**
-   * @see coyote.commons.network.http.nugget.DefaultHandler#get(coyote.commons.network.http.nugget.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
+   * @see coyote.commons.network.http.handler.DefaultHandler#get(coyote.commons.network.http.handler.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
    */
   @Override
   @Auth(groups = "devop", requireSSL = false)
@@ -53,7 +53,7 @@ public class ProtectedHandler extends DefaultHandler {
 
 
   /**
-   * @see coyote.commons.network.http.nugget.DefaultHandler#getStatus()
+   * @see coyote.commons.network.http.handler.DefaultHandler#getStatus()
    */
   @Override
   public IStatus getStatus() {
@@ -64,7 +64,7 @@ public class ProtectedHandler extends DefaultHandler {
 
 
   /**
-   * @see coyote.commons.network.http.nugget.DefaultHandler#getText()
+   * @see coyote.commons.network.http.handler.DefaultHandler#getText()
    */
   @Override
   public String getText() {
@@ -75,7 +75,7 @@ public class ProtectedHandler extends DefaultHandler {
 
 
   /**
-   * @see coyote.commons.network.http.nugget.DefaultStreamHandler#getMimeType()
+   * @see coyote.commons.network.http.handler.DefaultStreamHandler#getMimeType()
    */
   @Override
   public String getMimeType() {

@@ -8,7 +8,7 @@
  * Contributors:
  *   Stephan D. Cote 
  */
-package coyote.commons.network.http.nugget;
+package coyote.commons.network.http.handler;
 
 import java.net.URL;
 import java.util.Map;
@@ -24,7 +24,7 @@ import coyote.loader.log.Log;
 
 
 /**
- * This nugget retrieves the requested page from the class path via the class 
+ * This handler retrieves the requested page from the class path via the class 
  * loader.
  * 
  * <p>This is useful when there is no file system from which to serve content 
@@ -46,7 +46,7 @@ public class ClassloadingHandler extends DefaultHandler {
   /**
    * retrieve the requested resource from the class path.
    *  
-   * @see coyote.commons.network.http.nugget.DefaultHandler#get(coyote.commons.network.http.nugget.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
+   * @see coyote.commons.network.http.handler.DefaultHandler#get(coyote.commons.network.http.handler.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
    */
   @Override
   public Response get( final UriResource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {

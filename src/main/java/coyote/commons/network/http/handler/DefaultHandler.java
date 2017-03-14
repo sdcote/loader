@@ -8,7 +8,7 @@
  * Contributors:
  *   Stephan D. Cote 
  */
-package coyote.commons.network.http.nugget;
+package coyote.commons.network.http.handler;
 
 import java.io.InputStream;
 import java.util.Map;
@@ -20,7 +20,7 @@ import coyote.commons.network.http.Response;
 
 
 /**
- * General nugget to subclass when you provide text or html data. Only fixed 
+ * General handler to subclass when you provide text or html data. Only fixed 
  * size responses will be generated.
  */
 public abstract class DefaultHandler extends DefaultStreamHandler {
@@ -35,7 +35,7 @@ public abstract class DefaultHandler extends DefaultStreamHandler {
 
   @Override
   public InputStream getData() {
-    throw new IllegalStateException( "This method should not be called in a text based nugget" );
+    throw new IllegalStateException( "This method should not be called in a text based handler" );
   }
 
 

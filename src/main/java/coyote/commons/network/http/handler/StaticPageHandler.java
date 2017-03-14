@@ -8,7 +8,7 @@
  * Contributors:
  *   Stephan D. Cote 
  */
-package coyote.commons.network.http.nugget;
+package coyote.commons.network.http.handler;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -26,7 +26,7 @@ import coyote.commons.network.http.Status;
 
 
 /**
- * Generic nugget to retrieve the requested page from a file root.
+ * Generic handler to retrieve the requested page from a file root.
  * 
  * <p>The first initialization parameter is the directory from which the files 
  * are to be served.</p>

@@ -8,7 +8,7 @@
  * Contributors:
  *   Stephan D. Cote 
  */
-package coyote.commons.network.http.nugget;
+package coyote.commons.network.http.handler;
 
 import java.io.InputStream;
 import java.util.Map;
@@ -20,7 +20,7 @@ import coyote.commons.network.http.Response;
 
 
 /**
- * General nugget to subclass when you provide stream data. Only chucked
+ * General handler to subclass when you provide stream data. Only chucked
  * responses will be generated.
  */
 public abstract class DefaultStreamHandler implements UriResponder {

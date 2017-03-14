@@ -8,7 +8,7 @@
  * Contributors:
  *   Stephan D. Cote 
  */
-package coyote.commons.network.http.nugget;
+package coyote.commons.network.http.handler;
 
 import java.util.Map;
 
@@ -20,7 +20,7 @@ import coyote.commons.network.http.Status;
 
 
 /**
- * Generic nugget to print debug info as a html page.
+ * Generic handler to print debug info as a html page.
  */
 public class GeneralHandler extends DefaultHandler {
 

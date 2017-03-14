@@ -8,7 +8,7 @@
  * Contributors:
  *   Stephan D. Cote 
  */
-package coyote.commons.network.http.nugget;
+package coyote.commons.network.http.handler;
 
 import java.util.Map;
 
@@ -18,14 +18,14 @@ import coyote.commons.network.http.Response;
 
 /**
  * This represents a class which responds to a URI requested from the HTTP 
- * server, a.k.a a "nugget".
+ * server.
  * 
- * <p>Nuggets are classes which are instantiated for each request. They do not 
- * have any state between requests and are therefore stateless in nature. Many 
- * instances of a nugget can be created which will require garbage collecting 
- * so design your nuggets accordingly. 
+ * <p>Handlers are classes which are instantiated for each request. They do not 
+ * have any state between requests and are therefore state-less in nature. Many 
+ * instances of a handler can be created which will require garbage collecting 
+ * so design your handler accordingly. 
  * 
- * <p>All nuggets should implement this interface to support requests.</p>
+ * <p>All handler should implement this interface to support requests.</p>
  * 
  * <p>The UriResource can contain important data for the operation of the 
  * handler. This data is set when the routing was added to the server and can 

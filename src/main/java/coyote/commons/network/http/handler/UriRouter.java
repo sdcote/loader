@@ -8,7 +8,7 @@
  * Contributors:
  *   Stephan D. Cote 
  */
-package coyote.commons.network.http.nugget;
+package coyote.commons.network.http.handler;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,7 +26,7 @@ import coyote.loader.log.Log;
 
 
 /**
- * This is the heart of the URI routing mechanism in a nugget server.
+ * This is the heart of the URI routing mechanism in a handler server.
  */
 public class UriRouter {
 

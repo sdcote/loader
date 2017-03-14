@@ -209,7 +209,7 @@ public class GenericAuthProvider implements AuthProvider {
     session.getUri();
 
     // we can configure the auth provider to ignore the SSL check on many of 
-    // the nuggets when the deployment does not have valid SSL certificates, 
+    // the handlers when the deployment does not have valid SSL certificates, 
     // such as in development.
     if ( allowNoSSL ) {
       return true;

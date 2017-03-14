@@ -9,7 +9,7 @@
  *   Stephan D. Cote 
  *      - Initial concept and initial implementation
  */
-package coyote.commons.network.http.nugget;
+package coyote.commons.network.http.handler;
 
 //import static org.junit.Assert.*;
 import static org.junit.Assert.assertTrue;
@@ -26,6 +26,7 @@ import coyote.commons.network.http.HTTPD;
 import coyote.commons.network.http.TestHttpClient;
 import coyote.commons.network.http.TestResponse;
 import coyote.commons.network.http.TestRouter;
+import coyote.commons.network.http.handler.ResourceHandler;
 
 
 /**

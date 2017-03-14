@@ -1,4 +1,4 @@
-package coyote.commons.network.http.nugget;
+package coyote.commons.network.http.handler;
 
 import java.io.BufferedInputStream;
 import java.net.URL;
