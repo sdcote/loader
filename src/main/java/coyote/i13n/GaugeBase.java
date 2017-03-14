@@ -11,6 +11,9 @@
  */
 package coyote.i13n;
 
+import coyote.dataframe.DataFrame;
+
+
 /**
  * The GaugeBase class allow for the creation of objects that track rates of
  * change in some performance.
@@ -525,6 +528,28 @@ public class GaugeBase extends NullGauge {
       } // if more than 1000ms has passed
 
     } // sync
+  }
+
+
+
+
+  public DataFrame toFrame() {
+    synchronized( buffer ) {
+      final DataFrame retval = new DataFrame();
+      //retval.setType( GAUGE );
+        retval.put( NAME, name );
+        retval.put( AVG_VPS, getAvgValuePerSecond() );
+        retval.put( VPS, getValuePerSecond() );
+        retval.put( LAST_VPS, getLastValuePerSecond() );
+        retval.put( MAX_VPS, getMaxValuePerSecond() );
+        retval.put( MIN_VPS, getMinValuePerSecond() );
+        retval.put( ELAPSED, getElapsedSeconds() );
+        retval.put( TOTAL, getTotal() );
+        retval.put( FIRST_ACCESS, getFirstAccess() );
+        retval.put( LAST_ACCESS, getLastAccess() );
+      return retval;
+    }
+
   }
 
 } // GaugeBase Class

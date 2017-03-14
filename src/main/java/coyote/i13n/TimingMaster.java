@@ -16,6 +16,8 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Date;
 
+import coyote.dataframe.DataFrame;
+
 
 /**
  * The TimingMaster class models the master of all timers with a given name.
@@ -424,6 +426,26 @@ public class TimingMaster implements TimerMaster {
     message.append( getDisplayString( TimingMaster.LASTACCESS, getDateString( lastAccessTime ), TimingMaster.NONE ) );
 
     return message.toString();
+  }
+
+
+
+
+  public synchronized DataFrame toFrame() {
+    final DataFrame retval = new DataFrame();
+    retval.put( NAME, _name );
+    retval.put( HITS, hits );
+    retval.put( AVG, getAverage() );
+    retval.put( TOTAL, total );
+    retval.put( STANDARD_DEVIATION, getStandardDeviation() );
+    retval.put( MIN, min );
+    retval.put( MAX, max );
+    retval.put( ACTIVE, activeCounter );
+    retval.put( MAXACTIVE, maxActive );
+    retval.put( AVGACTIVE, getAvgActive() );
+    retval.put( FIRSTACCESS, new Date( firstAccessTime ) );
+    retval.put( LASTACCESS, new Date( lastAccessTime ) );
+    return retval;
   }
 
 }

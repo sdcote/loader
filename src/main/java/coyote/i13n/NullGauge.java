@@ -11,12 +11,16 @@
  */
 package coyote.i13n;
 
+import coyote.dataframe.DataFrame;
+
+
 /**
  * The NullGauge class models a gauge that does nothing.
  */
 public class NullGauge implements Gauge {
 
   protected String name = null;
+  protected static final DataFrame EMPTY_FRAME = new DataFrame();
 
 
 
@@ -154,5 +158,16 @@ public class NullGauge implements Gauge {
    */
   @Override
   public void update( final long val ) {}
+
+
+
+
+  /**
+   * @see coyote.i13n.Gauge#toFrame()
+   */
+  @Override
+  public DataFrame toFrame() {
+    return EMPTY_FRAME;
+  }
 
 }

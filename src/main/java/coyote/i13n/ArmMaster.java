@@ -16,24 +16,21 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Date;
 
+import coyote.dataframe.DataFrame;
+
 
 /**
  * The ArmMaster class models the master of all ARM transactions with a given
  * name.
  */
 public class ArmMaster {
+  static private final String NAME = "Name";
   static private final String MILLISECONDS = "ms";
-
   static private final String NONE = "";
-
   static private final String TOTAL = "Total";
-
   static private final String MIN = "Min Value";
-
   static private final String MAX = "Max Value";
-
   static private final String CALLS = "Calls";
-
   static private final String AVG = "Avg";
   static private final String STANDARD_DEVIATION = "Std Dev";
   static private final String ACTIVE = "Active";
@@ -313,6 +310,26 @@ public class ArmMaster {
     message.append( getDisplayString( ArmMaster.LASTACCESS, getDateString( lastAccessTime ), ArmMaster.NONE ) );
 
     return message.toString();
+  }
+
+
+
+
+  public synchronized DataFrame toFrame() {
+    DataFrame retval = new DataFrame();
+    retval.put( NAME, _name );
+    retval.put( CALLS, new Integer( hits ) );
+    retval.put( AVG, new Long( getAverage() ) );
+    retval.put( TOTAL, new Long( total ) );
+    retval.put( STANDARD_DEVIATION, new Long( getStandardDeviation() ) );
+    retval.put( MIN, new Long( min ) );
+    retval.put( MAX, new Long( max ) );
+    retval.put( ACTIVE, new Long( activeCounter ) );
+    retval.put( MAXACTIVE, new Long( maxActive ) );
+    retval.put( AVGACTIVE, new Float( getAvgActive() ) );
+    retval.put( FIRSTACCESS, new Date( firstAccessTime ) );
+    retval.put( LASTACCESS, new Date( lastAccessTime ) );
+    return retval;
   }
 
 }

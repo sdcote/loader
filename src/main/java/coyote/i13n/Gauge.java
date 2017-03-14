@@ -11,6 +11,9 @@
  */
 package coyote.i13n;
 
+import coyote.dataframe.DataFrame;
+
+
 /**
  * The Gauge interface models a component that is designed to be updated
  * regularly to show performance rates.
@@ -88,5 +91,13 @@ public interface Gauge {
 
 
   public void update( long val );
+
+
+
+
+  /**
+   * @return a frame representing this gauge
+   */
+  public DataFrame toFrame();
 
 }
