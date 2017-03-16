@@ -14,13 +14,15 @@ package coyote.i13n;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.UUID;
 
 import coyote.commons.DateUtil;
+import coyote.commons.Version;
 
 
 /**
- * This is the default implementation of a statboard.
+ * This is the default implementation of a statistics board.
  *
  * <p>Some find it useful to make this globally accessible so that many
  * different components can use this in a coordinated manner.
@@ -60,6 +62,9 @@ public class StatBoardImpl implements StatBoard {
 
   /** Map of states by their name */
   private final HashMap<String, State> states = new HashMap<String, State>();
+
+  /** Map of component versions by their name */
+  private final HashMap<String, Version> versions = new HashMap<String, Version>();
 
   // TODO: NullCounter? EnableCounters? Enable Counter?
 
@@ -867,6 +872,60 @@ public class StatBoardImpl implements StatBoard {
     if ( ( name != null ) && ( name.length() > 0 ) ) {
       getGauge( name ).update( value );
     }
+  }
+
+
+
+
+  /**
+   * Set the version of the given named component.
+   * 
+   * @param name the name of the component this version describes
+   * @param version the version object
+   */
+  @Override
+  public void setVersion( String name, Version version ) {
+    synchronized( versions ) {
+      if ( name != null && version != null ) {
+        versions.put( name, version );
+      }
+    }
+  }
+
+
+
+
+  /**
+   * @return the mapping of all the versions of the named components.
+   */
+  @Override
+  public Map<String, Version> getVersions() {
+    final Map<String, Version> retval = new HashMap<String, Version>();
+    synchronized( versions ) {
+      retval.putAll( versions );
+    }
+    return retval;
+  }
+
+
+
+
+  /**
+   * Retrieve the version of the component with the given name.
+   * 
+   * @param name the name of the component to query
+   * 
+   * @return the version of that component or null if the named component 
+   *         could not be found or the name was null
+   */
+  @Override
+  public Version getVersion( String name ) {
+    if ( name != null ) {
+      synchronized( versions ) {
+        return versions.get( name );
+      }
+    }
+    return null;
   }
 
 }

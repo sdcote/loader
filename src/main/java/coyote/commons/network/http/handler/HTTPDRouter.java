@@ -7,6 +7,7 @@ import coyote.commons.network.http.SecurityResponseException;
 import coyote.i13n.ArmTransaction;
 import coyote.i13n.StatBoard;
 import coyote.i13n.StatBoardImpl;
+import coyote.loader.Loader;
 
 
 /**
@@ -55,6 +56,7 @@ public class HTTPDRouter extends HTTPD {
     super( port );
     router = new UriRouter();
     stats = new StatBoardImpl();
+    stats.setVersion( Loader.NAME, Loader.VERSION );
   }
 
 

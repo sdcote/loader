@@ -11,6 +11,7 @@
  */
 package coyote.loader;
 
+import coyote.commons.Version;
 import coyote.loader.cfg.Config;
 import coyote.loader.cfg.ConfigurationException;
 import coyote.loader.thread.Scheduler;
@@ -21,6 +22,9 @@ import coyote.loader.thread.ThreadPool;
  * 
  */
 public interface Loader extends WatchDog {
+
+  public static final Version VERSION = new Version( 1, 1, 3 );
+  public static final String NAME = "CoyoteLoader";
 
   public static final String APP_HOME = "app.home";
   public static final String APP_WORK = "app.work";
@@ -142,4 +146,5 @@ public interface Loader extends WatchDog {
    * other useful data.
    */
   public void initSymbolTable();
+
 }

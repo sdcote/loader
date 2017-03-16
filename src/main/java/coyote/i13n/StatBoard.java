@@ -12,6 +12,9 @@
 package coyote.i13n;
 
 import java.util.Iterator;
+import java.util.Map;
+
+import coyote.commons.Version;
 
 
 /**
@@ -525,5 +528,37 @@ public interface StatBoard {
    * @param value The value with which to update the gauge.
    */
   public void updateGauge( String name, long value );
+
+
+
+
+  /**
+   * Set the version of the given named component.
+   * 
+   * @param name the name of the component this version describes
+   * @param version the version object
+   */
+  void setVersion( String name, Version version );
+
+
+
+
+  /**
+   * @return the mapping of all the versions of the named components.
+   */
+  Map<String, Version> getVersions();
+
+
+
+
+  /**
+   * Retrieve the version of the component with the given name.
+   * 
+   * @param name the name of the component to query
+   * 
+   * @return the version of that component or null if the named component 
+   *         could not be found or the name was null
+   */
+  Version getVersion( String name );
 
 }
