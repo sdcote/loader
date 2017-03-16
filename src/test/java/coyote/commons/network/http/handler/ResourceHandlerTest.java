@@ -47,7 +47,7 @@ public class ResourceHandlerTest {
   public static void setUpBeforeClass() throws Exception {
     port = NetUtil.getNextAvailablePort( port );
     server = new TestRouter( port );
-    server.addMappings();
+    server.addDefaultRoutes();
 
     // try to start the server, waiting only 2 seconds before giving up
     try {

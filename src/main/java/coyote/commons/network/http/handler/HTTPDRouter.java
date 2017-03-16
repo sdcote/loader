@@ -75,7 +75,7 @@ public class HTTPDRouter extends HTTPD {
    * 
    * <pre>router.setNotFoundHandler(GeneralHandler.class);</pre>
    */
-  public void addMappings() {
+  public void addDefaultRoutes() {
     router.setNotImplemented( NotImplementedHandler.class );
     router.setNotFoundHandler( Error404UriHandler.class );
     router.addRoute( "/", Integer.MAX_VALUE / 2, BlankPageHandler.class, authProvider );
