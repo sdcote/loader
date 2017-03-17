@@ -28,7 +28,7 @@ public interface Loader extends WatchDog {
   public static final String NAME = "CoyoteLoader";
   public static final String LOADER = "Loader";
   public static final String INITIALIZING = "Initializing";
-  public static final String RUNNING = "Running";
+  public static final String RUNNING = "Watchdog";
   public static final String SHUTDOWN = "Shutdown";
   public static final String TERMINATED = "Terminated";
 
@@ -162,7 +162,7 @@ public interface Loader extends WatchDog {
    * <p>This enables tracking operational statistics for all components in the 
    * runtime.
    * 
-   * <p>Statistics tracking is disabled by default but can be toggled antime. 
+   * <p>Statistics tracking is disabled by default but can be toggled anytime. 
    * 
    * @return the StatBoard for this server.
    */
