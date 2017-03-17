@@ -11,6 +11,7 @@
  */
 package coyote.i13n;
 
+import java.net.InetAddress;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -728,4 +729,33 @@ public interface StatBoard {
    */
   Version getVersion( String name );
 
+
+
+
+  /**
+   * Retrieve the name of the host on which this JRE is running.
+   * 
+   * <p>This may not be perfect since a host may have multiple interfaces and 
+   * multiple names per interface. The primary purpose is to find the most 
+   * reasonable one which can be used to identify the host on which the JRE is 
+   * running. 
+   * 
+   * @return the best guess to the name of the host.
+   */
+  String getHostname();
+
+
+
+
+  /**
+   * Retrieve the IP address of the host this JRE is running.
+   * 
+   * <p>This may not be perfect since a host may have multiple interfaces and 
+   * multiple addresses per interface. The primary purpose is to find the most 
+   * reasonable one which can be used to identify the host on which the JRE is 
+   * running. 
+   * 
+   * @return the best guess to the IP address of the host.
+   */
+  InetAddress getHostIpAddress();
 }
