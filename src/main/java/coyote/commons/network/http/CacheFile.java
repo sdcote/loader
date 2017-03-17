@@ -14,12 +14,12 @@ package coyote.commons.network.http;
 import java.io.OutputStream;
 
 /**
- * A temporary file.
+ * A temporary cache file.
  *
- * <p>Temp files are responsible for managing the actual temporary storage and
- * cleaning themselves up when no longer needed.</p>
+ * <p>Cache files are responsible for managing the temporary storage  of large 
+ * amounts of data received by the server.
  */
-public interface TempFile {
+public interface CacheFile {
 
   public void delete() throws Exception;
 

@@ -56,7 +56,7 @@ class HTTPSession implements IHTTPSession {
 
   private static final List<String> EMPTY_LIST = new ArrayList<String>( 0 );;
 
-  private final TempFileManager tempFileManager;
+  private final CacheManager tempFileManager;
 
   private final OutputStream outputStream;
 
@@ -97,7 +97,7 @@ class HTTPSession implements IHTTPSession {
 
 
 
-  public HTTPSession( HTTPD httpd, final TempFileManager tempFileManager, final InputStream inputStream, final OutputStream outputStream ) {
+  public HTTPSession( HTTPD httpd, final CacheManager tempFileManager, final InputStream inputStream, final OutputStream outputStream ) {
     this.httpd = httpd;
     this.tempFileManager = tempFileManager;
     this.inputStream = new BufferedInputStream( inputStream, HTTPSession.BUFSIZE );
@@ -109,7 +109,7 @@ class HTTPSession implements IHTTPSession {
 
 
 
-  public HTTPSession( HTTPD httpd, final TempFileManager tempFileManager, final InputStream inputStream, final OutputStream outputStream, final InetAddress inetAddress, final int port ) {
+  public HTTPSession( HTTPD httpd, final CacheManager tempFileManager, final InputStream inputStream, final OutputStream outputStream, final InetAddress inetAddress, final int port ) {
     this( httpd, tempFileManager, inputStream, outputStream );
     remotePort = port;
     remoteIp = inetAddress.isLoopbackAddress() || inetAddress.isAnyLocalAddress() ? "127.0.0.1" : inetAddress.getHostAddress().toString();
@@ -624,7 +624,7 @@ class HTTPSession implements IHTTPSession {
 
   private RandomAccessFile getTmpBucket() {
     try {
-      final TempFile tempFile = tempFileManager.createTempFile( null );
+      final CacheFile tempFile = tempFileManager.createCacheFile( null );
       return new RandomAccessFile( tempFile.getName(), "rw" );
     } catch ( final Exception e ) {
       throw new Error( e ); // we won't recover, so throw an error
@@ -723,7 +723,7 @@ class HTTPSession implements IHTTPSession {
     if ( len > 0 ) {
       FileOutputStream fileOutputStream = null;
       try {
-        final TempFile tempFile = tempFileManager.createTempFile( filename_hint );
+        final CacheFile tempFile = tempFileManager.createCacheFile( filename_hint );
         final ByteBuffer src = b.duplicate();
         fileOutputStream = new FileOutputStream( tempFile.getName() );
         final FileChannel dest = fileOutputStream.getChannel();

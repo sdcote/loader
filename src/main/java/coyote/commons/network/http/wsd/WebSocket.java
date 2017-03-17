@@ -8,7 +8,7 @@
  * Contributors:
  *   Stephan D. Cote 
  */
-package coyote.commons.network.http;
+package coyote.commons.network.http.wsd;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,10 +18,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 
-import coyote.commons.network.http.WSD.State;
-import coyote.commons.network.http.WebSocketFrame.CloseCode;
-import coyote.commons.network.http.WebSocketFrame.CloseFrame;
-import coyote.commons.network.http.WebSocketFrame.OpCode;
+import coyote.commons.network.http.IHTTPSession;
+import coyote.commons.network.http.Response;
+import coyote.commons.network.http.Status;
+import coyote.commons.network.http.wsd.WebSocketDaemon.State;
+import coyote.commons.network.http.wsd.WebSocketFrame.CloseCode;
+import coyote.commons.network.http.wsd.WebSocketFrame.CloseFrame;
+import coyote.commons.network.http.wsd.WebSocketFrame.OpCode;
 
 
 public abstract class WebSocket {
@@ -58,8 +61,8 @@ public abstract class WebSocket {
     this.handshakeRequest = handshakeRequest;
     this.in = handshakeRequest.getInputStream();
 
-    this.handshakeResponse.addHeader( WSD.HEADER_UPGRADE, WSD.HEADER_UPGRADE_VALUE );
-    this.handshakeResponse.addHeader( WSD.HEADER_CONNECTION, WSD.HEADER_CONNECTION_VALUE );
+    this.handshakeResponse.addHeader( WebSocketDaemon.HEADER_UPGRADE, WebSocketDaemon.HEADER_UPGRADE_VALUE );
+    this.handshakeResponse.addHeader( WebSocketDaemon.HEADER_CONNECTION, WebSocketDaemon.HEADER_CONNECTION_VALUE );
   }
 
 
@@ -139,14 +142,14 @@ public abstract class WebSocket {
       try {
         this.in.close();
       } catch ( IOException e ) {
-        WSD.LOG.log( Level.FINE, "close failed", e );
+        WebSocketDaemon.LOG.log( Level.FINE, "close failed", e );
       }
     }
     if ( this.out != null ) {
       try {
         this.out.close();
       } catch ( IOException e ) {
-        WSD.LOG.log( Level.FINE, "close failed", e );
+        WebSocketDaemon.LOG.log( Level.FINE, "close failed", e );
       }
     }
     this.state = State.CLOSED;

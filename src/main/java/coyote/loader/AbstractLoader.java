@@ -27,6 +27,8 @@ import coyote.commons.StringUtil;
 import coyote.commons.UriUtil;
 import coyote.dataframe.DataField;
 import coyote.dataframe.DataFrame;
+import coyote.i13n.StatBoard;
+import coyote.i13n.StatBoardImpl;
 import coyote.loader.cfg.Config;
 import coyote.loader.cfg.ConfigurationException;
 import coyote.loader.component.ManagedComponent;
@@ -53,6 +55,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   /** Constant to assist in determining the full class name of loggers */
   private static final String LOGGER_PKG = Log.class.getPackage().getName();
 
+
   /** The command line arguments used to invoke the loader */
   protected String[] commandLineArguments = null;
 
@@ -77,6 +80,20 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   protected Scheduler scheduler = null;
 
   private final Context context = new LoaderContext();
+
+  /** The component responsible for tracking operational statistics for all the components in this runtime */
+  protected final StatBoard stats = new StatBoardImpl();
+
+
+
+
+  /**
+   * Default constructor for all loaders
+   */
+  public AbstractLoader() {
+    stats.setVersion( Loader.NAME, Loader.VERSION );
+    stats.setState( LOADER, INITIALIZING );
+  }
 
 
 
@@ -632,6 +649,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
     setActiveFlag( true );
 
     Log.info( LogMsg.createMsg( MSG, "Loader.operational" ) );
+    stats.setState( LOADER, RUNNING );
 
     while ( !isShutdown() ) {
 
@@ -694,6 +712,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
     }
 
+    stats.setState( LOADER, SHUTDOWN );
     if ( Log.isLogging( Log.DEBUG_EVENTS ) ) {
       Log.debug( LogMsg.createMsg( MSG, "Loader.terminating" ) );
     }
@@ -843,6 +862,24 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   @Override
   public Context getContext() {
     return context;
+  }
+
+
+
+
+  /**
+   * Access instrumentation services for this loader.
+   * 
+   * <p>This enables tracking operational statistics for all components in the 
+   * runtime.
+   * 
+   * <p>Statistics tracking is disabled by default but can be toggled antime. 
+   * 
+   * @return the StatBoard for this server.
+   */
+  @Override
+  public StatBoard getStats() {
+    return stats;
   }
 
 }

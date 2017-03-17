@@ -11,17 +11,13 @@
 package coyote.commons.network.http;
 
 /**
- * Temporary file manager.
- * 
- * <p>Temp file managers are created 1-to-1 with incoming requests, to create
- * and cleanup temporary files created as a result of handling the request.</p>
+ * Factory to create cache managers.
  */
-public interface TempFileManager {
+public interface CacheManagerFactory {
 
-  void clear();
-
-
-
-
-  public TempFile createTempFile( String filename_hint ) throws Exception;
+  /**
+   * @return a new cache manager.
+   */
+  public CacheManager create();
+  
 }

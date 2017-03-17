@@ -8,7 +8,7 @@
  * Contributors:
  *   Stephan D. Cote 
  */
-package coyote.commons.network.http;
+package coyote.commons.network.http.wsd;
 
 import java.io.EOFException;
 import java.io.IOException;

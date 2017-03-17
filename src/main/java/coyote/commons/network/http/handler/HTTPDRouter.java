@@ -7,7 +7,6 @@ import coyote.commons.network.http.SecurityResponseException;
 import coyote.i13n.ArmTransaction;
 import coyote.i13n.StatBoard;
 import coyote.i13n.StatBoardImpl;
-import coyote.loader.Loader;
 
 
 /**
@@ -22,7 +21,7 @@ public class HTTPDRouter extends HTTPD {
 
   private final UriRouter router;
 
-  //The ARM statistics board
+  /** the component responsible for tracking operational statistics for this router */
   StatBoard stats;
 
 
@@ -56,17 +55,31 @@ public class HTTPDRouter extends HTTPD {
     super( port );
     router = new UriRouter();
     stats = new StatBoardImpl();
-    stats.setVersion( Loader.NAME, Loader.VERSION );
   }
 
 
 
 
   /**
-   * @return the StatBoard for this server.
+   * @return the StatBoard for this router.
    */
   public StatBoard getStatBoard() {
     return stats;
+  }
+
+
+
+
+  /**
+   * Set the statsBoard instance this router uses to track its operational 
+   * statistics.
+   * 
+   * @param instance = the instance of the statistics board to use
+   */
+  public void setStatBoard( StatBoard instance ) {
+    if ( instance != null ) {
+      stats = instance;
+    }
   }
 
 

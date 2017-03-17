@@ -1,4 +1,4 @@
-package coyote.commons.network.http;
+package coyote.commons.network.http.wsd;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -6,18 +6,23 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import coyote.commons.network.MimeType;
+import coyote.commons.network.http.HTTPD;
+import coyote.commons.network.http.IHTTPSession;
+import coyote.commons.network.http.Response;
+import coyote.commons.network.http.SecurityResponseException;
+import coyote.commons.network.http.Status;
 
 
 /**
  * Web Socket Daemon
  */
-public abstract class WSD extends HTTPD {
+public abstract class WebSocketDaemon extends HTTPD {
 
   public static enum State {
     UNCONNECTED, CONNECTING, OPEN, CLOSING, CLOSED
   }
 
-  static final Logger LOG = Logger.getLogger( WSD.class.getName() );
+  static final Logger LOG = Logger.getLogger( WebSocketDaemon.class.getName() );
 
   public static final String HEADER_UPGRADE = "upgrade";
 
@@ -62,10 +67,10 @@ public abstract class WSD extends HTTPD {
       final byte b2 = i < size ? buf[i++] : 0;
 
       final int mask = 0x3F;
-      ar[a++] = WSD.ALPHABET[( b0 >> 2 ) & mask];
-      ar[a++] = WSD.ALPHABET[( ( b0 << 4 ) | ( ( b1 & 0xFF ) >> 4 ) ) & mask];
-      ar[a++] = WSD.ALPHABET[( ( b1 << 2 ) | ( ( b2 & 0xFF ) >> 6 ) ) & mask];
-      ar[a++] = WSD.ALPHABET[b2 & mask];
+      ar[a++] = WebSocketDaemon.ALPHABET[( b0 >> 2 ) & mask];
+      ar[a++] = WebSocketDaemon.ALPHABET[( ( b0 << 4 ) | ( ( b1 & 0xFF ) >> 4 ) ) & mask];
+      ar[a++] = WebSocketDaemon.ALPHABET[( ( b1 << 2 ) | ( ( b2 & 0xFF ) >> 6 ) ) & mask];
+      ar[a++] = WebSocketDaemon.ALPHABET[b2 & mask];
     }
     switch ( size % 3 ) {
       case 1:
@@ -81,7 +86,7 @@ public abstract class WSD extends HTTPD {
 
   public static String makeAcceptKey( final String key ) throws NoSuchAlgorithmException {
     final MessageDigest md = MessageDigest.getInstance( "SHA-1" );
-    final String text = key + WSD.WEBSOCKET_KEY_MAGIC;
+    final String text = key + WebSocketDaemon.WEBSOCKET_KEY_MAGIC;
     md.update( text.getBytes(), 0, text.length() );
     final byte[] sha1hash = md.digest();
     return encodeBase64( sha1hash );
@@ -90,14 +95,14 @@ public abstract class WSD extends HTTPD {
 
 
 
-  public WSD( final int port ) {
+  public WebSocketDaemon( final int port ) {
     super( port );
   }
 
 
 
 
-  public WSD( final String hostname, final int port ) {
+  public WebSocketDaemon( final String hostname, final int port ) {
     super( hostname, port );
   }
 
@@ -105,8 +110,8 @@ public abstract class WSD extends HTTPD {
 
 
   private boolean isWebSocketConnectionHeader( final Map<String, String> headers ) {
-    final String connection = headers.get( WSD.HEADER_CONNECTION );
-    return ( connection != null ) && connection.toLowerCase().contains( WSD.HEADER_CONNECTION_VALUE.toLowerCase() );
+    final String connection = headers.get( WebSocketDaemon.HEADER_CONNECTION );
+    return ( connection != null ) && connection.toLowerCase().contains( WebSocketDaemon.HEADER_CONNECTION_VALUE.toLowerCase() );
   }
 
 
@@ -114,9 +119,9 @@ public abstract class WSD extends HTTPD {
 
   protected boolean isWebsocketRequested( final IHTTPSession session ) {
     final Map<String, String> headers = session.getRequestHeaders();
-    final String upgrade = headers.get( WSD.HEADER_UPGRADE );
+    final String upgrade = headers.get( WebSocketDaemon.HEADER_UPGRADE );
     final boolean isCorrectConnection = isWebSocketConnectionHeader( headers );
-    final boolean isUpgrade = WSD.HEADER_UPGRADE_VALUE.equalsIgnoreCase( upgrade );
+    final boolean isUpgrade = WebSocketDaemon.HEADER_UPGRADE_VALUE.equalsIgnoreCase( upgrade );
     return isUpgrade && isCorrectConnection;
   }
 
@@ -132,24 +137,24 @@ public abstract class WSD extends HTTPD {
   public Response serve( final IHTTPSession session ) throws SecurityResponseException {
     final Map<String, String> headers = session.getRequestHeaders();
     if ( isWebsocketRequested( session ) ) {
-      if ( !WSD.HEADER_WEBSOCKET_VERSION_VALUE.equalsIgnoreCase( headers.get( WSD.HEADER_WEBSOCKET_VERSION ) ) ) {
-        return Response.createFixedLengthResponse( Status.BAD_REQUEST, MimeType.TEXT.getType(), "Invalid Websocket-Version " + headers.get( WSD.HEADER_WEBSOCKET_VERSION ) );
+      if ( !WebSocketDaemon.HEADER_WEBSOCKET_VERSION_VALUE.equalsIgnoreCase( headers.get( WebSocketDaemon.HEADER_WEBSOCKET_VERSION ) ) ) {
+        return Response.createFixedLengthResponse( Status.BAD_REQUEST, MimeType.TEXT.getType(), "Invalid Websocket-Version " + headers.get( WebSocketDaemon.HEADER_WEBSOCKET_VERSION ) );
       }
 
-      if ( !headers.containsKey( WSD.HEADER_WEBSOCKET_KEY ) ) {
+      if ( !headers.containsKey( WebSocketDaemon.HEADER_WEBSOCKET_KEY ) ) {
         return Response.createFixedLengthResponse( Status.BAD_REQUEST, MimeType.TEXT.getType(), "Missing Websocket-Key" );
       }
 
       final WebSocket webSocket = openWebSocket( session );
       final Response handshakeResponse = webSocket.getHandshakeResponse();
       try {
-        handshakeResponse.addHeader( WSD.HEADER_WEBSOCKET_ACCEPT, makeAcceptKey( headers.get( WSD.HEADER_WEBSOCKET_KEY ) ) );
+        handshakeResponse.addHeader( WebSocketDaemon.HEADER_WEBSOCKET_ACCEPT, makeAcceptKey( headers.get( WebSocketDaemon.HEADER_WEBSOCKET_KEY ) ) );
       } catch ( final NoSuchAlgorithmException e ) {
         return Response.createFixedLengthResponse( Status.INTERNAL_ERROR, MimeType.TEXT.getType(), "The SHA-1 Algorithm required for websockets is not available on the server." );
       }
 
-      if ( headers.containsKey( WSD.HEADER_WEBSOCKET_PROTOCOL ) ) {
-        handshakeResponse.addHeader( WSD.HEADER_WEBSOCKET_PROTOCOL, headers.get( WSD.HEADER_WEBSOCKET_PROTOCOL ).split( "," )[0] );
+      if ( headers.containsKey( WebSocketDaemon.HEADER_WEBSOCKET_PROTOCOL ) ) {
+        handshakeResponse.addHeader( WebSocketDaemon.HEADER_WEBSOCKET_PROTOCOL, headers.get( WebSocketDaemon.HEADER_WEBSOCKET_PROTOCOL ).split( "," )[0] );
       }
 
       return handshakeResponse;

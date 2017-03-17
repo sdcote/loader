@@ -12,6 +12,7 @@
 package coyote.loader;
 
 import coyote.commons.Version;
+import coyote.i13n.StatBoard;
 import coyote.loader.cfg.Config;
 import coyote.loader.cfg.ConfigurationException;
 import coyote.loader.thread.Scheduler;
@@ -25,6 +26,11 @@ public interface Loader extends WatchDog {
 
   public static final Version VERSION = new Version( 1, 1, 3 );
   public static final String NAME = "CoyoteLoader";
+  public static final String LOADER = "Loader";
+  public static final String INITIALIZING = "Initializing";
+  public static final String RUNNING = "Running";
+  public static final String SHUTDOWN = "Shutdown";
+  public static final String TERMINATED = "Terminated";
 
   public static final String APP_HOME = "app.home";
   public static final String APP_WORK = "app.work";
@@ -146,5 +152,20 @@ public interface Loader extends WatchDog {
    * other useful data.
    */
   public void initSymbolTable();
+
+
+
+
+  /**
+   * Access instrumentation services for this loader.
+   * 
+   * <p>This enables tracking operational statistics for all components in the 
+   * runtime.
+   * 
+   * <p>Statistics tracking is disabled by default but can be toggled antime. 
+   * 
+   * @return the StatBoard for this server.
+   */
+  public StatBoard getStats();
 
 }

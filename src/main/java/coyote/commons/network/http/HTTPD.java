@@ -43,7 +43,7 @@ import coyote.loader.log.Log;
  * This is the core of the HTTP Server.
  * 
  * <p>This class should be sub-classed and the {@link #serve(IHTTPSession)} 
- * method overridden to serve the request.</p>
+ * method overridden to serve the request.
  */
 public abstract class HTTPD {
   public static final String CLASS = "HTTPD";
@@ -107,9 +107,9 @@ public abstract class HTTPD {
 
   private Thread myThread;
 
-  protected AsyncRunner asyncRunner;
+  protected Executor asyncRunner;
 
-  TempFileManagerFactory tempFileManagerFactory;
+  CacheManagerFactory cacheManagerFactory;
 
 
 
@@ -345,8 +345,8 @@ public abstract class HTTPD {
   public HTTPD( final String hostname, final int port ) {
     this.hostname = hostname;
     myPort = port;
-    setTempFileManagerFactory( new DefaultTempFileManagerFactory() );
-    setAsyncRunner( new DefaultAsyncRunner() );
+    setCacheManagerFactory( new DefaultCacheManagerFactory() );
+    setAsyncRunner( new DefaultExecutor() );
     Log.append( EVENT, "Server initialized on port " + myPort );
   }
 
@@ -472,8 +472,8 @@ public abstract class HTTPD {
 
 
 
-  public TempFileManagerFactory getTempFileManagerFactory() {
-    return tempFileManagerFactory;
+  public CacheManagerFactory getCacheManagerFactory() {
+    return cacheManagerFactory;
   }
 
 
@@ -533,7 +533,7 @@ public abstract class HTTPD {
    * 
    * @param asyncRunner strategy for handling threads.
    */
-  public void setAsyncRunner( final AsyncRunner asyncRunner ) {
+  public void setAsyncRunner( final Executor asyncRunner ) {
     this.asyncRunner = asyncRunner;
   }
 
@@ -552,8 +552,8 @@ public abstract class HTTPD {
    * 
    * @param factory new strategy for handling temp files.
    */
-  public void setTempFileManagerFactory( final TempFileManagerFactory factory ) {
-    tempFileManagerFactory = factory;
+  public void setCacheManagerFactory( final CacheManagerFactory factory ) {
+    cacheManagerFactory = factory;
   }
 
 

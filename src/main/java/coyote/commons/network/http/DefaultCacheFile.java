@@ -16,12 +16,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * Default strategy for creating and cleaning up temporary files.
+ * Default strategy for creating and cleaning up cache files.
  * 
  * <p>By default, files are created by {@code File.createTempFile()} in the 
- * directory specified.</p>
+ * directory specified.
  */
-public class DefaultTempFile implements TempFile {
+public class DefaultCacheFile implements CacheFile {
 
   private final File file;
 
@@ -30,7 +30,7 @@ public class DefaultTempFile implements TempFile {
 
 
 
-  public DefaultTempFile( final File tempdir ) throws IOException {
+  public DefaultCacheFile( final File tempdir ) throws IOException {
     file = File.createTempFile( "HTTPD-", "", tempdir );
     fstream = new FileOutputStream( file );
   }
@@ -61,4 +61,5 @@ public class DefaultTempFile implements TempFile {
   public OutputStream open() throws Exception {
     return fstream;
   }
+  
 }

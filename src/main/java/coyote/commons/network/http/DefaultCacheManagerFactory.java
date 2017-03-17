@@ -12,20 +12,13 @@ package coyote.commons.network.http;
 
 
 /**
- * Run client handlers asynchronously with any object implementing this 
- * interface.
+ * Default strategy for creating and cleaning up temporary files required by 
+ * requests.
  */
-public interface AsyncRunner {
+class DefaultCacheManagerFactory implements CacheManagerFactory {
 
-  void closeAll();
-
-
-
-
-  void closed( ClientHandler clientHandler );
-
-
-
-
-  void exec( ClientHandler code );
+  @Override
+  public CacheManager create() {
+    return new DefaultCacheManager();
+  }
 }

@@ -25,21 +25,21 @@ import coyote.loader.log.Log;
  * deleted when no longer needed; when {@code clear()} is invoked at the end of 
  * processing a request).</p>
  */
-public class DefaultTempFileManager implements TempFileManager {
+public class DefaultCacheManager implements CacheManager {
 
   private final File tmpdir;
 
-  private final List<TempFile> tempFiles;
+  private final List<CacheFile> tempFiles;
 
 
 
 
-  public DefaultTempFileManager() {
+  public DefaultCacheManager() {
     tmpdir = new File( System.getProperty( "java.io.tmpdir" ) );
     if ( !tmpdir.exists() ) {
       tmpdir.mkdirs();
     }
-    tempFiles = new ArrayList<TempFile>();
+    tempFiles = new ArrayList<CacheFile>();
   }
 
 
@@ -47,7 +47,7 @@ public class DefaultTempFileManager implements TempFileManager {
 
   @Override
   public void clear() {
-    for ( final TempFile file : tempFiles ) {
+    for ( final CacheFile file : tempFiles ) {
       try {
         file.delete();
       } catch ( final Exception ignored ) {
@@ -61,8 +61,8 @@ public class DefaultTempFileManager implements TempFileManager {
 
 
   @Override
-  public TempFile createTempFile( final String filename_hint ) throws Exception {
-    final DefaultTempFile tempFile = new DefaultTempFile( tmpdir );
+  public CacheFile createCacheFile( final String filename_hint ) throws Exception {
+    final DefaultCacheFile tempFile = new DefaultCacheFile( tmpdir );
     tempFiles.add( tempFile );
     return tempFile;
   }

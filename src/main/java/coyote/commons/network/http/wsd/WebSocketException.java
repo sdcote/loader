@@ -8,11 +8,11 @@
  * Contributors:
  *   Stephan D. Cote 
  */
-package coyote.commons.network.http;
+package coyote.commons.network.http.wsd;
 
 import java.io.IOException;
 
-import coyote.commons.network.http.WebSocketFrame.CloseCode;
+import coyote.commons.network.http.wsd.WebSocketFrame.CloseCode;
 
 
 public class WebSocketException extends IOException {

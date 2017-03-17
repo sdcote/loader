@@ -84,6 +84,8 @@ public class DefaultLoader extends AbstractLoader implements Loader {
     // Rename the thread back to what it was called before we were being run
     Thread.currentThread().setName( oldName );
 
+    stats.setState( LOADER, TERMINATED );
+
   }
 
 }

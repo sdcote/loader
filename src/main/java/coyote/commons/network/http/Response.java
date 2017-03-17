@@ -96,7 +96,7 @@ public class Response implements Closeable {
   /**
    * Creates a fixed length response if totalBytes&gt;=0, otherwise chunked.
    */
-  Response( final IStatus status, final String mimeType, final InputStream data, final long totalBytes ) {
+  public Response( final IStatus status, final String mimeType, final InputStream data, final long totalBytes ) {
     this.status = status;
     this.mimeType = mimeType;
     if ( data == null ) {
