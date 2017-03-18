@@ -91,7 +91,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
    * Default constructor for all loaders
    */
   public AbstractLoader() {
-    stats.setVersion( Loader.NAME, Loader.VERSION );
+    stats.setVersion( Loader.API_NAME, Loader.API_VERSION );
     stats.setState( LOADER, INITIALIZING );
   }
 
