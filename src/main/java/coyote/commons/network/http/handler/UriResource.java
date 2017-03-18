@@ -10,7 +10,6 @@
  */
 package coyote.commons.network.http.handler;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -194,9 +193,16 @@ public class UriResource {
 
   public Response process( final Map<String, String> urlParams, final IHTTPSession session ) throws SecurityResponseException {
     String error = "Error: Problems while processing URI resource";
+    Auth authAnnotation = null;
+
     if ( handler != null ) {
       try {
         final Object object = handler.newInstance();
+
+        // Check for a class level Auth annotation which is applied to all methods
+        if ( handler.isAnnotationPresent( Auth.class ) ) {
+          authAnnotation = (Auth)handler.getAnnotation( Auth.class );
+        }
 
         // If this is a URI Responder, have it process the request
         if ( object instanceof UriResponder ) {
@@ -222,21 +228,24 @@ public class UriResource {
               method = handler.getMethod( "other", String.class, UriResource.class, Map.class, IHTTPSession.class );
           }
 
-          // Check for method level authentication and authorization annotation
+          // Check for method level annotation which will override any class level annotation
           if ( method.isAnnotationPresent( Auth.class ) ) {
-            Annotation annotation = method.getAnnotation( Auth.class );
-            Auth auth = (Auth)annotation;
+            authAnnotation = (Auth)method.getAnnotation( Auth.class );
+          }
+
+          // If there is an Auth annotation present, perform authentication and authorization
+          if ( authAnnotation != null ) {
             if ( authProvider != null ) {
-              if ( auth.requireSSL() && !authProvider.isSecureConnection( session ) ) {
+              if ( authAnnotation.requireSSL() && !authProvider.isSecureConnection( session ) ) {
                 // RFC and OWASP differ in their recommendations. I prefer OWASP's version - don't respond to the request and just drop the packet.
                 throw new SecurityResponseException( "Resource requires secure connection" );
               }
               if ( !authProvider.isAuthenticated( session ) ) {
-                if ( auth.required() ) {
+                if ( authAnnotation.required() ) {
                   return Response.createFixedLengthResponse( Status.UNAUTHORIZED, MimeType.TEXT.getType(), "Authentication Required" );
                 }
               }
-              if ( StringUtil.isNotBlank( auth.groups() ) && !authProvider.isAuthorized( session, auth.groups() ) ) {
+              if ( StringUtil.isNotBlank( authAnnotation.groups() ) && !authProvider.isAuthorized( session, authAnnotation.groups() ) ) {
                 return Response.createFixedLengthResponse( Status.FORBIDDEN, MimeType.TEXT.getType(), "Not Authorized" );
               }
             } else {
