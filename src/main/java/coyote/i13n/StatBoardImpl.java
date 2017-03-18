@@ -33,6 +33,9 @@ import coyote.commons.Version;
  */
 public class StatBoardImpl implements StatBoard {
 
+  private static InetAddress localAddress = null;
+  private static String cachedLocalHostName = null;
+
   /** Re-usable null timer to save object creation and GC'n */
   private static final Timer NULL_TIMER = new NullTimer( null );
 
@@ -1134,7 +1137,7 @@ public class StatBoardImpl implements StatBoard {
 
   @Override
   public String getHostname() {
-    return null;
+    return getLocalQualifiedHostName();
   }
 
 
@@ -1142,7 +1145,7 @@ public class StatBoardImpl implements StatBoard {
 
   @Override
   public InetAddress getHostIpAddress() {
-    return getLocalHostLANAddress();
+    return getLocalAddress();
   }
 
 
@@ -1171,53 +1174,116 @@ public class StatBoardImpl implements StatBoard {
    * hold a site-local address, this method will return simply the first non-
    * loopback address found (IPv4 or IPv6).
    * 
-   * <p>If this method cannot find a non-loopback address using this selection 
-   * algorithm, it will fall back to calling and returning the result of JDK 
-   * method {@code InetAddress.getLocalHost}.
+   * <p>Last ditch effort is to try a DNS lookup of the machines hostname. 
+   * This can take a little time which it is the last resort and any results 
+   * are cached to avoid any future DNS lookups.
+   * 
+   * <p>If the above methods cannot find a non-loopback address using this 
+   * selection algorithm, it will fall back to calling and returning the 
+   * result of JDK method {@code InetAddress.getLocalHost}.
    */
-  private static InetAddress getLocalHostLANAddress() {
+  private static InetAddress getLocalAddress() {
+    if ( localAddress != null ) {
+      return localAddress;
+    }
+
     try {
       InetAddress candidateAddress = null;
-      // Iterate all NICs (network interface cards)...
-      for ( Enumeration ifaces = NetworkInterface.getNetworkInterfaces(); ifaces.hasMoreElements(); ) {
-        NetworkInterface iface = (NetworkInterface)ifaces.nextElement();
-        // Iterate all IP addresses assigned to each card...
-        for ( Enumeration inetAddrs = iface.getInetAddresses(); inetAddrs.hasMoreElements(); ) {
-          InetAddress inetAddr = (InetAddress)inetAddrs.nextElement();
+      for ( Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces(); ifaces.hasMoreElements(); ) {
+        NetworkInterface iface = ifaces.nextElement();
+        for ( Enumeration<InetAddress> inetAddrs = iface.getInetAddresses(); inetAddrs.hasMoreElements(); ) {
+          InetAddress inetAddr = inetAddrs.nextElement();
           if ( !inetAddr.isLoopbackAddress() ) {
-
             if ( inetAddr.isSiteLocalAddress() ) {
-              // Found non-loopback site-local address. Return it immediately...
-              return inetAddr;
+              // Found non-loopback site-local address. Cache and return it
+              localAddress = inetAddr;
+              return localAddress;
             } else if ( candidateAddress == null ) {
-              // Found non-loopback address, but not necessarily site-local.
-              // Store it as a candidate to be returned if site-local address is not subsequently found...
               candidateAddress = inetAddr;
-              // Note that we don't repeatedly assign non-loopback non-site-local addresses as candidates,
-              // only the first. For subsequent iterations, candidate will be non-null.
             }
           }
         }
       }
       if ( candidateAddress != null ) {
-        // We did not find a site-local address, but we found some other non-loopback address.
-        // Server might have a non-site-local address assigned to its NIC (or it might be running
-        // IPv6 which deprecates the "site-local" concept).
-        // Return this non-loopback candidate address...
-        return candidateAddress;
+        localAddress = candidateAddress;
+        return localAddress;
       }
-      // At this point, we did not find a non-loopback address.
+
+      // Make sure we get the IP Address by which the rest of the world knows 
+      // us or at least, our host's default network interface
+      InetAddress inetAddr;
+      try {
+        // This helps insure that we do not get localhost (127.0.0.1)
+        inetAddr = InetAddress.getByName( InetAddress.getLocalHost().getHostName() );
+        if ( !inetAddr.isLoopbackAddress() && inetAddr.isSiteLocalAddress() ) {
+          localAddress = inetAddr;
+          return localAddress;
+        }
+      } catch ( UnknownHostException e ) {}
+
       // Fall back to returning whatever InetAddress.getLocalHost() returns...
-      InetAddress jdkSuppliedAddress = InetAddress.getLocalHost();
-      if ( jdkSuppliedAddress == null ) {
-        throw new UnknownHostException( "The JDK InetAddress.getLocalHost() method unexpectedly returned null." );
+      inetAddr = InetAddress.getLocalHost();
+      if ( inetAddr == null ) {
+        throw new UnknownHostException();
       }
-      return jdkSuppliedAddress;
-    } catch ( Exception e ) {
-      UnknownHostException unknownHostException = new UnknownHostException( "Failed to determine LAN address: " + e );
-      unknownHostException.initCause( e );
-    }
+      localAddress = inetAddr;
+      return localAddress;
+    } catch ( Exception e ) {}
+    //failure. Well, at least we tried.
     return null;
+  }
+
+
+
+
+  /**
+   * @return the FQDN of the local host or null if the lookup failed for any
+   *         reason.
+   */
+  public static String getLocalQualifiedHostName() {
+    // Use the cached version of the hostname to save DNS lookups
+    if ( cachedLocalHostName != null ) {
+      return cachedLocalHostName;
+    }
+
+    cachedLocalHostName = getQualifiedHostName( getLocalAddress() );
+
+    return cachedLocalHostName;
+  }
+
+
+
+
+  /**
+   * Use the underlying getCanonicalHostName as used in Java, but return null 
+   * if the value is the numerical address (dotted-quad) representation of the 
+   * address.
+   *
+   * @param addr The IP address to lookup.
+   *
+   * @return The Canonical Host Name; null if the FQDN could not be determined
+   *         or if the return value was the dotted-quad representation of the
+   *         host address.
+   */
+  public static String getQualifiedHostName( InetAddress addr ) {
+    String name = null;
+
+    try {
+      name = addr.getCanonicalHostName();
+
+      if ( name != null ) {
+        // Check for a return value of and address instead of a name
+        if ( Character.isDigit( name.charAt( 0 ) ) ) {
+          // Looks like an address, return null;
+          return null;
+        }
+
+        // normalize the case
+        name = name.toLowerCase();
+      }
+    } catch ( Exception ex ) {}
+
+    return name;
   }
 
 }
