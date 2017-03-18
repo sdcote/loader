@@ -13,6 +13,8 @@ package coyote.i13n.platform;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Locale;
 
 import coyote.i13n.Platform;
@@ -30,8 +32,10 @@ import coyote.loader.log.Log;
  * TODO - CPU stats 
  * TODO - Memory stats
  */
-public class DefaultPlatform implements Platform
-{
+public class DefaultPlatform implements Platform {
+  
+  private static InetAddress localAddress = null;
+
   private static final String OS_NAME = System.getProperty( "os.name" ).toUpperCase( Locale.US );
   private static final String OS_ARCH = System.getProperty( "os.arch" ).toUpperCase( Locale.US );
   private static final String OS_VERSION = System.getProperty( "os.version" ).toUpperCase( Locale.US );
@@ -55,96 +59,70 @@ public class DefaultPlatform implements Platform
   private static final int HPUX = 5;
   private static final int LINUX = 6;
 
-  static
-  {
+  static {
     System.out.println( DefaultPlatform.OS_NAME );
-    if( DefaultPlatform.OS_NAME.startsWith( "WINDOWS" ) || DefaultPlatform.OS_NAME.startsWith( "WIN XP" ) )
-    {
+    if ( DefaultPlatform.OS_NAME.startsWith( "WINDOWS" ) || DefaultPlatform.OS_NAME.startsWith( "WIN XP" ) ) {
       DefaultPlatform.os = DefaultPlatform.WINDOWS;
 
       DefaultPlatform.tempDir = new File( DefaultPlatform.FILE_SEP + "Documents and Settings" + DefaultPlatform.FILE_SEP + "All Users" + DefaultPlatform.FILE_SEP + "Application Data" );
-      if( !DefaultPlatform.tempDir.exists() )
-      {
+      if ( !DefaultPlatform.tempDir.exists() ) {
 
         DefaultPlatform.tempDir = new File( DefaultPlatform.FILE_SEP + "TEMP" );
-        if( !DefaultPlatform.tempDir.exists() )
-        {
+        if ( !DefaultPlatform.tempDir.exists() ) {
           DefaultPlatform.tempDir = new File( DefaultPlatform.FILE_SEP + "WINNT" + DefaultPlatform.FILE_SEP + "TEMP" );
-          if( !DefaultPlatform.tempDir.exists() )
-          {
+          if ( !DefaultPlatform.tempDir.exists() ) {
             DefaultPlatform.tempDir = new File( DefaultPlatform.FILE_SEP + "TEMP" );
             DefaultPlatform.tempDir.mkdir();
           }
         }
       }
-    }
-    else if( DefaultPlatform.OS_NAME.equals( "SOLARIS" ) || DefaultPlatform.OS_NAME.equals( "SUNOS" ) )
-    {
+    } else if ( DefaultPlatform.OS_NAME.equals( "SOLARIS" ) || DefaultPlatform.OS_NAME.equals( "SUNOS" ) ) {
       DefaultPlatform.os = DefaultPlatform.SOLARIS;
       DefaultPlatform.tempDir = new File( DefaultPlatform.FILE_SEP + "tmp" );
-      if( !DefaultPlatform.tempDir.exists() )
-      {
+      if ( !DefaultPlatform.tempDir.exists() ) {
         DefaultPlatform.tempDir = new File( DefaultPlatform.FILE_SEP + "var" + DefaultPlatform.FILE_SEP + "tmp" );
-        if( !DefaultPlatform.tempDir.exists() )
-        {
+        if ( !DefaultPlatform.tempDir.exists() ) {
           DefaultPlatform.tempDir = new File( DefaultPlatform.FILE_SEP + "usr" + DefaultPlatform.FILE_SEP + "tmp" );
           DefaultPlatform.tempDir.mkdir();
         }
       }
-    }
-    else if( DefaultPlatform.OS_NAME.equals( "IRIX" ) )
-    {
+    } else if ( DefaultPlatform.OS_NAME.equals( "IRIX" ) ) {
       DefaultPlatform.os = DefaultPlatform.IRIX;
       DefaultPlatform.tempDir = new File( DefaultPlatform.FILE_SEP + "tmp" );
-      if( !DefaultPlatform.tempDir.exists() )
-      {
+      if ( !DefaultPlatform.tempDir.exists() ) {
         DefaultPlatform.tempDir.mkdir();
       }
-    }
-    else if( DefaultPlatform.OS_NAME.equals( "MAC OS" ) || DefaultPlatform.OS_NAME.equals( "MACOS" ) )
-    {
+    } else if ( DefaultPlatform.OS_NAME.equals( "MAC OS" ) || DefaultPlatform.OS_NAME.equals( "MACOS" ) ) {
       DefaultPlatform.os = DefaultPlatform.MAC;
       DefaultPlatform.tempDir = new File( DefaultPlatform.FILE_SEP + "tmp" );
-      if( !DefaultPlatform.tempDir.exists() )
-      {
+      if ( !DefaultPlatform.tempDir.exists() ) {
         DefaultPlatform.tempDir.mkdir();
       }
-    }
-    else if( DefaultPlatform.OS_NAME.equals( "HP-UX" ) )
-    {
+    } else if ( DefaultPlatform.OS_NAME.equals( "HP-UX" ) ) {
       DefaultPlatform.os = DefaultPlatform.HPUX;
       DefaultPlatform.tempDir = new File( DefaultPlatform.FILE_SEP + "tmp" );
-      if( !DefaultPlatform.tempDir.exists() )
-      {
+      if ( !DefaultPlatform.tempDir.exists() ) {
         DefaultPlatform.tempDir = new File( DefaultPlatform.FILE_SEP + "var" + DefaultPlatform.FILE_SEP + "tmp" );
-        if( !DefaultPlatform.tempDir.exists() )
-        {
+        if ( !DefaultPlatform.tempDir.exists() ) {
           DefaultPlatform.tempDir = new File( DefaultPlatform.FILE_SEP + "usr" + DefaultPlatform.FILE_SEP + "tmp" );
           DefaultPlatform.tempDir.mkdir();
         }
       }
-    }
-    else if( DefaultPlatform.OS_NAME.equals( "LINUX" ) )
-    {
+    } else if ( DefaultPlatform.OS_NAME.equals( "LINUX" ) ) {
       DefaultPlatform.os = DefaultPlatform.LINUX;
       DefaultPlatform.tempDir = new File( DefaultPlatform.FILE_SEP + "tmp" );
-      if( !DefaultPlatform.tempDir.exists() )
-      {
+      if ( !DefaultPlatform.tempDir.exists() ) {
         DefaultPlatform.tempDir = new File( DefaultPlatform.FILE_SEP + "var" + DefaultPlatform.FILE_SEP + "tmp" );
-        if( !DefaultPlatform.tempDir.exists() )
-        {
+        if ( !DefaultPlatform.tempDir.exists() ) {
           DefaultPlatform.tempDir = new File( DefaultPlatform.FILE_SEP + "usr" + DefaultPlatform.FILE_SEP + "tmp" );
           DefaultPlatform.tempDir.mkdir();
         }
       }
-    }
-    else
-    {
+    } else {
       DefaultPlatform.os = DefaultPlatform.UNKNOWN;
 
       DefaultPlatform.tempDir = new File( DefaultPlatform.FILE_SEP + "tmp" );
-      if( !DefaultPlatform.tempDir.exists() )
-      {
+      if ( !DefaultPlatform.tempDir.exists() ) {
         DefaultPlatform.tempDir.mkdir();
       }
     }
@@ -163,8 +141,7 @@ public class DefaultPlatform implements Platform
    * @return A file reference that will be deleted when the VM exits, or null 
    *         if the file could not be created for any reason.
    */
-  static File createTempFile()
-  {
+  static File createTempFile() {
     return DefaultPlatform.createTempFile( DefaultPlatform.tempDir );
   }
 
@@ -182,16 +159,12 @@ public class DefaultPlatform implements Platform
    * @return A file reference that will be deleted when the VM exits, or null 
    *         if the file could not be created for any reason.
    */
-  static File createTempFile( final File dir )
-  {
-    try
-    {
+  static File createTempFile( final File dir ) {
+    try {
       final File retval = File.createTempFile( "i13n + i13n.getId() + -", null, dir );
       retval.deleteOnExit();
       return retval;
-    }
-    catch( final IOException e )
-    {
+    } catch ( final IOException e ) {
       Log.error( "Could not create a temporary file in " + DefaultPlatform.tempDir + "' - " + e.getMessage() );
     }
 
@@ -204,8 +177,7 @@ public class DefaultPlatform implements Platform
   /**
    * @return  A file reference that is suitible for temporary files.
    */
-  static File getTempDir()
-  {
+  static File getTempDir() {
     return DefaultPlatform.tempDir;
   }
 
@@ -215,9 +187,13 @@ public class DefaultPlatform implements Platform
   /**
    * Private constructor to keep instances of this class from being created.
    */
-  public DefaultPlatform()
-  {
+  public DefaultPlatform() {
     super();
   }
+
+
+
+
+
 
 }
