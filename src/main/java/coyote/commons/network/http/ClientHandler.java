@@ -29,18 +29,21 @@ public class ClientHandler implements Runnable {
 
   /** The server which created the connection */
   private final HTTPD httpd;
-
+  /** The socket input stream */
   private final InputStream inputStream;
-
+  /** The socket */
   private final Socket clientSocket;
+  /** Flag indicating the connection is over a secured socket server, an encrypted connection */
+  private final boolean secure;
 
 
 
 
-  ClientHandler( final HTTPD daemon, final InputStream input, final Socket acptSocket ) {
+  ClientHandler( final HTTPD daemon, final InputStream input, final Socket acptSocket, final boolean secured ) {
     httpd = daemon;
     inputStream = input;
     clientSocket = acptSocket;
+    secure = secured;
   }
 
 
@@ -60,7 +63,7 @@ public class ClientHandler implements Runnable {
     try {
       outputStream = clientSocket.getOutputStream();
       final CacheManager tempFileManager = httpd.cacheManagerFactory.create();
-      final HTTPSession session = new HTTPSession( httpd, tempFileManager, inputStream, outputStream, clientSocket.getInetAddress(),clientSocket.getPort() );
+      final HTTPSession session = new HTTPSession( httpd, tempFileManager, inputStream, outputStream, clientSocket.getInetAddress(),clientSocket.getPort(),secure );
       while ( !clientSocket.isClosed() ) {
         session.execute();
       }

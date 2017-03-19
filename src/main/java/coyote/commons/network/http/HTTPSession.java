@@ -93,24 +93,44 @@ class HTTPSession implements IHTTPSession {
   private String username = null;
 
   private List<String> usergroups = EMPTY_LIST;
+  private final boolean secure;
 
 
 
 
-  public HTTPSession( HTTPD httpd, final CacheManager tempFileManager, final InputStream inputStream, final OutputStream outputStream ) {
+  /**
+   * 
+   * @param httpd
+   * @param tempFileManager
+   * @param inputStream
+   * @param outputStream
+   * @param secured
+   */
+  public HTTPSession( HTTPD httpd, final CacheManager tempFileManager, final InputStream inputStream, final OutputStream outputStream, boolean secured ) {
     this.httpd = httpd;
     this.tempFileManager = tempFileManager;
     this.inputStream = new BufferedInputStream( inputStream, HTTPSession.BUFSIZE );
     this.outputStream = outputStream;
     requestHeaders = new HashMap<String, String>();
     responseHeaders = new HashMap<String, String>();
+    secure = secured;
   }
 
 
 
 
-  public HTTPSession( HTTPD httpd, final CacheManager tempFileManager, final InputStream inputStream, final OutputStream outputStream, final InetAddress inetAddress, final int port ) {
-    this( httpd, tempFileManager, inputStream, outputStream );
+  /**
+   * 
+   * @param httpd
+   * @param tempFileManager
+   * @param inputStream
+   * @param outputStream
+   * @param inetAddress
+   * @param port
+   * @param secured socket connection originated on a secured server socket, encrypted connection
+   */
+  public HTTPSession( HTTPD httpd, final CacheManager tempFileManager, final InputStream inputStream, final OutputStream outputStream, final InetAddress inetAddress, final int port, boolean secured ) {
+    this( httpd, tempFileManager, inputStream, outputStream, secured );
     remotePort = port;
     remoteIp = inetAddress.isLoopbackAddress() || inetAddress.isAnyLocalAddress() ? "127.0.0.1" : inetAddress.getHostAddress().toString();
     remoteHostname = inetAddress.isLoopbackAddress() || inetAddress.isAnyLocalAddress() ? "localhost" : inetAddress.getHostName().toString();
@@ -796,6 +816,17 @@ class HTTPSession implements IHTTPSession {
   @Override
   public List<String> getUserGroups() {
     return usergroups;
+  }
+
+
+
+
+  /**
+   * @see coyote.commons.network.http.IHTTPSession#isSecure()
+   */
+  @Override
+  public boolean isSecure() {
+    return secure;
   }
 
 }

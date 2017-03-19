@@ -155,4 +155,13 @@ public interface IHTTPSession {
    * @param files map to modify
    */
   void parseBody( Map<String, String> files ) throws IOException, ResponseException;
+
+
+
+
+  /**
+   * @return true if the connection originated on a secured (encrypted) socket server, false if connection is over an unencrypted socket.
+   */
+  boolean isSecure();
+
 }

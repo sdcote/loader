@@ -421,11 +421,12 @@ public abstract class HTTPD {
    * 
    * @param finalAccept the socket the client is connected to
    * @param inputStream the input stream
+   * @param secured flag indicating if the connection is over an encrypted (secured) channel 
    * 
    * @return the client handler
    */
-  protected ClientHandler createClientHandler( final Socket finalAccept, final InputStream inputStream ) {
-    return new ClientHandler( this, inputStream, finalAccept );
+  protected ClientHandler createClientHandler( final Socket finalAccept, final InputStream inputStream, final boolean secured ) {
+    return new ClientHandler( this, inputStream, finalAccept, secured );
   }
 
 
