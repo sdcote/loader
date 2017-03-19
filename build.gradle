@@ -44,8 +44,9 @@ repositories {
 
 
 ext {
-	junitVersion = '4.11'
 	dataFrameVersion = '1.0'
+	junitVersion = '4.11'
+	httpclientVersion = '4.3.2'
 }
 dependencies {
 
@@ -54,6 +55,7 @@ dependencies {
 	
 	// UnitTesting
 	testCompile "junit:junit:$junitVersion"	
+	testCompile "org.apache.httpcomponents:httpclient:$httpclientVersion"
 
 }
 

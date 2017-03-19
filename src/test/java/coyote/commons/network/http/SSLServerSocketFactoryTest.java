@@ -21,14 +21,17 @@ import java.util.Arrays;
 
 import javax.net.ssl.SSLServerSocket;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpTrace;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
+import org.junit.Test;
 
 import coyote.commons.NetUtil;
-import coyote.commons.network.http.HTTPD;
-import coyote.commons.network.http.SecureServerSocketFactory;
 
 
 /**
@@ -94,22 +97,23 @@ public class SSLServerSocketFactoryTest {
 
 
 
-// Apache HttpClient
-//  public void testSSLConnection() throws ClientProtocolException, IOException {
-//    DefaultHttpClient httpclient = new DefaultHttpClient();
-//    HttpTrace httphead = new HttpTrace( "https://localhost:"+port+"/" );
-//    HttpResponse response = httpclient.execute( httphead );
-//    HttpEntity entity = response.getEntity();
-//    Assert.assertEquals( 200, response.getStatusLine().getStatusCode() );
-//
-//    Assert.assertEquals( port, this.testServer.getListeningPort() );
-//    Assert.assertTrue( this.testServer.isAlive() );
-//  }
+
+  // Apache HttpClient
+  public void testSSLConnection() throws ClientProtocolException, IOException {
+    DefaultHttpClient httpclient = new DefaultHttpClient();
+    HttpTrace httphead = new HttpTrace( "https://localhost:" + port + "/" );
+    HttpResponse response = httpclient.execute( httphead );
+    HttpEntity entity = response.getEntity();
+    Assert.assertEquals( 200, response.getStatusLine().getStatusCode() );
+
+    Assert.assertEquals( port, this.testServer.getListeningPort() );
+    Assert.assertTrue( this.testServer.isAlive() );
+  }
 
 
 
 
-  @Ignore
+  @Test
   public void createPassesTheProtocolsToServerSocket() throws IOException {
     // first find the supported protocols
     SecureServerSocketFactory secureServerSocketFactory = new SecureServerSocketFactory( HTTPD.makeSSLSocketFactory( "/keystore.jks", "password".toCharArray() ), null );
@@ -130,8 +134,8 @@ public class SSLServerSocketFactoryTest {
 
 
 
-  @Ignore
-  public void test() {
+  @Test
+  public void testConnectViaSSL() {
     TestResponse response = TestHttpClient.sendGet( "https://localhost:" + port );
     assertTrue( response.isComplete() );
     assertEquals( response.getStatus(), 200 );
