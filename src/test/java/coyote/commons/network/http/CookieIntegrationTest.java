@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import org.apache.http.client.CookieStore;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
@@ -59,15 +58,16 @@ public class CookieIntegrationTest extends IntegrationTestBase<CookieIntegration
 
   @Test
   public void testCookieSentBackToClient() throws Exception {
-    testServer.cookiesToSend.add( new Cookie( "name", "value", 30 ) );
+    testServer.cookiesToSend.add( new Cookie( "name", "value", 90 ) );
+
     final HttpGet httpget = new HttpGet( "http://localhost:8192/" );
     final ResponseHandler<String> responseHandler = new BasicResponseHandler();
     httpclient.execute( httpget, responseHandler );
 
-    final CookieStore cookies = httpclient.getCookieStore();
-    assertEquals( 1, cookies.getCookies().size() );
-    assertEquals( "name", cookies.getCookies().get( 0 ).getName() );
-    assertEquals( "value", cookies.getCookies().get( 0 ).getValue() );
+    assertEquals( 1, cookiestore.getCookies().size() );
+    assertEquals( "name", cookiestore.getCookies().get( 0 ).getName() );
+    assertEquals( "value", cookiestore.getCookies().get( 0 ).getValue() );
+    cookiestore.clear();
   }
 
 
@@ -78,9 +78,8 @@ public class CookieIntegrationTest extends IntegrationTestBase<CookieIntegration
     final HttpGet httpget = new HttpGet( "http://localhost:8192/" );
     final ResponseHandler<String> responseHandler = new BasicResponseHandler();
     httpclient.execute( httpget, responseHandler );
-
-    final CookieStore cookies = httpclient.getCookieStore();
-    assertEquals( 0, cookies.getCookies().size() );
+    assertEquals( 0, cookiestore.getCookies().size() );
+    cookiestore.clear();
   }
 
 
@@ -93,12 +92,13 @@ public class CookieIntegrationTest extends IntegrationTestBase<CookieIntegration
     calendar.add( Calendar.DAY_OF_YEAR, 100 );
     clientCookie.setExpiryDate( calendar.getTime() );
     clientCookie.setDomain( "localhost" );
-    httpclient.getCookieStore().addCookie( clientCookie );
+    cookiestore.addCookie( clientCookie );
     final HttpGet httpget = new HttpGet( "http://localhost:8192/" );
     final ResponseHandler<String> responseHandler = new BasicResponseHandler();
     httpclient.execute( httpget, responseHandler );
 
     assertEquals( 1, testServer.cookiesReceived.size() );
     assertTrue( testServer.cookiesReceived.get( 0 ).getHTTPHeader().contains( "name=value" ) );
+    cookiestore.clear();
   }
 }

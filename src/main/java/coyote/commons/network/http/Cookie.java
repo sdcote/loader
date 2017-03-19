@@ -17,7 +17,7 @@ import java.util.TimeZone;
 
 
 public class Cookie {
-  private static final String COOKIE_FORMAT = "%s=%s; expires=%s";
+  private static final String COOKIE_FORMAT = "%s=%s; Expires=%s";
   private static final String DOMAIN_FORMAT = "; domain=%s";
   private static final String SECURE = "; secure";
   private static final String HTTPONLY = "; HttpOnly";
@@ -148,7 +148,7 @@ public class Cookie {
 
   public static String getHTTPTime( final int days ) {
     final Calendar calendar = Calendar.getInstance();
-    final SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss z", Locale.US );
+    final SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss z" );
     dateFormat.setTimeZone( TimeZone.getTimeZone( "GMT" ) );
     calendar.add( Calendar.DAY_OF_MONTH, days );
     return dateFormat.format( calendar.getTime() );
