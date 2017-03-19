@@ -8,7 +8,16 @@ import java.io.PipedOutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpTrace;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -105,184 +114,184 @@ public class TestHandlers {
 
 
 
-  @Ignore
+  @Test
   public void doDeletedRoute() throws Exception {
-    //    CloseableHttpClient httpclient = HttpClients.createDefault();
-    //
-    //    HttpGet httpget = new HttpGet( "http://localhost:9090/toBeDeleted" );
-    //    CloseableHttpResponse response = httpclient.execute( httpget );
-    //    HttpEntity entity = response.getEntity();
-    //    String string = new String( readContents( entity ), "UTF-8" );
-    //    Assert.assertEquals( "<html><body><h3>Error 404: the requested page doesn't exist.</h3></body></html>", string );
-    //    response.close();
+    CloseableHttpClient httpclient = HttpClients.createDefault();
+
+    HttpGet httpget = new HttpGet( "http://localhost:9090/toBeDeleted" );
+    CloseableHttpResponse response = httpclient.execute( httpget );
+    HttpEntity entity = response.getEntity();
+    String string = new String( readContents( entity ), "UTF-8" );
+    Assert.assertEquals( "<html><body><h3>Error 404</h3><p>The requested resource does not exist.</p></body></html>", string );
+    response.close();
   }
 
 
 
 
-  @Ignore
+  @Test
   public void doEncodedRequest() throws ClientProtocolException, IOException {
-    //    CloseableHttpClient httpclient = HttpClients.createDefault();
-    //    HttpGet httpget = new HttpGet( "http://localhost:9090/general/param%201/param%202" );
-    //    CloseableHttpResponse response = httpclient.execute( httpget );
-    //    Assert.assertEquals( Status.OK.getRequestStatus(), response.getStatusLine().getStatusCode() );
+    CloseableHttpClient httpclient = HttpClients.createDefault();
+    HttpGet httpget = new HttpGet( "http://localhost:9090/general/param%201/param%202" );
+    CloseableHttpResponse response = httpclient.execute( httpget );
+    Assert.assertEquals( Status.OK.getRequestStatus(), response.getStatusLine().getStatusCode() );
   }
 
 
 
 
-  @Ignore
+  @Test
   public void doExceptionRequest() throws Exception {
-    //    CloseableHttpClient httpclient = HttpClients.createDefault();
-    //
-    //    HttpGet httpget = new HttpGet( "http://localhost:9090/interface" );
-    //    CloseableHttpResponse response = httpclient.execute( httpget );
-    //    HttpEntity entity = response.getEntity();
-    //    String string = new String( readContents( entity ), "UTF-8" );
-    //    Assert.assertEquals( "Error: java.lang.InstantiationException : HTTPD$UriResponder", string );
-    //    response.close();
+    CloseableHttpClient httpclient = HttpClients.createDefault();
+
+    HttpGet httpget = new HttpGet( "http://localhost:9090/interface" );
+    CloseableHttpResponse response = httpclient.execute( httpget );
+    HttpEntity entity = response.getEntity();
+    String string = new String( readContents( entity ), "UTF-8" );
+    Assert.assertEquals( "Error: java.lang.InstantiationException : coyote.commons.network.http.handler.UriResponder", string );
+    response.close();
   }
 
 
 
 
-  @Ignore
+  @Test
   public void doGeneralParams() throws Exception {
-    //    CloseableHttpClient httpclient = HttpClients.createDefault();
-    //
-    //    HttpGet httpget = new HttpGet( "http://localhost:9090/general/value1/value2?param3=value3&param4=value4" );
-    //
-    //    CloseableHttpResponse response = httpclient.execute( httpget );
-    //    HttpEntity entity = response.getEntity();
-    //    String string = new String( readContents( entity ), "UTF-8" );
-    //    Assert.assertEquals( "<html><body><h1>Url: /general/value1/value2</h1><br><p>Param 'param3' = value3</p><p>Param 'param4' = value4</p>", string );
-    //    response.close();
+    CloseableHttpClient httpclient = HttpClients.createDefault();
+
+    HttpGet httpget = new HttpGet( "http://localhost:9090/general/value1/value2?param3=value3&param4=value4" );
+
+    CloseableHttpResponse response = httpclient.execute( httpget );
+    HttpEntity entity = response.getEntity();
+    String string = new String( readContents( entity ), "UTF-8" );
+    Assert.assertEquals( "<html><body><h1>Url: /general/value1/value2</h1><br><p>Param 'param3' = value3</p><p>Param 'param4' = value4</p>", string );
+    response.close();
   }
 
 
 
 
-  @Ignore
+  @Test
   public void doIndexHandler() throws Exception {
-    //    CloseableHttpClient httpclient = HttpClients.createDefault();
-    //
-    //    HttpGet httpget = new HttpGet( "http://localhost:9090/index.html" );
-    //    CloseableHttpResponse response = httpclient.execute( httpget );
-    //    HttpEntity entity = response.getEntity();
-    //    String string = new String( readContents( entity ), "UTF-8" );
-    //    Assert.assertEquals( "<html><body><h2>Hello world!</h3></body></html>", string );
-    //    response.close();
+    CloseableHttpClient httpclient = HttpClients.createDefault();
+
+    HttpGet httpget = new HttpGet( "http://localhost:9090/index.html" );
+    CloseableHttpResponse response = httpclient.execute( httpget );
+    HttpEntity entity = response.getEntity();
+    String string = new String( readContents( entity ), "UTF-8" );
+    Assert.assertEquals( "<html><body></body></html>", string );
+    response.close();
   }
 
 
 
 
-  @Ignore
+  @Test
   public void doMissingHandler() throws Exception {
-    //    CloseableHttpClient httpclient = HttpClients.createDefault();
-    //
-    //    HttpGet httpget = new HttpGet( "http://localhost:9090/photos/abc/def" );
-    //    CloseableHttpResponse response = httpclient.execute( httpget );
-    //    HttpEntity entity = response.getEntity();
-    //    String string = new String( readContents( entity ), "UTF-8" );
-    //    Assert.assertEquals( "<html><body><h2>The uri is mapped in the router, but no handler is specified. <br> Status: Not implemented!</h3></body></html>", string );
-    //    response.close();
+    CloseableHttpClient httpclient = HttpClients.createDefault();
+
+    HttpGet httpget = new HttpGet( "http://localhost:9090/photos/abc/def" );
+    CloseableHttpResponse response = httpclient.execute( httpget );
+    HttpEntity entity = response.getEntity();
+    String string = new String( readContents( entity ), "UTF-8" );
+    Assert.assertEquals( "<html><body><h3>Not implemented</h3><p>The uri is mapped in the router, but no handler is specified.</p></body></html>", string );
+    response.close();
   }
 
 
 
 
-  @Ignore
+  @Test
   public void doNonRouterRequest() throws Exception {
-    //    CloseableHttpClient httpclient = HttpClients.createDefault();
-    //
-    //    HttpGet httpget = new HttpGet( "http://localhost:9090/test" );
-    //    CloseableHttpResponse response = httpclient.execute( httpget );
-    //    HttpEntity entity = response.getEntity();
-    //    String string = new String( readContents( entity ), "UTF-8" );
-    //    Assert.assertEquals( "Return: java.lang.String.toString() -> ", string );
-    //    response.close();
+    CloseableHttpClient httpclient = HttpClients.createDefault();
+
+    HttpGet httpget = new HttpGet( "http://localhost:9090/test" );
+    CloseableHttpResponse response = httpclient.execute( httpget );
+    HttpEntity entity = response.getEntity();
+    String string = new String( readContents( entity ), "UTF-8" );
+    Assert.assertEquals( "Return: java.lang.String.toString() -> ", string );
+    response.close();
   }
 
 
 
 
-  @Ignore
+  @Test
   public void doOtherMethod() throws Exception {
-    //    CloseableHttpClient httpclient = HttpClients.createDefault();
-    //
-    //    HttpTrace httphead = new HttpTrace( "http://localhost:9090/index.html" );
-    //    CloseableHttpResponse response = httpclient.execute( httphead );
-    //    HttpEntity entity = response.getEntity();
-    //    String string = new String( readContents( entity ), "UTF-8" );
-    //    Assert.assertEquals( "<html><body><h2>Hello world!</h3></body></html>", string );
-    //    response.close();
+    CloseableHttpClient httpclient = HttpClients.createDefault();
+
+    HttpTrace httphead = new HttpTrace( "http://localhost:9090/index.html" );
+    CloseableHttpResponse response = httpclient.execute( httphead );
+    HttpEntity entity = response.getEntity();
+    String string = new String( readContents( entity ), "UTF-8" );
+    Assert.assertEquals( "<html><body></body></html>", string );
+    response.close();
   }
 
 
 
 
-  @Ignore
+  @Test
   public void doSomeBasicMethodTest() throws Exception {
-    //    CloseableHttpClient httpclient = HttpClients.createDefault();
-    //
-    //    HttpGet httpget = new HttpGet( "http://localhost:9090/user/blabla" );
-    //    CloseableHttpResponse response = httpclient.execute( httpget );
-    //    HttpEntity entity = response.getEntity();
-    //    String string = new String( readContents( entity ), "UTF-8" );
-    //    Assert.assertEquals( "<html><body>User handler. Method: GET<br><h1>Uri parameters:</h1><div> Param: id&nbsp;Value: blabla</div><h1>Query parameters:</h1></body></html>", string );
-    //    response.close();
-    //
-    //    HttpPost httppost = new HttpPost( "http://localhost:9090/user/blabla" );
-    //    response = httpclient.execute( httppost );
-    //    entity = response.getEntity();
-    //    string = new String( readContents( entity ), "UTF-8" );
-    //    Assert.assertEquals( "<html><body>User handler. Method: POST<br><h1>Uri parameters:</h1><div> Param: id&nbsp;Value: blabla</div><h1>Query parameters:</h1></body></html>", string );
-    //    response.close();
-    //
-    //    HttpPut httpgput = new HttpPut( "http://localhost:9090/user/blabla" );
-    //    response = httpclient.execute( httpgput );
-    //    entity = response.getEntity();
-    //    string = new String( readContents( entity ), "UTF-8" );
-    //    Assert.assertEquals( "<html><body>User handler. Method: PUT<br><h1>Uri parameters:</h1><div> Param: id&nbsp;Value: blabla</div><h1>Query parameters:</h1></body></html>", string );
-    //    response.close();
-    //
-    //    HttpDelete httpdelete = new HttpDelete( "http://localhost:9090/user/blabla" );
-    //    response = httpclient.execute( httpdelete );
-    //    entity = response.getEntity();
-    //    string = new String( readContents( entity ), "UTF-8" );
-    //    Assert.assertEquals( "<html><body>User handler. Method: DELETE<br><h1>Uri parameters:</h1><div> Param: id&nbsp;Value: blabla</div><h1>Query parameters:</h1></body></html>", string );
-    //    response.close();
+    CloseableHttpClient httpclient = HttpClients.createDefault();
+
+    HttpGet httpget = new HttpGet( "http://localhost:9090/user/blabla" );
+    CloseableHttpResponse response = httpclient.execute( httpget );
+    HttpEntity entity = response.getEntity();
+    String string = new String( readContents( entity ), "UTF-8" );
+    Assert.assertEquals( "<html><body>User handler. Method: GET<br><h1>Uri parameters:</h1><div> Param: id&nbsp;Value: blabla</div><h1>Query parameters:</h1></body></html>", string );
+    response.close();
+
+    HttpPost httppost = new HttpPost( "http://localhost:9090/user/blabla" );
+    response = httpclient.execute( httppost );
+    entity = response.getEntity();
+    string = new String( readContents( entity ), "UTF-8" );
+    Assert.assertEquals( "<html><body>User handler. Method: POST<br><h1>Uri parameters:</h1><div> Param: id&nbsp;Value: blabla</div><h1>Query parameters:</h1></body></html>", string );
+    response.close();
+
+    HttpPut httpgput = new HttpPut( "http://localhost:9090/user/blabla" );
+    response = httpclient.execute( httpgput );
+    entity = response.getEntity();
+    string = new String( readContents( entity ), "UTF-8" );
+    Assert.assertEquals( "<html><body>User handler. Method: PUT<br><h1>Uri parameters:</h1><div> Param: id&nbsp;Value: blabla</div><h1>Query parameters:</h1></body></html>", string );
+    response.close();
+
+    HttpDelete httpdelete = new HttpDelete( "http://localhost:9090/user/blabla" );
+    response = httpclient.execute( httpdelete );
+    entity = response.getEntity();
+    string = new String( readContents( entity ), "UTF-8" );
+    Assert.assertEquals( "<html><body>User handler. Method: DELETE<br><h1>Uri parameters:</h1><div> Param: id&nbsp;Value: blabla</div><h1>Query parameters:</h1></body></html>", string );
+    response.close();
   }
 
 
 
 
-  @Ignore
+  @Test
   public void doStreamOfData() throws Exception {
-    //    CloseableHttpClient httpclient = HttpClients.createDefault();
-    //
-    //    HttpGet httpget = new HttpGet( "http://localhost:9090/stream" );
-    //    CloseableHttpResponse response = httpclient.execute( httpget );
-    //    HttpEntity entity = response.getEntity();
-    //    String string = new String( readContents( entity ), "UTF-8" );
-    //    Assert.assertEquals( "a stream of data ;-)", string );
-    //    response.close();
+    CloseableHttpClient httpclient = HttpClients.createDefault();
+
+    HttpGet httpget = new HttpGet( "http://localhost:9090/stream" );
+    CloseableHttpResponse response = httpclient.execute( httpget );
+    HttpEntity entity = response.getEntity();
+    String string = new String( readContents( entity ), "UTF-8" );
+    Assert.assertEquals( "a stream of data ;-)", string );
+    response.close();
   }
 
 
 
 
-  @Ignore
+  @Test
   public void doUriSelection1() throws Exception {
-    //    CloseableHttpClient httpclient = HttpClients.createDefault();
-    //
-    //    HttpGet httpget = new HttpGet( "http://localhost:9090/user/help" );
-    //    CloseableHttpResponse response = httpclient.execute( httpget );
-    //    HttpEntity entity = response.getEntity();
-    //    String string = new String( readContents( entity ), "UTF-8" );
-    //    Assert.assertEquals( "<html><body><h1>Url: /user/help</h1><br><p>no params in url</p><br>", string );
-    //    response.close();
+    CloseableHttpClient httpclient = HttpClients.createDefault();
+
+    HttpGet httpget = new HttpGet( "http://localhost:9090/user/help" );
+    CloseableHttpResponse response = httpclient.execute( httpget );
+    HttpEntity entity = response.getEntity();
+    String string = new String( readContents( entity ), "UTF-8" );
+    Assert.assertEquals( "<html><body><h1>Url: /user/help</h1><br><p>no params in url</p><br>", string );
+    response.close();
   }
 
 
@@ -331,6 +340,14 @@ public class TestHandlers {
 
 
 
+  private byte[] readContents( HttpEntity entity ) throws IOException {
+    InputStream instream = entity.getContent();
+    return readContents( instream );
+  }
+
+
+
+
   private byte[] readContents( final InputStream instream ) throws IOException {
     byte[] bytes;
     final ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -354,49 +371,50 @@ public class TestHandlers {
 
   @Ignore
   public void staticFiles() throws Exception {
-    //    CloseableHttpClient httpclient = HttpClients.createDefault();
-    //
-    //    HttpTrace httphead = new HttpTrace( "http://localhost:9090/browse/blabla.html" );
-    //    CloseableHttpResponse response = httpclient.execute( httphead );
-    //    HttpEntity entity = response.getEntity();
-    //    String string = new String( readContents( entity ), "UTF-8" );
-    //    Assert.assertEquals( "<html><body><h3>just a page</h3></body></html>", string );
-    //    response.close();
-    //
-    //    httphead = new HttpTrace( "http://localhost:9090/browse/dir/blabla.html" );
-    //    response = httpclient.execute( httphead );
-    //    entity = response.getEntity();
-    //    string = new String( readContents( entity ), "UTF-8" );
-    //    Assert.assertEquals( "<html><body><h3>just an other page</h3></body></html>", string );
-    //    response.close();
-    //
-    //    httphead = new HttpTrace( "http://localhost:9090/browse/dir/logo.png" );
-    //    response = httpclient.execute( httphead );
-    //    entity = response.getEntity();
-    //    Assert.assertEquals( "image/png", entity.getContentType().getValue() );
-    //    response.close();
-    //
-    //    httphead = new HttpTrace( "http://localhost:9090/browse/dir/xxx.html" );
-    //    response = httpclient.execute( httphead );
-    //    entity = response.getEntity();
-    //    string = new String( readContents( entity ), "UTF-8" );
-    //    Assert.assertEquals( "<html><body><h3>Error 404: the requested page doesn't exist.</h3></body></html>", string );
-    //    response.close();
-    //
-    //    httphead = new HttpTrace( "http://localhost:9090/browse/dir/" );
-    //    response = httpclient.execute( httphead );
-    //    entity = response.getEntity();
-    //    string = new String( readContents( entity ), "UTF-8" );
-    //    Assert.assertEquals( "<html><body><h3>just an index page</h3></body></html>", string );
-    //    response.close();
-    //
-    //    httphead = new HttpTrace( "http://localhost:9090/browse/exception.html" );
-    //    response = httpclient.execute( httphead );
-    //    Assert.assertEquals( Status.REQUEST_TIMEOUT.getRequestStatus(), response.getStatusLine().getStatusCode() );
-    //    entity = response.getEntity();
-    //    string = new String( readContents( entity ), "UTF-8" );
-    //    Assert.assertEquals( "", string );
-    //    response.close();
+    CloseableHttpClient httpclient = HttpClients.createDefault();
+
+    HttpTrace httphead = new HttpTrace( "http://localhost:9090/browse/blabla.html" );
+    CloseableHttpResponse response = httpclient.execute( httphead );
+    HttpEntity entity = response.getEntity();
+    String string = new String( readContents( entity ), "UTF-8" );
+    System.out.println( string );
+    Assert.assertEquals( "<html><body><h3>just a page</h3></body></html>", string );
+    response.close();
+
+    httphead = new HttpTrace( "http://localhost:9090/browse/dir/blabla.html" );
+    response = httpclient.execute( httphead );
+    entity = response.getEntity();
+    string = new String( readContents( entity ), "UTF-8" );
+    Assert.assertEquals( "<html><body><h3>just an other page</h3></body></html>", string );
+    response.close();
+
+    httphead = new HttpTrace( "http://localhost:9090/browse/dir/logo.png" );
+    response = httpclient.execute( httphead );
+    entity = response.getEntity();
+    Assert.assertEquals( "image/png", entity.getContentType().getValue() );
+    response.close();
+
+    httphead = new HttpTrace( "http://localhost:9090/browse/dir/xxx.html" );
+    response = httpclient.execute( httphead );
+    entity = response.getEntity();
+    string = new String( readContents( entity ), "UTF-8" );
+    Assert.assertEquals( "<html><body><h3>Error 404: the requested page doesn't exist.</h3></body></html>", string );
+    response.close();
+
+    httphead = new HttpTrace( "http://localhost:9090/browse/dir/" );
+    response = httpclient.execute( httphead );
+    entity = response.getEntity();
+    string = new String( readContents( entity ), "UTF-8" );
+    Assert.assertEquals( "<html><body><h3>just an index page</h3></body></html>", string );
+    response.close();
+
+    httphead = new HttpTrace( "http://localhost:9090/browse/exception.html" );
+    response = httpclient.execute( httphead );
+    Assert.assertEquals( Status.REQUEST_TIMEOUT.getRequestStatus(), response.getStatusLine().getStatusCode() );
+    entity = response.getEntity();
+    string = new String( readContents( entity ), "UTF-8" );
+    Assert.assertEquals( "", string );
+    response.close();
   }
 
 
