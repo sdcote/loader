@@ -240,4 +240,15 @@ public class MockSession implements IHTTPSession {
     requestHeaders.put( name, value );
   }
 
+
+
+
+  /**
+   * @see coyote.commons.network.http.IHTTPSession#isSecure()
+   */
+  @Override
+  public boolean isSecure() {
+    return false;
+  }
+
 }
