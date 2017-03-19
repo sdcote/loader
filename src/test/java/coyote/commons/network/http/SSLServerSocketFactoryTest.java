@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2017 Stephan D. Cote' - All rights reserved.
- * 
- * This program and the accompanying materials are made available under the 
- * terms of the MIT License which accompanies this distribution, and is 
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which accompanies this distribution, and is
  * available at http://creativecommons.org/licenses/MIT/
  *
  * Contributors:
- *   Stephan D. Cote 
+ *   Stephan D. Cote
  *      - Initial concept and initial implementation
  */
 package coyote.commons.network.http;
@@ -21,7 +21,6 @@ import java.util.Arrays;
 
 import javax.net.ssl.SSLServerSocket;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpTrace;
@@ -72,16 +71,16 @@ public class SSLServerSocketFactoryTest {
 
     // try to start the server, waiting only 2 seconds before giving up
     try {
-      long start = System.currentTimeMillis();
+      final long start = System.currentTimeMillis();
       Thread.sleep( 100L );
       while ( !testServer.wasStarted() ) {
         Thread.sleep( 100L );
-        if ( System.currentTimeMillis() - start > 2000 ) {
+        if ( ( System.currentTimeMillis() - start ) > 2000 ) {
           testServer.stop();
           fail( "could not start server" );
         }
       }
-    } catch ( InterruptedException e ) {}
+    } catch ( final InterruptedException e ) {}
   }
 
 
@@ -93,21 +92,6 @@ public class SSLServerSocketFactoryTest {
   @AfterClass
   public static void tearDownAfterClass() throws Exception {
     testServer.stop();
-  }
-
-
-
-
-  // Apache HttpClient
-  public void testSSLConnection() throws ClientProtocolException, IOException {
-    DefaultHttpClient httpclient = new DefaultHttpClient();
-    HttpTrace httphead = new HttpTrace( "https://localhost:" + port + "/" );
-    HttpResponse response = httpclient.execute( httphead );
-    HttpEntity entity = response.getEntity();
-    Assert.assertEquals( 200, response.getStatusLine().getStatusCode() );
-
-    Assert.assertEquals( port, this.testServer.getListeningPort() );
-    Assert.assertTrue( this.testServer.isAlive() );
   }
 
 
@@ -136,9 +120,24 @@ public class SSLServerSocketFactoryTest {
 
   @Test
   public void testConnectViaSSL() {
-    TestResponse response = TestHttpClient.sendGet( "https://localhost:" + port );
+    final TestResponse response = TestHttpClient.sendGet( "https://localhost:" + port );
     assertTrue( response.isComplete() );
     assertEquals( response.getStatus(), 200 );
+  }
+
+
+
+
+  // Apache HttpClient
+  public void testSSLConnection() throws ClientProtocolException, IOException {
+    final DefaultHttpClient httpclient = new DefaultHttpClient();
+    final HttpTrace httphead = new HttpTrace( "https://localhost:" + port + "/" );
+    final HttpResponse response = httpclient.execute( httphead );
+    response.getEntity();
+    Assert.assertEquals( 200, response.getStatusLine().getStatusCode() );
+
+    Assert.assertEquals( port, testServer.getListeningPort() );
+    Assert.assertTrue( testServer.isAlive() );
   }
 
 }

@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2017 Stephan D. Cote' - All rights reserved.
- * 
- * This program and the accompanying materials are made available under the 
- * terms of the MIT License which accompanies this distribution, and is 
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which accompanies this distribution, and is
  * available at http://creativecommons.org/licenses/MIT/
  *
  * Contributors:
- *   Stephan D. Cote 
+ *   Stephan D. Cote
  *      - Initial concept and initial implementation
  */
 package coyote.commons.network.http;
@@ -17,16 +17,23 @@ import java.util.Map;
 
 
 /**
- * 
+ *
  */
 public class TestingServer extends HTTPD {
 
   /**
    * @param port
    */
-  public TestingServer( int port ) {
+  public TestingServer( final int port ) {
     super( port );
     // TODO Auto-generated constructor stub
+  }
+
+
+
+
+  private void listItem( final StringBuilder sb, final Map.Entry<String, ? extends Object> entry ) {
+    sb.append( "<li><code><b>" ).append( entry.getKey() ).append( "</b> = " ).append( entry.getValue() ).append( "</code></li>" );
   }
 
 
@@ -83,11 +90,4 @@ public class TestingServer extends HTTPD {
     return sb.toString();
   }
 
-
-
-
-  private void listItem( final StringBuilder sb, final Map.Entry<String, ? extends Object> entry ) {
-    sb.append( "<li><code><b>" ).append( entry.getKey() ).append( "</b> = " ).append( entry.getValue() ).append( "</code></li>" );
-  }
-  
 }

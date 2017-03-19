@@ -4,8 +4,8 @@ public class TestResponse {
   String location = null;
   int status = 0;
   String data = null;
-  private Exception exception=null;
-  private volatile boolean complete=false;
+  private Exception exception = null;
+  private volatile boolean complete = false;
 
 
 
@@ -19,6 +19,16 @@ public class TestResponse {
 
   public String getData() {
     return data;
+  }
+
+
+
+
+  /**
+   * @return the exception thrown by the client
+   */
+  public Exception getException() {
+    return exception;
   }
 
 
@@ -38,8 +48,38 @@ public class TestResponse {
 
 
 
+  /**
+   * @return true if the exchange was completed sucessfully, false if there was an error.
+   */
+  public boolean isComplete() {
+    return complete;
+  }
+
+
+
+
+  /**
+   * @param flag The stete of the completion, true means the exchange completed sucessfully.
+   */
+  public void setComplete( final boolean flag ) {
+    complete = flag;
+  }
+
+
+
+
   public void setData( final String data ) {
     this.data = data;
+  }
+
+
+
+
+  /**
+   * @param ex The exception thrown by the client performing its request.
+   */
+  public void setException( final Exception ex ) {
+    exception = ex;
   }
 
 
@@ -54,42 +94,6 @@ public class TestResponse {
 
   public void setStatus( final int code ) {
     status = code;
-  }
-
-
-
-
-  /**
-   * @param ex The exception thrown by the client performing its request.
-   */
-  public void setException( Exception ex) {
-    exception = ex;
-  }
-
-
-  /**
-   * @return the exception thrown by the client
-   */
-  public Exception getException(){
-    return exception;
-  }
-
-
-  /**
-   * @return true if the exchange was completed sucessfully, false if there was an error.
-   */
-  public boolean isComplete() {
-    return complete;
-  }
-
-
-
-
-  /**
-   * @param flag The stete of the completion, true means the exchange completed sucessfully.
-   */
-  public void setComplete( boolean flag ) {
-    complete = flag;
   }
 
 }

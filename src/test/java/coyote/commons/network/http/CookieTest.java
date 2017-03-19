@@ -1,17 +1,15 @@
 /*
  * Copyright (c) 2017 Stephan D. Cote' - All rights reserved.
- * 
- * This program and the accompanying materials are made available under the 
- * terms of the MIT License which accompanies this distribution, and is 
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which accompanies this distribution, and is
  * available at http://creativecommons.org/licenses/MIT/
  *
  * Contributors:
- *   Stephan D. Cote 
+ *   Stephan D. Cote
  *      - Initial concept and initial implementation
  */
 package coyote.commons.network.http;
-
-import static org.junit.Assert.*;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -19,8 +17,9 @@ import org.junit.Test;
 
 import coyote.commons.GUID;
 
+
 /**
- * 
+ *
  */
 public class CookieTest {
 
@@ -44,7 +43,7 @@ public class CookieTest {
 
   @Test
   public void test() {
-    Cookie cookie = new Cookie("test",GUID.randomGUID().toString(), 1).setHttpOnly( true ).setDomain( "coyote.systems" ).setSecure( true );
+    final Cookie cookie = new Cookie( "test", GUID.randomGUID().toString(), 1 ).setHttpOnly( true ).setDomain( "coyote.systems" ).setSecure( true );
     System.out.println( cookie.getHTTPHeader() );
   }
 
