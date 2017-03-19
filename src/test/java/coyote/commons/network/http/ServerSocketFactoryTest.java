@@ -1,0 +1,106 @@
+package coyote.commons.network.http;
+
+import java.io.File;
+
+/*
+ * #%L
+ * NanoHttpd-Core
+ * %%
+ * Copyright (C) 2012 - 2015 nanohttpd
+ * %%
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * 3. Neither the name of the nanohttpd nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software without
+ *    specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ * #L%
+ */
+
+import java.io.IOException;
+import java.net.ServerSocket;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+
+public class ServerSocketFactoryTest extends HTTPD {
+
+  private class TestFactory implements ServerSocketFactory {
+
+    @Override
+    public ServerSocket create() {
+      try {
+        return new ServerSocket();
+      } catch ( final IOException e ) {
+        e.printStackTrace();
+      }
+      return null;
+    }
+  }
+
+  public static final int PORT = 8192;
+
+
+
+
+  public ServerSocketFactoryTest() {
+    super( PORT );
+
+    setServerSocketFactory( new TestFactory() );
+  }
+
+
+
+
+  @Test
+  public void isCustomServerSocketFactory() {
+    Assert.assertTrue( getServerSocketFactory() instanceof TestFactory );
+  }
+
+
+
+
+  @Test
+  public void testCreateServerSocket() {
+    ServerSocket ss = null;
+    try {
+      ss = getServerSocketFactory().create();
+    } catch ( final IOException e ) {}
+    Assert.assertTrue( ss != null );
+  }
+
+
+
+
+  @Test
+  public void testSSLServerSocketFail() {
+    final String[] protocols = { "" };
+    System.setProperty( "javax.net.ssl.trustStore", new File( "src/test/resources/keystore.jks" ).getAbsolutePath() );
+    final ServerSocketFactory ssFactory = new SecureServerSocketFactory( null, protocols );
+    ServerSocket ss = null;
+    try {
+      ss = ssFactory.create();
+    } catch ( final Exception e ) {}
+    Assert.assertTrue( ss == null );
+
+  }
+}
