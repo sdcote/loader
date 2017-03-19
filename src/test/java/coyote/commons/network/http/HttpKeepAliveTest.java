@@ -78,7 +78,7 @@ public class HttpKeepAliveTest extends HttpServerTest {
             try {
               session.execute();
             } catch ( final java.net.SocketException se ) {
-              junit.framework.Assert.assertEquals( se.getMessage(), "NanoHttpd Shutdown" );
+              junit.framework.Assert.assertEquals( se.getMessage(), "HTTPD Shutdown" );
             }
             assertResponse( outputStream, expected );
 

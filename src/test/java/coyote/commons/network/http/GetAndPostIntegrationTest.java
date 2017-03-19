@@ -47,7 +47,7 @@ public class GetAndPostIntegrationTest extends IntegrationTestBase<GetAndPostInt
       final StringBuilder sb = new StringBuilder( String.valueOf( session.getMethod() ) + ':' + response );
 
       if ( session.getParms().size() > 1 ) {
-        session.getParms().remove( "NanoHttpd.QUERY_STRING" );
+        session.getParms().remove( "Httpd.QUERY_STRING" );
         sb.append( "-params=" ).append( session.getParms().size() );
         final List<String> p = new ArrayList<String>( session.getParms().keySet() );
         Collections.sort( p );

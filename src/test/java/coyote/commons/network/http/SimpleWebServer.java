@@ -241,10 +241,9 @@ public class SimpleWebServer extends HTTPD {
 
 
   private String calculateAllowHeaders( final Map<String, String> queryHeaders ) {
-    // here we should use the given asked headers
-    // but NanoHttpd uses a Map whereas it is possible for requester to send
-    // several time the same header
-    // let's just use default values for this version
+    // here we should use the given asked headers but HTTPD uses a Map whereas 
+    // it is possible for requester to send several time the same header let's 
+    // just use default values for this version
     return System.getProperty( ACCESS_CONTROL_ALLOW_HEADER_PROPERTY_NAME, DEFAULT_ALLOWED_HEADERS );
   }
 

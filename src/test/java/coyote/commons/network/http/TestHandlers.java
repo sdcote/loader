@@ -24,7 +24,7 @@ import coyote.commons.network.http.handler.StaticPageHandler;
 import coyote.commons.network.http.handler.UriResource;
 
 
-public class TestNanolets {
+public class TestHandlers {
 
   private static PipedOutputStream stdIn;
 
@@ -139,7 +139,7 @@ public class TestNanolets {
     //    CloseableHttpResponse response = httpclient.execute( httpget );
     //    HttpEntity entity = response.getEntity();
     //    String string = new String( readContents( entity ), "UTF-8" );
-    //    Assert.assertEquals( "Error: java.lang.InstantiationException : fi.iki.elonen.router.RouterNanoHTTPD$UriResponder", string );
+    //    Assert.assertEquals( "Error: java.lang.InstantiationException : HTTPD$UriResponder", string );
     //    response.close();
   }
 
@@ -370,7 +370,7 @@ public class TestNanolets {
     //    Assert.assertEquals( "<html><body><h3>just an other page</h3></body></html>", string );
     //    response.close();
     //
-    //    httphead = new HttpTrace( "http://localhost:9090/browse/dir/nanohttpd_logo.png" );
+    //    httphead = new HttpTrace( "http://localhost:9090/browse/dir/logo.png" );
     //    response = httpclient.execute( httphead );
     //    entity = response.getEntity();
     //    Assert.assertEquals( "image/png", entity.getContentType().getValue() );
