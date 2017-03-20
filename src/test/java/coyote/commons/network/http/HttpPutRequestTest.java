@@ -1,6 +1,6 @@
 package coyote.commons.network.http;
 
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -34,4 +34,5 @@ public class HttpPutRequestTest extends HttpServerTest {
       }
     }
   }
+
 }

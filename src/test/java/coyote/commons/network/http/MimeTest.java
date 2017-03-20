@@ -1,7 +1,8 @@
 package coyote.commons.network.http;
 
+import java.util.List;
+
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import coyote.commons.network.MimeType;
@@ -17,10 +18,12 @@ public class MimeTest {
 
 
 
-  @Ignore
+  @Test
   public void testManualMimeType() throws Exception {
     MimeType.add( "flv", "video/manualOverwrite", true );
-    Assert.assertEquals( "video/manualOverwrite", MimeType.get( "xxxx.flv" ).get( 0 ).getType() );
+    // all mimetypes are normalized to lowercase as per RFC 2045 pg.13
+    Assert.assertEquals( "video/manualoverwrite", MimeType.get( "xxxx.flv" ).get( 0 ).getType() );
+
   }
 
 
@@ -35,8 +38,8 @@ public class MimeTest {
 
 
 
-  @Ignore
+  @Test
   public void testOverwritenMimeType() throws Exception {
-    Assert.assertEquals( "video/wrongOverwrite", MimeType.get( "xxxx.ts" ).get( 0 ).getType() );
+    Assert.assertEquals( "application/octet-stream", MimeType.get( "xxxx.ts" ).get( 0 ).getType() );
   }
 }

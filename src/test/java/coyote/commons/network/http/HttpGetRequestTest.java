@@ -51,10 +51,6 @@ public class HttpGetRequestTest extends HttpServerTest {
 
 
 
-
-  // --------------------------------------------------------------------------------------------------------
-  // //
-
   @Test
   public void testDecodingParametersWithSingleValue() {
     invokeServer( "GET " + HttpServerTest.URI + "?foo=bar&baz=zot HTTP/1.1" );
@@ -111,9 +107,7 @@ public class HttpGetRequestTest extends HttpServerTest {
   @Test
   public void testFullyQualifiedWorkingGetRequest() throws Exception {
     final ByteArrayOutputStream outputStream = invokeServer( "GET " + HttpServerTest.URI + " HTTP/1.1" );
-
     final String[] expected = { "HTTP/1.1 200 OK", "Content-Type: text/html", "Date: .*", "Connection: keep-alive", "Content-Length: 0", "" };
-
     assertResponse( outputStream, expected );
   }
 
@@ -210,9 +204,7 @@ public class HttpGetRequestTest extends HttpServerTest {
     final String responseBody = "Success!";
     testServer.response = Response.createFixedLengthResponse( responseBody );
     final ByteArrayOutputStream outputStream = invokeServer( "GET " + HttpServerTest.URI + " HTTP/1.1" );
-
     final String[] expected = { "HTTP/1.1 200 OK", "Content-Type: text/html", "Date: .*", "Connection: keep-alive", "Content-Length: 8", "", responseBody };
-
     assertResponse( outputStream, expected );
   }
 
@@ -245,4 +237,5 @@ public class HttpGetRequestTest extends HttpServerTest {
     assertEquals( Method.GET, testServer.method );
     assertEquals( HttpServerTest.URI, testServer.uri );
   }
+
 }

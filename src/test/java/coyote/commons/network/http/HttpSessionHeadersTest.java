@@ -13,7 +13,6 @@ import org.junit.Test;
 public class HttpSessionHeadersTest extends HttpServerTest {
 
   private static final String DUMMY_REQUEST_CONTENT = "dummy request content";
-
   private static final TestTempFileManager TEST_TEMP_FILE_MANAGER = new TestTempFileManager();
 
 

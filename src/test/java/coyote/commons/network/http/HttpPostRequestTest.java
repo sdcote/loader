@@ -15,17 +15,11 @@ import org.junit.Test;
 public class HttpPostRequestTest extends HttpServerTest {
 
   public static final String CONTENT_LENGTH = "Content-Length: ";
-
   public static final String FIELD = "caption";
-
   public static final String VALUE = "Summer vacation";
-
   public static final String FIELD2 = "location";
-
   public static final String VALUE2 = "Grand Canyon";
-
   public static final String POST_RAW_CONTENT_FILE_ENTRY = "postData";
-
   public static final String VALUE_TEST_SIMPLE_RAW_DATA_WITH_AMPHASIS = "Test raw data & Result value";
 
 
@@ -34,11 +28,10 @@ public class HttpPostRequestTest extends HttpServerTest {
   /**
    * contains common preparation steps for testing POST with Multipart Form
    *
-   * @param fileName
-   *            Name of file to be uploaded
-   * @param fileContent
-   *            Content of file to be uploaded
-   * @return input String with POST request complete information including
+   * @param fileName Name of file to be uploaded
+   * @param fileContent Content of file to be uploaded
+   * 
+   * @return input String with POST request complete information including 
    *         header, length and content
    */
   private String preparePostWithMultipartForm( final String fileName, final String fileContent ) {
@@ -49,7 +42,6 @@ public class HttpPostRequestTest extends HttpServerTest {
     final int contentLengthHeaderValueSize = String.valueOf( size ).length();
     final int contentLength = size + contentLengthHeaderValueSize + HttpPostRequestTest.CONTENT_LENGTH.length();
     final String input = header + HttpPostRequestTest.CONTENT_LENGTH + ( contentLength + 5 ) + "\r\n\r\n" + content;
-
     return input;
   }
 

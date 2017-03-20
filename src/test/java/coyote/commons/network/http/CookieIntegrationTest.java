@@ -15,6 +15,7 @@ import org.junit.Test;
 
 
 public class CookieIntegrationTest extends IntegrationTestBase<CookieIntegrationTest.CookieTestServer> {
+  private static final int PORT = 7428;
 
   public static class CookieTestServer extends HTTPD {
 
@@ -26,7 +27,7 @@ public class CookieIntegrationTest extends IntegrationTestBase<CookieIntegration
 
 
     public CookieTestServer() {
-      super( 8192 );
+      super( PORT );
     }
 
 
@@ -60,7 +61,7 @@ public class CookieIntegrationTest extends IntegrationTestBase<CookieIntegration
   public void testCookieSentBackToClient() throws Exception {
     testServer.cookiesToSend.add( new Cookie( "name", "value", 90 ) );
 
-    final HttpGet httpget = new HttpGet( "http://localhost:8192/" );
+    final HttpGet httpget = new HttpGet( "http://localhost:"+PORT+"/" );
     final ResponseHandler<String> responseHandler = new BasicResponseHandler();
     httpclient.execute( httpget, responseHandler );
 
@@ -75,7 +76,7 @@ public class CookieIntegrationTest extends IntegrationTestBase<CookieIntegration
 
   @Test
   public void testNoCookies() throws Exception {
-    final HttpGet httpget = new HttpGet( "http://localhost:8192/" );
+    final HttpGet httpget = new HttpGet( "http://localhost:"+PORT+"/" );
     final ResponseHandler<String> responseHandler = new BasicResponseHandler();
     httpclient.execute( httpget, responseHandler );
     assertEquals( 0, cookiestore.getCookies().size() );
@@ -93,7 +94,7 @@ public class CookieIntegrationTest extends IntegrationTestBase<CookieIntegration
     clientCookie.setExpiryDate( calendar.getTime() );
     clientCookie.setDomain( "localhost" );
     cookiestore.addCookie( clientCookie );
-    final HttpGet httpget = new HttpGet( "http://localhost:8192/" );
+    final HttpGet httpget = new HttpGet( "http://localhost:"+PORT+"/" );
     final ResponseHandler<String> responseHandler = new BasicResponseHandler();
     httpclient.execute( httpget, responseHandler );
 

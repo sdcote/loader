@@ -27,6 +27,7 @@ import coyote.commons.network.MimeType;
 
 
 public class GetAndPostIntegrationTest extends IntegrationTestBase<GetAndPostIntegrationTest.TestServer> {
+private static final int PORT = 7428;
 
   public static class TestServer extends HTTPD {
 
@@ -36,7 +37,7 @@ public class GetAndPostIntegrationTest extends IntegrationTestBase<GetAndPostInt
 
 
     public TestServer() {
-      super( 8192 );
+      super( PORT );
     }
 
 
@@ -80,7 +81,7 @@ public class GetAndPostIntegrationTest extends IntegrationTestBase<GetAndPostInt
   public void testGetRequestWithParameters() throws Exception {
     testServer.response = "testGetRequestWithParameters";
 
-    final HttpGet httpget = new HttpGet( "http://localhost:8192/?age=120&gender=Male" );
+    final HttpGet httpget = new HttpGet( "http://localhost:"+PORT+"/?age=120&gender=Male" );
     final ResponseHandler<String> responseHandler = new BasicResponseHandler();
     final String responseBody = httpclient.execute( httpget, responseHandler );
 
@@ -94,7 +95,7 @@ public class GetAndPostIntegrationTest extends IntegrationTestBase<GetAndPostInt
   public void testPostRequestWithEncodedParameters() throws Exception {
     testServer.response = "testPostRequestWithEncodedParameters";
 
-    final HttpPost httppost = new HttpPost( "http://localhost:8192/encodingtest" );
+    final HttpPost httppost = new HttpPost( "http://localhost:"+PORT+"/encodingtest" );
     final HttpResponse response = httpclient.execute( httppost );
 
     final HttpEntity entity = response.getEntity();
@@ -110,7 +111,7 @@ public class GetAndPostIntegrationTest extends IntegrationTestBase<GetAndPostInt
   public void testPostRequestWithFormEncodedParameters() throws Exception {
     testServer.response = "testPostRequestWithFormEncodedParameters";
 
-    final HttpPost httppost = new HttpPost( "http://localhost:8192/" );
+    final HttpPost httppost = new HttpPost( "http://localhost:"+PORT+"/" );
     final List<NameValuePair> postParameters = new ArrayList<NameValuePair>();
     postParameters.add( new BasicNameValuePair( "age", "120" ) );
     postParameters.add( new BasicNameValuePair( "gender", "Male" ) );
@@ -129,7 +130,7 @@ public class GetAndPostIntegrationTest extends IntegrationTestBase<GetAndPostInt
   public void testPostRequestWithMultipartEncodedParameters() throws Exception {
     testServer.response = "testPostRequestWithMultipartEncodedParameters";
 
-    final HttpPost httppost = new HttpPost( "http://localhost:8192/" );
+    final HttpPost httppost = new HttpPost( "http://localhost:"+PORT+"/" );
     final MultipartEntity reqEntity = new MultipartEntity( HttpMultipartMode.BROWSER_COMPATIBLE );
     reqEntity.addPart( "age", new StringBody( "120" ) );
     reqEntity.addPart( "gender", new StringBody( "Male" ) );
@@ -148,7 +149,7 @@ public class GetAndPostIntegrationTest extends IntegrationTestBase<GetAndPostInt
   public void testPostRequestWithMultipartExtremEncodedParameters() throws Exception {
     testServer.response = "testPostRequestWithMultipartEncodedParameters";
 
-    final HttpPost httppost = new HttpPost( "http://localhost:8192/chin" );
+    final HttpPost httppost = new HttpPost( "http://localhost:"+PORT+"/chin" );
     final MultipartEntity reqEntity = new MultipartEntity( HttpMultipartMode.BROWSER_COMPATIBLE, "sfsadfasdf", Charset.forName( "UTF-8" ) );
     reqEntity.addPart( "specialString", new StringBody( "æ‹–æ‹‰å›¾ç‰‡åˆ°æµ�è§ˆå™¨ï¼Œå�¯ä»¥å®žçŽ°é¢„è§ˆåŠŸèƒ½", "text/plain", Charset.forName( "UTF-8" ) ) );
     reqEntity.addPart( "gender", new StringBody( "å›¾ç‰‡å��ç§°", Charset.forName( "UTF-8" ) ) {
@@ -174,7 +175,7 @@ public class GetAndPostIntegrationTest extends IntegrationTestBase<GetAndPostInt
   public void testPostWithNoParameters() throws Exception {
     testServer.response = "testPostWithNoParameters";
 
-    final HttpPost httppost = new HttpPost( "http://localhost:8192/" );
+    final HttpPost httppost = new HttpPost( "http://localhost:"+PORT+"/" );
     final ResponseHandler<String> responseHandler = new BasicResponseHandler();
     final String responseBody = httpclient.execute( httppost, responseHandler );
 
@@ -188,7 +189,7 @@ public class GetAndPostIntegrationTest extends IntegrationTestBase<GetAndPostInt
   public void testSimpleGetRequest() throws Exception {
     testServer.response = "testSimpleGetRequest";
 
-    final HttpGet httpget = new HttpGet( "http://localhost:8192/" );
+    final HttpGet httpget = new HttpGet( "http://localhost:"+PORT+"/" );
     final ResponseHandler<String> responseHandler = new BasicResponseHandler();
     final String responseBody = httpclient.execute( httpget, responseHandler );
 

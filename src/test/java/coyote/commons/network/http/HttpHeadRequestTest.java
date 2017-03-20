@@ -1,8 +1,7 @@
 package coyote.commons.network.http;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
+
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
@@ -117,9 +116,7 @@ public class HttpHeadRequestTest extends HttpServerTest {
   @Test
   public void testHeadRequestDoesntSendBackResponseBody() throws Exception {
     final ByteArrayOutputStream outputStream = invokeServer( "HEAD " + HttpServerTest.URI + " HTTP/1.1" );
-
     final String[] expected = { "HTTP/1.1 200 OK", "Content-Type: text/html", "Date: .*", "Connection: keep-alive", "Content-Length: 8", "" };
-
     assertResponse( outputStream, expected );
   }
 

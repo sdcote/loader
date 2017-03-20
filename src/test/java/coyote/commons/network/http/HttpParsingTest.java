@@ -1,6 +1,7 @@
 package coyote.commons.network.http;
 
-import static junit.framework.Assert.assertEquals;
+
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -11,7 +12,7 @@ public class HttpParsingTest extends HttpServerTest {
   public void testMultibyteCharacterSupport() throws Exception {
     final String expected = "Chinese \u738b Letters";
     final String input = "Chinese+%e7%8e%8b+Letters";
-    assertEquals( expected, testServer.decodePercent( input ) );
+    assertEquals( expected, HTTPD.decodePercent( input ) );
   }
 
 
@@ -23,7 +24,7 @@ public class HttpParsingTest extends HttpServerTest {
       final String hex = Integer.toHexString( i );
       final String input = "%" + hex;
       final char expected = (char)i;
-      assertEquals( "" + expected, testServer.decodePercent( input ) );
+      assertEquals( "" + expected, HTTPD.decodePercent( input ) );
     }
   }
 
@@ -32,6 +33,7 @@ public class HttpParsingTest extends HttpServerTest {
 
   @Test
   public void testPlusInQueryParams() throws Exception {
-    assertEquals( "foo bar", testServer.decodePercent( "foo+bar" ) );
+    assertEquals( "foo bar", HTTPD.decodePercent( "foo+bar" ) );
   }
+
 }

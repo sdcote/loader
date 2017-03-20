@@ -13,7 +13,6 @@ import org.junit.Test;
 public class HttpSessionTest extends HttpServerTest {
 
   private static final String DUMMY_REQUEST_CONTENT = "dummy request content";
-
   private static final TestTempFileManager TEST_TEMP_FILE_MANAGER = new TestTempFileManager();
 
 
@@ -51,4 +50,5 @@ public class HttpSessionTest extends HttpServerTest {
     final HTTPSession session = testServer.createSession( HttpSessionTest.TEST_TEMP_FILE_MANAGER, inputStream, outputStream, inetAddress );
     assertEquals( "127.0.0.1", session.getRemoteIpAddress() );
   }
+
 }

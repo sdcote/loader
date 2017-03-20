@@ -35,32 +35,24 @@ import org.junit.Test;
 
 
 public class HttpServerTest {
-
+private static final int PORT = 7428;
   public static class TestServer extends HTTPD {
 
     public Response response = Response.createFixedLengthResponse( "" );
-
     public String uri;
-
     public Method method;
-
     public Map<String, String> header;
-
     public Map<String, String> parms;
-
     public Map<String, String> files;
-
     public Map<String, List<String>> decodedParamters;
-
     public Map<String, List<String>> decodedParamtersFromParameter;
-
     public String queryParameterString;
 
 
 
 
     public TestServer() {
-      super( 8192 );
+      super( PORT );
     }
 
 
@@ -337,4 +329,5 @@ public class HttpServerTest {
     }
     server.stop();
   }
+
 }

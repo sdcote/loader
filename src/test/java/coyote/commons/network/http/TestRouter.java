@@ -17,8 +17,9 @@ import coyote.commons.network.http.handler.UriResponder;
 
 
 public class TestRouter extends HTTPDRouter {
+  private static final int PORT = 9090;
 
-  static class StaticPageTestHandler extends StaticPageHandler {
+  public static class StaticPageTestHandler extends StaticPageHandler {
 
     @Override
     protected BufferedInputStream fileToInputStream( final File fileOrdirectory ) throws IOException {
@@ -112,7 +113,6 @@ public class TestRouter extends HTTPDRouter {
 
   }
 
-  private static final int PORT = 9090;
 
 
 
@@ -135,7 +135,7 @@ public class TestRouter extends HTTPDRouter {
   public TestRouter() throws IOException {
     super( PORT );
     addDefaultRoutes();
-    System.out.println( "\nRunning! Point your browers to http://localhost:" + PORT + "/ \n" );
+    //System.out.println( "\nRunning! Point your browers to http://localhost:" + PORT + "/ \n" );
   }
 
 
@@ -147,7 +147,7 @@ public class TestRouter extends HTTPDRouter {
   public TestRouter( final int port ) throws IOException {
     super( port );
     addDefaultRoutes();
-    System.out.println( "\nRunning! Point your browers to http://localhost:" + port + "/ \n" );
+    //System.out.println( "\nRunning! Point your browers to http://localhost:" + port + "/ \n" );
   }
 
 

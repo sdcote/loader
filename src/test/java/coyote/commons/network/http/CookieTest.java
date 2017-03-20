@@ -44,7 +44,6 @@ public class CookieTest {
   @Test
   public void test() {
     final Cookie cookie = new Cookie( "test", GUID.randomGUID().toString(), 1 ).setHttpOnly( true ).setDomain( "coyote.systems" ).setSecure( true );
-    System.out.println( cookie.getHTTPHeader() );
   }
 
 }

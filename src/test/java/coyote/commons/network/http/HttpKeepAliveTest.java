@@ -1,6 +1,6 @@
 package coyote.commons.network.http;
 
-import static junit.framework.Assert.fail;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PipedInputStream;
@@ -39,13 +39,11 @@ public class HttpKeepAliveTest extends HttpServerTest {
 
   /**
    * Issue the given request many times to check whether an error occurs. For
-   * this test, a small stack size is used, since a stack overflow is among
+   * this test, a small stack size is used, since a stack overflow is among 
    * the possible errors.
    *
-   * @param request
-   *            The request to issue
-   * @param expected
-   *            The expected response
+   * @param request The request to issue
+   * @param expected The expected response
    */
   public void testManyRequests( final String request, final String[] expected ) throws Exception {
     final Runnable r = new Runnable() {
@@ -73,8 +71,7 @@ public class HttpKeepAliveTest extends HttpServerTest {
             requestStream.write( closeReq.getBytes() );
             outputStream.reset();
             requestStream.flush();
-            // Server should now close the socket by throwing a
-            // SocketException:
+            // Server should now close the socket by throwing a SocketException:
             try {
               session.execute();
             } catch ( final java.net.SocketException se ) {
