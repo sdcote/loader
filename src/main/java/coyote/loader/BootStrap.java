@@ -17,7 +17,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Date;
 
 import coyote.commons.CipherUtil;
 import coyote.commons.ExceptionUtil;
@@ -38,7 +37,8 @@ import coyote.loader.log.LogMsg;
  * 
  * <p>Since there are several different loaders from which to choose, this 
  * loader reads in a configuration, like other loaders, then uses the 
- * configuration to determine which loader to use.</p>
+ * configuration to determine which loader to use. If none are specified, the
+ * default loader is used which should be good for most general loading tasks.
  */
 public class BootStrap extends AbstractLoader {
 
@@ -182,7 +182,7 @@ public class BootStrap extends AbstractLoader {
    * 
    * @param args the command line arguments passed to this bootstrap loader
    *  
-   * @return a configured loader or null if there was not "CLASS" attribute in 
+   * @return a configured loader or null if there was no "CLASS" attribute in 
    *         the root of the configuration indicating was not found.
    */
   private static Loader buildLoader( String[] args ) {
@@ -221,9 +221,9 @@ public class BootStrap extends AbstractLoader {
 
         // Class was found, no need to look any further, break out of the loop
         break;
-        
+
       } // if class field
-      
+
     } // for each field
 
     return retval;
@@ -232,7 +232,28 @@ public class BootStrap extends AbstractLoader {
 
 
 
- 
+  /**
+   * Create and configure the default loader.
+   * 
+   * <p>This is expected to be called if there is no custom loader defined in 
+   * the configuration.
+   * 
+   * @param args the command line arguments passed to this bootstrap loader
+   * 
+   * @return a configured loader, should never return null 
+   */
+  private static Loader buildDefaultLoader( String[] args ) {
+    Loader retval = new DefaultLoader();
+    try {
+      retval.setCommandLineArguments( args );
+      retval.configure( configuration );
+    } catch ( ConfigurationException e ) {
+      System.err.println( LogMsg.createMsg( MSG, "Loader.could_not_config_loader", retval.getClass().getName(), e.getClass().getSimpleName(), e.getMessage() ) );
+      System.exit( 6 );
+    }
+    return retval;
+  }
+
 
 
 
@@ -268,6 +289,12 @@ public class BootStrap extends AbstractLoader {
     // Create a loader from the configuration
     Loader loader = buildLoader( args );
 
+    // If there is no class specified, use the default loader to process the 
+    // configuration
+    if ( loader == null ) {
+      loader = buildDefaultLoader( args );
+    }
+
     // If we have a loader
     if ( loader != null ) {
 
@@ -291,12 +318,6 @@ public class BootStrap extends AbstractLoader {
 
   }
 
-
-
-
-
-
-  
 
 
 
