@@ -29,18 +29,18 @@ import java.util.Map.Entry;
  * <p>Modern systems use more than just username and password for 
  * authentication. In order to support these system and the security operations 
  * of more sophisticated systems, this class supports a set of credential data 
- * to be used in various ways.</p>
+ * to be used in various ways.
  * 
  * <p>Data in this class is stored as bytes so future systems can store a 
  * variety of data (e.g. biometric) in this class. This class can even help 
- * with some public-private key management schemes.</p>
+ * with some public-private key management schemes.
  * 
  * <p>Credentials should not be stored in memory in their raw state to help
  * prevent accidental exposure should a memory dump occurs or memory become
  * accessible as might be the case in an overflow attack. This class supports
  * the ability to only store the hashed or digested representation of the 
  * credential data by setting the number of rounds of digest calculations are 
- * performed on credentials before they are stored and checked.</p> 
+ * performed on credentials before they are stored and checked. 
  */
 public class CredentialSet {
 
@@ -98,7 +98,7 @@ public class CredentialSet {
    * an accessible format, the credential set can pass the credential data 
    * through a MD5 digest and store the digest value instead of the actual 
    * credential data. Setting the number of rounds to 1 (or more) will result 
-   * in this class using the MD5 has of the credential.</p>
+   * in this class using the MD5 has of the credential.
    * 
    * @param rounds Number of rounds of MD5 digests to perform.  0 equals using 
    * the raw (unsecure) credentials, 1=single round of digest (more secure).
@@ -130,7 +130,7 @@ public class CredentialSet {
    * Add the named data to these credentials
    * 
    * <p>If rounds are set to 1 or more, the credential data will be stored as 
-   * an MD5 digest.</p> 
+   * an MD5 digest. 
    * 
    * @param name The name of the credential
    * @param bytes the bytes representing the credential
@@ -165,13 +165,13 @@ public class CredentialSet {
    * 
    * <p>This stores credentials as cleartext in memory and can represent a 
    * security risk. Consider using {@link #CredentialSet(String, String, int)} 
-   * to store credentials as MD5 digested values.</p>
+   * to store credentials as MD5 digested values.
    * 
    * <p>This is a convenience method for one of the most common use case 
-   * scenarios for this class.</p>
+   * scenarios for this class.
    * 
    * <p>The value is stored in UTF8 encoding, again addressing the most common 
-   * character set use case.</p>
+   * character set use case.
    *
    * @param name The name of the credential being set
    * @param value The authenticating data
@@ -190,10 +190,10 @@ public class CredentialSet {
    * given value after passing it through the given number of rounds of MD5.
    * 
    * <p>This is a convenience method for one of the most common secure use case 
-   * scenarios for this class.</p>
+   * scenarios for this class.
    * 
    * <p>The value is converted to UTF8 encoding and stored as an MD5 hash to 
-   * help reduce the exposure of the clear test credential value.</p>
+   * help reduce the exposure of the clear test credential value.
    *
    * @param name The name of the credential being set
    * @param value The authenticating data
@@ -236,7 +236,7 @@ public class CredentialSet {
    * Test to see if all the given credentials match what is recorded in in 
    * this credential set.
    * 
-   * <p>This exits early on the first failure to match.</p>
+   * <p>This exits early on the first failure to match.
    * 
    * @param creds The set of credentials to match.
    * 

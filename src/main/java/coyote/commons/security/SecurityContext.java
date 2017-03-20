@@ -12,16 +12,16 @@
 package coyote.commons.security;
 
 /**
- * The SecurityContext class models a logical grouping of roles and logins each with a 
- * set of permissions.
+ * The SecurityContext class models a logical grouping of roles and logins 
+ * each with a set of permissions.
  * 
- * <p>Roles are named group of permissions.</p>
+ * <p>Roles are named group of permissions.
  * 
- * <p>Logins are a list of roles and additional permissions for that login.</p>
+ * <p>Logins are a list of roles and additional permissions for that login.
  * 
  * <p>Security contexts allow an application to obtain Logins by querying for 
  * CredentialSet. Those Logins contain Permissions and links to Roles against 
- * which actions against which targets can be checked.</p>
+ * which actions against which targets can be checked.
  * 
  * <p>It is possible for each service to have it's own security context. This 
  * means each service can have its own unique combination of roles and 
@@ -39,7 +39,7 @@ public interface SecurityContext {
    * 
    * <p>This name is assigned through the context's constructor and is used to 
    * address this context in the system. It is therefore assumed that the name 
-   * is unique to the system.</p>
+   * is unique to the system.
    * 
    * @return The name assigned to this security context.
    */
@@ -61,7 +61,7 @@ public interface SecurityContext {
    * when a call to check authorization is made and roles and permissions are 
    * needed for that operation. Authorization references (roles and 
    * permissions) are usually only retrieve on authorization checks (see the 
-   * {@code allows} method).</p>
+   * {@code allows} method).
    * 
    * @param sessionId the identifier of the session to retrieve
    * 
@@ -89,7 +89,7 @@ public interface SecurityContext {
    * Add the given role to the context.
    * 
    * <p>All roles have a name, and if the given role has a name which already 
-   * exists in the context, the existing context will be over written.</p>
+   * exists in the context, the existing context will be over written.
    * 
    * @param role The role to add.
    */
@@ -137,18 +137,18 @@ public interface SecurityContext {
    * populated with the appropriate security references for this security 
    * context. This implies that a performance hit is taken on first calling 
    * this method with a shallow object but subsequent calls will check 
-   * permissions based on the populated values.</p>
+   * permissions based on the populated values.
    * 
    * <p>This is a basic authorization check. The underlying implementation can 
    * choose to perform the check using a variety of strategies including, but 
    * not limited to, Role Based Access Control (RBAC) or individualized 
    * permissions. The implementation may also support the concept of revocation
    * where the role grants permissions, but the login contains permissions 
-   * which revoke specific permissions.</p> 
+   * which revoke specific permissions. 
    * 
    * <p>HINT: Permissions can be AND'ed to create more specific checks and 
    * OR'ed to create more broad checks as permissions are essentially bit 
-   * flags.</p>
+   * flags.
    * 
    * @param login The login to check
    * @param perms The permission flags to check
@@ -201,13 +201,13 @@ public interface SecurityContext {
    * Roles and Permissions are not retrieved as these may not be needed and 
    * their retrieval and population can slow the system down unnecessarily 
    * since many components only want authentication and do not need 
-   * authorization capabilities.</p>
+   * authorization capabilities.
    * 
    * <p>The given name is assumed to be unique in the context. The login name 
    * is normally an email address but can be any string convenient for the 
    * user. Because the Context itself is named, it is possible to have many 
    * security contexts in a system. This allows for a multi-tenant security 
-   * context with a composite key of context and login name.</p>
+   * context with a composite key of context and login name.
    * 
    * @param name the login name to retrieve
    * 
@@ -228,26 +228,26 @@ public interface SecurityContext {
    * Roles and Permissions are not retrieved as these may not be needed and 
    * their retrieval and population can slow the system down unnecessarily 
    * since many components only want authentication and do not need 
-   * authorization capabilities.</p>
+   * authorization capabilities.
    * 
    * <p>This method centralizes all credential matching login in one location 
    * to assure uniform credential matching throughout the context. If all the 
    * given credentials do not match the login contained in the context, no 
-   * login is returned. Partial matches do not count.</p>
+   * login is returned. Partial matches do not count.
    * 
    * <p>The given name is assumed to be unique in the context. The login name 
    * is normally an email address but can be any string convenient for the 
    * user. Because the Context itself is named, it is possible to have many 
    * security contexts in a system. This allows for a multi-tenant security 
-   * context with a composite key of context and login name.</p>
+   * context with a composite key of context and login name.
    * 
    * <p>This method uses the given credentials to find the associated login. 
    * All the credentials much match, so in cases of multi-factor authentication
    * several credentials may be passed to this method to return the appropriate
-   * login.</p>
+   * login.
    * 
    * <p>It is recommended that context implementations reject null or empty 
-   * credentials as a security measure.</p> 
+   * credentials as a security measure. 
    *
    * @param name the login name to retrieve
    * @param credentialSet The set of credentials which must match.

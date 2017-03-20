@@ -45,7 +45,7 @@ public class Login extends PermissionEnabledSubject {
    * retrievable format. This implies that the clear text password is not used 
    * in the system for authentication and that if the password is exposed by 
    * the system, the viewer of the password value will not have the original 
-   * password provided by the user.</p>  
+   * password provided by the user.  
    * 
    * @param name name of the security principal (i.e. username)
    * @param password authentication credential
@@ -97,7 +97,7 @@ public class Login extends PermissionEnabledSubject {
   /**
    * Add the given list of roles to this login.
    * 
-   * <p>Duplicates are ignored.</p>
+   * <p>Duplicates are ignored.
    * 
    * @param roles The list of roles to add
    */
@@ -171,17 +171,17 @@ public class Login extends PermissionEnabledSubject {
    * 
    * <p>The most common scenario is two credentials being passed to this method
    * for matching; username and password. It is therefore important to match 
-   * both credentials.</p>
+   * both credentials.
    * 
    * <p>Other scenarios involve multi-factor authentication with password and 
    * some other credential passed such as a biometric digest, or challenge 
    * response. The more credentials passed and matched, the higher the 
-   * confidence of the authentication operation.</p>
+   * confidence of the authentication operation.
    * 
    * <p>While this login may have dozens of credentials, the given credentials 
    * are expected to be a subset, maybe even one credential. If all the given 
    * credentials match, return true. If even one of the given credentials fail 
-   * to match, then return false.</p>
+   * to match, then return false.
    * 
    * @param creds The set of credentials to match.
    * 

@@ -23,7 +23,7 @@ import java.util.List;
  * <p>This is intended to be the base class for both the Role class which 
  * represents a group of security subjects and the Login, which represents an 
  * individual security subject. This allows permissions to be assigned at 
- * both the group and individual levels.</p>
+ * both the group and individual levels.
  */
 public class PermissionEnabledSubject {
   private HashMap<String, Permission> permissions = new HashMap<String, Permission>();
@@ -125,4 +125,5 @@ public class PermissionEnabledSubject {
   public List<Permission> getPermissions() {
     return new ArrayList<Permission>( permissions.values() );
   }
+  
 }

@@ -19,18 +19,18 @@ import java.security.Principal;
  * 
  * <p>Permissions are assigned to roles and permission checks are performed 
  * against roles as opposed to individuals to keep the number of permission 
- * collections to a minimum. This makes permission management easier.</p>
+ * collections to a minimum. This makes permission management easier.
  * 
  * <p>In some simplified security schemes, components only check for the role 
  * to grant access to resources. For example, if the 'admin' role is presented, 
  * the component may allow access to all its resources. Just the use of 
- * resources can implement a RBAC security model.</p>
+ * resources can implement a RBAC security model.
  * 
  * <p>In more complex security models, roles are not as important as are the 
  * permissions assigned to them. In these cases, components aggregate all the 
  * permissions from all the roles presented to determine access to its 
  * resources. This approach then uses roles as collections of permissions and 
- * use roles as a way to better manage large collections of permissions.</p>
+ * use roles as a way to better manage large collections of permissions.
  */
 public final class Role extends PermissionEnabledSubject implements Principal {
   private String _name = null;

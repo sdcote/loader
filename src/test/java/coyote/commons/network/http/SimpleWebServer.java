@@ -27,41 +27,13 @@ public class SimpleWebServer extends HTTPD {
   /**
    * Default Index file names.
    */
-  @SuppressWarnings("serial")
   public static final List<String> INDEX_FILE_NAMES = new ArrayList<String>() {
-
-    /**
-     *
-     */
     private static final long serialVersionUID = -7551230240891475502L;
-
     {
       add( "index.html" );
       add( "index.htm" );
     }
   };
-
-  /**
-   * The distribution licence
-   */
-  private static final String LICENCE;
-  static {
-    //mimeTypes();
-    String text;
-    try {
-      final InputStream stream = SimpleWebServer.class.getResourceAsStream( "/LICENSE.txt" );
-      final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-      final byte[] buffer = new byte[1024];
-      int count;
-      while ( ( count = stream.read( buffer ) ) >= 0 ) {
-        bytes.write( buffer, 0, count );
-      }
-      text = bytes.toString( "UTF-8" );
-    } catch ( final Exception e ) {
-      text = "unknown";
-    }
-    LICENCE = text;
-  }
 
   private static Map<String, WebServerPlugin> mimeTypeHandlers = new HashMap<String, WebServerPlugin>();
 
@@ -78,7 +50,15 @@ public class SimpleWebServer extends HTTPD {
 
 
   /**
-   * Starts as a standalone file server and waits for Enter.
+   * Starts as a stand-alone file server and waits for Enter.
+   * <p>Parameters as as follows
+   * <li>-h or --host</li>
+   * <li>-p or --port 8080 is the default</li>
+   * <li>-q or --quiet</li>
+   * <li>-d or --dir content directory. Use multiple time to specify multiple directories, current working directory is the default</li>
+   * <li>--cors</li>
+   * <li>-X:[name]=[value] set a named option</li>
+   * <li></li>
    */
   public static void main( final String[] args ) {
     // Defaults
@@ -106,8 +86,6 @@ public class SimpleWebServer extends HTTPD {
         if ( equalIdx > 0 ) {
           cors = args[i].substring( equalIdx + 1 );
         }
-      } else if ( "--licence".equalsIgnoreCase( args[i] ) ) {
-        System.out.println( SimpleWebServer.LICENCE + "\n" );
       } else if ( args[i].startsWith( "-X:" ) ) {
         final int dot = args[i].indexOf( '=' );
         if ( dot > 0 ) {
@@ -288,13 +266,12 @@ public class SimpleWebServer extends HTTPD {
       return getNotFoundResponse();
     }
 
-    // Browsers get confused without '/' after the directory, send a
-    // redirect.
+    // Browsers get confused without '/' after the directory, send a redirect.
     final File f = new File( homeDir, uri );
     if ( f.isDirectory() && !uri.endsWith( "/" ) ) {
       uri += "/";
       final Response res = newFixedLengthResponse( Status.REDIRECT, MimeType.HTML.getType(), "<html><body>Redirected: <a href=\"" + uri + "\">" + uri + "</a></body></html>" );
-      res.addHeader( "Location", uri );
+      res.addHeader( HTTP.HDR_LOCATION, uri );
       return res;
     }
 

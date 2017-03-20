@@ -28,11 +28,11 @@ import coyote.commons.network.IpNetwork;
  * entry in the table, a circular array contains times, if a check matches an 
  * entry, it is then checked to see if the next element in the array is less 
  * than the allowable interval, if so false is returned indicating the check 
- * happened too soon and that too may checks are being performed too often.</p>
+ * happened too soon and that too may checks are being performed too often.
  * 
  * <p>This class is designed to provide a simple way to check for a Denial of 
  * Service attack by allowing the setting a limit of the number of requests by
- * IP Address.</p> 
+ * IP Address in some time frame. 
  */
 public class OperationFrequency {
   private static final short DEFAULT_LIMIT = 24;
@@ -164,9 +164,10 @@ public class OperationFrequency {
   /**
    * Clear out all old address mappings by their last check time.
    * 
-   * <p>Network Mappings are not touched</p>
+   * <p>Network Mappings are not touched
    * 
-   * @param age any tables with last check times older than this number of milliseconds will be removed from the mappings
+   * @param age any tables with last check times older than this number of 
+   *        milliseconds will be removed from the mappings
    */
   public synchronized void expire( long age ) {
     long time = System.currentTimeMillis();
@@ -188,7 +189,7 @@ public class OperationFrequency {
    * 
    * <p>If the maximum number of requests have been received within the 
    * interval, the check will fail. This allows us to track if too many 
-   * requests are being received in a particular interval.</p> 
+   * requests are being received in a particular interval. 
    */
   private class RequestTable {
     private final long[] times;
@@ -227,7 +228,8 @@ public class OperationFrequency {
     /**
      * @param time the time in millis (Java epoch)
      * 
-     * @return true if the maximum number of requests have not been reached, false if too many requests have been reached
+     * @return true if the maximum number of requests have not been reached, 
+     *         false if too many requests have been reached
      */
     boolean check( long time ) {
       // in Java, overflows go negative not back to zero

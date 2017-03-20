@@ -21,7 +21,7 @@
  * <li>Block Cipher - Streams are not necessary</li>
  * <li>Performance - runs with few resources</li>
  * <li>Simplicity - implementation is easy to represent in a single class</li>
- * <li>Reasonable strength to resource ratio -we dont need military-grade 
+ * <li>Reasonable strength to resource ratio -we don't need military-grade 
  * encryption.</li></ul>
  * 
  * <p>Blowfish is classified as public domain and has been analyzed extensively 

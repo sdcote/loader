@@ -17,7 +17,6 @@ import java.security.Principal;
 public abstract class SecurityPrincipal implements Principal {
 
   public SecurityPrincipal() {
-    // TODO Auto-generated constructor stub
   }
 
 
