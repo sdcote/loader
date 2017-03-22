@@ -1,8 +1,6 @@
 package coyote.commons.network.http.handler;
 
-import java.io.BufferedInputStream;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.Map;
 
 import coyote.commons.StringUtil;
@@ -31,7 +29,6 @@ import coyote.loader.log.Log;
  */
 public class ResourceHandler extends DefaultHandler {
 
-  private static final String ROOT_URL = "/";
   private static final String DEFAULT_ROOT = "content";
   private boolean redirectOnIndexedDir = false;
 
@@ -76,8 +73,6 @@ public class ResourceHandler extends DefaultHandler {
   @Override
   public Response get( final UriResource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
 
-    // logRequestDetails( uriResource, session );
-
     final String baseUri = uriResource.getUri(); // the regex matcher URL
 
     String coreRequest = HTTPDRouter.normalizeUri( session.getUri() );
@@ -101,7 +96,7 @@ public class ResourceHandler extends DefaultHandler {
     }
 
     // Check if we should send a 301 redirect when the request is for a 
-    // directory and we found an inded file in that location whic can be 
+    // directory and we found an index file in that location which can be 
     // served instead
     if ( uriResource.getInitParameterLength() > 1 ) {
       try {
@@ -171,65 +166,6 @@ public class ResourceHandler extends DefaultHandler {
         }
       }
     }
-  }
-
-
-
-
-  private void logRequestDetails( UriResource uriResource, IHTTPSession session ) {
-    Map<String, String> header = session.getRequestHeaders();
-    Map<String, String> parms = session.getParms();
-    String uri = session.getUri();
-
-    final String baseUri = uriResource.getUri();
-
-    session.getQueryParameterString();
-
-    // Print 
-    if ( Log.isLogging( Log.DEBUG_EVENTS ) ) {
-      StringBuffer b = new StringBuffer( "DEBUG: " );
-
-      b.append( session.getMethod() + " '" + uri + "' \r\n" );
-
-      Iterator<String> e = header.keySet().iterator();
-      while ( e.hasNext() ) {
-        String value = e.next();
-        b.append( "   HDR: '" + value + "' = '" + header.get( value ) + "'\r\n" );
-      }
-      e = parms.keySet().iterator();
-      while ( e.hasNext() ) {
-        String value = e.next();
-        b.append( "   PRM: '" + value + "' = '" + parms.get( value ) + "'\r\n" );
-      }
-      Log.append( HTTPD.EVENT, b.toString() );
-    }
-
-    Log.append( HTTPD.EVENT, "ResourceHandler servicing request for " + baseUri );
-
-    String realUri = HTTPDRouter.normalizeUri( session.getUri() );
-
-    for ( int index = 0; index < Math.min( baseUri.length(), realUri.length() ); index++ ) {
-      if ( baseUri.charAt( index ) != realUri.charAt( index ) ) {
-        realUri = HTTPDRouter.normalizeUri( realUri.substring( index ) );
-        break;
-      }
-    }
-    Log.append( HTTPD.EVENT, "ResourceHandler processed request for real URI '" + realUri + "'" );
-  }
-
-
-
-
-  /**
-   * Use the class loader to find the named resource
-   * 
-   * @param name full path name to the resource to load
-   * 
-   * @return An input stream for reading the resource, or {@code null} if the 
-   *         resource could not be found
-   */
-  protected BufferedInputStream resourceToInputStream( final String name ) {
-    return new BufferedInputStream( ClassLoader.getSystemResourceAsStream( name ) );
   }
 
 
