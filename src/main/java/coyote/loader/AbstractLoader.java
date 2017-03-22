@@ -55,7 +55,6 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   /** Constant to assist in determining the full class name of loggers */
   private static final String LOGGER_PKG = Log.class.getPackage().getName();
 
-
   /** The command line arguments used to invoke the loader */
   protected String[] commandLineArguments = null;
 
@@ -457,7 +456,9 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
           cmpnt.setLoader( this );
 
           // Add it to the components map
-          components.put( object, config );
+          synchronized( components ) {
+            components.put( object, config );
+          }
 
           // return the component
           retval = cmpnt;
@@ -551,10 +552,12 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
       } else if ( component instanceof ThreadJob ) {
         ( (ThreadJob)component ).shutdown(); // May not work as expected
       }
-      if ( components.remove( component ) != null ) {
-        Log.trace( "Successfully removed " + component.getClass().getName() + " from loader" );
-      } else {
-        Log.warn( "Component " + component.getClass().getName() + " did not apper to be tracked by loader" );
+      synchronized( components ) {
+        if ( components.remove( component ) != null ) {
+          Log.trace( "Successfully removed " + component.getClass().getName() + " from loader" );
+        } else {
+          Log.warn( "Component " + component.getClass().getName() + " did not apper to be tracked by loader" );
+        }
       }
     }
   }
@@ -569,16 +572,18 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
     DataFrame frame = new DataFrame();
     frame.put( "Message", "Normal termination" );
 
-    for ( final Iterator<Object> it = components.keySet().iterator(); it.hasNext(); ) {
-      final Object cmpnt = it.next();
-      if ( cmpnt instanceof ManagedComponent ) {
-        safeShutdown( (ManagedComponent)cmpnt, frame );
-      } else if ( cmpnt instanceof ThreadJob ) {
-        ( (ThreadJob)cmpnt ).shutdown(); // May not work as expected
-      }
+    synchronized( components ) {
+      for ( final Iterator<Object> it = components.keySet().iterator(); it.hasNext(); ) {
+        final Object cmpnt = it.next();
+        if ( cmpnt instanceof ManagedComponent ) {
+          safeShutdown( (ManagedComponent)cmpnt, frame );
+        } else if ( cmpnt instanceof ThreadJob ) {
+          ( (ThreadJob)cmpnt ).shutdown(); // May not work as expected
+        }
 
-      // remove the component
-      it.remove();
+        // remove the component
+        it.remove();
+      }
     }
   }
 
@@ -689,23 +694,24 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
             }
           }
         }
-      }
 
-      // TODO cycle through all the hangtime objects and check their last 
-      // check-in time. If expired, log the event and restart them like the 
-      // above active check
+        // TODO cycle through all the hangtime objects and check their last 
+        // check-in time. If expired, log the event and restart them like the 
+        // above active check
 
-      // Monitor check-in map size; if it is too large, we have a problem
-      if ( checkin.size() > components.size() ) {
-        Log.fatal( LogMsg.createMsg( MSG, "Loader.check_in_map_size", checkin.size(), components.size() ) );
-      }
+        // Monitor check-in map size; if it is too large, we have a problem
+        if ( checkin.size() > components.size() ) {
+          Log.fatal( LogMsg.createMsg( MSG, "Loader.check_in_map_size", checkin.size(), components.size() ) );
+        }
 
-      // If we have no components which are active, there is not need for this
-      // loader to remain running
-      if ( components.size() == 0 ) {
-        Log.warn( LogMsg.createMsg( MSG, "Loader.no_components" ) );
-        this.shutdown();
-      }
+        // If we have no components which are active, there is not need for this
+        // loader to remain running
+        if ( components.size() == 0 ) {
+          Log.warn( LogMsg.createMsg( MSG, "Loader.no_components" ) );
+          this.shutdown();
+        }
+
+      } // synchronized
 
       // Yield to other threads and sleep(wait) for a time
       park( parkTime );
