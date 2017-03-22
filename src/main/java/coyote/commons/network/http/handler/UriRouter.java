@@ -26,7 +26,7 @@ import coyote.loader.log.Log;
 
 
 /**
- * This is the heart of the URI routing mechanism in a handler server.
+ * This is the heart of the URI routing mechanism in a routing HTTP server.
  */
 public class UriRouter {
 
@@ -39,7 +39,9 @@ public class UriRouter {
 
 
 
-  //
+  /**
+   * Default constructor
+   */
   public UriRouter() {
     mappings = new ArrayList<UriResource>();
   }
@@ -47,6 +49,19 @@ public class UriRouter {
 
 
 
+  /**
+   * Add a route to this router with the handler class for that route.
+   * 
+   * @param url the regex to match against the request URL
+   * @param priority the priority in which the router will check the route, 
+   *        lower values return before larger priorities.
+   * @param handler the handler class for this mapping. If null, the 
+   *        NotImplemented handler will be used.
+   * @param authProvider the auth provider the URI resource should use for 
+   *        this route
+   * @param initParameter the initialization parameters for the handler when 
+   *        it receives a request.
+   */
   void addRoute( final String url, final int priority, final Class<?> handler, final AuthProvider authProvider, final Object... initParameter ) {
     if ( url != null ) {
       if ( handler != null ) {
@@ -62,17 +77,18 @@ public class UriRouter {
 
 
   /**
-   * Search in the mappings if the given url matches some of the rules.
+   * Search in the mappings if the given request URI matches some of the rules.
    * 
    * <p>If there are more than one match, this returns the rule with least 
    * parameters. For example: mapping 1 = /user/:id  - mapping 2 = /user/help. 
-   * If the incoming uri is www.example.com/user/help - mapping 2 is returned. 
-   * If the incoming uri is www.example.com/user/3232 - mapping 1 is 
+   * If the incoming URI is www.example.com/user/help - mapping 2 is returned. 
+   * If the incoming URI is www.example.com/user/3232 - mapping 1 is 
    * returned.</p>
    * 
-   * @param session
+   * @param session the HTTP session encapsulating the request
    * 
    * @return the Response from the URI resource processing
+   * 
    * @throws SecurityResponseException if processing request generated a security exception
    */
   public Response process( final IHTTPSession session ) throws SecurityResponseException {
@@ -129,6 +145,17 @@ public class UriRouter {
 
   public void setNotImplemented( final Class<?> handler ) {
     notImplemented = handler;
+  }
+
+
+
+
+  /**
+   * @return the list of URI resource objects responsible for handling 
+   *         requests of the server.
+   */
+  public List<UriResource> getMappings() {
+    return mappings;
   }
 
 

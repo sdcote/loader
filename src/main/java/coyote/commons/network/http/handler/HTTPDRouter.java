@@ -1,5 +1,7 @@
 package coyote.commons.network.http.handler;
 
+import java.util.List;
+
 import coyote.commons.network.http.HTTPD;
 import coyote.commons.network.http.IHTTPSession;
 import coyote.commons.network.http.Response;
@@ -131,6 +133,25 @@ public class HTTPDRouter extends HTTPD {
 
   public void removeRoute( final String url ) {
     router.removeRoute( url );
+  }
+
+
+
+
+  /**
+   * Accessor to the UriResources responsible for handling requests of the 
+   * router.
+   * 
+   * <p><strong>NOTE:</strong> Never add or otherwise alter this list as it 
+   * can adversely affect routing. It is exposed primarily for diagnostic 
+   * purposes or to provide access to the URI resource attributes, such as 
+   * their initialization parameters.
+   * 
+   * @return the list of URI resource objects responsible for handling 
+   *         requests of the server.
+   */
+  public List<UriResource> getMappings() {
+    return router.getMappings();
   }
 
 
