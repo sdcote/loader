@@ -21,9 +21,31 @@ import java.util.List;
 
 
 public class WebSocketFrame {
+  public static final Charset TEXT_CHARSET = Charset.forName( "UTF-8" );
+  private WebSocketFrame.OpCode opCode;
+  private boolean fin;
+  private byte[] maskingKey;
+  private byte[] payload;
+  private transient int _payloadLength;
+  private transient String _payloadString;
 
+
+  /**
+   * 
+   */
   public static enum CloseCode {
-    NormalClosure( 1000), GoingAway( 1001), ProtocolError( 1002), UnsupportedData( 1003), NoStatusRcvd( 1005), AbnormalClosure( 1006), InvalidFramePayloadData( 1007), PolicyViolation( 1008), MessageTooBig( 1009), MandatoryExt( 1010), InternalServerError( 1011), TLSHandshake( 1015);
+    NormalClosure( 1000), 
+    GoingAway( 1001), 
+    ProtocolError( 1002), 
+    UnsupportedData( 1003), 
+    NoStatusRcvd( 1005), 
+    AbnormalClosure( 1006), 
+    InvalidFramePayloadData( 1007), 
+    PolicyViolation( 1008), 
+    MessageTooBig( 1009), 
+    MandatoryExt( 1010), 
+    InternalServerError( 1011), 
+    TLSHandshake( 1015);
 
     public static WebSocketFrame.CloseCode find( int value ) {
       for ( WebSocketFrame.CloseCode code : values() ) {
@@ -51,6 +73,10 @@ public class WebSocketFrame {
     }
   }
 
+
+  /**
+   * 
+   */
   public static class CloseFrame extends WebSocketFrame {
 
     private static byte[] generatePayload( WebSocketFrame.CloseCode code, String closeReason ) throws CharacterCodingException {
@@ -104,8 +130,16 @@ public class WebSocketFrame {
     }
   }
 
+  /**
+   * 
+   */
   public static enum OpCode {
-    Continuation( 0), Text( 1), Binary( 2), Close( 8), Ping( 9), Pong( 10);
+    Continuation(0), 
+    Text(1), 
+    Binary(2), 
+    Close(8), 
+    Ping(9), 
+    Pong(10);
 
     public static WebSocketFrame.OpCode find( byte value ) {
       for ( WebSocketFrame.OpCode opcode : values() ) {
@@ -140,7 +174,6 @@ public class WebSocketFrame {
     }
   }
 
-  public static final Charset TEXT_CHARSET = Charset.forName( "UTF-8" );
 
 
 
@@ -199,19 +232,6 @@ public class WebSocketFrame {
     return payload.getBytes( WebSocketFrame.TEXT_CHARSET );
   }
 
-  private WebSocketFrame.OpCode opCode;
-
-  private boolean fin;
-
-  private byte[] maskingKey;
-
-  private byte[] payload;
-
-  // --------------------------------GETTERS---------------------------------
-
-  private transient int _payloadLength;
-
-  private transient String _payloadString;
 
 
 
@@ -311,8 +331,6 @@ public class WebSocketFrame {
 
 
 
-  // --------------------------------SERIALIZATION---------------------------
-
   public String getTextPayload() {
     if ( this._payloadString == null ) {
       try {
@@ -391,8 +409,6 @@ public class WebSocketFrame {
 
 
 
-
-  // --------------------------------ENCODING--------------------------------
 
   private void readPayloadInfo( InputStream in ) throws IOException {
     byte b = (byte)checkedRead( in.read() );
@@ -479,8 +495,6 @@ public class WebSocketFrame {
 
 
 
-  // --------------------------------CONSTANTS-------------------------------
-
   public void setUnmasked() {
     setMaskingKey( null );
   }
@@ -502,8 +516,6 @@ public class WebSocketFrame {
 
 
 
-  // ------------------------------------------------------------------------
-
   public void write( OutputStream out ) throws IOException {
     byte header = 0;
     if ( this.fin ) {
@@ -521,9 +533,7 @@ public class WebSocketFrame {
       out.write( this._payloadLength );
     } else {
       out.write( isMasked() ? 0xFF : 127 );
-      out.write( this._payloadLength >>> 56 & 0 ); // integer only
-                                                   // contains
-      // 31 bit
+      out.write( this._payloadLength >>> 56 & 0 ); 
       out.write( this._payloadLength >>> 48 & 0 );
       out.write( this._payloadLength >>> 40 & 0 );
       out.write( this._payloadLength >>> 32 & 0 );
@@ -543,4 +553,5 @@ public class WebSocketFrame {
     }
     out.flush();
   }
+
 }

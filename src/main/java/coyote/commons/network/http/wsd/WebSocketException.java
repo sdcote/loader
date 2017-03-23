@@ -17,10 +17,8 @@ import coyote.commons.network.http.wsd.WebSocketFrame.CloseCode;
 
 public class WebSocketException extends IOException {
 
-  private static final long serialVersionUID = 1L;
-
+  private static final long serialVersionUID = 777960923156306743L;
   private final WebSocketFrame.CloseCode code;
-
   private final String reason;
 
 
@@ -59,4 +57,5 @@ public class WebSocketException extends IOException {
   public String getReason() {
     return this.reason;
   }
+
 }

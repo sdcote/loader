@@ -18,33 +18,28 @@ import coyote.commons.network.http.Status;
  */
 public abstract class WebSocketDaemon extends HTTPD {
 
-  public static enum State {
-    UNCONNECTED, CONNECTING, OPEN, CLOSING, CLOSED
-  }
-
   static final Logger LOG = Logger.getLogger( WebSocketDaemon.class.getName() );
 
   public static final String HEADER_UPGRADE = "upgrade";
-
   public static final String HEADER_UPGRADE_VALUE = "websocket";
-
   public static final String HEADER_CONNECTION = "connection";
-
   public static final String HEADER_CONNECTION_VALUE = "Upgrade";
-
   public static final String HEADER_WEBSOCKET_VERSION = "sec-websocket-version";
-
   public static final String HEADER_WEBSOCKET_VERSION_VALUE = "13";
-
   public static final String HEADER_WEBSOCKET_KEY = "sec-websocket-key";
-
   public static final String HEADER_WEBSOCKET_ACCEPT = "sec-websocket-accept";
-
   public static final String HEADER_WEBSOCKET_PROTOCOL = "sec-websocket-protocol";
-
   private final static String WEBSOCKET_KEY_MAGIC = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
-
   private final static char[] ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".toCharArray();
+
+
+  public static enum State {
+    UNCONNECTED, 
+    CONNECTING, 
+    OPEN, 
+    CLOSING, 
+    CLOSED
+  }
 
 
 
@@ -180,4 +175,5 @@ public abstract class WebSocketDaemon extends HTTPD {
   protected boolean useGzipWhenAccepted( final Response r ) {
     return false;
   }
+
 }

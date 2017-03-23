@@ -181,7 +181,6 @@ public abstract class WebSocket {
       reason = ( (CloseFrame)frame ).getCloseReason();
     }
     if ( this.state == State.CLOSING ) {
-      // Answer for my requested close
       doClose( code, reason, false );
     } else {
       close( code, reason, true );
@@ -193,7 +192,6 @@ public abstract class WebSocket {
 
   private void handleFrameFragment( WebSocketFrame frame ) throws IOException {
     if ( frame.getOpCode() != OpCode.Continuation ) {
-      // First
       if ( this.continuousOpCode != null ) {
         throw new WebSocketException( CloseCode.ProtocolError, "Previous continuous frame sequence not completed." );
       }
@@ -201,7 +199,6 @@ public abstract class WebSocket {
       this.continuousFrames.clear();
       this.continuousFrames.add( frame );
     } else if ( frame.isFin() ) {
-      // Last
       if ( this.continuousOpCode == null ) {
         throw new WebSocketException( CloseCode.ProtocolError, "Continuous frame sequence was not started." );
       }
@@ -209,10 +206,8 @@ public abstract class WebSocket {
       this.continuousOpCode = null;
       this.continuousFrames.clear();
     } else if ( this.continuousOpCode == null ) {
-      // Unexpected
       throw new WebSocketException( CloseCode.ProtocolError, "Continuous frame sequence was not started." );
     } else {
-      // Intermediate
       this.continuousFrames.add( frame );
     }
   }
