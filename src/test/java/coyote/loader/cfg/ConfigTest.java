@@ -1,5 +1,8 @@
 package coyote.loader.cfg;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 //import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -47,8 +50,34 @@ public class ConfigTest {
   }
 
 
+
+
   @Test
-  public void testDefaults() {
-    
+  public void testGetInt() {
+
+    Config cfg = new Config();
+    cfg.set( "port", "123" );
+
+    try {
+      int value = cfg.getInt( "PORT" );
+      assertTrue( value == 123 );
+    } catch ( NumberFormatException e ) {
+      fail( "Could not retrieve as an integer" );
+    }
+
+    cfg.set( "fail", null );
+    try {
+      int value = cfg.getInt( "FAIL" );
+      fail( "Should have thrown an exception" );
+
+      value = cfg.getInt( "NotThere" );
+      fail( "Should have thrown an exception - null value" );
+    } catch ( NumberFormatException e ) {}
+
+    try {
+      int value = cfg.getInt( "NotThere" );
+      fail( "Should have thrown an exception - not found" );
+    } catch ( NumberFormatException e ) {}
+
   }
 }

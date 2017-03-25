@@ -513,6 +513,78 @@ public class Config extends DataFrame implements Cloneable, Serializable {
 
 
   /**
+   * Perform a case insensitive search for the first value with the given name 
+   * and returns it as an integer.
+   * 
+   * @param tag the name of the configuration attribute for which to search
+   * 
+   * @return the first value with the given name as an integer
+   * 
+   *  @throws NumberFormatException if the field could not be found or if the value 
+   *          could not be parsed into an integer.
+   */
+  public int getInt( String tag ) throws NumberFormatException {
+    return Integer.parseInt( getString( tag ) );
+  }
+
+
+
+
+  /**
+   * Perform a case insensitive search for the first value with the given name 
+   * and returns it as a long.
+   * 
+   * @param tag the name of the configuration attribute for which to search
+   * 
+   * @return the first value with the given name as a long
+   * 
+   *  @throws NumberFormatException if the field could not be found or if the value 
+   *          could not be parsed into a long.
+   */
+  public long getLong( String tag ) throws NumberFormatException {
+    return Long.parseLong( getString( tag ) );
+  }
+
+
+
+
+  /**
+   * Perform a case insensitive search for the first value with the given name 
+   * and returns it as a float.
+   * 
+   * @param tag the name of the configuration attribute for which to search
+   * 
+   * @return the first value with the given name as a float
+   * 
+   *  @throws NumberFormatException if the field could not be found or if the value 
+   *          could not be parsed into a float.
+   */
+  public float getFloat( String tag ) throws NumberFormatException {
+    return Float.parseFloat( getString( tag ) );
+  }
+
+
+
+
+  /**
+   * Perform a case insensitive search for the first value with the given name 
+   * and returns it as a double.
+   * 
+   * @param tag the name of the configuration attribute for which to search
+   * 
+   * @return the first value with the given name as a double
+   * 
+   *  @throws NumberFormatException if the field could not be found or if the value 
+   *          could not be parsed into a double.
+   */
+  public double getDouble( String tag ) throws NumberFormatException {
+    return Double.parseDouble( getString( tag ) );
+  }
+
+
+
+
+  /**
    * @return Formatted, multi-line JSON string representing the record.
    */
   public String toFormattedString() {
