@@ -213,6 +213,14 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   private void initLogging() {
     List<Config> loggers = configuration.getSections( ConfigTag.LOGGING );
 
+    // There is a logger section, remove all the existing loggers and start 
+    // from scratch so we don't wind up with duplicate messages. Even if it is 
+    // empty, assume the configuration contains the exact state of logging 
+    // desired.
+    if ( loggers.size() > 0 ) {
+      Log.removeAllLoggers();
+    }
+    
     // for each of the logger sections
     for ( Config cfg : loggers ) {
 
