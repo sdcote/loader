@@ -471,7 +471,9 @@ public class Config extends DataFrame implements Cloneable, Serializable {
     for ( DataField field : getFields() ) {
       if ( field.isFrame() ) {
         Config cfg = new Config();
-        cfg.populate( (DataFrame)field.getObjectValue() );
+        if ( field.isNotNull() ) {
+          cfg.populate( (DataFrame)field.getObjectValue() );
+        }
         retval.add( cfg );
       } // name match && a frame
     } // for
