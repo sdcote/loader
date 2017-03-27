@@ -26,7 +26,6 @@ import coyote.commons.network.http.HTTPD;
 import coyote.commons.network.http.TestHttpClient;
 import coyote.commons.network.http.TestResponse;
 import coyote.commons.network.http.TestRouter;
-import coyote.commons.network.http.handler.ResourceHandler;
 
 
 /**
@@ -106,9 +105,5 @@ public class ResourceHandlerTest {
     }
 
   }
-
-
-
-
 
 }
