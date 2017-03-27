@@ -49,7 +49,7 @@ public class TestResponse {
 
 
   /**
-   * @return true if the exchange was completed sucessfully, false if there was an error.
+   * @return true if the exchange was completed successfully, false if there was an error.
    */
   public boolean isComplete() {
     return complete;
@@ -59,7 +59,7 @@ public class TestResponse {
 
 
   /**
-   * @param flag The stete of the completion, true means the exchange completed sucessfully.
+   * @param flag The state of the completion, true means the exchange completed successfully.
    */
   public void setComplete( final boolean flag ) {
     complete = flag;

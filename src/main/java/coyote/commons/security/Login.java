@@ -17,7 +17,20 @@ import java.util.List;
 
 
 /**
- * This class models a list of roles and their associated permissions.
+ * This class models a list of roles and their associated permissions with a 
+ * security principal and a set of credentials.
+ * 
+ * <p>A single security principal can have many different logins, each with a 
+ * different set of credentials and a different set of roles. These 
+ * associations of principal to roles are maintained by the application and 
+ * modeled by this class.
+ * 
+ * <p>Each login has one or more credentials to perform authentication by the
+ * application. The set of roles in this class assists the application perform 
+ * role based authorization. The identifier of this class allows the 
+ * application to perform auditing by tagging this identifier to all 
+ * operational records and transactions. Authorization, Authentication and 
+ * Auditing are the foundation of all secure applications. 
  */
 public class Login extends PermissionEnabledSubject {
 
