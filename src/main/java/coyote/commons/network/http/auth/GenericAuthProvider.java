@@ -33,7 +33,7 @@ import coyote.loader.log.Log;
 
 
 /**
- * This is the default authentication and Authorization component for the HTTP 
+ * This is the default authentication and authorization component for the HTTP 
  * service.
  *
  * <p>Passwords are read and stored in memory as a multi-round MD5 digest. The
@@ -125,6 +125,7 @@ public class GenericAuthProvider implements AuthProvider {
   public static final String ENCRYPTED = "Encrypted";
 
   public static final String ALLOW_NO_SSL = "AllowUnsecuredConnections";
+  public static final String SEND_AUTH_ON_FAILURE = "SendAuthRequestOnFailure";
 
   private static final String MD5 = "MD5";
 
@@ -145,6 +146,7 @@ public class GenericAuthProvider implements AuthProvider {
   public final List<User> userList = new ArrayList<User>();
 
   private boolean allowNoSSL = false;
+  private boolean sendAuthRequest = false;
 
   private int digestRounds = 1;
 
@@ -172,9 +174,15 @@ public class GenericAuthProvider implements AuthProvider {
 
       try {
         if ( cfg.getAsBoolean( ALLOW_NO_SSL ) ) {
-          Log.append( HTTPD.EVENT, "WARNING: SSL checks will be ignored in this server instance. Sensitive data will traverse unencrypted connections!" );
-          Log.warn( "WARNING: SSL checks will be ignored in this server instance. Sensitive data will traverse unencrypted connections!" );
+          Log.append( HTTPD.EVENT, "NOTICE: SSL checks will be ignored in this server instance. Sensitive data may traverse unencrypted connections." );
           allowNoSSL = true;
+        }
+      } catch ( final DataFrameException e ) {}
+
+      try {
+        if ( cfg.getAsBoolean( SEND_AUTH_ON_FAILURE ) ) {
+          Log.append( HTTPD.EVENT, "NOTICE: The WWW-Authenticate header will be sent on failed authentication requests. This allows the user to enter basic auth credentials on most browsers. This may be used as an attack vector (Brute Force & DoS)." );
+          sendAuthRequest = true;
         }
       } catch ( final DataFrameException e ) {}
     }
@@ -298,8 +306,6 @@ public class GenericAuthProvider implements AuthProvider {
   @Override
   public boolean isAuthenticated( final IHTTPSession session ) {
 
-    // Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
-
     // all headers are stored in lower case since browsers use different case
     final String authHeader = session.getRequestHeaders().get( HTTP.HDR_AUTHORIZATION.toLowerCase() );
     if ( StringUtil.isNotBlank( authHeader ) ) {
@@ -307,7 +313,6 @@ public class GenericAuthProvider implements AuthProvider {
       if ( ( tokens != null ) && ( tokens.length > 0 ) ) {
         final String authType = tokens[0];
         Log.append( HTTPD.EVENT, "Received Auth Type of '" + authType + "'" );
-        // TODO: Support multiple Auth Types
 
         // Assume Basic Auth
         if ( tokens.length > 1 ) {
@@ -362,9 +367,9 @@ public class GenericAuthProvider implements AuthProvider {
       }
     }
 
-    // TODO: Make this configurable...this can be considered a security risk allowing easier dictionary attacks
-    // if no authentication header or auth failure, we can send a request for client to send one, most browsers will then pop-up a form
-    session.getResponseHeaders().put( HTTP.HDR_WWW_AUTHENTICATE, HTTP.BASIC + " realm=\"Generic Realm\"" );
+    if ( sendAuthRequest ) {
+      session.getResponseHeaders().put( HTTP.HDR_WWW_AUTHENTICATE, HTTP.BASIC + " realm=\"Generic Realm\"" );
+    }
 
     return false;
 
@@ -402,7 +407,7 @@ public class GenericAuthProvider implements AuthProvider {
   public boolean isSecureConnection( final IHTTPSession session ) {
     // we can configure the auth provider to ignore the SSL check on many of
     // the handlers when the deployment does not have valid SSL certificates,
-    // such as in development.
+    // such as in development and testing.
     if ( allowNoSSL ) {
       return true;
     }
