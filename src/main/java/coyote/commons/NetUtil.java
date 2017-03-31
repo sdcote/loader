@@ -16,9 +16,12 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
 
+import coyote.commons.network.IpAddress;
+import coyote.commons.network.IpNetwork;
+
 
 public class NetUtil {
-  
+
   private static InetAddress localAddress = null;
 
 
@@ -182,8 +185,7 @@ public class NetUtil {
     // No cached result, figure it out and cache it for later
     InetAddress addr = null;
 
-    // Make sure we get the IP Address by which the rest of the world knows
-    // us
+    // Make sure we get the IP Address by which the rest of the world knows us
     // or at least, our host's default network interface
     try {
       // This helps insure that we do not get localhost (127.0.0.1)
@@ -211,6 +213,94 @@ public class NetUtil {
     return addr;
   }
 
-  
-  
+
+
+
+  /**
+   * Return a InetAddress that is suitable for use as a broadcast address.
+   *
+   * <p>Take a mask in the form of "255.255.111.0" and apply it to the given
+   * address to calculate the broadcast address for the given subnet mask.</p>
+   *
+   * @param addr InetAddress representing a node in a subnet.
+   * @param mask Valid dotted-quad netmask.
+   *
+   * @return an InetAddress capable of being used as a broadcast address in the
+   *         given nodes subnet.
+   */
+  public static InetAddress getBroadcastAddress( String addr, String mask ) {
+    InetAddress node = null;
+
+    if ( mask != null ) {
+      try {
+        node = InetAddress.getByName( addr );
+
+        IpNetwork network = new IpNetwork( addr, mask );
+        IpAddress adr = network.getBroadcastAddress();
+        return InetAddress.getByName( adr.toString() );
+      } catch ( Exception ignore ) {
+        // just return the node address
+        try {
+          node = InetAddress.getByName( "255.255.255.255" );
+        } catch ( Exception e ) {
+          // should always work
+        }
+      }
+    }
+
+    return node;
+  }
+
+
+
+
+  /**
+   * Return a InetAddress that is suitable for use as a broadcast address.
+   *
+   * <p>Take a mask in the form of "255.255.111.0" and apply it to the local
+   * address to calculate the broadcast address for the given subnet mask.</p>
+   *
+   * @param mask Valid dotted-quad netmask.
+   *
+   * @return an InetAddress capable of being used as a broadcast address
+   */
+  public static InetAddress getLocalBroadcast( String mask ) {
+    InetAddress retval = getLocalAddress();
+
+    if ( retval != null ) {
+      return getBroadcastAddress( retval, mask );
+    }
+
+    return retval;
+  }
+
+
+
+
+  /**
+   * Return a InetAddress that is suitable for use as a broadcast address.
+   *
+   * <p>Take a mask in the form of "255.255.111.0" and apply it to the given
+   * address to calculate the broadcast address for the given subnet mask.</p>
+   *
+   * @param addr InetAddress representing a node in a subnet.
+   * @param mask Valid dotted-quad netmask.
+   *
+   * @return an InetAddress capable of being used as a broadcast address in the
+   *         given nodes subnet.
+   */
+  public static InetAddress getBroadcastAddress( InetAddress addr, String mask ) {
+    if ( mask != null ) {
+      try {
+        IpNetwork network = new IpNetwork( addr.getHostAddress(), mask );
+        IpAddress adr = network.getBroadcastAddress();
+        return InetAddress.getByName( adr.toString() );
+      } catch ( Exception e ) {
+        // just return the address
+      }
+    }
+
+    return addr;
+  }
+
 }
