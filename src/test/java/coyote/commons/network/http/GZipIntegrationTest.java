@@ -19,10 +19,12 @@ import org.apache.http.util.EntityUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import coyote.commons.NetUtil;
+
 
 public class GZipIntegrationTest extends IntegrationTestBase<GZipIntegrationTest.TestServer> {
   
-  public static final int PORT = 7428;
+  public static final int PORT = NetUtil.getNextAvailablePort( 7428 );
   
   public static class TestServer extends HTTPD {
 

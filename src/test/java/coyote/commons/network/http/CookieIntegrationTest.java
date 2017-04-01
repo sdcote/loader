@@ -13,9 +13,11 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.junit.Test;
 
+import coyote.commons.NetUtil;
+
 
 public class CookieIntegrationTest extends IntegrationTestBase<CookieIntegrationTest.CookieTestServer> {
-  private static final int PORT = 7428;
+  private static final int PORT = NetUtil.getNextAvailablePort( 7428 );
 
   public static class CookieTestServer extends HTTPD {
 

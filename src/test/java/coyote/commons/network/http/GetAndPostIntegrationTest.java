@@ -23,11 +23,12 @@ import org.apache.http.util.EntityUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import coyote.commons.NetUtil;
 import coyote.commons.network.MimeType;
 
 
 public class GetAndPostIntegrationTest extends IntegrationTestBase<GetAndPostIntegrationTest.TestServer> {
-private static final int PORT = 7428;
+private static final int PORT = NetUtil.getNextAvailablePort( 7428 );
 
   public static class TestServer extends HTTPD {
 
