@@ -92,7 +92,7 @@ public abstract class HTTPD {
    * Pseudo-Parameter to use to store the actual query string in the
    * parameters map for later re-processing.
    */
-  private static final String QUERY_STRING_PARAMETER = "Httpd.QUERY_STRING";
+  protected static final String QUERY_STRING_PARAMETER = "Httpd.QUERY_STRING";
   private static final String MIMETYPE_RESOURCE = "httpd/mimetypes.properties";
 
   /** Hashtable mapping file extension to MIME type */

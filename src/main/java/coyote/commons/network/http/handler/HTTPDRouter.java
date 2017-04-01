@@ -1,11 +1,18 @@
 package coyote.commons.network.http.handler;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import coyote.commons.network.MimeType;
 import coyote.commons.network.http.HTTPD;
 import coyote.commons.network.http.IHTTPSession;
+import coyote.commons.network.http.Method;
 import coyote.commons.network.http.Response;
+import coyote.commons.network.http.ResponseException;
 import coyote.commons.network.http.SecurityResponseException;
+import coyote.commons.network.http.Status;
 import coyote.i13n.ArmTransaction;
 import coyote.i13n.StatBoard;
 import coyote.i13n.StatBoardImpl;
@@ -165,6 +172,20 @@ public class HTTPDRouter extends HTTPD {
   @Override
   public Response serve( final IHTTPSession session ) throws SecurityResponseException {
     ArmTransaction arm = stats.startArm( session.getUri() == null ? "" : session.getUri() );
+    
+    // If a PUT or POST, there is probably a body of data, parse it into parameters
+    final Method method = session.getMethod();
+    if ( Method.PUT.equals( method ) || Method.POST.equals( method ) ) {
+      final Map<String, String> files = new HashMap<String, String>();
+      try {
+        session.parseBody( files );
+      } catch ( final IOException ioe ) {
+        return Response.createFixedLengthResponse( Status.INTERNAL_ERROR, MimeType.TEXT.getType(), "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage() );
+      } catch ( final ResponseException re ) {
+        return Response.createFixedLengthResponse( re.getStatus(), MimeType.TEXT.getType(), re.getMessage() );
+      }
+    }
+    
     try {
       return router.process( session );
     }
