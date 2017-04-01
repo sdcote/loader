@@ -25,9 +25,9 @@ public class IpNetwork extends IpAddress {
   private IpAddress netmask = null;
   private static final short[] HOSTONLYMASK = { 255, 255, 255, 255 };
   private IpNetworkElementIterator ipAddressIterator = null;
-  
+
   /** The mask representing 255.255.255.255 - a network of only 1 host */
-  public static final IpAddress HOSTMASK=new IpAddress(HOSTONLYMASK);
+  public static final IpAddress HOSTMASK = new IpAddress( HOSTONLYMASK );
 
 
 
@@ -42,10 +42,8 @@ public class IpNetwork extends IpAddress {
    */
   public IpNetwork( final IpAddress net, final IpAddress mask ) {
     super( net );
-
     netmask = (IpAddress)mask.clone();
     ipAddressIterator = new IpNetworkElementIterator( net, netmask, this );
-
   }
 
 

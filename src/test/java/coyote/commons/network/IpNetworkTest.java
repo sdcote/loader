@@ -13,6 +13,7 @@ package coyote.commons.network;
 
 //import static org.junit.Assert.*;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Iterator;
 
@@ -77,6 +78,20 @@ public class IpNetworkTest {
   @Test
   public void testIpNetworkString() throws IpAddressException {
     new IpNetwork( "206.13.01.48/25" );
+  }
+
+
+
+
+  /**
+   * 
+   */
+  @Test
+  public void testHostOnlyNetwork() throws IpAddressException {
+    IpNetwork network = new IpNetwork( IpAddress.IPV4_LOOPBACK_ADDRESS, IpNetwork.HOSTMASK );
+    if ( !network.contains( IpAddress.IPV4_LOOPBACK_ADDRESS ) ) {
+      fail( "Address should be included in host-only network" );
+    }
   }
 
 
