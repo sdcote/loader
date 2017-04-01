@@ -514,6 +514,24 @@ public class Config extends DataFrame implements Cloneable, Serializable {
 
   /**
    * Perform a case insensitive search for the first value with the given name 
+   * and returns it as a short.
+   * 
+   * @param tag the name of the configuration attribute for which to search
+   * 
+   * @return the first value with the given name as a short
+   * 
+   *  @throws NumberFormatException if the field could not be found or if the value 
+   *          could not be parsed into a short.
+   */
+  public short getShort( String tag ) throws NumberFormatException {
+    return Short.parseShort( getString( tag ) );
+  }
+
+
+
+
+  /**
+   * Perform a case insensitive search for the first value with the given name 
    * and returns it as an integer.
    * 
    * @param tag the name of the configuration attribute for which to search
