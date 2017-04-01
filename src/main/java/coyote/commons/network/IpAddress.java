@@ -38,6 +38,9 @@ public class IpAddress {
   public static final String IP4_LOOPBACK = "127.0.0.1";
   public static final String IP6_LOOPBACK = "0:0:0:0:0:0:0:1";
 
+  public static final IpAddress IPV4_LOOPBACK_ADDRESS = new IpAddress( new short[] { 127, 0, 0, 1 } );
+  public static final IpAddress IPV6_LOOPBACK_ADDRESS = new IpAddress( new short[] { 0, 0, 0, 0, 0, 0, 0, 1 } );
+
   protected short[] octets = new short[IP4_OCTETS];
 
   private InetAddress netAddress = null;
