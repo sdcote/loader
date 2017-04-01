@@ -19,36 +19,12 @@ public class HttpSessionTest extends HttpServerTest {
 
 
   @Test
-  public void testSessionRemoteHostname() throws UnknownHostException {
-    final ByteArrayInputStream inputStream = new ByteArrayInputStream( HttpSessionTest.DUMMY_REQUEST_CONTENT.getBytes() );
-    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    final InetAddress inetAddress = InetAddress.getByName( "google.com" );
-    final HTTPSession session = testServer.createSession( HttpSessionTest.TEST_TEMP_FILE_MANAGER, inputStream, outputStream, inetAddress );
-    assertEquals( "google.com", session.getRemoteHostName() );
-  }
-
-
-
-
-  @Test
-  public void testSessionRemoteHostnameLocalhost() throws UnknownHostException {
-    final ByteArrayInputStream inputStream = new ByteArrayInputStream( HttpSessionTest.DUMMY_REQUEST_CONTENT.getBytes() );
-    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    final InetAddress inetAddress = InetAddress.getByName( "127.0.0.1" );
-    final HTTPSession session = testServer.createSession( HttpSessionTest.TEST_TEMP_FILE_MANAGER, inputStream, outputStream, inetAddress );
-    assertEquals( "localhost", session.getRemoteHostName() );
-  }
-
-
-
-
-  @Test
   public void testSessionRemoteIPAddress() throws UnknownHostException {
     final ByteArrayInputStream inputStream = new ByteArrayInputStream( HttpSessionTest.DUMMY_REQUEST_CONTENT.getBytes() );
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     final InetAddress inetAddress = InetAddress.getByName( "127.0.0.1" );
     final HTTPSession session = testServer.createSession( HttpSessionTest.TEST_TEMP_FILE_MANAGER, inputStream, outputStream, inetAddress );
-    assertEquals( "127.0.0.1", session.getRemoteIpAddress() );
+    assertEquals( "127.0.0.1", session.getRemoteIpAddress().toString() );
   }
 
 }

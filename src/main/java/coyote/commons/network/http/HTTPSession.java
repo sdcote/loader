@@ -38,6 +38,8 @@ import java.util.regex.Matcher;
 
 import javax.net.ssl.SSLException;
 
+import coyote.commons.network.IpAddress;
+import coyote.commons.network.IpAddressException;
 import coyote.commons.network.MimeType;
 import coyote.loader.log.Log;
 
@@ -82,11 +84,9 @@ class HTTPSession implements IHTTPSession {
 
   private String queryParameterString;
 
-  private String remoteIp;
+  private IpAddress remoteIp;
 
   private int remotePort;
-
-  private String remoteHostname;
 
   private String protocolVersion;
 
@@ -132,8 +132,12 @@ class HTTPSession implements IHTTPSession {
   public HTTPSession( HTTPD httpd, final CacheManager tempFileManager, final InputStream inputStream, final OutputStream outputStream, final InetAddress inetAddress, final int port, boolean secured ) {
     this( httpd, tempFileManager, inputStream, outputStream, secured );
     remotePort = port;
-    remoteIp = inetAddress.isLoopbackAddress() || inetAddress.isAnyLocalAddress() ? "127.0.0.1" : inetAddress.getHostAddress().toString();
-    remoteHostname = inetAddress.isLoopbackAddress() || inetAddress.isAnyLocalAddress() ? "localhost" : inetAddress.getHostName().toString();
+    try {
+      remoteIp = inetAddress.isLoopbackAddress() || inetAddress.isAnyLocalAddress() ? IpAddress.IPV4_LOOPBACK_ADDRESS : new IpAddress( inetAddress.getAddress() );
+    } catch ( IpAddressException e ) {
+      // should never happen from java.net.InetAddress but spew a stack trace if it does
+      e.printStackTrace();
+    }
   }
 
 
@@ -385,8 +389,8 @@ class HTTPSession implements IHTTPSession {
       decodeHeader( hin, pre, parms, requestHeaders );
 
       if ( null != remoteIp ) {
-        requestHeaders.put( "remote-addr", remoteIp );
-        requestHeaders.put( "http-client-ip", remoteIp );
+        requestHeaders.put( "remote-addr", remoteIp.toString() );
+        requestHeaders.put( "http-client-ip", remoteIp.toString() );
       }
 
       method = Method.lookup( pre.get( "method" ) );
@@ -605,21 +609,10 @@ class HTTPSession implements IHTTPSession {
 
 
   /**
-   * @see coyote.commons.network.http.IHTTPSession#getRemoteHostName()
-   */
-  @Override
-  public String getRemoteHostName() {
-    return remoteHostname;
-  }
-
-
-
-
-  /**
    * @see coyote.commons.network.http.IHTTPSession#getRemoteIpAddress()
    */
   @Override
-  public String getRemoteIpAddress() {
+  public IpAddress getRemoteIpAddress() {
     return remoteIp;
   }
 

@@ -15,6 +15,8 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
+import coyote.commons.network.IpAddress;
+
 
 /**
  * Handles one session, i.e. parses the HTTP request and returns the
@@ -112,21 +114,11 @@ public interface IHTTPSession {
 
 
   /**
-   * Get the remote hostname of the requester.
-   * 
-   * @return the hostname.
-   */
-  String getRemoteHostName();
-
-
-
-
-  /**
    * Get the remote IP address of the requester.
    * 
    * @return the IP address.
    */
-  String getRemoteIpAddress();
+  IpAddress getRemoteIpAddress();
 
 
 

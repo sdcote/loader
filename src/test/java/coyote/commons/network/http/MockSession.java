@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import coyote.commons.network.IpAddress;
+
 
 /**
  *
@@ -115,13 +117,7 @@ public class MockSession implements IHTTPSession {
 
 
 
-  /**
-   * @see coyote.commons.network.http.IHTTPSession#getRemoteHostName()
-   */
-  @Override
-  public String getRemoteHostName() {
-    return null;
-  }
+
 
 
 
@@ -130,8 +126,8 @@ public class MockSession implements IHTTPSession {
    * @see coyote.commons.network.http.IHTTPSession#getRemoteIpAddress()
    */
   @Override
-  public String getRemoteIpAddress() {
-    return null;
+  public IpAddress getRemoteIpAddress() {
+    return IpAddress.IPV4_LOOPBACK_ADDRESS;
   }
 
 
