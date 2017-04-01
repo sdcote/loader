@@ -48,7 +48,7 @@ class HTTPSession implements IHTTPSession {
 
   private static final int REQUEST_BUFFER_LEN = 512;
 
-  private static final int MEMORY_STORE_LIMIT = 1024;
+  private static final int MEMORY_STORE_LIMIT = 4096;
 
   public static final int BUFSIZE = 8192;
 
@@ -173,8 +173,8 @@ class HTTPSession implements IHTTPSession {
       }
 
       // If there's another token, its protocol version, followed by HTTP headers.
-      // NOTE: this now forces header names lower case since they are
-      // case insensitive and vary by client.
+      // NOTE: this now forces header names lower case since they are case 
+      // insensitive and vary by client.
       if ( st.hasMoreTokens() ) {
         protocolVersion = st.nextToken();
       } else {
@@ -240,8 +240,8 @@ class HTTPSession implements IHTTPSession {
                 partName = matcher.group( 2 );
               } else if ( "filename".equalsIgnoreCase( key ) ) {
                 fileName = matcher.group( 2 );
-                // add these two line to support multiple
-                // files uploaded using the same field Id
+                // add these two line to support multiple files uploaded using 
+                // the same field Id
                 if ( !fileName.isEmpty() ) {
                   if ( pcount > 0 ) {
                     partName = partName + String.valueOf( pcount++ );
@@ -334,8 +334,7 @@ class HTTPSession implements IHTTPSession {
   public void execute() throws IOException {
     Response response = null;
     try {
-      // Read the first 8192 bytes; this should fit the entire header.
-      // Do NOT assume that a single read will get the entire header!
+      // Read the first 8192 bytes; this _should_ fit the entire header.
       final byte[] buf = new byte[HTTPSession.BUFSIZE];
       splitbyte = 0;
       rlen = 0;
@@ -402,11 +401,7 @@ class HTTPSession implements IHTTPSession {
       final String connection = requestHeaders.get( "connection" );
       final boolean keepAlive = "HTTP/1.1".equals( protocolVersion ) && ( ( connection == null ) || !connection.matches( "(?i).*close.*" ) );
 
-      // TODO: long body_size = getBodySize();
-      // TODO: long pos_before_serve = this.inputStream.totalRead()
-      // (requires implementation for totalRead())
       response = this.httpd.serve( this );
-      // TODO: this.inputStream.skip(body_size - (this.inputStream.totalRead() - pos_before_serve))
 
       if ( response == null ) {
         throw new ResponseException( Status.INTERNAL_ERROR, "SERVER INTERNAL ERROR: Serve() returned a null response." );
@@ -456,7 +451,7 @@ class HTTPSession implements IHTTPSession {
   /**
    * Find byte index separating header from body. 
    * 
-   * <p>It must be the last byte of the first two sequential new lines.</p>
+   * <p>It must be the last byte of the first two sequential new lines.
    */
   private int findHeaderEnd( final byte[] buf, final int rlen ) {
     int splitbyte = 0;
@@ -499,7 +494,7 @@ class HTTPSession implements IHTTPSession {
    * Find the byte positions where multi-part boundaries start. 
    * 
    * <p>This reads a large block at a time and uses a temporary buffer to 
-   * optimize file access.</p>
+   * optimize file access.
    */
   private int[] getBoundaryPositions( final ByteBuffer b, final byte[] boundary ) {
     int[] res = new int[0];
@@ -697,8 +692,8 @@ class HTTPSession implements IHTTPSession {
         randomAccessFile.seek( 0 );
       }
 
-      // If the method is POST, there may be parameters
-      // in data section, too, read it:
+      // If the method is POST, there may be parameters in data section, too, 
+      // read it:
       if ( Method.POST.equals( method ) ) {
         final ContentType contentType = new ContentType( requestHeaders.get( "content-type" ) );
         if ( contentType.isMultipart() ) {
@@ -715,9 +710,8 @@ class HTTPSession implements IHTTPSession {
           if ( "application/x-www-form-urlencoded".equalsIgnoreCase( contentType.getContentType() ) ) {
             decodeParms( postLine, parms );
           } else if ( postLine.length() != 0 ) {
-            // Special case for raw POST data => create a
-            // special files entry "postData" with raw content
-            // data
+            // Special case for raw POST data => create a special files entry 
+            // "postData" with raw content data
             files.put( "postData", postLine );
           }
         }
@@ -750,8 +744,8 @@ class HTTPSession implements IHTTPSession {
         src.position( offset ).limit( offset + len );
         dest.write( src.slice() );
         path = tempFile.getName();
-      } catch ( final Exception e ) { // Catch exception if any
-        throw new Error( e ); // we won't recover, so throw an error
+      } catch ( final Exception e ) {
+        throw new Error( e );
       }
       finally {
         HTTPD.safeClose( fileOutputStream );
