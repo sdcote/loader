@@ -686,7 +686,7 @@ class HTTPSession implements IHTTPSession {
       }
 
       // If the method is POST, there may be parameters in data section, too, 
-      // read it:
+      // read them:
       if ( Method.POST.equals( method ) ) {
         final ContentType contentType = new ContentType( requestHeaders.get( "content-type" ) );
         if ( contentType.isMultipart() ) {
