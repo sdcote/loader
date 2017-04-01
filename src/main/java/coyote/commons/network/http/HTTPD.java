@@ -32,7 +32,6 @@ import coyote.commons.network.IpNetwork;
 import coyote.commons.network.MimeType;
 import coyote.commons.network.http.auth.AuthProvider;
 import coyote.commons.network.http.auth.DefaultAuthProvider;
-import coyote.commons.security.BlowfishCipher;
 import coyote.commons.security.OperationFrequency;
 import coyote.dataframe.DataField;
 import coyote.loader.cfg.Config;
@@ -361,7 +360,7 @@ public abstract class HTTPD {
    *        access the server, false to reject the socket connection from any 
    *        address matching the network
    */
-  protected void addToACL( final IpNetwork network, final boolean allowed ) {
+  public void addToACL( final IpNetwork network, final boolean allowed ) {
     if ( network != null ) {
       acl.add( network, allowed );
     }
@@ -771,6 +770,16 @@ public abstract class HTTPD {
       } // for each field
     }
 
+  }
+
+
+
+
+  /**
+   * @return the IP Access Control List
+   */
+  public IpAcl getIpAcl() {
+    return acl;
   }
 
 
