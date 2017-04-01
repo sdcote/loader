@@ -145,6 +145,9 @@ public interface IHTTPSession {
    * Adds the files in the request body to the files map.
    * 
    * @param files map to modify
+   * 
+   * @throws IOException if there are problems reading the request stream
+   * @throws ResponseException if there a logical HTTP issues with the format or encoding of the body 
    */
   void parseBody( Map<String, String> files ) throws IOException, ResponseException;
 
