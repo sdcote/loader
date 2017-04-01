@@ -23,8 +23,11 @@ public class IpNetwork extends IpAddress {
   private static final short[] BITS = { 0, 128, 192, 224, 240, 248, 252, 254, 255 };
 
   private IpAddress netmask = null;
-  private static final short[] HOSTMASK = { 255, 255, 255, 255 };
+  private static final short[] HOSTONLYMASK = { 255, 255, 255, 255 };
   private IpNetworkElementIterator ipAddressIterator = null;
+  
+  /** The mask representing 255.255.255.255 - a network of only 1 host */
+  public static final IpAddress HOSTMASK=new IpAddress(HOSTONLYMASK);
 
 
 
@@ -119,7 +122,7 @@ public class IpNetwork extends IpAddress {
    * @return an IpNetwork which represents only the local host.
    */
   public static IpNetwork getLocalHost() {
-    return new IpNetwork( IpInterface.getPrimary().getAddress(), new IpAddress( IpNetwork.HOSTMASK ) );
+    return new IpNetwork( IpInterface.getPrimary().getAddress(), HOSTMASK );
   }
 
 
