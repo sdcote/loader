@@ -60,7 +60,7 @@ public class IpAcl {
    * Construct a new Access Control List.
    *
    * <p>The default mode is to ALLOW anything that isn't explicitly blocked by
-   * a rule. This means the ACL is a blacklist by default.</p>
+   * a rule. This means the ACL is a blacklist by default.
    */
   public IpAcl() {
     this( IpAcl.DEFAULT_MODE );
@@ -73,16 +73,16 @@ public class IpAcl {
    * Construct a new Access Control List with a given default mode.
    *
    * <p>This mode specifies what should happen if a check does not match any
-   * rules.</p>
+   * rules.
    * 
    * <p>If set to TRUE (IpAcl.ALLOW) this ACL is setup as a blacklist, allowing 
    * everything unless there is an entry which matches in which case the entry 
    * will be disallowed. Essentially, you only place entries in this list you 
-   * want to reject or disallow.</p>
+   * want to reject or disallow.
    * 
    * <p>If set to FALSE (IpAcl.DENY) this ACL is setup as a whitelist, only 
    * allowing those entries in this ACL. This is the most secure approach but 
-   * more difficult to maintain.</p>
+   * more difficult to maintain.
    *
    * @param defaultMode the default mode for non-matched checks
    */
@@ -182,7 +182,7 @@ public class IpAcl {
    * Changes the default allow mode of the ACL. 
    * 
    * <p>This is what the check will return if it does not find an explicit rule 
-   * to match against.</p>
+   * to match against.
    * 
    * @param allow The new default mode: True = allow by default, false = deny 
    *              by default.
@@ -206,7 +206,6 @@ public class IpAcl {
   public void add( final String network, final boolean allowed ) throws IpAddressException {
     // try and convert the expression into an IP network
     final IpNetwork net = new IpNetwork( network );
-
     add( net, allowed );
   }
 
@@ -221,7 +220,6 @@ public class IpAcl {
    *                be accepted.
    */
   public void add( final IpNetwork network, final boolean allowed ) {
-    // create a new rule and add it to the list
     acl.add( new ACLRule( network, allowed ) );
   }
 
@@ -270,7 +268,7 @@ public class IpAcl {
    * 
    * <p>Order is important. The first rule matching the address is what is used
    * to determine access. Therefore, place all /0 networks first in the list 
-   * then broader networks later to make sure evaluation occurs as expected.</p>
+   * then broader networks later to make sure evaluation occurs as expected.
    *
    * @param addr the address to check
    *
@@ -296,7 +294,7 @@ public class IpAcl {
    * Append the entries of the given ACL to the end of our own list.
    *
    * <p>The result is the ACLRules are shared between the two lists. A copy of
-   * the ACLRule is <strong>NOT</strong> made.</p>
+   * the ACLRule is <strong>NOT</strong> made.
    *
    * @param newacl The ACL to append to this list.
    */

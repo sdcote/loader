@@ -71,8 +71,6 @@ public class ServerRunnable implements Runnable {
           secured = false;
         }
 
-        // Log.append( HTTPD.EVENT, "Connection from " + clientSocket.getInetAddress() + " on port " + clientSocket.getPort() + " to port " + clientSocket.getLocalPort() + " of " + clientSocket.getLocalAddress() );
-
         // First check if the address has been calling us too frequently
         // indicating a possible denial of service attack
         if ( httpd.dosTable.check( clientSocket.getInetAddress() ) ) {
