@@ -105,32 +105,6 @@ public class BootStrap extends AbstractLoader {
 
 
   /**
-   * Get the configuration value with the given key and decipher it.
-   * 
-   * <p>The name of the encryption algorithm is assumed to be Blowfish unless 
-   * otherwise specified in the {@code cipher.name} system property.</p>
-   * 
-   * <p>Similarly, the decryption key is assumed to be the toolkit default 
-   * unless otherwise specified in the {@code cipher.key} system property.</p>
-   * 
-   * @param cipherText The enciphered data in Base64 encoding to decipher
-   * 
-   * @return the decrypted value of the given encrypted text.
-   */
-  public static String decrypt( String cipherText ) {
-    String retval = null;
-    if ( StringUtil.isNotBlank( cipherText ) ) {
-      String cipherName = System.getProperty( ConfigTag.CIPHER_NAME, CipherUtil.CIPHER_NAME );
-      String cipherKey = System.getProperty( ConfigTag.CIPHER_KEY, CipherUtil.getKey( CipherUtil.CIPHER_KEY ) );
-      retval = CipherUtil.decipher( cipherText, cipherName, cipherKey );
-    }
-    return retval;
-  }
-
-
-
-
-  /**
    * Use the first command line argument as the URI to the configuration file 
    * unless it is the encrypt keyword then the arguments are used to generate 
    * an encrypted string.
