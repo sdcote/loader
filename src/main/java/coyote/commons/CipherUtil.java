@@ -88,15 +88,30 @@ public class CipherUtil {
   /**
    * Common utility to encrypt data.
    * 
-   * @param cleartext the text to encrypt
+   * <p>The string is encoded into bytes using UTF-16, pased to the encryption 
+   * algorithm and the resulting encrypted data encoded using base64 encoding
+   * for easy packaging and transmission across a variety of media.  
    * 
-   * @return encrypted text
+   * <p>The name of the encryption algorithm is assumed to be Blowfish unless 
+   * otherwise specified in the {@code cipher.name} system property. Other 
+   * algorithms can be statically registered with this class beyond the public 
+   * domain and JRE provided ciphers.
+   * 
+   * <p>Similarly, the decryption key is assumed to be the toolkit default 
+   * unless otherwise specified in the {@code cipher.key} system property. It 
+   * assumed to be the base64 encoding of a byte array used as an 
+   * initialization vector or private key depending on the algorithm being 
+   * used.
+   * 
+   * @param clearText the text to encrypt
+   * 
+   * @return encrypted text as a base64 encoded array of bytes
    */
-  public static String encrypt( String cleartext ) {
+  public static String encryptString( String clearText ) {
     String retval = null;
     String key = System.getProperty( ConfigTag.CIPHER_KEY, CipherUtil.getKey( CIPHER_KEY ) );
     String cipherName = System.getProperty( ConfigTag.CIPHER_NAME, CIPHER_NAME );
-    retval = CipherUtil.encipher( cleartext, cipherName, key );
+    retval = CipherUtil.encipher( clearText, cipherName, key );
     return retval;
   }
 
@@ -104,17 +119,34 @@ public class CipherUtil {
 
 
   /**
-   * Common utility to decrypt data
+   * Get the decrypted value of the given ciphertext.
    * 
-   * @param ciphertext encrypted text
+   * <p>The data is assumed to be a base64 encoded string of bytes and will be 
+   * decoded as such before being passed to the decryption algorithm. The 
+   * decrypted bytes are then assumed to be a UTF-16 encoded string and are so 
+   * converted before being returned.
    * 
-   * @return decrypted text
+   * <p>The name of the encryption algorithm is assumed to be Blowfish unless 
+   * otherwise specified in the {@code cipher.name} system property. Other 
+   * algorithms can be statically registered with this class beyond the public 
+   * domain and JRE provided ciphers.
+   * 
+   * <p>Similarly, the decryption key is assumed to be the toolkit default 
+   * unless otherwise specified in the {@code cipher.key} system property. It 
+   * assumed to be the base64 encoding of a byte array used as an 
+   * initialization vector or private key depending on the algorithm being 
+   * used.
+   * 
+   * @param cipherText The enciphered data in Base64 encoding to decipher.
+   * 
+   * @return the decrypted value of the given encrypted text assuming UTF-16 
+   *         string encoding.
    */
-  public static String decrypt( String ciphertext ) {
+  public static String decryptString( String cipherText ) {
     String retval = null;
     String key = System.getProperty( ConfigTag.CIPHER_KEY, CipherUtil.getKey( CIPHER_KEY ) );
     String cipherName = System.getProperty( ConfigTag.CIPHER_NAME, CIPHER_NAME );
-    retval = CipherUtil.decipher( ciphertext, cipherName, key );
+    retval = CipherUtil.decipher( cipherText, cipherName, key );
     return retval;
   }
 
@@ -233,7 +265,7 @@ public class CipherUtil {
    * Decodes a byte array from Base64 format.
    * 
    * <p>No blanks or line breaks are allowed within the Base64 encoded input 
-   * data.</p>
+   * data.
    * 
    * @param in A character array containing the Base64 encoded data.
    * 
@@ -252,7 +284,7 @@ public class CipherUtil {
    * Decodes a byte array from Base64 format.
    * 
    * <p>No blanks or line breaks are allowed within the Base64 encoded input 
-   * data.</p>
+   * data.
    * 
    * @param in A character array containing the Base64 encoded data.
    * @param iOff Offset of the first character in {@code in} to be processed.
@@ -310,7 +342,7 @@ public class CipherUtil {
    * Decodes a byte array from Base64 format.
    * 
    * <p>No blanks or line breaks are allowed within the Base64 encoded input 
-   * data.</p>
+   * data.
    * 
    * @param s A Base64 String to be decoded.
    * 
@@ -329,7 +361,7 @@ public class CipherUtil {
    * Decodes a byte array from Base64 format and ignores line separators, tabs 
    * and blanks.
    * 
-   * <p>CR, LF, Tab and Space characters are ignored in the input data.</p>
+   * <p>CR, LF, Tab and Space characters are ignored in the input data.
    * 
    * @param s A Base64 String to be decoded.
    * 
@@ -356,7 +388,7 @@ public class CipherUtil {
    * Decodes a string from Base64 format.
    * 
    * <p>No blanks or line breaks are allowed within the Base64 encoded input 
-   * data.</p>
+   * data.
    * 
    * @param s A Base64 String to be decoded.
    * 
@@ -385,7 +417,7 @@ public class CipherUtil {
    * <li>Encode the cipher data into a string using Base64 encoding.</li></ol>
    * 
    * <p>The result is a text string which can be sent or stored on any media 
-   * which supports strings.</p>
+   * which supports strings.
    * 
    * @param text The text to encrypt
    * 
@@ -564,7 +596,7 @@ public class CipherUtil {
 
 
   /**
-   * Encodes a byte array into Base 64 format and breaks the output into lines 
+   * Encodes a byte array into base64 format and breaks the output into lines 
    * of 76 characters.
    * 
    * @param in An array containing the data bytes to be encoded.
@@ -579,7 +611,7 @@ public class CipherUtil {
 
 
   /**
-   * Encodes a byte array into Base 64 format and breaks the output into lines.
+   * Encodes a byte array into base64 format and breaks the output into lines.
    * 
    * @param in An array containing the data bytes to be encoded.
     * @param iOff Offset of the first byte in {@code in} to be processed.
@@ -659,7 +691,7 @@ public class CipherUtil {
    * 
    * <p>This method is useful for generating a cipher key based on text the 
    * user may provide. The result is a base64 encoding of the bytes which can 
-   * be placed in configuration files.</p>
+   * be placed in configuration files.
    * 
    * @param text The text from which the bytes are generated
    * 
@@ -686,7 +718,7 @@ public class CipherUtil {
    * Pad the given the data to the given block size according to RFC 1423.
    * 
    * <p>First the data is padded to blocks of data using a PKCS5 DES CBC
-   * encryption padding scheme described in section 1.1 of RFC-1423.</p>
+   * encryption padding scheme described in section 1.1 of RFC-1423.
    * 
    * <p>The last byte of the stream is ALWAYS the number of bytes added to the 
    * end of the data. If the data ends on a boundary, then there will be eight
@@ -746,7 +778,7 @@ public class CipherUtil {
    * Add the given cipher to the list of ciphers supported by this fixture.
    * 
    * <p>The cipher must return a unique name so it can be referenced and 
-   * returned later.</p>
+   * returned later.
    * 
    * @param cipher the cipher to register with the fixture
    */

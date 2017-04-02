@@ -205,14 +205,14 @@ public class GenericAuthProvider implements AuthProvider {
           if ( userfield.getName() != null ) {
             if ( userfield.getName().endsWith( NAME ) ) {
               if ( userfield.getName().startsWith( ENCRYPTED ) ) {
-                user.setName( CipherUtil.decrypt( userfield.getStringValue() ) );
+                user.setName( CipherUtil.decryptString( userfield.getStringValue() ) );
               } else {
                 user.setName( userfield.getStringValue() );
               }
             } else if ( userfield.getName().endsWith( PASSWORD ) ) {
               String passwd;
               if ( userfield.getName().startsWith( ENCRYPTED ) ) {
-                passwd = CipherUtil.decrypt( userfield.getStringValue() );
+                passwd = CipherUtil.decryptString( userfield.getStringValue() );
               } else {
                 passwd = userfield.getStringValue();
               }
@@ -222,7 +222,7 @@ public class GenericAuthProvider implements AuthProvider {
             } else if ( userfield.getName().endsWith( GROUPS ) ) {
               String groups;
               if ( userfield.getName().startsWith( ENCRYPTED ) ) {
-                groups = CipherUtil.decrypt( userfield.getStringValue() );
+                groups = CipherUtil.decryptString( userfield.getStringValue() );
               } else {
                 groups = userfield.getStringValue();
               }
