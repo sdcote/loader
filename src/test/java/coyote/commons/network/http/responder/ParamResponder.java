@@ -13,78 +13,73 @@ package coyote.commons.network.http.responder;
 
 import java.util.Map;
 
+import coyote.commons.StringUtil;
 import coyote.commons.network.MimeType;
 import coyote.commons.network.http.IHTTPSession;
 import coyote.commons.network.http.IStatus;
 import coyote.commons.network.http.Response;
 import coyote.commons.network.http.Status;
-import coyote.commons.network.http.responder.UriResource;
-import coyote.commons.network.http.responder.Responder;
 
 
 /**
- * 
+ * This is a test responder specifically for testing the URI parameters passed to
  */
 public class ParamResponder implements Responder {
-  private String responseText = "Boom";
+  public static final String UNSPECIFIED = "Unspecified";
+  private String responseText = UNSPECIFIED;
 
 
 
 
-  /**
-   * @see coyote.commons.network.http.responder.Responder#delete(coyote.commons.network.http.responder.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
-   */
   @Override
   public Response delete( UriResource uriResource, Map<String, String> urlParams, IHTTPSession session ) {
-    responseText = urlParams.get( "name" );
+    if ( StringUtil.isNotBlank( urlParams.get( "name" ) ) ) {
+      responseText = urlParams.get( "name" );
+    }
     return Response.createFixedLengthResponse( getStatus(), getMimeType(), getText() );
   }
 
 
 
 
-  /**
-   * @see coyote.commons.network.http.responder.Responder#get(coyote.commons.network.http.responder.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
-   */
   @Override
   public Response get( UriResource uriResource, Map<String, String> urlParams, IHTTPSession session ) {
-    responseText = urlParams.get( "name" );
+    if ( StringUtil.isNotBlank( urlParams.get( "name" ) ) ) {
+      responseText = urlParams.get( "name" );
+    }
     return Response.createFixedLengthResponse( getStatus(), getMimeType(), getText() );
   }
 
 
 
 
-  /**
-   * @see coyote.commons.network.http.responder.Responder#other(java.lang.String, coyote.commons.network.http.responder.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
-   */
   @Override
   public Response other( String method, UriResource uriResource, Map<String, String> urlParams, IHTTPSession session ) {
-    responseText = urlParams.get( "name" );
+    if ( StringUtil.isNotBlank( urlParams.get( "name" ) ) ) {
+      responseText = urlParams.get( "name" );
+    }
     return Response.createFixedLengthResponse( getStatus(), getMimeType(), getText() );
   }
 
 
 
 
-  /**
-   * @see coyote.commons.network.http.responder.Responder#post(coyote.commons.network.http.responder.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
-   */
   @Override
   public Response post( UriResource uriResource, Map<String, String> urlParams, IHTTPSession session ) {
-    responseText = urlParams.get( "name" );
+    if ( StringUtil.isNotBlank( urlParams.get( "name" ) ) ) {
+      responseText = urlParams.get( "name" );
+    }
     return Response.createFixedLengthResponse( getStatus(), getMimeType(), getText() );
   }
 
 
 
 
-  /**
-   * @see coyote.commons.network.http.responder.Responder#put(coyote.commons.network.http.responder.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
-   */
   @Override
   public Response put( UriResource uriResource, Map<String, String> urlParams, IHTTPSession session ) {
-    responseText = urlParams.get( "name" );
+    if ( StringUtil.isNotBlank( urlParams.get( "name" ) ) ) {
+      responseText = urlParams.get( "name" );
+    }
     return Response.createFixedLengthResponse( getStatus(), getMimeType(), getText() );
   }
 
@@ -117,4 +112,5 @@ public class ParamResponder implements Responder {
   private IStatus getStatus() {
     return Status.OK;
   }
+
 }

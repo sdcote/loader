@@ -12,6 +12,7 @@
 package coyote.commons.network.http.responder;
 
 //import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -46,7 +47,6 @@ public class ResourceResponderParamTest {
   public static void setUpBeforeClass() throws Exception {
     port = NetUtil.getNextAvailablePort( port );
     server = new TestRouter( port );
-    server.addDefaultRoutes();
 
     // try to start the server, waiting only 2 seconds before giving up
     try {
@@ -81,20 +81,23 @@ public class ResourceResponderParamTest {
 
   @Test
   public void test() {
-    server.addRoute( "/test", Integer.MAX_VALUE, ParamResponder.class );
-    server.addRoute( "/test/:name", Integer.MAX_VALUE, ParamResponder.class );
+    server.addRoute( "/params", Integer.MAX_VALUE, ParamResponder.class );
+    server.addRoute( "/params/:name", Integer.MAX_VALUE, ParamResponder.class );
 
     try {
-      String resource = "http://localhost:" + port + "/test";
+      String resource = "http://localhost:" + port + "/params";
       TestResponse response = TestHttpClient.sendGet( resource );
       System.out.println( "GET: '" + resource + "' : " + response.getStatus() + ":" + response.getData() );
       assertTrue( response.getStatus() == 200 );
+      assertEquals( ParamResponder.UNSPECIFIED, response.getData() );
       assertTrue( server.isAlive() );
 
-      resource = "http://localhost:" + port + "/test/bob";
+      String NAME = "Bob";
+      resource = "http://localhost:" + port + "/params/" + NAME;
       response = TestHttpClient.sendGet( resource );
       System.out.println( "GET: '" + resource + "' : " + response.getStatus() + ":" + response.getData() );
       assertTrue( response.getStatus() == 200 );
+      assertEquals( NAME, response.getData() );
       assertTrue( server.isAlive() );
 
     } catch ( Exception e ) {
