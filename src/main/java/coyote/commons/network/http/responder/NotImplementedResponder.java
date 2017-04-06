@@ -8,13 +8,13 @@
  * Contributors:
  *   Stephan D. Cote 
  */
-package coyote.commons.network.http.handler;
+package coyote.commons.network.http.responder;
 
 import coyote.commons.network.http.IStatus;
 import coyote.commons.network.http.Status;
 
 
-public class NotImplementedHandler extends DefaultHandler {
+public class NotImplementedResponder extends DefaultResponder {
 
   @Override
   public String getMimeType() {
@@ -34,6 +34,6 @@ public class NotImplementedHandler extends DefaultHandler {
 
   @Override
   public String getText() {
-    return "<html><body><h3>Not implemented</h3><p>The uri is mapped in the router, but no handler is specified.</p></body></html>";
+    return "<html><body><h3>Not implemented</h3><p>The uri is mapped in the router, but no responder is specified.</p></body></html>";
   }
 }

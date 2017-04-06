@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004 Stephan D. Cote' - All rights reserved.
+ * Copyright (c) 2016 Stephan D. Cote' - All rights reserved.
  * 
  * This program and the accompanying materials are made available under the 
  * terms of the MIT License which accompanies this distribution, and is 
@@ -8,16 +8,18 @@
  * Contributors:
  *   Stephan D. Cote 
  */
-package coyote.commons.network.http.handler;
+package coyote.commons.network.http.responder;
 
 import coyote.commons.network.http.IStatus;
 import coyote.commons.network.http.Status;
 
 
 /**
- * Handling error 404 - unrecognized URIs
+ * This responds with a blank page.
+ * 
+ * <p>Useful to handle URLs which should respond, but not return any data.
  */
-public class Error404UriHandler extends DefaultHandler {
+public class BlankPageResponder extends DefaultResponder {
 
   @Override
   public String getMimeType() {
@@ -29,7 +31,7 @@ public class Error404UriHandler extends DefaultHandler {
 
   @Override
   public IStatus getStatus() {
-    return Status.NOT_FOUND;
+    return Status.OK;
   }
 
 
@@ -37,6 +39,7 @@ public class Error404UriHandler extends DefaultHandler {
 
   @Override
   public String getText() {
-    return "<html><body><h3>Error 404</h3><p>The requested resource does not exist.</p></body></html>";
+    return "<html><body></body></html>";
   }
+
 }

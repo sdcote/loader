@@ -9,7 +9,7 @@
  *   Stephan D. Cote 
  *      - Initial concept and initial implementation
  */
-package coyote.commons.network.http.handler;
+package coyote.commons.network.http.responder;
 
 //import static org.junit.Assert.*;
 import static org.junit.Assert.assertTrue;
@@ -31,7 +31,7 @@ import coyote.commons.network.http.TestRouter;
 /**
  * 
  */
-public class ResourceHandlerTest {
+public class ResourceResponderParamTest {
 
   private static TestRouter server = null;
   private static int port = 3232;
@@ -81,23 +81,20 @@ public class ResourceHandlerTest {
 
   @Test
   public void test() {
-    server.addRoute( "/", Integer.MAX_VALUE, ResourceHandler.class, "content" );
-    server.addRoute( "/(.)+", Integer.MAX_VALUE, ResourceHandler.class, "content", true );
+    server.addRoute( "/test", Integer.MAX_VALUE, ParamResponder.class );
+    server.addRoute( "/test/:name", Integer.MAX_VALUE, ParamResponder.class );
 
     try {
-      TestResponse response = TestHttpClient.sendGet( "http://localhost:" + port );
-      System.out.println( response.getStatus() + ":" + response.getData() );
+      String resource = "http://localhost:" + port + "/test";
+      TestResponse response = TestHttpClient.sendGet( resource );
+      System.out.println( "GET: '" + resource + "' : " + response.getStatus() + ":" + response.getData() );
       assertTrue( response.getStatus() == 200 );
       assertTrue( server.isAlive() );
 
-      response = TestHttpClient.sendGet( "http://localhost:" + port + "/" );
-      System.out.println( response.getStatus() + ":" + response.getData() );
+      resource = "http://localhost:" + port + "/test/bob";
+      response = TestHttpClient.sendGet( resource );
+      System.out.println( "GET: '" + resource + "' : " + response.getStatus() + ":" + response.getData() );
       assertTrue( response.getStatus() == 200 );
-      assertTrue( server.isAlive() );
-
-      response = TestHttpClient.sendGet( "http://localhost:" + port + "/notfound.txt" );
-      System.out.println( response.getStatus() + ":" + response.getData() );
-      assertTrue( response.getStatus() == 404 );
       assertTrue( server.isAlive() );
 
     } catch ( Exception e ) {

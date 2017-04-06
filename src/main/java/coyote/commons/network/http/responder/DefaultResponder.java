@@ -8,7 +8,7 @@
  * Contributors:
  *   Stephan D. Cote 
  */
-package coyote.commons.network.http.handler;
+package coyote.commons.network.http.responder;
 
 import java.io.InputStream;
 import java.util.Map;
@@ -20,10 +20,10 @@ import coyote.commons.network.http.Response;
 
 
 /**
- * General handler to subclass when you provide text or html data. Only fixed 
+ * General responder to subclass when you provide text or html data. Only fixed 
  * size responses will be generated.
  */
-public abstract class DefaultHandler extends DefaultStreamHandler {
+public abstract class DefaultResponder extends DefaultStreamResponder {
 
   @Override
   public Response get( final UriResource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
@@ -35,7 +35,7 @@ public abstract class DefaultHandler extends DefaultStreamHandler {
 
   @Override
   public InputStream getData() {
-    throw new IllegalStateException( "This method should not be called in a text based handler" );
+    throw new IllegalStateException( "This method should not be called in a text based responder" );
   }
 
 

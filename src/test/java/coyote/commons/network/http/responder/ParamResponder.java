@@ -9,7 +9,7 @@
  *   Stephan D. Cote 
  *      - Initial concept and initial implementation
  */
-package coyote.commons.network.http.handler;
+package coyote.commons.network.http.responder;
 
 import java.util.Map;
 
@@ -18,19 +18,21 @@ import coyote.commons.network.http.IHTTPSession;
 import coyote.commons.network.http.IStatus;
 import coyote.commons.network.http.Response;
 import coyote.commons.network.http.Status;
+import coyote.commons.network.http.responder.UriResource;
+import coyote.commons.network.http.responder.Responder;
 
 
 /**
  * 
  */
-public class ParamResponder implements UriResponder {
+public class ParamResponder implements Responder {
   private String responseText = "Boom";
 
 
 
 
   /**
-   * @see coyote.commons.network.http.handler.UriResponder#delete(coyote.commons.network.http.handler.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
+   * @see coyote.commons.network.http.responder.Responder#delete(coyote.commons.network.http.responder.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
    */
   @Override
   public Response delete( UriResource uriResource, Map<String, String> urlParams, IHTTPSession session ) {
@@ -42,7 +44,7 @@ public class ParamResponder implements UriResponder {
 
 
   /**
-   * @see coyote.commons.network.http.handler.UriResponder#get(coyote.commons.network.http.handler.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
+   * @see coyote.commons.network.http.responder.Responder#get(coyote.commons.network.http.responder.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
    */
   @Override
   public Response get( UriResource uriResource, Map<String, String> urlParams, IHTTPSession session ) {
@@ -54,7 +56,7 @@ public class ParamResponder implements UriResponder {
 
 
   /**
-   * @see coyote.commons.network.http.handler.UriResponder#other(java.lang.String, coyote.commons.network.http.handler.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
+   * @see coyote.commons.network.http.responder.Responder#other(java.lang.String, coyote.commons.network.http.responder.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
    */
   @Override
   public Response other( String method, UriResource uriResource, Map<String, String> urlParams, IHTTPSession session ) {
@@ -66,7 +68,7 @@ public class ParamResponder implements UriResponder {
 
 
   /**
-   * @see coyote.commons.network.http.handler.UriResponder#post(coyote.commons.network.http.handler.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
+   * @see coyote.commons.network.http.responder.Responder#post(coyote.commons.network.http.responder.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
    */
   @Override
   public Response post( UriResource uriResource, Map<String, String> urlParams, IHTTPSession session ) {
@@ -78,7 +80,7 @@ public class ParamResponder implements UriResponder {
 
 
   /**
-   * @see coyote.commons.network.http.handler.UriResponder#put(coyote.commons.network.http.handler.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
+   * @see coyote.commons.network.http.responder.Responder#put(coyote.commons.network.http.responder.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
    */
   @Override
   public Response put( UriResource uriResource, Map<String, String> urlParams, IHTTPSession session ) {

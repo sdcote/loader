@@ -81,8 +81,8 @@ public class AuthAnnotationTest {
 
   @Test
   public void test() {
-    // setup a handler we can call which will post results into the response
-    server.addRoute( "/", Integer.MAX_VALUE, ProtectedHandler.class );
+    // setup a responder we can call which will post results into the response
+    server.addRoute( "/", Integer.MAX_VALUE, ProtectedResponder.class );
 
     try {
       TestResponse response = TestHttpClient.sendGet( "http://localhost:" + port );

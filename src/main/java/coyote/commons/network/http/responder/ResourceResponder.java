@@ -1,4 +1,4 @@
-package coyote.commons.network.http.handler;
+package coyote.commons.network.http.responder;
 
 import java.net.URL;
 import java.util.Map;
@@ -16,7 +16,7 @@ import coyote.loader.log.Log;
 /**
  * Serves resources from the class path and not the file system.
  * 
- * <p>All data must be a resource in the class path. This handler does not 
+ * <p>All data must be a resource in the class path. This responder does not 
  * serve anything which is not in the packaged application. This is arguably 
  * more secure than serving from the file system in that the user does not have 
  * the opportunity to introduce sensitive data or links to other resources.
@@ -24,10 +24,10 @@ import coyote.loader.log.Log;
  * <p>The root of the class path uses is "content" by default but can be 
  * changed
  * 
- * addRoute( "/(.)+", ResourceHandler.class, "content" );
+ * addRoute( "/(.)+", ResourceResponder.class, "content" );
  * 
  */
-public class ResourceHandler extends DefaultHandler {
+public class ResourceResponder extends DefaultResponder {
 
   private static final String DEFAULT_ROOT = "content";
   private boolean redirectOnIndexedDir = false;
@@ -92,7 +92,7 @@ public class ResourceHandler extends DefaultHandler {
         parentdirectory = DEFAULT_ROOT;
       }
     } catch ( Exception e ) {
-      Log.append( HTTPD.EVENT, "ResourceHandler initialization error: Parent Directory: " + e.getMessage() + " - defaulting to '" + DEFAULT_ROOT + "'" );
+      Log.append( HTTPD.EVENT, "ResourceResponder initialization error: Parent Directory: " + e.getMessage() + " - defaulting to '" + DEFAULT_ROOT + "'" );
     }
 
     // Check if we should send a 301 redirect when the request is for a 
@@ -102,7 +102,7 @@ public class ResourceHandler extends DefaultHandler {
       try {
         redirectOnIndexedDir = uriResource.initParameter( 1, Boolean.class );
       } catch ( Exception e ) {
-        Log.append( HTTPD.EVENT, "ResourceHandler initialization error: Redirect On Indexed Directory: " + e.getMessage() + " - defaulting to true" );
+        Log.append( HTTPD.EVENT, "ResourceResponder initialization error: Redirect On Indexed Directory: " + e.getMessage() + " - defaulting to true" );
       }
     }
 
@@ -131,7 +131,7 @@ public class ResourceHandler extends DefaultHandler {
           Log.append( HTTPD.EVENT, "There does not appear to be an index file in the content root (" + parentdirectory + ") of the classpath." );
         }
         Log.append( HTTPD.EVENT, "404 NOT FOUND - '" + coreRequest + "'" );
-        return new Error404UriHandler().get( uriResource, urlParams, session );
+        return new Error404Responder().get( uriResource, urlParams, session );
       } else {
         if ( redirectOnIndexedDir ) {
           // We need to send a 301, indicating the new (proper) URL to use
@@ -156,7 +156,7 @@ public class ResourceHandler extends DefaultHandler {
       // if we have no URL, the class loader could not find the resource 
       if ( rsc == null ) {
         Log.append( HTTPD.EVENT, "404 NOT FOUND - '" + coreRequest + "' LOCAL: " + localPath );
-        return new Error404UriHandler().get( uriResource, urlParams, session );
+        return new Error404Responder().get( uriResource, urlParams, session );
       } else {
         // Success - Found the resource - 
         try {

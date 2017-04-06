@@ -8,7 +8,7 @@
  * Contributors:
  *   Stephan D. Cote 
  */
-package coyote.commons.network.http.handler;
+package coyote.commons.network.http.responder;
 
 import java.io.InputStream;
 import java.util.Map;
@@ -20,10 +20,10 @@ import coyote.commons.network.http.Response;
 
 
 /**
- * General handler to subclass when you provide stream data. Only chucked
+ * General responder to subclass when you provide stream data. Only chucked
  * responses will be generated.
  */
-public abstract class DefaultStreamHandler implements UriResponder {
+public abstract class DefaultStreamResponder implements Responder {
 
   @Override
   public Response delete( final UriResource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {

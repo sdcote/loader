@@ -9,7 +9,7 @@
  *   Stephan D. Cote 
  *      - Initial concept and initial implementation
  */
-package coyote.commons.network.http.handler;
+package coyote.commons.network.http.responder;
 
 //import static org.junit.Assert.*;
 import static org.junit.Assert.assertTrue;
@@ -26,12 +26,13 @@ import coyote.commons.network.http.HTTPD;
 import coyote.commons.network.http.TestHttpClient;
 import coyote.commons.network.http.TestResponse;
 import coyote.commons.network.http.TestRouter;
+import coyote.commons.network.http.responder.ResourceResponder;
 
 
 /**
  * 
  */
-public class ResourceResponderParamTest {
+public class ResourceResponderTest {
 
   private static TestRouter server = null;
   private static int port = 3232;
@@ -81,20 +82,23 @@ public class ResourceResponderParamTest {
 
   @Test
   public void test() {
-    server.addRoute( "/test", Integer.MAX_VALUE, ParamResponder.class );
-    server.addRoute( "/test/:name", Integer.MAX_VALUE, ParamResponder.class );
+    server.addRoute( "/", Integer.MAX_VALUE, ResourceResponder.class, "content" );
+    server.addRoute( "/(.)+", Integer.MAX_VALUE, ResourceResponder.class, "content", true );
 
     try {
-      String resource = "http://localhost:" + port + "/test";
-      TestResponse response = TestHttpClient.sendGet( resource );
-      System.out.println( "GET: '" + resource + "' : " + response.getStatus() + ":" + response.getData() );
+      TestResponse response = TestHttpClient.sendGet( "http://localhost:" + port );
+      System.out.println( response.getStatus() + ":" + response.getData() );
       assertTrue( response.getStatus() == 200 );
       assertTrue( server.isAlive() );
 
-      resource = "http://localhost:" + port + "/test/bob";
-      response = TestHttpClient.sendGet( resource );
-      System.out.println( "GET: '" + resource + "' : " + response.getStatus() + ":" + response.getData() );
+      response = TestHttpClient.sendGet( "http://localhost:" + port + "/" );
+      System.out.println( response.getStatus() + ":" + response.getData() );
       assertTrue( response.getStatus() == 200 );
+      assertTrue( server.isAlive() );
+
+      response = TestHttpClient.sendGet( "http://localhost:" + port + "/notfound.txt" );
+      System.out.println( response.getStatus() + ":" + response.getData() );
+      assertTrue( response.getStatus() == 404 );
       assertTrue( server.isAlive() );
 
     } catch ( Exception e ) {

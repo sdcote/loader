@@ -8,7 +8,7 @@
  * Contributors:
  *   Stephan D. Cote 
  */
-package coyote.commons.network.http.handler;
+package coyote.commons.network.http.responder;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -26,12 +26,12 @@ import coyote.commons.network.http.Status;
 
 
 /**
- * Generic handler to retrieve the requested page from a file root.
+ * Generic responder to retrieve the requested page from a file root.
  * 
  * <p>The first initialization parameter is the directory from which the files 
  * are to be served.</p>
  */
-public class StaticPageHandler extends DefaultHandler {
+public class StaticPageResponder extends DefaultResponder {
 
   private static String[] getPathArray( final String uri ) {
     final String array[] = uri.split( "/" );
@@ -88,7 +88,7 @@ public class StaticPageHandler extends DefaultHandler {
     // if the file does not exist or is not a file...
     if ( !requestedFile.exists() || !requestedFile.isFile() ) {
       // throw a 404 at them
-      return new Error404UriHandler().get( uriResource, urlParams, session );
+      return new Error404Responder().get( uriResource, urlParams, session );
     } else {
 
       // return the found file

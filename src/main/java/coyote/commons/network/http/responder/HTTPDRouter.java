@@ -1,4 +1,4 @@
-package coyote.commons.network.http.handler;
+package coyote.commons.network.http.responder;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import coyote.i13n.StatBoardImpl;
 
 
 /**
- * This is a HTTPD which routes requests to request handlers based on the 
+ * This is a HTTPD which routes requests to request responders based on the 
  * request URI.
  * 
  * <p>This allows the server to implement a pluggable approach to handling 
@@ -90,42 +90,42 @@ public class HTTPDRouter extends HTTPD {
   /**
    * Default routings, they are over writable.
    * 
-   * <pre>router.setNotFoundHandler(GeneralHandler.class);</pre>
+   * <pre>router.setNotFoundResponder(GeneralResponder.class);</pre>
    */
   public void addDefaultRoutes() {
-    router.setNotImplemented( NotImplementedHandler.class );
-    router.setNotFoundHandler( Error404UriHandler.class );
-    router.addRoute( "/", Integer.MAX_VALUE / 2, BlankPageHandler.class, authProvider );
-    router.addRoute( "/index.html", Integer.MAX_VALUE / 2, BlankPageHandler.class, authProvider );
+    router.setNotImplementedResponder( NotImplementedResponder.class );
+    router.setNotFoundResponder( Error404Responder.class );
+    router.addRoute( "/", Integer.MAX_VALUE / 2, BlankPageResponder.class, authProvider );
+    router.addRoute( "/index.html", Integer.MAX_VALUE / 2, BlankPageResponder.class, authProvider );
   }
 
 
 
 
   /**
-   * Add a handler for the given URL pattern.
+   * Add a responder for the given URL pattern.
    * 
    * @param urlPattern RegEx pattern describing the URL to match
-   * @param handler The class to be instantiated to handle the connection
-   * @param initParams the array of objects to pass to the handler upon in
+   * @param responder The class to be instantiated to handle the connection
+   * @param initParams the array of objects to pass to the responder upon in
    */
-  public void addRoute( final String urlPattern, final Class<?> handler, final Object... initParams ) {
-    router.addRoute( urlPattern, 100, handler, authProvider, initParams );
+  public void addRoute( final String urlPattern, final Class<?> responder, final Object... initParams ) {
+    router.addRoute( urlPattern, 100, responder, authProvider, initParams );
   }
 
 
 
 
   /**
-   * Add a handler for the given URL pattern.
+   * Add a responder for the given URL pattern.
    * 
    * @param urlPattern RegEx pattern describing the URL to match
    * @param priority The evaluation priority to all the other routes
-   * @param handler The class to be instantiated to handle the connection
-   * @param initParams the array of objects to pass to the handler upon in
+   * @param responder The class to be instantiated to handle the connection
+   * @param initParams the array of objects to pass to the responder upon in
    */
-  public void addRoute( final String urlPattern, int priority, final Class<?> handler, final Object... initParams ) {
-    router.addRoute( urlPattern, priority, handler, authProvider, initParams );
+  public void addRoute( final String urlPattern, int priority, final Class<?> responder, final Object... initParams ) {
+    router.addRoute( urlPattern, priority, responder, authProvider, initParams );
   }
 
 

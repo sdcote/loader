@@ -28,15 +28,15 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import coyote.commons.network.http.auth.AuthProvider;
-import coyote.commons.network.http.handler.Error404UriHandler;
-import coyote.commons.network.http.handler.GeneralHandler;
-import coyote.commons.network.http.handler.HTTPDRouter;
-import coyote.commons.network.http.handler.NotImplementedHandler;
-import coyote.commons.network.http.handler.StaticPageHandler;
-import coyote.commons.network.http.handler.UriResource;
+import coyote.commons.network.http.responder.Error404Responder;
+import coyote.commons.network.http.responder.GeneralResponder;
+import coyote.commons.network.http.responder.HTTPDRouter;
+import coyote.commons.network.http.responder.NotImplementedResponder;
+import coyote.commons.network.http.responder.StaticPageResponder;
+import coyote.commons.network.http.responder.UriResource;
 
 
-public class TestHandlers {
+public class TestResponders {
 
   private static PipedOutputStream stdIn;
 
@@ -150,7 +150,8 @@ public class TestHandlers {
     CloseableHttpResponse response = httpclient.execute( httpget );
     HttpEntity entity = response.getEntity();
     String string = new String( readContents( entity ), "UTF-8" );
-    assertEquals( "Error: java.lang.InstantiationException : coyote.commons.network.http.handler.UriResponder", string );
+    System.out.println( string );
+    assertEquals( "Error: java.lang.InstantiationException : coyote.commons.network.http.responder.Responder", string );
     response.close();
   }
 
@@ -174,7 +175,7 @@ public class TestHandlers {
 
 
   @Test
-  public void doIndexHandler() throws Exception {
+  public void doIndexResponder() throws Exception {
     CloseableHttpClient httpclient = HttpClients.createDefault();
 
     HttpGet httpget = new HttpGet( "http://localhost:9090/index.html" );
@@ -189,14 +190,14 @@ public class TestHandlers {
 
 
   @Test
-  public void doMissingHandler() throws Exception {
+  public void doMissingResponder() throws Exception {
     CloseableHttpClient httpclient = HttpClients.createDefault();
 
     HttpGet httpget = new HttpGet( "http://localhost:9090/photos/abc/def" );
     CloseableHttpResponse response = httpclient.execute( httpget );
     HttpEntity entity = response.getEntity();
     String string = new String( readContents( entity ), "UTF-8" );
-    assertEquals( "<html><body><h3>Not implemented</h3><p>The uri is mapped in the router, but no handler is specified.</p></body></html>", string );
+    assertEquals( "<html><body><h3>Not implemented</h3><p>The uri is mapped in the router, but no responder is specified.</p></body></html>", string );
     response.close();
   }
 
@@ -241,28 +242,28 @@ public class TestHandlers {
     CloseableHttpResponse response = httpclient.execute( httpget );
     HttpEntity entity = response.getEntity();
     String string = new String( readContents( entity ), "UTF-8" );
-    assertEquals( "<html><body>User handler. Method: GET<br><h1>Uri parameters:</h1><div> Param: id&nbsp;Value: content</div><h1>Query parameters:</h1></body></html>", string );
+    assertEquals( "<html><body>User responder. Method: GET<br><h1>Uri parameters:</h1><div> Param: id&nbsp;Value: content</div><h1>Query parameters:</h1></body></html>", string );
     response.close();
 
     HttpPost httppost = new HttpPost( "http://localhost:9090/user/content" );
     response = httpclient.execute( httppost );
     entity = response.getEntity();
     string = new String( readContents( entity ), "UTF-8" );
-    assertEquals( "<html><body>User handler. Method: POST<br><h1>Uri parameters:</h1><div> Param: id&nbsp;Value: content</div><h1>Query parameters:</h1></body></html>", string );
+    assertEquals( "<html><body>User responder. Method: POST<br><h1>Uri parameters:</h1><div> Param: id&nbsp;Value: content</div><h1>Query parameters:</h1></body></html>", string );
     response.close();
 
     HttpPut httpgput = new HttpPut( "http://localhost:9090/user/content" );
     response = httpclient.execute( httpgput );
     entity = response.getEntity();
     string = new String( readContents( entity ), "UTF-8" );
-    assertEquals( "<html><body>User handler. Method: PUT<br><h1>Uri parameters:</h1><div> Param: id&nbsp;Value: content</div><h1>Query parameters:</h1></body></html>", string );
+    assertEquals( "<html><body>User responder. Method: PUT<br><h1>Uri parameters:</h1><div> Param: id&nbsp;Value: content</div><h1>Query parameters:</h1></body></html>", string );
     response.close();
 
     HttpDelete httpdelete = new HttpDelete( "http://localhost:9090/user/content" );
     response = httpclient.execute( httpdelete );
     entity = response.getEntity();
     string = new String( readContents( entity ), "UTF-8" );
-    assertEquals( "<html><body>User handler. Method: DELETE<br><h1>Uri parameters:</h1><div> Param: id&nbsp;Value: content</div><h1>Query parameters:</h1></body></html>", string );
+    assertEquals( "<html><body>User responder. Method: DELETE<br><h1>Uri parameters:</h1><div> Param: id&nbsp;Value: content</div><h1>Query parameters:</h1></body></html>", string );
     response.close();
   }
 
@@ -301,7 +302,7 @@ public class TestHandlers {
 
   @Test(expected = IllegalStateException.class)
   public void illegalMethod1() throws Exception {
-    new TestRouter.UserHandler().getData();
+    new TestRouter.UserResponder().getData();
   }
 
 
@@ -309,7 +310,7 @@ public class TestHandlers {
 
   @Test(expected = IllegalStateException.class)
   public void illegalMethod2() throws Exception {
-    new GeneralHandler().getText();
+    new GeneralResponder().getText();
   }
 
 
@@ -317,7 +318,7 @@ public class TestHandlers {
 
   @Test(expected = IllegalStateException.class)
   public void illegalMethod3() throws Exception {
-    new StaticPageHandler().getText();
+    new StaticPageResponder().getText();
   }
 
 
@@ -325,7 +326,7 @@ public class TestHandlers {
 
   @Test(expected = IllegalStateException.class)
   public void illegalMethod4() throws Exception {
-    new StaticPageHandler().getMimeType();
+    new StaticPageResponder().getMimeType();
   }
 
 
@@ -422,48 +423,48 @@ public class TestHandlers {
 
 
   @Test
-  public void testError404UriHandlerGetMimeType() {
-    assertEquals( "Error404UriHandler mime type should be text/html", "text/html", new Error404UriHandler().getMimeType() );
+  public void testError404UriResponderGetMimeType() {
+    assertEquals( "Error404UriResponder mime type should be text/html", "text/html", new Error404Responder().getMimeType() );
   }
 
 
 
 
   @Test
-  public void testError404UriHandlerGetStatus() {
-    assertEquals( "Error404UriHandler#getStatus should return NOT_FOUND status", Status.NOT_FOUND, new Error404UriHandler().getStatus() );
+  public void testError404UriResponderGetStatus() {
+    assertEquals( "Error404UriResponder#getStatus should return NOT_FOUND status", Status.NOT_FOUND, new Error404Responder().getStatus() );
   }
 
 
 
 
   @Test
-  public void testGeneralHandlerGetStatus() {
-    assertEquals( "GeneralHandler#getStatus should return OK status", Status.OK, new GeneralHandler().getStatus() );
+  public void testGeneralResponderGetStatus() {
+    assertEquals( "GeneralResponder#getStatus should return OK status", Status.OK, new GeneralResponder().getStatus() );
   }
 
 
 
 
   @Test
-  public void testNotImplementedHandlerGetMimeType() {
-    assertEquals( "NotImplementedHandler mime type should be text/html", "text/html", new NotImplementedHandler().getMimeType() );
+  public void testNotImplementedResponderGetMimeType() {
+    assertEquals( "NotImplementedResponder mime type should be text/html", "text/html", new NotImplementedResponder().getMimeType() );
   }
 
 
 
 
   @Test
-  public void testNotImplementedHandlerGetStatus() {
-    assertEquals( "NotImplementedHandler#getStatus should return OK status", Status.OK, new NotImplementedHandler().getStatus() );
+  public void testNotImplementedResponderGetStatus() {
+    assertEquals( "NotImplementedResponder#getStatus should return OK status", Status.OK, new NotImplementedResponder().getStatus() );
   }
 
 
 
 
   @Test
-  public void testStaticPageHandlerGetStatus() {
-    assertEquals( "StaticPageHandler#getStatus should return OK status", Status.OK, new StaticPageHandler().getStatus() );
+  public void testStaticPageResponderGetStatus() {
+    assertEquals( "StaticPageResponder#getStatus should return OK status", Status.OK, new StaticPageResponder().getStatus() );
   }
 
 
@@ -483,7 +484,7 @@ public class TestHandlers {
   public void uriToString() throws Exception {
     assertEquals( //
         "UriResource{uri='photos/:customer_id/:photo_id', urlParts=[customer_id, photo_id]}", //
-        new UriResource( "/photos/:customer_id/:photo_id", 100, GeneralHandler.class, (AuthProvider)null ).toString() );
+        new UriResource( "/photos/:customer_id/:photo_id", 100, GeneralResponder.class, (AuthProvider)null ).toString() );
   }
 
 }

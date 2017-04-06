@@ -8,7 +8,7 @@
  * Contributors:
  *   Stephan D. Cote 
  */
-package coyote.commons.network.http.handler;
+package coyote.commons.network.http.responder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,22 +50,22 @@ public class UriRouter {
 
 
   /**
-   * Add a route to this router with the handler class for that route.
+   * Add a route to this router with the responder class for that route.
    * 
    * @param url the regex to match against the request URL
    * @param priority the priority in which the router will check the route, 
    *        lower values return before larger priorities.
-   * @param handler the handler class for this mapping. If null, the 
-   *        NotImplemented handler will be used.
+   * @param responder the responder class for this mapping. If null, the 
+   *        NotImplemented responder will be used.
    * @param authProvider the auth provider the URI resource should use for 
    *        this route
-   * @param initParameter the initialization parameters for the handler when 
+   * @param initParameter the initialization parameters for the responder when 
    *        it receives a request.
    */
-  void addRoute( final String url, final int priority, final Class<?> handler, final AuthProvider authProvider, final Object... initParameter ) {
+  void addRoute( final String url, final int priority, final Class<?> responder, final AuthProvider authProvider, final Object... initParameter ) {
     if ( url != null ) {
-      if ( handler != null ) {
-        mappings.add( new UriResource( url, priority + mappings.size(), handler, authProvider, initParameter ) );
+      if ( responder != null ) {
+        mappings.add( new UriResource( url, priority + mappings.size(), responder, authProvider, initParameter ) );
       } else {
         mappings.add( new UriResource( url, priority + mappings.size(), notImplemented, authProvider ) );
       }
@@ -109,9 +109,9 @@ public class UriRouter {
 
     if ( Log.isLogging( HTTPD.EVENT ) ) {
       if ( error404Url == uriResource ) {
-        Log.append( HTTPD.EVENT, "No handler defined for '" + request + "' from " + session.getRemoteIpAddress() + ":" + session.getRemoteIpPort() );
+        Log.append( HTTPD.EVENT, "No responder defined for '" + request + "' from " + session.getRemoteIpAddress() + ":" + session.getRemoteIpPort() );
       } else {
-        Log.append( HTTPD.EVENT, "Handler '" + uriResource + "' servicing '" + session.getMethod() + "' request for '" + request + "' from " + session.getRemoteIpAddress() + ":" + session.getRemoteIpPort() );
+        Log.append( HTTPD.EVENT, "Responder '" + uriResource + "' servicing '" + session.getMethod() + "' request for '" + request + "' from " + session.getRemoteIpAddress() + ":" + session.getRemoteIpPort() );
       }
     }
     // Have the found (or default 404) URI resource process the session
@@ -136,15 +136,15 @@ public class UriRouter {
 
 
 
-  public void setNotFoundHandler( final Class<?> handler ) {
-    error404Url = new UriResource( null, 100, handler, null );
+  public void setNotFoundResponder( final Class<?> responder ) {
+    error404Url = new UriResource( null, 100, responder, null );
   }
 
 
 
 
-  public void setNotImplemented( final Class<?> handler ) {
-    notImplemented = handler;
+  public void setNotImplementedResponder( final Class<?> responder ) {
+    notImplemented = responder;
   }
 
 

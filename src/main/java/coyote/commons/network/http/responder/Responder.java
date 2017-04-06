@@ -8,7 +8,7 @@
  * Contributors:
  *   Stephan D. Cote 
  */
-package coyote.commons.network.http.handler;
+package coyote.commons.network.http.responder;
 
 import java.util.Map;
 
@@ -20,28 +20,28 @@ import coyote.commons.network.http.Response;
  * This represents a class which responds to a URI requested from the HTTP 
  * server.
  * 
- * <p>Handlers are classes which are instantiated for each request. They do not 
- * have any state between requests and are therefore state-less in nature. Many 
- * instances of a handler can be created which will require garbage collecting 
- * so design your handler accordingly. 
+ * <p>Responders are classes which are instantiated for each request. They do 
+ * not have any state between requests and are therefore state-less in nature. 
+ * Many instances of a responder can be created which will require garbage 
+ * collecting so design your responder accordingly. 
  * 
- * <p>All handler should implement this interface to support requests.</p>
+ * <p>All responders should implement this interface to support requests.</p>
  * 
  * <p>The UriResource can contain important data for the operation of the 
- * handler. This data is set when the routing was added to the server and can 
- * be retrieved through the {@code initParameter} attribute. The UriResponder 
- * must know beforehand the type of data placed in the initialization 
- * attribute:<pre>
+ * responder. This data is set when the routing was added to the server and 
+ * can be retrieved through the {@code initParameter} attribute. The 
+ * UriResponder must know beforehand the type of data placed in the 
+ * initialization attribute:<pre>
  * File baseDirectory = uriResource.initParameter( File.class );</pre>
  * 
  * <p>The {@code initParameter} attribute is actually an array of objects which 
  * the UriResponder can retrieve via index:<pre>
  * File baseDirectory = uriResource.initParameter( 0, File.class );</pre>
  */
-public interface UriResponder {
+public interface Responder {
 
   /**
-   * Handle the HTTP "delete" method requests.
+   * Respond to the HTTP "delete" method requests.
    * 
    * @param uriResource the instance of the UriResource which contains our initialization parameters
    * @param urlParams parameters to process
@@ -55,7 +55,7 @@ public interface UriResponder {
 
 
   /**
-   * Handle the HTTP "get" method requests.
+   * Respond to the HTTP "get" method requests.
    * 
    * @param uriResource the instance of the UriResource which contains our initialization parameters
    * @param urlParams parameters to process
@@ -69,7 +69,7 @@ public interface UriResponder {
 
 
   /**
-   * Handle the HTTP method requests which do not map to get, put, post or delete.
+   * Respond to the HTTP method requests which do not map to get, put, post or delete.
    * 
    * @param uriResource the instance of the UriResource which contains our initialization parameters
    * @param urlParams parameters to process
@@ -83,7 +83,7 @@ public interface UriResponder {
 
 
   /**
-   * Handle the HTTP "post" method requests.
+   * Respond to the HTTP "post" method requests.
    * 
    * @param uriResource the instance of the UriResource which contains our initialization parameters
    * @param urlParams parameters to process
@@ -97,7 +97,7 @@ public interface UriResponder {
 
 
   /**
-   * Handle the HTTP "put" method requests.
+   * Respond to the HTTP "put" method requests.
    * 
    * @param uriResource the instance of the UriResource which contains our initialization parameters
    * @param urlParams parameters to process

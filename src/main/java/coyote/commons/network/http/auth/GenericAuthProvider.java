@@ -406,7 +406,7 @@ public class GenericAuthProvider implements AuthProvider {
   @Override
   public boolean isSecureConnection( final IHTTPSession session ) {
     // we can configure the auth provider to ignore the SSL check on many of
-    // the handlers when the deployment does not have valid SSL certificates,
+    // the responders when the deployment does not have valid SSL certificates,
     // such as in development and testing.
     if ( allowNoSSL ) {
       return true;

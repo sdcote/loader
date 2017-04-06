@@ -8,7 +8,7 @@
  * Contributors:
  *   Stephan D. Cote 
  */
-package coyote.commons.network.http.handler;
+package coyote.commons.network.http.responder;
 
 import java.util.Map;
 
@@ -20,9 +20,9 @@ import coyote.commons.network.http.Status;
 
 
 /**
- * Generic handler to print debug info as a html page.
+ * Generic responder to print debug info as a html page.
  */
-public class GeneralHandler extends DefaultHandler {
+public class GeneralResponder extends DefaultResponder {
 
   @Override
   public Response get( final UriResource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {

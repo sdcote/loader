@@ -8,7 +8,7 @@
  * Contributors:
  *   Stephan D. Cote 
  */
-package coyote.commons.network.http.handler;
+package coyote.commons.network.http.responder;
 
 import java.net.URL;
 import java.util.Map;
@@ -24,7 +24,7 @@ import coyote.loader.log.Log;
 
 
 /**
- * This handler retrieves the requested page from the class path via the class 
+ * This responder retrieves the requested page from the class path via the class 
  * loader.
  * 
  * <p>This is useful when there is no file system from which to serve content 
@@ -33,9 +33,9 @@ import coyote.loader.log.Log;
  * intended content is served.</p>
  *
  *
- * addRoute( "/(.)+", ClassloadingHandler.class, "/content" );
+ * addRoute( "/(.)+", ClassloadingResponder.class, "/content" );
  */
-public class ClassloadingHandler extends DefaultHandler {
+public class ClassloadingResponder extends DefaultResponder {
 
   // the ClassLoader object associated with this Class
   ClassLoader cLoader = this.getClass().getClassLoader();
@@ -46,7 +46,7 @@ public class ClassloadingHandler extends DefaultHandler {
   /**
    * retrieve the requested resource from the class path.
    *  
-   * @see coyote.commons.network.http.handler.DefaultHandler#get(coyote.commons.network.http.handler.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
+   * @see coyote.commons.network.http.responder.DefaultResponder#get(coyote.commons.network.http.responder.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
    */
   @Override
   public Response get( final UriResource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
@@ -90,7 +90,7 @@ public class ClassloadingHandler extends DefaultHandler {
           Log.append( HTTPD.EVENT, "There does not appear to be an index file in the content root (" + parentdirectory + ") of the classpath." );
         }
         Log.append( HTTPD.EVENT, "404 NOT FOUND - '" + coreRequest + "'" );
-        return new Error404UriHandler().get( uriResource, urlParams, session );
+        return new Error404Responder().get( uriResource, urlParams, session );
       }
     }
 
@@ -100,7 +100,7 @@ public class ClassloadingHandler extends DefaultHandler {
     if ( rsc == null ) {
       // couldn't find the resource
       Log.append( HTTPD.EVENT, "404 NOT FOUND - '" + coreRequest + "' LOCAL: " + localPath );
-      return new Error404UriHandler().get( uriResource, urlParams, session );
+      return new Error404Responder().get( uriResource, urlParams, session );
     } else {
       // Success - Found the resource - 
       // Hopefully it is not a directory...

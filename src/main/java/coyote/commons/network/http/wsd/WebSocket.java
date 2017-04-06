@@ -259,7 +259,7 @@ public abstract class WebSocket {
       }
     }
     finally {
-      doClose( CloseCode.InternalServerError, "Handler terminated without closing the connection.", false );
+      doClose( CloseCode.InternalServerError, "Responder terminated without closing the connection.", false );
     }
   }
 

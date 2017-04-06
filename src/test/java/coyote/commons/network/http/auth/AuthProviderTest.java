@@ -28,7 +28,7 @@ import coyote.commons.network.http.HTTPD;
 import coyote.commons.network.http.TestHttpClient;
 import coyote.commons.network.http.TestResponse;
 import coyote.commons.network.http.TestRouter;
-import coyote.commons.network.http.handler.HTTPDRouter;
+import coyote.commons.network.http.responder.HTTPDRouter;
 
 
 /**
@@ -55,7 +55,7 @@ public class AuthProviderTest {
     server.setAuthProvider( AUTH_PROVIDER );
 
     // add a protected uri resource 
-    server.addRoute( "/", Integer.MAX_VALUE, ProtectedHandler.class );
+    server.addRoute( "/", Integer.MAX_VALUE, ProtectedResponder.class );
 
     // try to start the server, waiting only 2 seconds before giving up
     try {

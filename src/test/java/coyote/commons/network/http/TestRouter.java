@@ -7,19 +7,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
-import coyote.commons.network.http.handler.DefaultHandler;
-import coyote.commons.network.http.handler.DefaultStreamHandler;
-import coyote.commons.network.http.handler.GeneralHandler;
-import coyote.commons.network.http.handler.HTTPDRouter;
-import coyote.commons.network.http.handler.StaticPageHandler;
-import coyote.commons.network.http.handler.UriResource;
-import coyote.commons.network.http.handler.UriResponder;
+import coyote.commons.network.http.responder.DefaultResponder;
+import coyote.commons.network.http.responder.DefaultStreamResponder;
+import coyote.commons.network.http.responder.GeneralResponder;
+import coyote.commons.network.http.responder.HTTPDRouter;
+import coyote.commons.network.http.responder.StaticPageResponder;
+import coyote.commons.network.http.responder.UriResource;
+import coyote.commons.network.http.responder.Responder;
 
 
 public class TestRouter extends HTTPDRouter {
   private static final int PORT = 9090;
 
-  public static class StaticPageTestHandler extends StaticPageHandler {
+  public static class StaticPageTestResponder extends StaticPageResponder {
 
     @Override
     protected BufferedInputStream fileToInputStream( final File fileOrdirectory ) throws IOException {
@@ -30,7 +30,7 @@ public class TestRouter extends HTTPDRouter {
     }
   }
 
-  static public class StreamUrl extends DefaultStreamHandler {
+  static public class StreamUrl extends DefaultStreamResponder {
 
     @Override
     public InputStream getData() {
@@ -55,7 +55,7 @@ public class TestRouter extends HTTPDRouter {
 
   }
 
-  public static class UserHandler extends DefaultHandler {
+  public static class UserResponder extends DefaultResponder {
 
     @Override
     public Response get( final UriResource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
@@ -93,7 +93,7 @@ public class TestRouter extends HTTPDRouter {
 
 
     public String getText( final Map<String, String> urlParams, final IHTTPSession session ) {
-      String text = "<html><body>User handler. Method: " + session.getMethod().toString() + "<br>";
+      String text = "<html><body>User responder. Method: " + session.getMethod().toString() + "<br>";
       text += "<h1>Uri parameters:</h1>";
       for ( final Map.Entry<String, String> entry : urlParams.entrySet() ) {
         final String key = entry.getKey();
@@ -155,23 +155,23 @@ public class TestRouter extends HTTPDRouter {
 
   /**
    * Add the routes Every route is an absolute path Parameters starts with ":"
-   * Handler class should implement @UriResponder interface If the handler not
-   * implement UriResponder interface - toString() is used
+   * Responder class should implement @UriResponder interface If the responder 
+   * does not implement UriResponder interface - toString() is used
    */
   @Override
   public void addDefaultRoutes() {
     super.addDefaultRoutes();
-    addRoute( "/user", UserHandler.class );
-    addRoute( "/user/:id", UserHandler.class );
-    addRoute( "/user/help", GeneralHandler.class );
-    addRoute( "/general/:param1/:param2", GeneralHandler.class );
+    addRoute( "/user", UserResponder.class );
+    addRoute( "/user/:id", UserResponder.class );
+    addRoute( "/user/help", GeneralResponder.class );
+    addRoute( "/general/:param1/:param2", GeneralResponder.class );
     addRoute( "/photos/:customer_id/:photo_id", null );
     addRoute( "/test", String.class );
-    addRoute( "/interface", UriResponder.class ); // this will cause an error
+    addRoute( "/interface", Responder.class ); // this will cause an error
                                                   // when called
     addRoute( "/toBeDeleted", String.class );
     removeRoute( "/toBeDeleted" );
     addRoute( "/stream", StreamUrl.class );
-    addRoute( "/browse/(.)+", StaticPageTestHandler.class, new File( "src/test/resources" ).getAbsoluteFile() );
+    addRoute( "/browse/(.)+", StaticPageTestResponder.class, new File( "src/test/resources" ).getAbsoluteFile() );
   }
 }

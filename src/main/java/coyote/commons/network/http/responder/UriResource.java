@@ -8,7 +8,7 @@
  * Contributors:
  *   Stephan D. Cote 
  */
-package coyote.commons.network.http.handler;
+package coyote.commons.network.http.responder;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -50,9 +50,9 @@ public class UriResource {
   final int priority;
 
   // The class to use handling the URI
-  private final Class<?> handler;
+  private final Class<?> responderClass;
 
-  // the initialization parameters for the handler
+  // the initialization parameters for the responder
   private final Object[] initParameter;
 
   private final List<String> uriParams = new ArrayList<String>();
@@ -67,12 +67,12 @@ public class UriResource {
    * 
    * @param uri the 
    * @param priority
-   * @param handler
+   * @param responder
    * @param authProvider
    * @param initParameter
    */
-  public UriResource( final String uri, final int priority, final Class<?> handler, final AuthProvider authProvider, final Object... initParameter ) {
-    this.handler = handler;
+  public UriResource( final String uri, final int priority, final Class<?> responder, final AuthProvider authProvider, final Object... initParameter ) {
+    this.responderClass = responder;
     this.authProvider = authProvider;
     this.initParameter = initParameter;
     if ( uri != null ) {
@@ -195,37 +195,37 @@ public class UriResource {
     String error = "Error: Problems while processing URI resource";
     Auth authAnnotation = null;
 
-    if ( handler != null ) {
+    if ( responderClass != null ) {
       try {
-        final Object object = handler.newInstance();
+        final Object object = responderClass.newInstance();
 
         // Check for a class level Auth annotation which is applied to all methods
-        if ( handler.isAnnotationPresent( Auth.class ) ) {
-          authAnnotation = (Auth)handler.getAnnotation( Auth.class );
+        if ( responderClass.isAnnotationPresent( Auth.class ) ) {
+          authAnnotation = (Auth)responderClass.getAnnotation( Auth.class );
         }
 
         // If this is a URI Responder, have it process the request
-        if ( object instanceof UriResponder ) {
-          final UriResponder responder = (UriResponder)object;
+        if ( object instanceof Responder ) {
+          final Responder responder = (Responder)object;
 
           // determine which method to call
           Class[] params = { UriResource.class, Map.class, IHTTPSession.class };
           Method method = null;
           switch ( session.getMethod() ) {
             case GET:
-              method = handler.getMethod( "get", params );
+              method = responderClass.getMethod( "get", params );
               break;
             case POST:
-              method = handler.getMethod( "post", params );
+              method = responderClass.getMethod( "post", params );
               break;
             case PUT:
-              method = handler.getMethod( "put", params );
+              method = responderClass.getMethod( "put", params );
               break;
             case DELETE:
-              method = handler.getMethod( "delete", params );
+              method = responderClass.getMethod( "delete", params );
               break;
             default:
-              method = handler.getMethod( "other", String.class, UriResource.class, Map.class, IHTTPSession.class );
+              method = responderClass.getMethod( "other", String.class, UriResource.class, Map.class, IHTTPSession.class );
           }
 
           // Check for method level annotation which will override any class level annotation
@@ -250,8 +250,8 @@ public class UriResource {
               }
             } else {
               // should never happen, but who knows?
-              Log.append( HTTPD.EVENT, "ERROR: No Authentication Handler Set: while processing for '" + session.getUri() + "' from " + session.getRemoteIpAddress() + ":" + session.getRemoteIpPort() );
-              Log.error( "No Authentication Handler Set in Server: check HTTP log for more details" );
+              Log.append( HTTPD.EVENT, "ERROR: No Authentication responder Set: while processing for '" + session.getUri() + "' from " + session.getRemoteIpAddress() + ":" + session.getRemoteIpPort() );
+              Log.error( "No Authentication responder Set in Server: check HTTP log for more details" );
               return Response.createFixedLengthResponse( Status.INTERNAL_ERROR, MimeType.TEXT.getType(), "Server Error" );
             }
           }
@@ -270,7 +270,7 @@ public class UriResource {
           // This is some other object...display it generically
           return Response.createFixedLengthResponse( Status.OK, MimeType.TEXT.getType(), //
               new StringBuilder( "Return: " ) //
-                  .append( handler.getCanonicalName() ) //
+                  .append( responderClass.getCanonicalName() ) //
                   .append( ".toString() -> " ) //
                   .append( object ) //
                   .toString() );
