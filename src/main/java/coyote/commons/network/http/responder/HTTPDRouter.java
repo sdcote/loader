@@ -16,7 +16,7 @@ import coyote.i13n.StatBoardImpl;
  * request URI.
  * 
  * <p>This allows the server to implement a pluggable approach to handling 
- * requests. For example, it is possible to implement microservices with 
+ * requests. For example, it is possible to implement micro services with 
  * simple classes.
  */
 public class HTTPDRouter extends HTTPD {

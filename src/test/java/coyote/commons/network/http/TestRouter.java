@@ -135,7 +135,6 @@ public class TestRouter extends HTTPDRouter {
   public TestRouter() throws IOException {
     super( PORT );
     addDefaultRoutes();
-    //System.out.println( "\nRunning! Point your browers to http://localhost:" + PORT + "/ \n" );
   }
 
 
@@ -147,7 +146,6 @@ public class TestRouter extends HTTPDRouter {
   public TestRouter( final int port ) throws IOException {
     super( port );
     addDefaultRoutes();
-    //System.out.println( "\nRunning! Point your browers to http://localhost:" + port + "/ \n" );
   }
 
 
@@ -168,7 +166,6 @@ public class TestRouter extends HTTPDRouter {
     addRoute( "/photos/:customer_id/:photo_id", null );
     addRoute( "/test", String.class );
     addRoute( "/interface", Responder.class ); // this will cause an error
-                                                  // when called
     addRoute( "/toBeDeleted", String.class );
     removeRoute( "/toBeDeleted" );
     addRoute( "/stream", StreamUrl.class );

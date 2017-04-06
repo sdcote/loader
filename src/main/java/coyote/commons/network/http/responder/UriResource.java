@@ -84,7 +84,7 @@ public class UriResource {
     }
 
     // prioritize this resource based on the number of parameters; the fewer 
-    // the parameters, the higher the priority
+    // the parameters, the higher the priority (is found first)
     this.priority = priority + ( uriParams.size() * 1000 );
   }
 
@@ -250,8 +250,8 @@ public class UriResource {
               }
             } else {
               // should never happen, but who knows?
-              Log.append( HTTPD.EVENT, "ERROR: No Authentication responder Set: while processing for '" + session.getUri() + "' from " + session.getRemoteIpAddress() + ":" + session.getRemoteIpPort() );
-              Log.error( "No Authentication responder Set in Server: check HTTP log for more details" );
+              Log.append( HTTPD.EVENT, "ERROR: No Authentication Provider Set: while processing for '" + session.getUri() + "' from " + session.getRemoteIpAddress() + ":" + session.getRemoteIpPort() );
+              Log.error( "No Authentication Provider Set in Server: check HTTP log for more details" );
               return Response.createFixedLengthResponse( Status.INTERNAL_ERROR, MimeType.TEXT.getType(), "Server Error" );
             }
           }
