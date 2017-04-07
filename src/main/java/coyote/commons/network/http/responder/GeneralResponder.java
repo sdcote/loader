@@ -25,7 +25,7 @@ import coyote.commons.network.http.Status;
 public class GeneralResponder extends DefaultResponder {
 
   @Override
-  public Response get( final UriResource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
+  public Response get( final Resource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
     final StringBuilder text = new StringBuilder( "<html><body>" );
     text.append( "<h1>Url: " );
     text.append( session.getUri() );

@@ -26,7 +26,7 @@ import coyote.commons.network.http.Response;
 public abstract class DefaultStreamResponder implements Responder {
 
   @Override
-  public Response delete( final UriResource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
+  public Response delete( final Resource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
     return get( uriResource, urlParams, session );
   }
 
@@ -34,7 +34,7 @@ public abstract class DefaultStreamResponder implements Responder {
 
 
   @Override
-  public Response get( final UriResource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
+  public Response get( final Resource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
     return Response.createChunkedResponse( getStatus(), getMimeType(), getData() );
   }
 
@@ -57,7 +57,7 @@ public abstract class DefaultStreamResponder implements Responder {
 
 
   @Override
-  public Response other( final String method, final UriResource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
+  public Response other( final String method, final Resource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
     return get( uriResource, urlParams, session );
   }
 
@@ -65,7 +65,7 @@ public abstract class DefaultStreamResponder implements Responder {
 
 
   @Override
-  public Response post( final UriResource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
+  public Response post( final Resource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
     return get( uriResource, urlParams, session );
   }
 
@@ -73,7 +73,7 @@ public abstract class DefaultStreamResponder implements Responder {
 
 
   @Override
-  public Response put( final UriResource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
+  public Response put( final Resource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
     return get( uriResource, urlParams, session );
   }
 }

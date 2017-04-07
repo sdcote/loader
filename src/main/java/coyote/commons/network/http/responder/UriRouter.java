@@ -30,9 +30,9 @@ import coyote.loader.log.Log;
  */
 public class UriRouter {
 
-  private final List<UriResource> mappings;
+  private final List<Resource> mappings;
 
-  private UriResource error404Url;
+  private Resource error404Url;
 
   private Class<?> notImplemented;
 
@@ -43,7 +43,7 @@ public class UriRouter {
    * Default constructor
    */
   public UriRouter() {
-    mappings = new ArrayList<UriResource>();
+    mappings = new ArrayList<Resource>();
   }
 
 
@@ -65,9 +65,9 @@ public class UriRouter {
   void addRoute( final String url, final int priority, final Class<?> responder, final AuthProvider authProvider, final Object... initParameter ) {
     if ( url != null ) {
       if ( responder != null ) {
-        mappings.add( new UriResource( url, priority + mappings.size(), responder, authProvider, initParameter ) );
+        mappings.add( new Resource( url, priority + mappings.size(), responder, authProvider, initParameter ) );
       } else {
-        mappings.add( new UriResource( url, priority + mappings.size(), notImplemented, authProvider ) );
+        mappings.add( new Resource( url, priority + mappings.size(), notImplemented, authProvider ) );
       }
       sortMappings();
     }
@@ -96,10 +96,10 @@ public class UriRouter {
     final String request = HTTPDRouter.normalizeUri( session.getUri() );
 
     Map<String, String> params = null;
-    UriResource uriResource = error404Url;
+    Resource uriResource = error404Url;
 
     // For all the resources, see which one matches first
-    for ( final UriResource resource : mappings ) {
+    for ( final Resource resource : mappings ) {
       params = resource.match( request );
       if ( params != null ) {
         uriResource = resource;
@@ -123,9 +123,9 @@ public class UriRouter {
 
   void removeRoute( final String url ) {
     final String uriToDelete = HTTPDRouter.normalizeUri( url );
-    final Iterator<UriResource> iter = mappings.iterator();
+    final Iterator<Resource> iter = mappings.iterator();
     while ( iter.hasNext() ) {
-      final UriResource uriResource = iter.next();
+      final Resource uriResource = iter.next();
       if ( uriToDelete.equals( uriResource.getUri() ) ) {
         iter.remove();
         break;
@@ -137,7 +137,7 @@ public class UriRouter {
 
 
   public void setNotFoundResponder( final Class<?> responder ) {
-    error404Url = new UriResource( null, 100, responder, null );
+    error404Url = new Resource( null, 100, responder, null );
   }
 
 
@@ -154,7 +154,7 @@ public class UriRouter {
    * @return the list of URI resource objects responsible for handling 
    *         requests of the server.
    */
-  public List<UriResource> getMappings() {
+  public List<Resource> getMappings() {
     return mappings;
   }
 
@@ -162,10 +162,10 @@ public class UriRouter {
 
 
   private void sortMappings() {
-    Collections.sort( mappings, new Comparator<UriResource>() {
+    Collections.sort( mappings, new Comparator<Resource>() {
 
       @Override
-      public int compare( final UriResource o1, final UriResource o2 ) {
+      public int compare( final Resource o1, final Resource o2 ) {
         return o1.priority - o2.priority;
       }
     } );

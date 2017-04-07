@@ -12,7 +12,7 @@ import coyote.commons.network.http.responder.DefaultStreamResponder;
 import coyote.commons.network.http.responder.GeneralResponder;
 import coyote.commons.network.http.responder.HTTPDRouter;
 import coyote.commons.network.http.responder.StaticPageResponder;
-import coyote.commons.network.http.responder.UriResource;
+import coyote.commons.network.http.responder.Resource;
 import coyote.commons.network.http.responder.Responder;
 
 
@@ -58,7 +58,7 @@ public class TestRouter extends HTTPDRouter {
   public static class UserResponder extends DefaultResponder {
 
     @Override
-    public Response get( final UriResource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
+    public Response get( final Resource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
       final String text = getText( urlParams, session );
       final ByteArrayInputStream inp = new ByteArrayInputStream( text.getBytes() );
       final int size = text.getBytes().length;

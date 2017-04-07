@@ -20,7 +20,7 @@ import coyote.commons.network.http.IStatus;
 import coyote.commons.network.http.Response;
 import coyote.commons.network.http.Status;
 import coyote.commons.network.http.responder.DefaultResponder;
-import coyote.commons.network.http.responder.UriResource;
+import coyote.commons.network.http.responder.Resource;
 
 
 /**
@@ -29,11 +29,11 @@ import coyote.commons.network.http.responder.UriResource;
 public class ProtectedResponder extends DefaultResponder {
 
   /**
-   * @see coyote.commons.network.http.responder.DefaultStreamResponder#post(coyote.commons.network.http.responder.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
+   * @see coyote.commons.network.http.responder.DefaultStreamResponder#post(coyote.commons.network.http.responder.Resource, java.util.Map, coyote.commons.network.http.IHTTPSession)
    */
   @Override
   @Auth(groups = "sysop", requireSSL = true)
-  public Response post( UriResource uriResource, Map<String, String> urlParams, IHTTPSession session ) {
+  public Response post( Resource uriResource, Map<String, String> urlParams, IHTTPSession session ) {
     return Response.createFixedLengthResponse( getStatus(), getMimeType(), getText() );
   }
 
@@ -41,11 +41,11 @@ public class ProtectedResponder extends DefaultResponder {
 
 
   /**
-   * @see coyote.commons.network.http.responder.DefaultResponder#get(coyote.commons.network.http.responder.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
+   * @see coyote.commons.network.http.responder.DefaultResponder#get(coyote.commons.network.http.responder.Resource, java.util.Map, coyote.commons.network.http.IHTTPSession)
    */
   @Override
   @Auth(groups = "devop", requireSSL = false)
-  public Response get( UriResource uriResource, Map<String, String> urlParams, IHTTPSession session ) {
+  public Response get( Resource uriResource, Map<String, String> urlParams, IHTTPSession session ) {
     return Response.createFixedLengthResponse( getStatus(), getMimeType(), getText() );
   }
 

@@ -150,7 +150,7 @@ public class HTTPDRouter extends HTTPD {
    * @return the list of URI resource objects responsible for handling 
    *         requests of the server.
    */
-  public List<UriResource> getMappings() {
+  public List<Resource> getMappings() {
     return router.getMappings();
   }
 

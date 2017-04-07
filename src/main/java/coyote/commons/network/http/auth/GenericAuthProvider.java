@@ -338,6 +338,7 @@ public class GenericAuthProvider implements AuthProvider {
             // find the user with the given name
             final User user = getUser( username );
             if ( user != null ) {
+              Log.append( HTTPD.EVENT, "Successful authentication for '" + username + "'" );
               // we found a user
               if ( StringUtil.isNotBlank( password ) ) {
                 try {

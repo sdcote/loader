@@ -71,7 +71,7 @@ public class ResourceResponder extends DefaultResponder {
 
 
   @Override
-  public Response get( final UriResource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
+  public Response get( final Resource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
 
     final String baseUri = uriResource.getUri(); // the regex matcher URL
 

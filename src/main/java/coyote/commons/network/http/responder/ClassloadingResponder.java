@@ -46,10 +46,10 @@ public class ClassloadingResponder extends DefaultResponder {
   /**
    * retrieve the requested resource from the class path.
    *  
-   * @see coyote.commons.network.http.responder.DefaultResponder#get(coyote.commons.network.http.responder.UriResource, java.util.Map, coyote.commons.network.http.IHTTPSession)
+   * @see coyote.commons.network.http.responder.DefaultResponder#get(coyote.commons.network.http.responder.Resource, java.util.Map, coyote.commons.network.http.IHTTPSession)
    */
   @Override
-  public Response get( final UriResource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
+  public Response get( final Resource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
 
     final String baseUri = uriResource.getUri(); // the regex matcher URL
 

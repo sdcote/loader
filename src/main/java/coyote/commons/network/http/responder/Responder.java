@@ -49,7 +49,7 @@ public interface Responder {
    * 
    * @return The response based on this method's processing
    */
-  public Response delete( UriResource uriResource, Map<String, String> urlParams, IHTTPSession session );
+  public Response delete( Resource uriResource, Map<String, String> urlParams, IHTTPSession session );
 
 
 
@@ -63,7 +63,7 @@ public interface Responder {
    * 
    * @return The response based on this method's processing
    */
-  public Response get( UriResource uriResource, Map<String, String> urlParams, IHTTPSession session );
+  public Response get( Resource uriResource, Map<String, String> urlParams, IHTTPSession session );
 
 
 
@@ -77,7 +77,7 @@ public interface Responder {
    * 
    * @return The response based on this method's processing
    */
-  public Response other( String method, UriResource uriResource, Map<String, String> urlParams, IHTTPSession session );
+  public Response other( String method, Resource uriResource, Map<String, String> urlParams, IHTTPSession session );
 
 
 
@@ -91,7 +91,7 @@ public interface Responder {
    * 
    * @return The response based on this method's processing
    */
-  public Response post( UriResource uriResource, Map<String, String> urlParams, IHTTPSession session );
+  public Response post( Resource uriResource, Map<String, String> urlParams, IHTTPSession session );
 
 
 
@@ -105,6 +105,6 @@ public interface Responder {
    * 
    * @return The response based on this method's processing
    */
-  public Response put( UriResource uriResource, Map<String, String> urlParams, IHTTPSession session );
+  public Response put( Resource uriResource, Map<String, String> urlParams, IHTTPSession session );
 
 }

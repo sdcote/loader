@@ -58,7 +58,7 @@ public class StaticPageResponder extends DefaultResponder {
 
 
   @Override
-  public Response get( final UriResource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
+  public Response get( final Resource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
     final String baseUri = uriResource.getUri();
     String realUri = HTTPDRouter.normalizeUri( session.getUri() );
     for ( int index = 0; index < Math.min( baseUri.length(), realUri.length() ); index++ ) {

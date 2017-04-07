@@ -32,8 +32,8 @@ import coyote.commons.network.http.responder.Error404Responder;
 import coyote.commons.network.http.responder.GeneralResponder;
 import coyote.commons.network.http.responder.HTTPDRouter;
 import coyote.commons.network.http.responder.NotImplementedResponder;
+import coyote.commons.network.http.responder.Resource;
 import coyote.commons.network.http.responder.StaticPageResponder;
-import coyote.commons.network.http.responder.UriResource;
 
 
 public class TestResponders {
@@ -100,8 +100,8 @@ public class TestResponders {
 
   @Test(expected = ClassCastException.class)
   public void checkIniParameter1() throws Exception {
-    new UriResource( "browse", 100, null, (AuthProvider)null, "init" ).initParameter( String.class );
-    new UriResource( "browse", 100, null, (AuthProvider)null, "init" ).initParameter( Integer.class );
+    new Resource( "browse", 100, null, (AuthProvider)null, "init" ).initParameter( String.class );
+    new Resource( "browse", 100, null, (AuthProvider)null, "init" ).initParameter( Integer.class );
   }
 
 
@@ -109,8 +109,8 @@ public class TestResponders {
 
   @Test
   public void checkIniParameter2() throws Exception {
-    assertEquals( "init", new UriResource( "browse", 100, null, (AuthProvider)null, "init" ).initParameter( String.class ) );
-    assertNull( new UriResource( "browse", 100, null, (AuthProvider)null ).initParameter( String.class ) );
+    assertEquals( "init", new Resource( "browse", 100, null, (AuthProvider)null, "init" ).initParameter( String.class ) );
+    assertNull( new Resource( "browse", 100, null, (AuthProvider)null ).initParameter( String.class ) );
   }
 
 
@@ -472,7 +472,7 @@ public class TestResponders {
 
   @Test
   public void testUriResourceMatch() {
-    final UriResource resource = new UriResource( "browse", 100, null, null, "init" );
+    final Resource resource = new Resource( "browse", 100, null, null, "init" );
     assertNull( "UriResource should not match incorrect URL, and thus, should not return a URI parameter map", resource.match( "/xyz/pqr/" ) );
     assertNotNull( "UriResource should match the correct URL, and thus, should return a URI parameter map", resource.match( "browse" ) );
   }
@@ -482,9 +482,7 @@ public class TestResponders {
 
   @Test
   public void uriToString() throws Exception {
-    assertEquals( //
-        "UriResource{uri='photos/:customer_id/:photo_id', urlParts=[customer_id, photo_id]}", //
-        new UriResource( "/photos/:customer_id/:photo_id", 100, GeneralResponder.class, (AuthProvider)null ).toString() );
+    assertEquals( "Resource{uri='/photos/:customer_id/:photo_id', Parts=[customer_id, photo_id]} Responder=GeneralResponder", new Resource( "/photos/:customer_id/:photo_id", 100, GeneralResponder.class, (AuthProvider)null ).toString() );
   }
 
 }

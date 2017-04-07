@@ -34,7 +34,7 @@ import coyote.loader.log.Log;
 /**
  * 
  */
-public class UriResource {
+public class Resource {
 
   private static final Pattern PARAM_PATTERN = Pattern.compile( "(?<=(^|/)):[a-zA-Z0-9_-]+(?=(/|$))" );
 
@@ -59,6 +59,8 @@ public class UriResource {
 
   private final AuthProvider authProvider;
 
+  private final String description;
+
 
 
 
@@ -71,7 +73,7 @@ public class UriResource {
    * @param authProvider
    * @param initParameter
    */
-  public UriResource( final String uri, final int priority, final Class<?> responder, final AuthProvider authProvider, final Object... initParameter ) {
+  public Resource( final String uri, final int priority, final Class<?> responder, final AuthProvider authProvider, final Object... initParameter ) {
     this.responderClass = responder;
     this.authProvider = authProvider;
     this.initParameter = initParameter;
@@ -86,6 +88,15 @@ public class UriResource {
     // prioritize this resource based on the number of parameters; the fewer 
     // the parameters, the higher the priority (is found first)
     this.priority = priority + ( uriParams.size() * 1000 );
+
+    // build our description once and reuse it (for toString())
+    StringBuilder b = new StringBuilder( "Resource{uri='" );
+    b.append( ( uri == null ? "/" : uri ) );
+    b.append( "', Parts=" );
+    b.append( uriParams );
+    b.append( "} Responder=" );
+    b.append( ( responder == null ? "NULL" : responder.getSimpleName() ) );
+    description = b.toString();
   }
 
 
@@ -209,7 +220,7 @@ public class UriResource {
           final Responder responder = (Responder)object;
 
           // determine which method to call
-          Class[] params = { UriResource.class, Map.class, IHTTPSession.class };
+          Class[] params = { Resource.class, Map.class, IHTTPSession.class };
           Method method = null;
           switch ( session.getMethod() ) {
             case GET:
@@ -225,7 +236,7 @@ public class UriResource {
               method = responderClass.getMethod( "delete", params );
               break;
             default:
-              method = responderClass.getMethod( "other", String.class, UriResource.class, Map.class, IHTTPSession.class );
+              method = responderClass.getMethod( "other", String.class, Resource.class, Map.class, IHTTPSession.class );
           }
 
           // Check for method level annotation which will override any class level annotation
@@ -237,7 +248,7 @@ public class UriResource {
           if ( authAnnotation != null ) {
             if ( authProvider != null ) {
               if ( authAnnotation.requireSSL() && !authProvider.isSecureConnection( session ) ) {
-                // RFC and OWASP differ in their recommendations. I prefer OWASP's version - don't respond to the request and just drop the packet.
+                // RFC and OWASP differ in their recommendations. I prefer OWASP's version - don't respond to the request and just drop the connection.
                 throw new SecurityResponseException( "Resource requires secure connection" );
               }
               if ( !authProvider.isAuthenticated( session ) ) {
@@ -268,12 +279,8 @@ public class UriResource {
           }
         } else {
           // This is some other object...display it generically
-          return Response.createFixedLengthResponse( Status.OK, MimeType.TEXT.getType(), //
-              new StringBuilder( "Return: " ) //
-                  .append( responderClass.getCanonicalName() ) //
-                  .append( ".toString() -> " ) //
-                  .append( object ) //
-                  .toString() );
+          return Response.createFixedLengthResponse( Status.OK, MimeType.TEXT.getType(),
+              new StringBuilder( "Return: " ).append( responderClass.getCanonicalName() ).append( ".toString() -> " ).append( object ).toString() );
         }
       } catch ( final Exception e ) {
         error = "Error: " + e.getClass().getName() + " : " + e.getMessage();
@@ -291,12 +298,7 @@ public class UriResource {
 
   @Override
   public String toString() {
-    StringBuilder b = new StringBuilder( "UriResource{uri='" );
-    b.append( ( uri == null ? "/" : uri ) );
-    b.append( "', urlParts=" );
-    b.append( uriParams );
-    b.append( '}' );
-    return b.toString();
+    return description;
   }
 
 }
