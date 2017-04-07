@@ -471,10 +471,10 @@ public class TestResponders {
 
 
   @Test
-  public void testUriResourceMatch() {
+  public void testResourceMatch() {
     final Resource resource = new Resource( "browse", 100, null, null, "init" );
-    assertNull( "UriResource should not match incorrect URL, and thus, should not return a URI parameter map", resource.match( "/xyz/pqr/" ) );
-    assertNotNull( "UriResource should match the correct URL, and thus, should return a URI parameter map", resource.match( "browse" ) );
+    assertNull( "Resource should not match incorrect URL, and thus, should not return a URI parameter map", resource.match( "/xyz/pqr/" ) );
+    assertNotNull( "Resource should match the correct URL, and thus, should return a URI parameter map", resource.match( "browse" ) );
   }
 
 

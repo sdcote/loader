@@ -27,29 +27,29 @@ import coyote.commons.network.http.Response;
  * 
  * <p>All responders should implement this interface to support requests.</p>
  * 
- * <p>The UriResource can contain important data for the operation of the 
+ * <p>The Resource can contain important data for the operation of the 
  * responder. This data is set when the routing was added to the server and 
  * can be retrieved through the {@code initParameter} attribute. The 
  * UriResponder must know beforehand the type of data placed in the 
  * initialization attribute:<pre>
- * File baseDirectory = uriResource.initParameter( File.class );</pre>
+ * File baseDirectory = resource.initParameter( File.class );</pre>
  * 
  * <p>The {@code initParameter} attribute is actually an array of objects which 
  * the UriResponder can retrieve via index:<pre>
- * File baseDirectory = uriResource.initParameter( 0, File.class );</pre>
+ * File baseDirectory = resource.initParameter( 0, File.class );</pre>
  */
 public interface Responder {
 
   /**
    * Respond to the HTTP "delete" method requests.
    * 
-   * @param uriResource the instance of the UriResource which contains our initialization parameters
+   * @param resource the instance of the Resource which contains our initialization parameters
    * @param urlParams parameters to process
    * @param session the session established with the HTTP server
    * 
    * @return The response based on this method's processing
    */
-  public Response delete( Resource uriResource, Map<String, String> urlParams, IHTTPSession session );
+  public Response delete( Resource resource, Map<String, String> urlParams, IHTTPSession session );
 
 
 
@@ -57,13 +57,13 @@ public interface Responder {
   /**
    * Respond to the HTTP "get" method requests.
    * 
-   * @param uriResource the instance of the UriResource which contains our initialization parameters
+   * @param resource the instance of the Resource which contains our initialization parameters
    * @param urlParams parameters to process
    * @param session the session established with the HTTP server
    * 
    * @return The response based on this method's processing
    */
-  public Response get( Resource uriResource, Map<String, String> urlParams, IHTTPSession session );
+  public Response get( Resource resource, Map<String, String> urlParams, IHTTPSession session );
 
 
 
@@ -71,13 +71,13 @@ public interface Responder {
   /**
    * Respond to the HTTP method requests which do not map to get, put, post or delete.
    * 
-   * @param uriResource the instance of the UriResource which contains our initialization parameters
+   * @param resource the instance of the Resource which contains our initialization parameters
    * @param urlParams parameters to process
    * @param session the session established with the HTTP server
    * 
    * @return The response based on this method's processing
    */
-  public Response other( String method, Resource uriResource, Map<String, String> urlParams, IHTTPSession session );
+  public Response other( String method, Resource resource, Map<String, String> urlParams, IHTTPSession session );
 
 
 
@@ -85,13 +85,13 @@ public interface Responder {
   /**
    * Respond to the HTTP "post" method requests.
    * 
-   * @param uriResource the instance of the UriResource which contains our initialization parameters
+   * @param resource the instance of the Resource which contains our initialization parameters
    * @param urlParams parameters to process
    * @param session the session established with the HTTP server
    * 
    * @return The response based on this method's processing
    */
-  public Response post( Resource uriResource, Map<String, String> urlParams, IHTTPSession session );
+  public Response post( Resource resource, Map<String, String> urlParams, IHTTPSession session );
 
 
 
@@ -99,12 +99,12 @@ public interface Responder {
   /**
    * Respond to the HTTP "put" method requests.
    * 
-   * @param uriResource the instance of the UriResource which contains our initialization parameters
+   * @param resource the instance of the Resource which contains our initialization parameters
    * @param urlParams parameters to process
    * @param session the session established with the HTTP server
    * 
    * @return The response based on this method's processing
    */
-  public Response put( Resource uriResource, Map<String, String> urlParams, IHTTPSession session );
+  public Response put( Resource resource, Map<String, String> urlParams, IHTTPSession session );
 
 }

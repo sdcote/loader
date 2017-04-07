@@ -26,7 +26,7 @@ import coyote.commons.network.http.Response;
 public abstract class DefaultResponder extends DefaultStreamResponder {
 
   @Override
-  public Response get( final Resource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
+  public Response get( final Resource resource, final Map<String, String> urlParams, final IHTTPSession session ) {
     return Response.createFixedLengthResponse( getStatus(), getMimeType(), getText() );
   }
 

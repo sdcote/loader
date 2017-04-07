@@ -58,8 +58,8 @@ public class StaticPageResponder extends DefaultResponder {
 
 
   @Override
-  public Response get( final Resource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
-    final String baseUri = uriResource.getUri();
+  public Response get( final Resource resource, final Map<String, String> urlParams, final IHTTPSession session ) {
+    final String baseUri = resource.getUri();
     String realUri = HTTPDRouter.normalizeUri( session.getUri() );
     for ( int index = 0; index < Math.min( baseUri.length(), realUri.length() ); index++ ) {
       if ( baseUri.charAt( index ) != realUri.charAt( index ) ) {
@@ -69,7 +69,7 @@ public class StaticPageResponder extends DefaultResponder {
     }
 
     // Start with the root directory as set in our init parameter
-    File requestedFile = uriResource.initParameter( File.class );
+    File requestedFile = resource.initParameter( File.class );
 
     // TODO: this has a smell, redesign
     for ( final String pathPart : getPathArray( realUri ) ) {
@@ -88,7 +88,7 @@ public class StaticPageResponder extends DefaultResponder {
     // if the file does not exist or is not a file...
     if ( !requestedFile.exists() || !requestedFile.isFile() ) {
       // throw a 404 at them
-      return new Error404Responder().get( uriResource, urlParams, session );
+      return new Error404Responder().get( resource, urlParams, session );
     } else {
 
       // return the found file
