@@ -32,7 +32,7 @@ public class ParamResponder implements Responder {
 
 
   @Override
-  public Response delete( Resource uriResource, Map<String, String> urlParams, IHTTPSession session ) {
+  public Response delete( Resource resource, Map<String, String> urlParams, IHTTPSession session ) {
     if ( StringUtil.isNotBlank( urlParams.get( "name" ) ) ) {
       responseText = urlParams.get( "name" );
     }
@@ -43,7 +43,7 @@ public class ParamResponder implements Responder {
 
 
   @Override
-  public Response get( Resource uriResource, Map<String, String> urlParams, IHTTPSession session ) {
+  public Response get( Resource resource, Map<String, String> urlParams, IHTTPSession session ) {
     if ( StringUtil.isNotBlank( urlParams.get( "name" ) ) ) {
       responseText = urlParams.get( "name" );
     }
@@ -54,7 +54,7 @@ public class ParamResponder implements Responder {
 
 
   @Override
-  public Response other( String method, Resource uriResource, Map<String, String> urlParams, IHTTPSession session ) {
+  public Response other( String method, Resource resource, Map<String, String> urlParams, IHTTPSession session ) {
     if ( StringUtil.isNotBlank( urlParams.get( "name" ) ) ) {
       responseText = urlParams.get( "name" );
     }
@@ -65,7 +65,7 @@ public class ParamResponder implements Responder {
 
 
   @Override
-  public Response post( Resource uriResource, Map<String, String> urlParams, IHTTPSession session ) {
+  public Response post( Resource resource, Map<String, String> urlParams, IHTTPSession session ) {
     if ( StringUtil.isNotBlank( urlParams.get( "name" ) ) ) {
       responseText = urlParams.get( "name" );
     }
@@ -76,7 +76,7 @@ public class ParamResponder implements Responder {
 
 
   @Override
-  public Response put( Resource uriResource, Map<String, String> urlParams, IHTTPSession session ) {
+  public Response put( Resource resource, Map<String, String> urlParams, IHTTPSession session ) {
     if ( StringUtil.isNotBlank( urlParams.get( "name" ) ) ) {
       responseText = urlParams.get( "name" );
     }

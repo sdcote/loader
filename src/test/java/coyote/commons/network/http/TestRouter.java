@@ -58,7 +58,7 @@ public class TestRouter extends HTTPDRouter {
   public static class UserResponder extends DefaultResponder {
 
     @Override
-    public Response get( final Resource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
+    public Response get( final Resource resource, final Map<String, String> urlParams, final IHTTPSession session ) {
       final String text = getText( urlParams, session );
       final ByteArrayInputStream inp = new ByteArrayInputStream( text.getBytes() );
       final int size = text.getBytes().length;

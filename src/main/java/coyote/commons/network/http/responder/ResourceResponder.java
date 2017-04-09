@@ -71,9 +71,9 @@ public class ResourceResponder extends DefaultResponder {
 
 
   @Override
-  public Response get( final Resource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
+  public Response get( final Resource resource, final Map<String, String> urlParams, final IHTTPSession session ) {
 
-    final String baseUri = uriResource.getUri(); // the regex matcher URL
+    final String baseUri = resource.getUri(); // the regex matcher URL
 
     String coreRequest = HTTPDRouter.normalizeUri( session.getUri() );
 
@@ -86,7 +86,7 @@ public class ResourceResponder extends DefaultResponder {
     }
 
     // Retrieve the base directory in the classpath for our search
-    String parentdirectory = uriResource.initParameter( 0, String.class );
+    String parentdirectory = resource.initParameter( 0, String.class );
     try {
       if ( StringUtil.isBlank( parentdirectory ) ) {
         parentdirectory = DEFAULT_ROOT;
@@ -98,9 +98,9 @@ public class ResourceResponder extends DefaultResponder {
     // Check if we should send a 301 redirect when the request is for a 
     // directory and we found an index file in that location which can be 
     // served instead
-    if ( uriResource.getInitParameterLength() > 1 ) {
+    if ( resource.getInitParameterLength() > 1 ) {
       try {
-        redirectOnIndexedDir = uriResource.initParameter( 1, Boolean.class );
+        redirectOnIndexedDir = resource.initParameter( 1, Boolean.class );
       } catch ( Exception e ) {
         Log.append( HTTPD.EVENT, "ResourceResponder initialization error: Redirect On Indexed Directory: " + e.getMessage() + " - defaulting to true" );
       }
@@ -131,7 +131,7 @@ public class ResourceResponder extends DefaultResponder {
           Log.append( HTTPD.EVENT, "There does not appear to be an index file in the content root (" + parentdirectory + ") of the classpath." );
         }
         Log.append( HTTPD.EVENT, "404 NOT FOUND - '" + coreRequest + "'" );
-        return new Error404Responder().get( uriResource, urlParams, session );
+        return new Error404Responder().get( resource, urlParams, session );
       } else {
         if ( redirectOnIndexedDir ) {
           // We need to send a 301, indicating the new (proper) URL to use
@@ -156,7 +156,7 @@ public class ResourceResponder extends DefaultResponder {
       // if we have no URL, the class loader could not find the resource 
       if ( rsc == null ) {
         Log.append( HTTPD.EVENT, "404 NOT FOUND - '" + coreRequest + "' LOCAL: " + localPath );
-        return new Error404Responder().get( uriResource, urlParams, session );
+        return new Error404Responder().get( resource, urlParams, session );
       } else {
         // Success - Found the resource - 
         try {

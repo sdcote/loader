@@ -96,26 +96,26 @@ public class UriRouter {
     final String request = HTTPDRouter.normalizeUri( session.getUri() );
 
     Map<String, String> params = null;
-    Resource uriResource = error404Url;
+    Resource retval = error404Url;
 
     // For all the resources, see which one matches first
     for ( final Resource resource : mappings ) {
       params = resource.match( request );
       if ( params != null ) {
-        uriResource = resource;
+        retval = resource;
         break;
       }
     }
 
     if ( Log.isLogging( HTTPD.EVENT ) ) {
-      if ( error404Url == uriResource ) {
+      if ( error404Url == retval ) {
         Log.append( HTTPD.EVENT, "No responder defined for '" + request + "' from " + session.getRemoteIpAddress() + ":" + session.getRemoteIpPort() );
       } else {
-        Log.append( HTTPD.EVENT, "Responder '" + uriResource + "' servicing '" + session.getMethod() + "' request for '" + request + "' from " + session.getRemoteIpAddress() + ":" + session.getRemoteIpPort() );
+        Log.append( HTTPD.EVENT, "Resource '" + retval + "' servicing '" + session.getMethod() + "' request for '" + request + "' from " + session.getRemoteIpAddress() + ":" + session.getRemoteIpPort() );
       }
     }
     // Have the found (or default 404) URI resource process the session
-    return uriResource.process( params, session );
+    return retval.process( params, session );
   }
 
 
@@ -125,8 +125,8 @@ public class UriRouter {
     final String uriToDelete = HTTPDRouter.normalizeUri( url );
     final Iterator<Resource> iter = mappings.iterator();
     while ( iter.hasNext() ) {
-      final Resource uriResource = iter.next();
-      if ( uriToDelete.equals( uriResource.getUri() ) ) {
+      final Resource resource = iter.next();
+      if ( uriToDelete.equals( resource.getUri() ) ) {
         iter.remove();
         break;
       }

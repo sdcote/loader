@@ -49,9 +49,9 @@ public class ClassloadingResponder extends DefaultResponder {
    * @see coyote.commons.network.http.responder.DefaultResponder#get(coyote.commons.network.http.responder.Resource, java.util.Map, coyote.commons.network.http.IHTTPSession)
    */
   @Override
-  public Response get( final Resource uriResource, final Map<String, String> urlParams, final IHTTPSession session ) {
+  public Response get( final Resource resource, final Map<String, String> urlParams, final IHTTPSession session ) {
 
-    final String baseUri = uriResource.getUri(); // the regex matcher URL
+    final String baseUri = resource.getUri(); // the regex matcher URL
 
     String coreRequest = HTTPDRouter.normalizeUri( session.getUri() );
 
@@ -64,7 +64,7 @@ public class ClassloadingResponder extends DefaultResponder {
     }
 
     // Retrieve the base directory in the classpath for our search
-    String parentdirectory = uriResource.initParameter( String.class );
+    String parentdirectory = resource.initParameter( String.class );
 
     // make sure we are configured with a properly formatted parent directory
     if ( !parentdirectory.endsWith( "/" ) ) {
@@ -90,7 +90,7 @@ public class ClassloadingResponder extends DefaultResponder {
           Log.append( HTTPD.EVENT, "There does not appear to be an index file in the content root (" + parentdirectory + ") of the classpath." );
         }
         Log.append( HTTPD.EVENT, "404 NOT FOUND - '" + coreRequest + "'" );
-        return new Error404Responder().get( uriResource, urlParams, session );
+        return new Error404Responder().get( resource, urlParams, session );
       }
     }
 
@@ -100,7 +100,7 @@ public class ClassloadingResponder extends DefaultResponder {
     if ( rsc == null ) {
       // couldn't find the resource
       Log.append( HTTPD.EVENT, "404 NOT FOUND - '" + coreRequest + "' LOCAL: " + localPath );
-      return new Error404Responder().get( uriResource, urlParams, session );
+      return new Error404Responder().get( resource, urlParams, session );
     } else {
       // Success - Found the resource - 
       // Hopefully it is not a directory...

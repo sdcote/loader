@@ -139,8 +139,7 @@ public class HTTPDRouter extends HTTPD {
 
 
   /**
-   * Accessor to the UriResources responsible for handling requests of the 
-   * router.
+   * Accessor to the Resources responsible for handling requests of the router.
    * 
    * <p><strong>NOTE:</strong> Never add or otherwise alter this list as it 
    * can adversely affect routing. It is exposed primarily for diagnostic 

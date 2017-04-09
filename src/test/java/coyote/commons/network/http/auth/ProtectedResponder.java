@@ -33,7 +33,7 @@ public class ProtectedResponder extends DefaultResponder {
    */
   @Override
   @Auth(groups = "sysop", requireSSL = true)
-  public Response post( Resource uriResource, Map<String, String> urlParams, IHTTPSession session ) {
+  public Response post( Resource resource, Map<String, String> urlParams, IHTTPSession session ) {
     return Response.createFixedLengthResponse( getStatus(), getMimeType(), getText() );
   }
 
@@ -45,7 +45,7 @@ public class ProtectedResponder extends DefaultResponder {
    */
   @Override
   @Auth(groups = "devop", requireSSL = false)
-  public Response get( Resource uriResource, Map<String, String> urlParams, IHTTPSession session ) {
+  public Response get( Resource resource, Map<String, String> urlParams, IHTTPSession session ) {
     return Response.createFixedLengthResponse( getStatus(), getMimeType(), getText() );
   }
 
