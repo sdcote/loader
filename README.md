@@ -11,12 +11,14 @@ By separating the Loader out into a separate project it is easier to focus on ju
 Other container projects are far too complex for our needs as they try to be everything for everyone. This is a purposed built toolkit for a specific set of needs.
 
 ### 12 Factor Applications
-The loader solves several of our problems for our scalable 12-factor applications. Everything is self-contained in our applications and reliance on an external container is eliminated. This means the loader can be used to stand up a complete running instance without external containers or other frameworks.
+The loader solves several of our problems for our scalable 12-factor applications. Everything is self-contained in our applications and reliance on an external container is eliminated. This means the loader can be used to stand up a complete running instance without external containers or other frameworks. Our Heroku slug sizes are significantly smaller than those with Jetty, Spring, Tomcat or other frameworks included. Because this was built to support deployment on single board computers (SBC) and embedded systems (e.g. field sensors), our cloud deployment footprints benefitted.
 
-The encryption is completely pluggable, allowing any library to be used through a simple interface. The encryption algorithm and keys can be specified in environment variables, another tenant of the 12-factor application.
+The encryption is completely pluggable, allowing any library to be used through a simple interface. The encryption algorithm and keys can be specified in environment variables, another tenant of a 12-factor application.
 
 Environment variables are leveraged in the configuration and templating tools further reducing the reliance on file systems and assisting the developer ensure each environment is (development, test, quality assurance, certification, production, etc.) are configured correctly and project artifacts such as configuration files do not "point" to the wrong locations or backing services.
-Loggers tie into backing log streams allowing further independence form the ephemeral file systems used in many cloud infrastructures. While you can use a local file system by default, it is rather easy to send log events externally by simply using a different appender, configured (of course) through environment variables.
+Loggers tie into backing log streams allowing further independence from the ephemeral file systems used in many cloud infrastructures. While you can use a local file system by default, it is rather easy to send log events externally by simply using a different appender, configured (of course) through environment variables.
+
+The Loader uses a set of JRE shutdown hooks to help ensure graceful shutdown when the SIGTERM event is caught. The Loader then calls the shutdown and terminate methods on all the components giving them a chance to gracefully terminate and will help the application handler life in the cloud as applications are terminated and moved to support scaling operations.
 
 Coyote Loader allows us to create 12-factor applications which maximize automation, offer maximum portability, can be deployed on modern cloud platforms, allow for continuous deployment, and scale quickly.
  
