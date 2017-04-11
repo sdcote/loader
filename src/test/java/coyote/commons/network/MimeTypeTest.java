@@ -12,7 +12,9 @@
 package coyote.commons.network;
 
 //import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -34,6 +36,17 @@ public class MimeTypeTest {
     //      System.out.println( mt );
     //    }
 
+  }
+
+
+
+
+  @Test
+  public void testEquals() {
+    MimeType html = MimeType.HTML;
+    MimeType htmlx = MimeType.get( "index.htm" ).get( 0 );
+    assertTrue( htmlx.equals( html ) );
+    assertFalse( MimeType.JSON.equals( MimeType.SOAP ) );
   }
 
 }

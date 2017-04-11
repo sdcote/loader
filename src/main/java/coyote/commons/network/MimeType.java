@@ -951,7 +951,32 @@ public class MimeType {
         }
       }
     }
+  }
 
+
+
+
+  /**
+   * Tests if the MIME Types are equivalent.
+   * 
+   * <p>True if both are Mime Types and their type value is the same. This 
+   * does <strong>not</strong> check for the value of the binary flag nor the 
+   * file extension, just the resulting type. so a MIME Type retrieve for 
+   * "html" will equal a MIME Type for "htm" and "htmls" as they all will 
+   * return "text/html" as their type. 
+   *   
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals( Object obj ) {
+    if ( obj != null ) {
+      if ( obj instanceof MimeType ) {
+        if ( this.getType().equals( ( (MimeType)obj ).getType() ) ) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
 }
