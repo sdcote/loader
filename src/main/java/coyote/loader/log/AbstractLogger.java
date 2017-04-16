@@ -304,7 +304,7 @@ public abstract class AbstractLogger implements Logger {
 
       // Case insensitive search for categories to log
       if ( config.getString( Logger.CATEGORY_TAG ) != null ) {
-        for ( final StringTokenizer st = new StringTokenizer( config.getString( Logger.CATEGORY_TAG ), Logger.CATEGORY_DELIMS ); st.hasMoreTokens(); startLogging( st.nextToken() ) );
+        for ( final StringTokenizer st = new StringTokenizer( config.getString( Logger.CATEGORY_TAG ), Logger.CATEGORY_DELIMS ); st.hasMoreTokens(); startLogging( st.nextToken().toUpperCase() ) );
       }
     }
 
