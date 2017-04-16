@@ -403,20 +403,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
    * the object to load and configure.</p>
    */
   protected void initComponents() {
-    List<Config> sections = configuration.getSections( ConfigTag.COMPONENTS );
-
-    // Look for the COMPONENTS section
-    for ( Config section : sections ) {
-      if ( section != null ) {
-        // get each of the configurations
-        for ( Config cfg : section.getSections() ) {
-          activate( loadComponent( cfg ), cfg );
-        }
-      }
-    }
-
-    // Look for the singular version of the attribute
-    sections = configuration.getSections( ConfigTag.COMPONENT );
+    List<Config> sections = configuration.getSections( ConfigTag.COMPONENT );
     for ( Config section : sections ) {
       if ( section != null ) {
         for ( Config cfg : section.getSections() ) {
@@ -424,7 +411,6 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
         }
       }
     }
-
   }
 
 
