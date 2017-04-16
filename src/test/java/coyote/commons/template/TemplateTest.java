@@ -23,6 +23,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import coyote.commons.CipherUtil;
+
 
 /**
  * 
@@ -40,7 +42,6 @@ public class TemplateTest {
   public static void setUpBeforeClass() throws Exception {
     symbols.put( "One", 1.02 );
     symbols.put( "Today", new Date() );
-
   }
 
 
@@ -109,34 +110,45 @@ public class TemplateTest {
 
     // Resolve the text
     String formattedText = Template.resolve( text, symbols );
-    System.out.println( formattedText );
+    assertEquals("Hello World!",formattedText);
 
     text = ">[#Thing.tupper(\"\")#]<-uppered";
     formattedText = Template.resolve( text, symbols );
-    System.out.println( formattedText );
+    assertEquals("><-uppered",formattedText);
 
-    text = ">[#Thing.tupper(\"quoted\")#]<-uppered";
+    text = ">[#Thing.tupper(\"Boo\")#]<-uppered";
     formattedText = Template.resolve( text, symbols );
-    System.out.println( formattedText );
-
-    text = ">[#Thing.tupper(hello)#]<-uppered";
-    formattedText = Template.resolve( text, symbols );
-    System.out.println( formattedText );
+    assertEquals(">BOO<-uppered",formattedText);
+    
 
     text = ">[#Thing.tupper(hello, something)#]<-wrong parameter count";
     formattedText = Template.resolve( text, symbols );
-    System.out.println( formattedText );
+    assertEquals("><-wrong parameter count",formattedText);
 
     text = ">[#Thing.tlower(hello)#]<-unknown method";
     formattedText = Template.resolve( text, symbols );
-    System.out.println( formattedText );
+    assertEquals("><-unknown method",formattedText);
 
     text = ">[#NoThing.tupper(hello)#]<-unknown object";
     formattedText = Template.resolve( text, symbols );
-    System.out.println( formattedText );
-
+    assertEquals("><-unknown object",formattedText);
   }
 
+  
+
+  @Test
+  public void testEncrypt() {
+    String text ="Biff the WonderDog";
+    String secret = CipherUtil.encryptString( text );
+    String symbol = SymbolTable.ENCRYPT_PREFIX+"mySecret";
+    symbols.put( symbol, secret );
+    String template = "[#$"+symbol+"#] saves the day!";
+    String formattedText = Template.resolve( template, symbols );
+    assertEquals("Biff the WonderDog saves the day!",formattedText);    
+  }
+  
+  
+  
   /**
    * The objects which can be placed in templates have few limitations. 
    * Only methods which take strings as arguments are called.

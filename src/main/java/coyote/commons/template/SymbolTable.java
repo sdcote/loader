@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.Properties;
 
 import coyote.commons.ArrayUtil;
+import coyote.commons.CipherUtil;
 import coyote.commons.DateUtil;
 import coyote.commons.StringUtil;
 
@@ -39,6 +40,9 @@ import coyote.commons.StringUtil;
 public class SymbolTable extends HashMap {
 
   private static final long serialVersionUID = -3448311765253950903L;
+  
+  /** keys with this prefix are assumed to be encrypted and should be decrypted before being returned */
+  static final String ENCRYPT_PREFIX = "ENC:";
 
   // Hash Maps of formatters under the (possibly mistaken) assumption that construction and garbage collection may be more expensive than caching and searching
   private HashMap<String, DateFormat> dateFormatMap = new HashMap<String, DateFormat>();
@@ -163,20 +167,32 @@ public class SymbolTable extends HashMap {
 
   /**
    * Return the String value of the named symbol from the table.
+   * 
+   * <p>If the symbol starts with the "encoded" prefix, use the CipherUtil to 
+   * decrypt the value before returning it. This way, the the symbol table 
+   * contains the encrypted value and only gets decrypted when referenced. 
+   * This should reduce the exposure of the protected value.   
    *
    * @param symbol the symbol to lookup in the table
    *
-   * @return the value of the symbol or an empty string if the value was not found.
+   * @return the value of the symbol or an empty string if the value was not 
+   *         found.
    */
   public synchronized String getString( String symbol ) {
     if ( symbol != null ) {
       if ( containsKey( symbol ) ) {
-        return get( symbol ).toString();
-      } else {
-        return this.getStaticValue( symbol );
+        Object obj = get( symbol );
+        if ( obj != null ) {
+          if ( symbol.startsWith( ENCRYPT_PREFIX ) ) {
+            String retval = CipherUtil.decryptString( obj.toString() );
+            return retval;
+          } else {
+            return obj.toString();
+          }
+        }
       }
+      return this.getStaticValue( symbol );
     }
-
     return "";
   }
 
