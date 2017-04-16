@@ -25,6 +25,7 @@ import coyote.commons.ArrayUtil;
 import coyote.commons.CipherUtil;
 import coyote.commons.DateUtil;
 import coyote.commons.StringUtil;
+import coyote.loader.Loader;
 
 
 /**
@@ -42,7 +43,7 @@ public class SymbolTable extends HashMap {
   private static final long serialVersionUID = -3448311765253950903L;
   
   /** keys with this prefix are assumed to be encrypted and should be decrypted before being returned */
-  static final String ENCRYPT_PREFIX = "ENC:";
+  static final String ENCRYPT_PREFIX = Loader.ENCRYPT_PREFIX;
 
   // Hash Maps of formatters under the (possibly mistaken) assumption that construction and garbage collection may be more expensive than caching and searching
   private HashMap<String, DateFormat> dateFormatMap = new HashMap<String, DateFormat>();

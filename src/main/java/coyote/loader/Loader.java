@@ -31,6 +31,7 @@ public interface Loader extends WatchDog {
   public static final String RUNNING = "Watchdog";
   public static final String SHUTDOWN = "Shutdown";
   public static final String TERMINATED = "Terminated";
+  public static final String ENCRYPT_PREFIX = "ENC:";
 
   public static final String APP_HOME = "app.home";
   public static final String APP_WORK = "app.work";
