@@ -14,6 +14,6 @@ package coyote.loader;
 /**
  * 
  */
-public class LoaderContext extends AbstractContext implements Context{
+public class LoaderContext extends AbstractContext implements Context {
 
 }
