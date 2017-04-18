@@ -41,6 +41,40 @@ public interface Loader extends WatchDog {
 
 
   /**
+   * Return an identifier so this instance can be discerned from others.
+   * 
+   * <p>Two instances of a component may be running with one as the primary 
+   * and the other as a back-up. Names will be identical, but identifier 
+   * should not.
+   * 
+   * @return a unique physical identifier for this instance.
+   */
+  public String getId();
+
+
+
+
+  /**
+   * Return a logical name for this loader.
+   * 
+   * @return a logical identifier for this instance.
+   */
+  public String getName();
+
+
+
+
+  /**
+   * Set a logical name for this loader.
+   * 
+   * @param name the logical name of this loader
+   */
+  public void setName( String name );
+
+
+
+
+  /**
    * Configure this loader with the given Config data.
    * 
    * @param cfg the configuration to apply to this loader.

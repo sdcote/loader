@@ -83,6 +83,42 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   /** The component responsible for tracking operational statistics for all the components in this runtime */
   protected final StatBoard stats = new StatBoardImpl();
 
+  /** Logical identifier for this instance. May not be unique across the system.*/
+  protected String instanceName = null;
+
+
+
+
+  /**
+   * @see coyote.loader.Loader#getId()
+   */
+  @Override
+  public String getId() {
+    return stats.getId();
+  }
+
+
+
+
+  /**
+   * @see coyote.loader.Loader#getName()
+   */
+  @Override
+  public String getName() {
+    return instanceName;
+  }
+
+
+
+
+  /**
+   * @see coyote.loader.Loader#setName(java.lang.String)
+   */
+  @Override
+  public void setName( String name ) {
+    instanceName = name;
+  }
+
 
 
 
@@ -220,7 +256,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
     if ( loggers.size() > 0 ) {
       Log.removeAllLoggers();
     }
-    
+
     // for each of the logger sections
     for ( Config cfg : loggers ) {
 
