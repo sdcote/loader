@@ -71,8 +71,4 @@ public class Wedge extends AbstractManagedComponent implements ManagedComponent 
     // nothing to do
   }
 
-
-
-
- 
 }
