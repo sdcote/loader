@@ -301,6 +301,11 @@ public class BootStrap extends AbstractLoader {
       // Register a shutdown method to terminate cleanly when the JVM exit
       registerShutdownHook( loader );
 
+      // Name the loader based on its configuration URI
+      if ( loader.getName() == null ) {
+        loader.setName( getNameFromUri( cfgUri ) );
+      }
+
       // Start the loader running in the current thread
       try {
         loader.start();
@@ -316,6 +321,18 @@ public class BootStrap extends AbstractLoader {
     // Normal termination
     System.exit( 0 );
 
+  }
+
+
+
+
+  /**
+   * Return a name from the given URI
+   * @param uri the URI to query
+   * @return the base of the URI
+   */
+  private static String getNameFromUri( URI uri ) {
+    return UriUtil.getBase( uri );
   }
 
 
