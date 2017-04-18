@@ -45,7 +45,7 @@ public class StatBoardImpl implements StatBoard {
   /** Re-usable null gauge to save object creation and GC'n */
   private static final Gauge NULL_GAUGE = new NullGauge( null );
 
-  private String CARDID = UUID.randomUUID().toString().toLowerCase();
+  private String BOARDID = UUID.randomUUID().toString().toLowerCase();
 
   /** The time this statboard was create/started. */
   private long startedTimestamp = 0;
@@ -73,12 +73,6 @@ public class StatBoardImpl implements StatBoard {
 
   /** Map of component versions by their name */
   private final HashMap<String, Version> versions = new HashMap<String, Version>();
-
-  // TODO: NullCounter? EnableCounters? Enable Counter?
-
-  // TODO: NullState?  EnableStates? EnableState?
-
-  // TODO: NullGauge? MasterGauges?
 
   /** Map of gauges by their name */
   private final HashMap<String, Gauge> gauges = new HashMap<String, Gauge>();
@@ -425,7 +419,7 @@ public class StatBoardImpl implements StatBoard {
    */
   @Override
   public String getId() {
-    return CARDID;
+    return BOARDID;
   }
 
 
@@ -717,7 +711,7 @@ public class StatBoardImpl implements StatBoard {
    */
   @Override
   public void setId( final String id ) {
-    CARDID = id;
+    BOARDID = id;
   }
 
 
