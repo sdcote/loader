@@ -225,7 +225,7 @@ public interface StatBoard {
 
   /**
    * Return the identifier the card is using to differentiate itself from other
-   * cards on this host.
+   * cards on this host and across the system.
    *
    * @return The identifier for this statboard.
    */
