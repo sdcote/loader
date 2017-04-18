@@ -968,7 +968,7 @@ public class UriUtil {
           buffer.append( uri.getAuthority() );
         }
       }
-    }// scheme = null 
+    } // scheme = null 
 
     // get the path from the URI
     buffer.append( uri.getPath() );
@@ -1136,6 +1136,35 @@ public class UriUtil {
       // should never happen since URL is a subset of URI
     }
 
+    return null;
+  }
+
+
+
+
+  /**
+   * Get the base name of a URI (e.g. no path or extension)
+   *
+   * <p>Returns "index" from "http:\\projects\src\index.html".</p>
+   *
+   * @param uri The URI from which to get the base.
+   *
+   * @return The base file name
+   */
+  public static String getBase( final URI uri ) {
+    if ( uri != null ) {
+      String tempName = new String( "" );
+      final StringTokenizer stk1 = new StringTokenizer( uri.toString(), "/\\" );
+
+      // Cruise through the string and eat up all the tokens before the last
+      // directory delimiter
+      while ( stk1.hasMoreTokens() ) {
+        tempName = stk1.nextToken();
+      }
+
+      final StringTokenizer stk = new StringTokenizer( tempName, "." );
+      return stk.nextToken();
+    }
     return null;
   }
 
