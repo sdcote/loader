@@ -1,7 +1,12 @@
 package coyote.loader.cfg;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 //import static org.junit.Assert.*;
 import org.junit.Test;
@@ -18,6 +23,7 @@ public class ConfigTest {
     config.setName( "Loader" );
     config.setClassName( coyote.loader.DefaultLoader.class.getName() );
     config.setId( GUID.randomGUID().toString() );
+    config.setName( "Bob" );
 
     // The configuration section of all the components this loader is to load
     Config componentCfg = new Config();
@@ -42,7 +48,7 @@ public class ConfigTest {
     componentCfg.add( cfg );
 
     // Add the component configuration to the main Loader config
-    config.add( "Components", componentCfg );
+    config.add( "Component", componentCfg );
 
     // This is a standard configuration for a loader
     System.out.println( JSONMarshaler.toFormattedString( config ) );
@@ -80,4 +86,16 @@ public class ConfigTest {
     } catch ( NumberFormatException e ) {}
 
   }
+
+
+
+
+  @Test
+  public void readFromNetwork() throws URISyntaxException, IOException, ConfigurationException {
+    URI cfgUri = new URI( "https://coyote.systems/device/ou812" );
+    Config config = Config.read( cfgUri );
+    assertNotNull( config );
+    //System.out.println( JSONMarshaler.toFormattedString( config ) );
+  }
+
 }
