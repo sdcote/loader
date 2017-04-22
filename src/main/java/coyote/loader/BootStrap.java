@@ -23,7 +23,6 @@ import coyote.commons.ExceptionUtil;
 import coyote.commons.FileUtil;
 import coyote.commons.StringUtil;
 import coyote.commons.UriUtil;
-import coyote.dataframe.DataField;
 import coyote.loader.cfg.Config;
 import coyote.loader.cfg.ConfigurationException;
 import coyote.loader.log.ConsoleAppender;
@@ -48,6 +47,8 @@ public class BootStrap extends AbstractLoader {
 
   protected static final String DEBUG_ARG = "-d";
   protected static final String INFO_ARG = "-v";
+
+  private static final String JSON_EXT = ".json";
 
 
 
@@ -188,69 +189,39 @@ public class BootStrap extends AbstractLoader {
   private static Loader buildLoader( String[] args ) {
     Loader retval = null;
 
-    // Look for the class to load
-    for ( DataField field : configuration.getFields() ) {
-      if ( ConfigTag.CLASS.equalsIgnoreCase( field.getName() ) ) {
-        String className = field.getStringValue();
-        if ( className != null && StringUtil.countOccurrencesOf( className, "." ) < 1 ) {
-          className = BootStrap.class.getPackage().getName() + "." + className;
-        }
-
-        try {
-          Class<?> clazz = Class.forName( className );
-          Constructor<?> ctor = clazz.getConstructor();
-          Object object = ctor.newInstance();
-
-          if ( object instanceof Loader ) {
-            retval = (Loader)object;
-            try {
-              retval.setCommandLineArguments( args );
-              retval.configure( configuration );
-            } catch ( ConfigurationException e ) {
-              System.err.println( LogMsg.createMsg( MSG, "Loader.could_not_config_loader", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage() ) );
-              System.exit( 6 );
-            }
-          } else {
-            System.err.println( LogMsg.createMsg( MSG, "Loader.class_is_not_loader", className ) );
-            System.exit( 5 );
-          }
-        } catch ( ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e ) {
-          System.err.println( LogMsg.createMsg( MSG, "Loader.instantiation_error", className, e.getClass().getName(), e.getMessage() ) );
-          System.exit( 4 );
-        }
-
-        // Class was found, no need to look any further, break out of the loop
-        break;
-
-      } // if class field
-
-    } // for each field
-
-    return retval;
-  }
-
-
-
-
-  /**
-   * Create and configure the default loader.
-   * 
-   * <p>This is expected to be called if there is no custom loader defined in 
-   * the configuration.
-   * 
-   * @param args the command line arguments passed to this bootstrap loader
-   * 
-   * @return a configured loader, should never return null 
-   */
-  private static Loader buildDefaultLoader( String[] args ) {
-    Loader retval = new DefaultLoader();
-    try {
-      retval.setCommandLineArguments( args );
-      retval.configure( configuration );
-    } catch ( ConfigurationException e ) {
-      System.err.println( LogMsg.createMsg( MSG, "Loader.could_not_config_loader", retval.getClass().getName(), e.getClass().getSimpleName(), e.getMessage() ) );
-      System.exit( 6 );
+    String className = configuration.getClassName();
+    if ( StringUtil.isBlank( className ) ) {
+      className = DefaultLoader.class.getName();
+      Log.info( LogMsg.createMsg( MSG, "Loader.using_default_loader", className ) );
     }
+
+    if ( className != null && StringUtil.countOccurrencesOf( className, "." ) < 1 ) {
+      className = BootStrap.class.getPackage().getName() + "." + className;
+    }
+
+    try {
+      Class<?> clazz = Class.forName( className );
+      Constructor<?> ctor = clazz.getConstructor();
+      Object object = ctor.newInstance();
+
+      if ( object instanceof Loader ) {
+        retval = (Loader)object;
+        try {
+          retval.setCommandLineArguments( args );
+          retval.configure( configuration );
+        } catch ( ConfigurationException e ) {
+          System.err.println( LogMsg.createMsg( MSG, "Loader.could_not_config_loader", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage() ) );
+          System.exit( 6 );
+        }
+      } else {
+        System.err.println( LogMsg.createMsg( MSG, "Loader.class_is_not_loader", className ) );
+        System.exit( 5 );
+      }
+    } catch ( ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e ) {
+      System.err.println( LogMsg.createMsg( MSG, "Loader.instantiation_error", className, e.getClass().getName(), e.getMessage() ) );
+      System.exit( 4 );
+    }
+
     return retval;
   }
 
@@ -288,12 +259,6 @@ public class BootStrap extends AbstractLoader {
 
     // Create a loader from the configuration
     Loader loader = buildLoader( args );
-
-    // If there is no class specified, use the default loader to process the 
-    // configuration
-    if ( loader == null ) {
-      loader = buildDefaultLoader( args );
-    }
 
     // If we have a loader
     if ( loader != null ) {
@@ -360,6 +325,8 @@ public class BootStrap extends AbstractLoader {
 
         // try the location as a file
         File localfile = new File( cfgLoc );
+        // keep track of an alternative version of specifying the file
+        File alternativeFile = new File( cfgLoc + JSON_EXT );
 
         // make sure a file object has been created
         if ( localfile != null ) {
@@ -370,10 +337,14 @@ public class BootStrap extends AbstractLoader {
             // we are done, get the file location as a URI
             cfgUri = FileUtil.getFileURI( localfile );
           } else {
+            if ( !alternativeFile.exists() ) {
+              alternativeFile = null;
+            }
+
             // add the filename we checked unsuccessfully to the error message
             errMsg.append( LogMsg.createMsg( MSG, "Loader.no_local_cfg_file", localfile.getAbsolutePath() ) + StringUtil.CRLF );
 
-            // the file does not exist so if it is a relative filename 
+            // the file does not exist, so if it is a relative filename... 
             if ( !localfile.isAbsolute() ) {
 
               // see if there is a system property with a shared configuration directory
@@ -402,11 +373,24 @@ public class BootStrap extends AbstractLoader {
                       // Success - cfg was found in the shared config directory
                       cfgUri = FileUtil.getFileURI( cfgFile );
                     } else {
-                      // we tried the local and shared locations, report error
-                      errMsg.append( LogMsg.createMsg( MSG, "Loader.no_common_cfg_file", cfgFile.getAbsolutePath() ) + StringUtil.CRLF );
-                      errMsg.append( LogMsg.createMsg( MSG, "Loader.cfg_file_not_found", cfgLoc ) + StringUtil.CRLF );
-                      System.out.println( errMsg.toString() );
-                      System.exit( 9 );
+                      // if an laternat was found in the local directory, use it
+                      if ( alternativeFile != null ) {
+                        cfgUri = FileUtil.getFileURI( alternativeFile );
+
+                      } else {
+                        // try adding an extension to the file in the common cfg directory
+                        alternativeFile = new File( configDir, cfgLoc + JSON_EXT );
+                        if ( alternativeFile.exists() ) {
+                          // Success - cfg was found in the shared config directory with an added extension
+                          cfgUri = FileUtil.getFileURI( alternativeFile );
+                        } else {
+                          // we tried the local and shared locations, report error
+                          errMsg.append( LogMsg.createMsg( MSG, "Loader.no_common_cfg_file", cfgFile.getAbsolutePath() ) + StringUtil.CRLF );
+                          errMsg.append( LogMsg.createMsg( MSG, "Loader.cfg_file_not_found", cfgLoc ) + StringUtil.CRLF );
+                          System.out.println( errMsg.toString() );
+                          System.exit( 9 );
+                        }
+                      }
                     }
                   } else {
                     // the specified config directory was not a directory
@@ -421,10 +405,14 @@ public class BootStrap extends AbstractLoader {
                   System.exit( 11 );
                 }
               } else {
-                // no shared config directory provided in system properties
-                errMsg.append( LogMsg.createMsg( MSG, "Loader.cfg_dir_not_provided", APP_HOME ) + StringUtil.CRLF );
-                System.out.println( errMsg.toString() );
-                System.exit( 12 );
+                if ( alternativeFile != null ) {
+                  cfgUri = FileUtil.getFileURI( alternativeFile );
+                } else {
+                  // no shared config directory provided in system properties
+                  errMsg.append( LogMsg.createMsg( MSG, "Loader.cfg_dir_not_provided", APP_HOME ) + StringUtil.CRLF );
+                  System.out.println( errMsg.toString() );
+                  System.exit( 12 );
+                }
               }
 
             } // localfile is absolute
@@ -439,12 +427,14 @@ public class BootStrap extends AbstractLoader {
         // Now check to see if the CFG is readable (if it is a file)
         if ( UriUtil.isFile( cfgUri ) ) {
           File test = UriUtil.getFile( cfgUri );
-
           if ( !test.exists() || !test.canRead() ) {
             errMsg.append( LogMsg.createMsg( MSG, "Loader.cfg_file_not_readable", test.getAbsolutePath() ) + StringUtil.CRLF );
             System.out.println( errMsg.toString() );
             System.exit( 13 );
           }
+          Log.info( LogMsg.createMsg( MSG, "Loader.cfg_reading_from_file", test.getAbsolutePath() ) );
+        } else {
+          Log.info( LogMsg.createMsg( MSG, "Loader.cfg_reading_from_network" ) );
         }
       } else {
         errMsg.append( LogMsg.createMsg( MSG, "Loader.cfg_file_not_found", cfgLoc ) + StringUtil.CRLF );
