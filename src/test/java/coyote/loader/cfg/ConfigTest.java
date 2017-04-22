@@ -92,7 +92,7 @@ public class ConfigTest {
 
   @Test
   public void readFromNetwork() throws URISyntaxException, IOException, ConfigurationException {
-    URI cfgUri = new URI( "https://coyote.systems/device/ou812" );
+    URI cfgUri = new URI( "http://coyote.systems/device/ou812" );
     Config config = Config.read( cfgUri );
     assertNotNull( config );
     //System.out.println( JSONMarshaler.toFormattedString( config ) );
