@@ -54,7 +54,7 @@ public class AbstractScheduledComponent extends ScheduledJob implements ManagedC
    * 
    */
   public AbstractScheduledComponent() {
-    super();
+    super.setDoWorkOnce( true );
   }
 
 
@@ -391,5 +391,5 @@ public class AbstractScheduledComponent extends ScheduledJob implements ManagedC
   public Context getContext() {
     return context;
   }
-  
+
 }
