@@ -422,7 +422,7 @@ public class CronEntry {
       } // month check
     }
 
-    // System.out.println( "RETURNING: " + toPattern( cal ) );
+    //System.out.println( Thread.currentThread().getName()+" RETURNING: " + toPattern( cal ) + " | " + retval );
 
     return retval;
   }
