@@ -120,18 +120,19 @@ public class Scheduler extends ThreadJob {
     synchronized( mutex ) {
       if ( nextJob != null ) {
         long executionTime = System.currentTimeMillis();
+        long jobTime = nextJob.getExecutionTime();
 
         // Check to see if it is time to run this job. If it is really close, 
         // wait around
-        long millis = nextJob.getExecutionTime() - executionTime;
-        //Log.append( SCHED, nextJob + " to run at " + new Date( nextJob.getExecutionTime() ) );
+        long millis = jobTime - executionTime;
+        //Log.append( SCHED, nextJob + " to run at " + new Date( jobTime ) + " (" + jobTime + ")  diff:" + millis );
 
         // if the time we have to wait is less than or equal to the time we 
         // wait between calls to the doWork() method, wait for the time to 
         // elapse
         if ( millis <= WAIT_TIME ) {
           // If it is in the future, wait around for it, otherwise run it
-          if ( millis > 0 ) {
+          while ( jobTime > System.currentTimeMillis() ) {
             try {
               mutex.wait( millis );
             } catch ( Exception ex ) {
@@ -144,6 +145,7 @@ public class Scheduler extends ThreadJob {
           // If we got here, it is time (or past the time) to execute the next
           // ScheduledJob referenced by nextJob
           try {
+            executionTime = System.currentTimeMillis();
             Log.append( SCHED, "Execution Time: " + executionTime + " (" + new Date( executionTime ) + "):\r\n" + dump() );
 
             // Remove the job from the list and only work with the job which was removed
@@ -186,7 +188,7 @@ public class Scheduler extends ThreadJob {
                 // If we have no limit or have not exceeded our limit...
                 if ( ( target.getExecutionLimit() == 0 ) || ( target.getExecutionLimit() > 0 ) && ( target.getExecutionCount() < target.getExecutionLimit() ) ) {
                   // ...reschedule the job
-                  target.setExecutionTime( executionTime + target.getExecutionInterval() );
+                  target.setExecutionTime( target.getExecutionInterval() + System.currentTimeMillis() );
                   Log.append( SCHED, "Set execution time to " + new Date( target.getExecutionTime() ) + " execution time = " + executionTime + ",  target interval = " + target.getExecutionInterval() );
                   schedule( target );
                   Log.append( SCHED, "Scheduled repeating job " + target + " (runs=" + target.getExecutionCount() + " interval=" + target.getExecutionInterval() + ") will run again at " + new Date( target.getExecutionTime() ) + "\r\n" + dump() );
@@ -465,8 +467,8 @@ public class Scheduler extends ThreadJob {
   public String dump() {
     SimpleDateFormat DATEFORMAT = new SimpleDateFormat( "yyyy/MM/dd HH:mm:ss" );
     StringBuffer retval = new StringBuffer( "--[ JobList ]------------------------------------------------\r\n" );
-    retval.append( "Next: " + nextJob + "\r\n" );
-    retval.append( "Last: " + lastJob + "\r\n" );
+    retval.append( "Next: " + nextJob + " - " + ( ( nextJob == null ) ? 0 : nextJob.getExecutionTime() ) + "\r\n" );
+    retval.append( "Last: " + lastJob + " - " + ( ( lastJob == null ) ? 0 : lastJob.getExecutionTime() ) + "\r\n" );
     retval.append( "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\r\n" );
 
     synchronized( mutex ) {
