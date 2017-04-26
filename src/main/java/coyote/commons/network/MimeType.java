@@ -37,6 +37,11 @@ public class MimeType {
   public static final MimeType HTML = new MimeType( "html", "text/html", false );
   public static final MimeType PDF = new MimeType( "pdf", "application/pdf", true );
   public static final MimeType ANY = new MimeType( "*", "*/*", true );
+  public static final MimeType MULTIPART_FORM = new MimeType( "", "multipart/form-data", false );
+  public static final MimeType APPLICATION_FORM = new MimeType( "", "application/x-www-form-urlencoded", false );
+  public static final MimeType ATOM_XML = new MimeType( "", "application/atom+xml", false );
+  public static final MimeType XHTML_XML = new MimeType( "", "application/xhtml+xml", false );
+  public static final MimeType SVG_XML = new MimeType( "", "application/svg+xml", false );
 
   private String extension, type;
   private boolean binary;
