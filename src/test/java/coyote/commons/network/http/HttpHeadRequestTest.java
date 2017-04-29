@@ -106,7 +106,7 @@ public class HttpHeadRequestTest extends HttpServerTest {
     invokeServer( "HEAD " + HttpServerTest.URI + " HTTP/1.1" );
     assertNotNull( testServer.parms );
     assertNotNull( testServer.header );
-    assertNotNull( testServer.files );
+    assertNotNull( testServer.body );
     assertNotNull( testServer.uri );
   }
 

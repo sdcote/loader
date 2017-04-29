@@ -43,7 +43,7 @@ private static final int PORT = 7428;
     public Method method;
     public Map<String, String> header;
     public Map<String, String> parms;
-    public Map<String, String> files;
+    public Body body;
     public Map<String, List<String>> decodedParamters;
     public Map<String, List<String>> decodedParamtersFromParameter;
     public String queryParameterString;
@@ -85,9 +85,8 @@ private static final int PORT = 7428;
       method = session.getMethod();
       header = session.getRequestHeaders();
       parms = session.getParms();
-      files = new HashMap<String, String>();
       try {
-        session.parseBody( files );
+        body = session.parseBody( );
       } catch ( final Exception e ) {
         e.printStackTrace();
       }
@@ -205,7 +204,6 @@ private static final int PORT = 7428;
     try {
       server = new HTTPD( testPort ) {
 
-        final Map<String, String> files = new HashMap<String, String>();
 
 
 
@@ -215,8 +213,8 @@ private static final int PORT = 7428;
           final StringBuilder responseMsg = new StringBuilder();
 
           try {
-            session.parseBody( files );
-            for ( final String key : files.keySet() ) {
+            Body body = session.parseBody();
+            for ( final String key : body.keySet() ) {
               responseMsg.append( key );
             }
           } catch ( final Exception e ) {
@@ -276,21 +274,19 @@ private static final int PORT = 7428;
     final int testPort = 4589;
     final HTTPD server = new HTTPD( testPort ) {
 
-      final Map<String, String> files = new HashMap<String, String>();
-
-
-
 
       @Override
       public Response serve( final IHTTPSession session ) {
         String responseMsg = "pass";
 
         try {
-          session.parseBody( files );
-          for ( final String key : files.keySet() ) {
-            if ( !( new File( files.get( key ) ) ).exists() ) {
-              responseMsg = "fail";
-            }
+          Body body = session.parseBody( );
+          for ( final String key : body.keySet() ) {
+            Object obj = body.get( key );
+            System.out.println( "body contains "+body.size()+" entities" );
+//            if ( !( new File( body.get( key ) ) ).exists() ) {
+//              responseMsg = "fail";
+//            }
           }
         } catch ( final Exception e ) {
           responseMsg = e.getMessage();

@@ -15,7 +15,7 @@ public class InvalidRequestTest extends HttpServerTest {
 
     assertNotNull( testServer.parms );
     assertTrue( testServer.header.size() > 0 );
-    assertNotNull( testServer.files );
+    assertNotNull( testServer.body );
     assertNotNull( testServer.uri );
   }
 
@@ -28,7 +28,7 @@ public class InvalidRequestTest extends HttpServerTest {
 
     assertNotNull( testServer.parms );
     assertTrue( testServer.header.size() > 0 );
-    assertNotNull( testServer.files );
+    assertNotNull( testServer.body );
     assertNotNull( testServer.uri );
   }
 
@@ -40,7 +40,7 @@ public class InvalidRequestTest extends HttpServerTest {
     invokeServer( "POST " + HttpServerTest.URI + "\r\nContent-Length: 123" );
     assertNotNull( testServer.parms );
     assertTrue( testServer.header.size() > 0 );
-    assertNotNull( testServer.files );
+    assertNotNull( testServer.body );
     assertNotNull( testServer.uri );
   }
 
@@ -52,7 +52,7 @@ public class InvalidRequestTest extends HttpServerTest {
     invokeServer( "POST " + HttpServerTest.URI + " HTTP/1.1\r\nContent-Length: 123" );
     assertNotNull( testServer.parms );
     assertTrue( testServer.header.size() > 0 );
-    assertNotNull( testServer.files );
+    assertNotNull( testServer.body );
     assertNotNull( testServer.uri );
   }
 

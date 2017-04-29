@@ -443,7 +443,9 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
     for ( Config section : sections ) {
       if ( section != null ) {
         for ( Config cfg : section.getSections() ) {
-          activate( loadComponent( cfg ), cfg );
+          if ( cfg != null && cfg.getFieldCount() > 0 ) {
+            activate( loadComponent( cfg ), cfg );
+          }
         }
       }
     }

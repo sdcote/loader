@@ -16,6 +16,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutput;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,51 +48,29 @@ import coyote.loader.log.Log;
 class HTTPSession implements IHTTPSession {
 
   private final HTTPD httpd;
-
   private static final int REQUEST_BUFFER_LEN = 512;
-
   private static final int MEMORY_STORE_LIMIT = 4096;
-
   public static final int BUFSIZE = 8192;
-
   public static final int MAX_HEADER_SIZE = 1024;
-
   private static final List<String> EMPTY_LIST = new ArrayList<String>( 0 );;
-
   private final CacheManager tempFileManager;
-
   private final OutputStream outputStream;
-
   private final BufferedInputStream inputStream;
-
   private int splitbyte;
-
   private int rlen;
-
   private String uri;
-
   private Method method;
-
   private Map<String, String> parms;
-
   /** Request Headers */
   private Map<String, String> requestHeaders;
-
   /** Response Headers */
   private Map<String, String> responseHeaders;
-
   private CookieHandler cookies;
-
   private String queryParameterString;
-
   private IpAddress remoteIp;
-
   private int remotePort;
-
   private String protocolVersion;
-
   private String username = null;
-
   private List<String> usergroups = EMPTY_LIST;
   private final boolean secure;
 
@@ -206,7 +185,7 @@ class HTTPSession implements IHTTPSession {
   /**
    * Decodes the Multipart Body data and put it into Key/Value pairs.
    */
-  private void decodeMultipartFormData( final ContentType contentType, final ByteBuffer fbuf, final Map<String, String> parms, final Map<String, String> files ) throws ResponseException {
+  private void decodeMultipartFormData( final ContentType contentType, final ByteBuffer fbuf, final Map<String, String> parms, final Body body ) throws ResponseException {
     int pcount = 0;
     try {
       final int[] boundaryIdxs = getBoundaryPositions( fbuf, contentType.getBoundary().getBytes() );
@@ -283,14 +262,14 @@ class HTTPSession implements IHTTPSession {
         } else {
           // Read it into a file
           final String path = saveTmpFile( fbuf, partDataStart, partDataEnd - partDataStart, fileName );
-          if ( !files.containsKey( partName ) ) {
-            files.put( partName, path );
+          if ( !body.containsKey( partName ) ) {
+            body.put( partName, new File(path) );
           } else {
             int count = 2;
-            while ( files.containsKey( partName + count ) ) {
+            while ( body.containsKey( partName + count ) ) {
               count++;
             }
-            files.put( partName + count, path );
+            body.put( partName + count, new File(path) );
           }
           parms.put( partName, fileName );
         }
@@ -651,7 +630,9 @@ class HTTPSession implements IHTTPSession {
 
 
   @Override
-  public void parseBody( final Map<String, String> files ) throws IOException, ResponseException {
+  public Body parseBody() throws IOException, ResponseException {
+    Body retval = new Body();
+    
     RandomAccessFile randomAccessFile = null;
     try {
       long size = getBodySize();
@@ -694,7 +675,7 @@ class HTTPSession implements IHTTPSession {
           if ( boundary == null ) {
             throw new ResponseException( Status.BAD_REQUEST, "BAD REQUEST: Content type is multipart/form-data but boundary missing. Usage: GET /example/file.html" );
           }
-          decodeMultipartFormData( contentType, fbuf, parms, files );
+          decodeMultipartFormData( contentType, fbuf, parms, retval );
         } else {
           final byte[] postBytes = new byte[fbuf.remaining()];
           fbuf.get( postBytes );
@@ -705,16 +686,18 @@ class HTTPSession implements IHTTPSession {
           } else if ( postLine.length() != 0 ) {
             // Special case for raw POST data => create a special files entry 
             // "postData" with raw content data
-            files.put( "postData", postLine );
+            retval.put( "postData", postLine );
           }
         }
       } else if ( Method.PUT.equals( method ) ) {
-        files.put( "content", saveTmpFile( fbuf, 0, fbuf.limit(), null ) );
+        retval.put( "content", fbuf );
       }
     }
     finally {
       HTTPD.safeClose( randomAccessFile );
     }
+    
+    return retval;
   }
 
 

@@ -210,13 +210,7 @@ public class MockSession implements IHTTPSession {
 
 
 
-  /**
-   * @see coyote.commons.network.http.IHTTPSession#parseBody(java.util.Map)
-   */
-  @Override
-  public void parseBody( final Map<String, String> files ) throws IOException, ResponseException {}
-
-
+  
 
 
   /**
@@ -240,6 +234,18 @@ public class MockSession implements IHTTPSession {
   @Override
   public void setUserName( final String user ) {
     username = user;
+  }
+
+
+
+
+  /**
+   * @see coyote.commons.network.http.IHTTPSession#parseBody()
+   */
+  @Override
+  public Body parseBody() throws IOException, ResponseException {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

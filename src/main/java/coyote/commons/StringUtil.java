@@ -1046,4 +1046,42 @@ public class StringUtil {
     }
   }
 
+
+
+
+  /**
+   * Remove all whitespace from the given string.
+   * 
+   * @param text The text from which the whitespace is to be removed.
+   * 
+   * @return a copy of the given text string with no whitespace or null of the
+   *         passed text was null.
+   */
+  public static final String removeWhitespace( final String text ) {
+    String retval = null;
+    if ( text != null ) {
+      final char[] chars = new char[text.length()];
+      int mrk = 0;
+
+      for ( int i = 0; i < text.length(); i++ ) {
+        final char c = text.charAt( i );
+        if ( !Character.isWhitespace( c ) ) {
+          chars[mrk++] = c;
+        }
+      }
+
+      if ( mrk > 0 ) {
+        final char[] data = new char[mrk];
+        for ( int i = 0; i < mrk; data[i] = chars[i++] ) {
+          ;
+        }
+
+        retval = new String( data );
+      } else {
+        retval = new String();
+      }
+    }
+
+    return retval;
+  }
 }

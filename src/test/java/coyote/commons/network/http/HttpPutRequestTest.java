@@ -4,7 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.FileReader;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -20,12 +20,12 @@ public class HttpPutRequestTest extends HttpServerTest {
 
     assertResponse( outputStream, expectedOutput );
 
-    assertTrue( testServer.files.containsKey( "content" ) );
+    assertTrue( testServer.body.containsKey( "content" ) );
     BufferedReader reader = null;
     try {
       final String[] expectedInputToServeMethodViaFile = { "BodyData 1", "Line 2" };
-      reader = new BufferedReader( new FileReader( testServer.files.get( "content" ) ) );
-      final List<String> lines = readLinesFromFile( reader );
+      String content = testServer.body.getAsString( "content" );
+      final List<String> lines =  Arrays.asList(content.split("\\n"));
       assertLinesOfText( expectedInputToServeMethodViaFile, lines );
     }
     finally {

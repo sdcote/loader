@@ -2,10 +2,9 @@ package coyote.commons.network.http;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,7 +19,7 @@ public class HttpPostRequestTest extends HttpServerTest {
   public static final String FIELD2 = "location";
   public static final String VALUE2 = "Grand Canyon";
   public static final String POST_RAW_CONTENT_FILE_ENTRY = "postData";
-  public static final String VALUE_TEST_SIMPLE_RAW_DATA_WITH_AMPHASIS = "Test raw data & Result value";
+  public static final String VALUE_TEST_SIMPLE_RAW_DATA_WITH_AMPERSAND = "Test raw data & Result value";
 
 
 
@@ -64,8 +63,8 @@ public class HttpPostRequestTest extends HttpServerTest {
 
     assertEquals( "Parameter count did not match.", 2, testServer.parms.size() );
     assertEquals( "Parameter value did not match", HttpPostRequestTest.VALUE2, testServer.parms.get( HttpPostRequestTest.FIELD2 ) );
-    final BufferedReader reader = new BufferedReader( new FileReader( testServer.files.get( HttpPostRequestTest.FIELD ) ) );
-    final List<String> lines = readLinesFromFile( reader );
+    String strdata = testServer.body.getAsString( HttpPostRequestTest.FIELD );
+    final List<String> lines = Arrays.asList( strdata.split( "\\n" ) );
     assertLinesOfText( new String[] { fileContent }, lines );
   }
 
@@ -77,12 +76,10 @@ public class HttpPostRequestTest extends HttpServerTest {
     final String filename = "GrandCanyon.txt";
     final String fileContent = HttpPostRequestTest.VALUE;
     final String input = preparePostWithMultipartForm( filename, fileContent );
-
     invokeServer( input );
-
     assertEquals( 1, testServer.parms.size() );
-    final BufferedReader reader = new BufferedReader( new FileReader( testServer.files.get( HttpPostRequestTest.FIELD ) ) );
-    final List<String> lines = readLinesFromFile( reader );
+    String strdata = testServer.body.getAsString( HttpPostRequestTest.FIELD );
+    final List<String> lines = Arrays.asList( strdata.split( "\\n" ) );
     assertLinesOfText( new String[] { fileContent }, lines );
   }
 
@@ -115,8 +112,10 @@ public class HttpPostRequestTest extends HttpServerTest {
     invokeServer( input );
 
     assertEquals( "Parameter count did not match.", 1, testServer.parms.size() );
-    final BufferedReader reader = new BufferedReader( new FileReader( testServer.files.get( HttpPostRequestTest.FIELD ) ) );
-    final List<String> lines = readLinesFromFile( reader );
+    String strdata = testServer.body.getAsString( HttpPostRequestTest.FIELD );
+    final List<String> lines = Arrays.asList( strdata.split( "\\n" ) );
+    //    final BufferedReader reader = new BufferedReader( new FileReader( testServer.body.get( HttpPostRequestTest.FIELD ) ) );
+    //    final List<String> lines = readLinesFromFile( reader );
     assertLinesOfText( fileContent.split( lineSeparator ), lines );
   }
 
@@ -147,21 +146,18 @@ public class HttpPostRequestTest extends HttpServerTest {
     final int contentLength = size + contentLengthHeaderValueSize + HttpPostRequestTest.CONTENT_LENGTH.length();
     final String input = header + HttpPostRequestTest.CONTENT_LENGTH + ( contentLength + 4 ) + "\r\n\r\n" + content;
     invokeServer( input );
-
     assertEquals( "Parameter count did not match.", 2, testServer.parms.size() );
-    BufferedReader reader = new BufferedReader( new FileReader( testServer.files.get( HttpPostRequestTest.FIELD ) ) );
-    List<String> lines = readLinesFromFile( reader );
+    String strdata = testServer.body.getAsString( HttpPostRequestTest.FIELD );
+    List<String> lines = Arrays.asList( strdata.split( "\\n" ) );
     assertLinesOfText( new String[] { fileContent }, lines );
-    String fileName2 = testServer.files.get( HttpPostRequestTest.FIELD2 );
+    String fileName2 = testServer.body.getAsString( HttpPostRequestTest.FIELD2 );
     int testNumber = 0;
     while ( ( fileName2 == null ) && ( testNumber < 5 ) ) {
       testNumber++;
-      fileName2 = testServer.files.get( HttpPostRequestTest.FIELD2 + testNumber );
+      fileName2 = testServer.body.getAsString( HttpPostRequestTest.FIELD2 + testNumber );
     }
-    reader = new BufferedReader( new FileReader( fileName2 ) );
-    lines = readLinesFromFile( reader );
+    lines = Arrays.asList( fileName2.split( "\\r\\n" ) );
     assertLinesOfText( new String[] { file2Content }, lines );
-
   }
 
 
@@ -226,15 +222,15 @@ public class HttpPostRequestTest extends HttpServerTest {
   @Test
   public void testSimpleRawPostData() throws Exception {
     final String header = "POST " + HttpServerTest.URI + " HTTP/1.1\n";
-    final String content = HttpPostRequestTest.VALUE_TEST_SIMPLE_RAW_DATA_WITH_AMPHASIS + "\r\n";
+    final String content = HttpPostRequestTest.VALUE_TEST_SIMPLE_RAW_DATA_WITH_AMPERSAND + "\r\n";
     final int size = content.length() + header.length();
     final int contentLengthHeaderValueSize = String.valueOf( size ).length();
     final int contentLength = size + contentLengthHeaderValueSize + HttpPostRequestTest.CONTENT_LENGTH.length();
     final String input = header + HttpPostRequestTest.CONTENT_LENGTH + ( contentLength + 4 ) + "\r\n\r\n" + content;
     invokeServer( input );
     assertEquals( 0, testServer.parms.size() );
-    assertEquals( 1, testServer.files.size() );
-    assertEquals( HttpPostRequestTest.VALUE_TEST_SIMPLE_RAW_DATA_WITH_AMPHASIS, testServer.files.get( HttpPostRequestTest.POST_RAW_CONTENT_FILE_ENTRY ) );
+    assertEquals( 1, testServer.body.size() );
+    assertEquals( HttpPostRequestTest.VALUE_TEST_SIMPLE_RAW_DATA_WITH_AMPERSAND, testServer.body.get( HttpPostRequestTest.POST_RAW_CONTENT_FILE_ENTRY ) );
   }
 
 }

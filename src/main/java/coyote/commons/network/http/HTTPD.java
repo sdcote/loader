@@ -507,11 +507,10 @@ public abstract class HTTPD {
    * @throws SecurityResponseException if processing the request generated a security exception
    */
   public Response serve( final IHTTPSession session ) throws SecurityResponseException {
-    final Map<String, String> files = new HashMap<String, String>();
     final Method method = session.getMethod();
     if ( Method.PUT.equals( method ) || Method.POST.equals( method ) ) {
       try {
-        session.parseBody( files );
+        session.parseBody(); // this is not really necessary but here for demonstration
       } catch ( final IOException ioe ) {
         return Response.createFixedLengthResponse( Status.INTERNAL_ERROR, MimeType.TEXT.getType(), "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage() );
       } catch ( final ResponseException re ) {

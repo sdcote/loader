@@ -142,14 +142,18 @@ public interface IHTTPSession {
 
 
   /**
-   * Adds the files in the request body to the files map.
+   * Parsed through the request body and returns a Body object with request 
+   * entities.
    * 
-   * @param files map to modify
+   * <p>These entities are either in the form of a ByteBuffer or a File 
+   * reference depending on the type of data contained in the request.
+   * 
+   * @return A collection of body entities
    * 
    * @throws IOException if there are problems reading the request stream
    * @throws ResponseException if there a logical HTTP issues with the format or encoding of the body 
    */
-  void parseBody( Map<String, String> files ) throws IOException, ResponseException;
+  Body parseBody() throws IOException, ResponseException;
 
 
 
