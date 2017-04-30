@@ -66,7 +66,7 @@ public class HttpKeepAliveTest extends HttpServerTest {
             }
 
             // Finally, try "Connection: Close"
-            final String closeReq = request.replaceAll( "HTTP/1.1", "HTTP/1.1\r\nConnection: Close" );
+            final String closeReq = request.replaceAll( HTTP.VERSION_1_1, "HTTP/1.1\r\nConnection: Close" );
             expected[3] = "Connection: close";
             requestStream.write( closeReq.getBytes() );
             outputStream.reset();

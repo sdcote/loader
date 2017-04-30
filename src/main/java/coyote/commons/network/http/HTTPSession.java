@@ -53,7 +53,7 @@ class HTTPSession implements IHTTPSession {
   public static final int BUFSIZE = 8192;
   public static final int MAX_HEADER_SIZE = 1024;
   private static final List<String> EMPTY_LIST = new ArrayList<String>( 0 );;
-  private final CacheManager tempFileManager;
+  private final CacheManager cacheManager;
   private final OutputStream outputStream;
   private final BufferedInputStream inputStream;
   private int splitbyte;
@@ -80,14 +80,14 @@ class HTTPSession implements IHTTPSession {
   /**
    * 
    * @param httpd
-   * @param tempFileManager
+   * @param cacheManager
    * @param inputStream
    * @param outputStream
    * @param secured
    */
-  public HTTPSession( HTTPD httpd, final CacheManager tempFileManager, final InputStream inputStream, final OutputStream outputStream, boolean secured ) {
+  public HTTPSession( HTTPD httpd, final CacheManager cacheManager, final InputStream inputStream, final OutputStream outputStream, boolean secured ) {
     this.httpd = httpd;
-    this.tempFileManager = tempFileManager;
+    this.cacheManager = cacheManager;
     this.inputStream = new BufferedInputStream( inputStream, HTTPSession.BUFSIZE );
     this.outputStream = outputStream;
     requestHeaders = new HashMap<String, String>();
@@ -101,15 +101,15 @@ class HTTPSession implements IHTTPSession {
   /**
    * 
    * @param httpd
-   * @param tempFileManager
+   * @param cacheManager
    * @param inputStream
    * @param outputStream
    * @param inetAddress
    * @param port
    * @param secured socket connection originated on a secured server socket, encrypted connection
    */
-  public HTTPSession( HTTPD httpd, final CacheManager tempFileManager, final InputStream inputStream, final OutputStream outputStream, final InetAddress inetAddress, final int port, boolean secured ) {
-    this( httpd, tempFileManager, inputStream, outputStream, secured );
+  public HTTPSession( HTTPD httpd, final CacheManager cacheManager, final InputStream inputStream, final OutputStream outputStream, final InetAddress inetAddress, final int port, boolean secured ) {
+    this( httpd, cacheManager, inputStream, outputStream, secured );
     remotePort = port;
     try {
       remoteIp = inetAddress.isLoopbackAddress() || inetAddress.isAnyLocalAddress() ? IpAddress.IPV4_LOOPBACK_ADDRESS : new IpAddress( inetAddress.getAddress() );
@@ -161,7 +161,7 @@ class HTTPSession implements IHTTPSession {
       if ( st.hasMoreTokens() ) {
         protocolVersion = st.nextToken();
       } else {
-        protocolVersion = "HTTP/1.1";
+        protocolVersion = HTTP.VERSION_1_1;
         Log.append( HTTPD.EVENT, "No protocol version specified. Assuming HTTP/1.1" );
       }
       String line = in.readLine();
@@ -382,7 +382,7 @@ class HTTPSession implements IHTTPSession {
       cookies = new CookieHandler( requestHeaders );
 
       final String connection = requestHeaders.get( "connection" );
-      final boolean keepAlive = "HTTP/1.1".equals( protocolVersion ) && ( ( connection == null ) || !connection.matches( "(?i).*close.*" ) );
+      final boolean keepAlive = HTTP.VERSION_1_1.equals( protocolVersion ) && ( ( connection == null ) || !connection.matches( "(?i).*close.*" ) );
 
       response = this.httpd.serve( this );
 
@@ -424,7 +424,7 @@ class HTTPSession implements IHTTPSession {
     }
     finally {
       HTTPD.safeClose( response );
-      tempFileManager.clear();
+      cacheManager.clear();
     }
   }
 
@@ -611,7 +611,7 @@ class HTTPSession implements IHTTPSession {
 
   private RandomAccessFile getTmpBucket() {
     try {
-      final CacheFile tempFile = tempFileManager.createCacheFile( null );
+      final CacheFile tempFile = cacheManager.createCacheFile( null );
       return new RandomAccessFile( tempFile.getName(), "rw" );
     } catch ( final Exception e ) {
       throw new Error( e ); // we won't recover, so throw an error
@@ -669,7 +669,7 @@ class HTTPSession implements IHTTPSession {
       // If the method is POST, there may be parameters in data section, too, 
       // read them:
       if ( Method.POST.equals( method ) ) {
-        final ContentType contentType = new ContentType( requestHeaders.get( "content-type" ) );
+        final ContentType contentType = new ContentType( requestHeaders.get( HTTP.HDR_CONTENT_TYPE.toLowerCase() ) );
         if ( contentType.isMultipart() ) {
           final String boundary = contentType.getBoundary();
           if ( boundary == null ) {
@@ -681,7 +681,7 @@ class HTTPSession implements IHTTPSession {
           fbuf.get( postBytes );
           final String postLine = new String( postBytes, contentType.getEncoding() ).trim();
           // Handle application/x-www-form-urlencoded
-          if ( "application/x-www-form-urlencoded".equalsIgnoreCase( contentType.getContentType() ) ) {
+          if ( MimeType.APPLICATION_FORM.getType().equalsIgnoreCase( contentType.getContentType() ) ) {
             decodeParms( postLine, parms );
           } else if ( postLine.length() != 0 ) {
             // Special case for raw POST data => create a special files entry 
@@ -690,7 +690,7 @@ class HTTPSession implements IHTTPSession {
           }
         }
       } else if ( Method.PUT.equals( method ) ) {
-        retval.put( "content", fbuf, new ContentType( requestHeaders.get( "content-type" ) ) );
+        retval.put( Body.CONTENT, fbuf, new ContentType( requestHeaders.get( HTTP.HDR_CONTENT_TYPE.toLowerCase() ) ) );
       }
     }
     finally {
@@ -713,7 +713,7 @@ class HTTPSession implements IHTTPSession {
     if ( len > 0 ) {
       FileOutputStream fileOutputStream = null;
       try {
-        final CacheFile tempFile = tempFileManager.createCacheFile( filename_hint );
+        final CacheFile tempFile = cacheManager.createCacheFile( filename_hint );
         final ByteBuffer src = b.duplicate();
         fileOutputStream = new FileOutputStream( tempFile.getName() );
         final FileChannel dest = fileOutputStream.getChannel();

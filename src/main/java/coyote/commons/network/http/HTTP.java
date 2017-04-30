@@ -16,6 +16,7 @@ package coyote.commons.network.http;
  */
 public class HTTP {
   
+  public static final String VERSION_1_1 = "HTTP/1.1";
   public static final String HDR_ACCEPT = "Accept";
   public static final String HDR_ACCEPT_CHARSET = "Accept-Charset";
   public static final String HDR_ACCEPT_DATETIME = "Accept-Datetime";
