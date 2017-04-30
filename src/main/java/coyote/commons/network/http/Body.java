@@ -12,6 +12,7 @@
 package coyote.commons.network.http;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
@@ -21,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 
 import coyote.commons.FileUtil;
+import coyote.loader.log.Log;
 
 
 /**
@@ -30,8 +32,8 @@ public class Body {
   private final Map<String, Object> entities = new HashMap<String, Object>();
   private final Map<String, ContentType> entityTypes = new HashMap<String, ContentType>();
 
-  public static Charset charset = Charset.forName( "UTF-8" );
-  public static CharsetDecoder decoder = charset.newDecoder();
+  public static Charset DEFAULT_CHARSET = Charset.forName( "UTF-8" );
+  public static CharsetDecoder DEFAULT_DECODER = DEFAULT_CHARSET.newDecoder();
 
 
 
@@ -179,8 +181,10 @@ public class Body {
    * Return the named entity as a string.
    * 
    * <p><strong>NOTE:</strong> entities are stored as the raw bytes read from 
-   * the request body and this method assumes UTF-8 encoding. This is probaby 
-   * wrong and not the encoding you need.
+   * the request body and this method attempts to determine the encodeing 
+   * based on the content type present when the body was parsed. If no content 
+   * type was present, did not contain an encoding or contained an unsupported 
+   * character encoding, this method will default to the UTF-8 character set.
    *   
    * @param key the name of the entity to retrieve (e.g."content")
    * 
@@ -193,6 +197,7 @@ public class Body {
     if ( obj != null ) {
       if ( obj instanceof ByteBuffer ) {
         ByteBuffer bb = (ByteBuffer)obj;
+        CharsetDecoder decoder = getDecoder( key );
         try {
           retval = decoder.decode( bb ).toString();
           bb.position( 0 );
@@ -200,10 +205,43 @@ public class Body {
           e.printStackTrace();
         }
       } else if ( obj instanceof File ) {
-        retval = FileUtil.fileToString( (File)obj );
+        CharsetDecoder decoder = getDecoder( key );
+        try {
+          final byte[] data = FileUtil.read( (File)obj );
+          retval = decoder.decode( ByteBuffer.wrap( data ) ).toString();
+        } catch ( IOException e ) {
+          Log.error( "Could not read cached entity:" + e.getMessage() + " for " + ( (File)obj ).getAbsolutePath() );
+        }
       } else {
         retval = obj.toString();
       }
+    }
+    return retval;
+  }
+
+
+
+
+  private CharsetDecoder getDecoder( String key ) {
+    CharsetDecoder retval = null;
+    ContentType type = entityTypes.get( key );
+    if ( type != null && type.getEncoding() != null ) {
+      Charset charset = null;
+      try {
+        charset = Charset.forName( type.getEncoding() );
+      } catch ( Exception e ) {
+        try {
+          charset = Charset.forName( type.getEncoding().toUpperCase() );
+        } catch ( Exception ex ) {}
+      }
+
+      if ( charset != null ) {
+        retval = charset.newDecoder();
+      }
+    }
+
+    if ( retval == null ) {
+      retval = DEFAULT_DECODER;
     }
     return retval;
   }

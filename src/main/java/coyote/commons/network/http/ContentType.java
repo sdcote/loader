@@ -13,31 +13,23 @@ package coyote.commons.network.http;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import coyote.commons.StringUtil;
+
 
 class ContentType {
 
   private static final String ASCII_ENCODING = "US-ASCII";
-
   private static final String MULTIPART_FORM_DATA_HEADER = "multipart/form-data";
-
   private static final String CONTENT_REGEX = "[ |\t]*([^/^ ^;^,]+/[^ ^;^,]+)";
-
   private static final Pattern MIME_PATTERN = Pattern.compile( CONTENT_REGEX, Pattern.CASE_INSENSITIVE );
-
   private static final String CHARSET_REGEX = "[ |\t]*(charset)[ |\t]*=[ |\t]*['|\"]?([^\"^'^;^,]*)['|\"]?";
-
   private static final Pattern CHARSET_PATTERN = Pattern.compile( CHARSET_REGEX, Pattern.CASE_INSENSITIVE );
-
   private static final String BOUNDARY_REGEX = "[ |\t]*(boundary)[ |\t]*=[ |\t]*['|\"]?([^\"^'^;^,]*)['|\"]?";
-
   private static final Pattern BOUNDARY_PATTERN = Pattern.compile( BOUNDARY_REGEX, Pattern.CASE_INSENSITIVE );
 
   private final String contentTypeHeader;
-
   private final String contentType;
-
   private final String encoding;
-
   private final String boundary;
 
 
@@ -111,4 +103,26 @@ class ContentType {
     }
     return this;
   }
+
+
+
+
+  /**
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    StringBuffer b = new StringBuffer( getClass().getSimpleName() );
+    b.append( ": " );
+    b.append( contentType );
+    if ( StringUtil.isNotBlank( encoding ) ) {
+      b.append( "; " );
+      b.append( encoding );
+    }
+    b.append( " (" );
+    b.append( contentTypeHeader );
+    b.append( ")" );
+    return b.toString();
+  }
+
 }
