@@ -28,6 +28,7 @@ import coyote.commons.FileUtil;
  */
 public class Body {
   private final Map<String, Object> entities = new HashMap<String, Object>();
+  private final Map<String, ContentType> entityTypes = new HashMap<String, ContentType>();
 
   public static Charset charset = Charset.forName( "UTF-8" );
   public static CharsetDecoder decoder = charset.newDecoder();
@@ -43,11 +44,15 @@ public class Body {
    * 
    * @param key key with which the specified value is to be associated
    * @param value value to be associated with the specified key
+   * @param type optional content type of the value if known
    * 
    * @return the reference to this body to enable invocation chaining
    */
-  public Body put( String key, ByteBuffer value ) {
+  public Body put( String key, ByteBuffer value, ContentType type ) {
     entities.put( key, value );
+    if ( type != null ) {
+      entityTypes.put( key, type );
+    }
     return this;
   }
 
@@ -62,11 +67,15 @@ public class Body {
    * 
    * @param key key with which the specified value is to be associated
    * @param value value to be associated with the specified key
+   * @param type optional contnent type of the value if known
    * 
    * @return the reference to this body to enable invocation chaining
    */
-  public Body put( String key, File value ) {
+  public Body put( String key, File value, ContentType type ) {
     entities.put( key, value );
+    if ( type != null ) {
+      entityTypes.put( key, type );
+    }
     return this;
   }
 
@@ -199,4 +208,18 @@ public class Body {
     return retval;
   }
 
+
+
+
+  /**
+   * Return the entity type provided in the request for this entity.
+   * 
+   * @param entityKey the entity to query
+   * 
+   * @return the content type provided in the request message or null if no 
+   *         content type was provided or the entity was not found;
+   */
+  public ContentType getEntityType( String entityKey ) {
+    return entityTypes.get( entityKey );
+  }
 }

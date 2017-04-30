@@ -263,13 +263,13 @@ class HTTPSession implements IHTTPSession {
           // Read it into a file
           final String path = saveTmpFile( fbuf, partDataStart, partDataEnd - partDataStart, fileName );
           if ( !body.containsKey( partName ) ) {
-            body.put( partName, new File(path) );
+            body.put( partName, new File( path ), new ContentType( partContentType ) );
           } else {
             int count = 2;
             while ( body.containsKey( partName + count ) ) {
               count++;
             }
-            body.put( partName + count, new File(path) );
+            body.put( partName + count, new File( path ), new ContentType( partContentType ) );
           }
           parms.put( partName, fileName );
         }
@@ -632,7 +632,7 @@ class HTTPSession implements IHTTPSession {
   @Override
   public Body parseBody() throws IOException, ResponseException {
     Body retval = new Body();
-    
+
     RandomAccessFile randomAccessFile = null;
     try {
       long size = getBodySize();
@@ -690,13 +690,13 @@ class HTTPSession implements IHTTPSession {
           }
         }
       } else if ( Method.PUT.equals( method ) ) {
-        retval.put( "content", fbuf );
+        retval.put( "content", fbuf, new ContentType( requestHeaders.get( "content-type" ) ) );
       }
     }
     finally {
       HTTPD.safeClose( randomAccessFile );
     }
-    
+
     return retval;
   }
 
