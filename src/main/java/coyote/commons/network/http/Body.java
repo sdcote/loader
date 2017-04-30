@@ -29,6 +29,7 @@ import coyote.loader.log.Log;
  * Represents a collection of entities in a body of an http message.
  */
 public class Body {
+  public static final String CONTENT = "content";
   private final Map<String, Object> entities = new HashMap<String, Object>();
   private final Map<String, ContentType> entityTypes = new HashMap<String, ContentType>();
 
@@ -260,4 +261,19 @@ public class Body {
   public ContentType getEntityType( String entityKey ) {
     return entityTypes.get( entityKey );
   }
+
+
+
+
+  /**
+   * PUT operations will often have a body and if so, it will be accessible 
+   * via this method.
+   * 
+   * @return String representation of the PUT content request body or null if 
+   *         it does not exist.
+   */
+  public String getContent() {
+    return getAsString( CONTENT );
+  }
+
 }
