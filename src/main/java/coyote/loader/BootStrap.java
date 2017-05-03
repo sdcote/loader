@@ -163,6 +163,9 @@ public class BootStrap extends AbstractLoader {
   private static void readConfig() {
     try {
       configuration = Config.read( cfgUri );
+      if ( StringUtil.isBlank( configuration.getName() ) ) {
+        configuration.setName( UriUtil.getBase( cfgUri ) );
+      }
       System.setProperty( ConfigTag.CONFIG_URI, cfgUri.toString() );
     } catch ( IOException | ConfigurationException e ) {
       System.err.println( LogMsg.createMsg( MSG, "Loader.error_reading_configuration", cfgUri, e.getLocalizedMessage(), ExceptionUtil.stackTrace( e ) ) );

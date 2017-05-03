@@ -1,5 +1,6 @@
 package coyote.loader.cfg;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -12,6 +13,8 @@ import java.net.URISyntaxException;
 import org.junit.Test;
 
 import coyote.commons.GUID;
+import coyote.commons.StringUtil;
+import coyote.commons.UriUtil;
 import coyote.dataframe.marshal.JSONMarshaler;
 
 
@@ -95,6 +98,13 @@ public class ConfigTest {
     URI cfgUri = new URI( "http://coyote.systems/device/ou812" );
     Config config = Config.read( cfgUri );
     assertNotNull( config );
+    if ( StringUtil.isBlank( config.getName() ) ) {
+      String basename = UriUtil.getBase( cfgUri );
+      assertNotNull( basename );
+      config.setName( basename );
+      assertNotNull( config.getName() );
+      assertEquals( basename, config.getName() );
+    }
     //System.out.println( JSONMarshaler.toFormattedString( config ) );
   }
 
