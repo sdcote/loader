@@ -4,7 +4,22 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 
-@Deprecated
+/**
+ * This is a simple type which allows the caller to take samples of some 
+ * number and track basic data about it.
+ * 
+ * <p>The most common use case is tracking how long something takes on 
+ * average. When something starts, the System.currentTimeMillis() method is 
+ * called to get the start time and when it stops System.currentTimeMillis(); 
+ * is called again to get the end time. The difference is the elapsed time 
+ * and this class can have its {@code sample(long)} method called with the
+ * elapsed difference. Instance of this class can then have their various 
+ * methods called to access such information as the number of samples, the 
+ * average sampled, minimum, and maximum values.
+ * 
+ * <p>Time is not the only use case. Average, minimum, and maximum sizes of 
+ * things can be tracked as well.
+ */
 public class SimpleMetric {
   private String name = null;
   private String units = "ms";
@@ -17,7 +32,6 @@ public class SimpleMetric {
 
 
 
-  @Deprecated
   public SimpleMetric( final String name ) {
     this.name = name;
   }
@@ -25,7 +39,6 @@ public class SimpleMetric {
 
 
 
-  @Deprecated
   public SimpleMetric( final String name, final String units ) {
     this( name );
     this.units = units;
@@ -51,7 +64,7 @@ public class SimpleMetric {
 
   private String convertToString( final long value ) {
     final DecimalFormat numberFormat = (DecimalFormat)NumberFormat.getNumberInstance();
-    numberFormat.applyPattern( "#,###" );
+    numberFormat.applyPattern( "#,###,###,###,###,###,###" );
     return numberFormat.format( value );
   }
 
