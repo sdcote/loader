@@ -364,7 +364,7 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
 
 
   /**
-   * et the next job to be run before this job
+   * Get the next job to be run before this job
    *
    * @param previousJob the next job to be run before this job
    */
@@ -407,7 +407,9 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    * @return the number of times this job has been executed
    */
   public long getExecutionCount() {
-    return executionCount;
+    synchronized( mutex ) {
+      return executionCount;
+    }
   }
 
 
@@ -417,7 +419,9 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    * Increment the job execution counter by 1 (one).
    */
   public void incrementExecutionCount() {
-    this.executionCount++;
+    synchronized( mutex ) {
+      this.executionCount++;
+    }
   }
 
 
@@ -428,7 +432,9 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    *         once.
    */
   public boolean isRepeatable() {
-    return repeatable;
+    synchronized( mutex ) {
+      return repeatable;
+    }
   }
 
 
@@ -441,7 +447,9 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    *        be run only once.
    */
   public void setRepeatable( boolean repeatable ) {
-    this.repeatable = repeatable;
+    synchronized( mutex ) {
+      this.repeatable = repeatable;
+    }
   }
 
 
@@ -452,7 +460,9 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    *         be (re) added to the scheduler.
    */
   public boolean isEnabled() {
-    return enabled;
+    synchronized( mutex ) {
+      return enabled;
+    }
   }
 
 
@@ -465,7 +475,9 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    *        not to be (re) added to the scheduler.
    */
   public void setEnabled( boolean enabled ) {
-    this.enabled = enabled;
+    synchronized( mutex ) {
+      this.enabled = enabled;
+    }
   }
 
 
