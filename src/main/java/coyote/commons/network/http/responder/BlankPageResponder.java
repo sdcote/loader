@@ -21,6 +21,9 @@ import coyote.commons.network.http.Status;
  */
 public class BlankPageResponder extends DefaultResponder {
 
+  /**
+   * @see coyote.commons.network.http.responder.DefaultStreamResponder#getMimeType()
+   */
   @Override
   public String getMimeType() {
     return "text/html";
@@ -29,6 +32,9 @@ public class BlankPageResponder extends DefaultResponder {
 
 
 
+  /**
+   * @see coyote.commons.network.http.responder.DefaultResponder#getStatus()
+   */
   @Override
   public IStatus getStatus() {
     return Status.OK;
@@ -37,6 +43,9 @@ public class BlankPageResponder extends DefaultResponder {
 
 
 
+  /**
+   * @see coyote.commons.network.http.responder.DefaultResponder#getText()
+   */
   @Override
   public String getText() {
     return "<html><body></body></html>";
