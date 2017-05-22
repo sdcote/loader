@@ -59,6 +59,8 @@ public class DefaultLoader extends AbstractLoader implements Loader {
 
     // By this time all loggers (including the catch-all logger) should be open
     final StringBuffer b = new StringBuffer( CLASS );
+    b.append( " " );
+    b.append( Loader.API_VERSION.toString() );
     b.append( " initialized - Runtime: " );
     b.append( System.getProperty( "java.version" ) );
     b.append( " (" );
