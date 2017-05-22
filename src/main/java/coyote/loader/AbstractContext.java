@@ -502,4 +502,15 @@ public abstract class AbstractContext implements Context {
     getSymbols().put( name, value );
   }
 
+
+
+
+  /**
+   * @see coyote.loader.Context#contains(java.lang.String)
+   */
+  @Override
+  public boolean contains( String key ) {
+    return properties.containsKey( key );
+  }
+
 }

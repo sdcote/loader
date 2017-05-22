@@ -12,7 +12,7 @@
 package coyote.loader;
 
 /**
- * 
+ * This is the context implemented by the loader by default.
  */
 public class LoaderContext extends AbstractContext implements Context {
 

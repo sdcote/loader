@@ -35,6 +35,19 @@ public interface Context {
 
 
   /**
+   * Perform a check to see if the context contains an object mapped to the 
+   * given key, case sensitive.
+   * 
+   * @param key The key of the object to check
+   * 
+   * @return true if there is an object mapped to this key, false otherwise 
+   */
+  public boolean contains( String key );
+
+
+
+
+  /**
    * @return a dump of all the properties and symbols in this context.
    */
   public String dump();
