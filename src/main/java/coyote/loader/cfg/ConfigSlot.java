@@ -9,17 +9,15 @@ import coyote.dataframe.DataField;
 
 
 /**
- * Class ConfigSlot
- *
- * @author Stephan D. Cote' - Enterprise Architecture
- * @version $Revision$
+ * Class ConfigSlot a description of a configuration option.
  */
 public class ConfigSlot {
   protected String name = null;
   protected String description = null;
-  protected int type = 0;
+  protected SlotType type = SlotType.STRING;
   protected Object defaultValue = null;
   protected String message = null;
+  protected boolean required = false;
 
 
 
@@ -73,9 +71,7 @@ public class ConfigSlot {
 
 
   /**
-   * Method getName
-   *
-   * @return TODO Complete Documentation
+   * @return the name of this configuration attribute
    */
   public String getName() {
     return name;
@@ -85,9 +81,7 @@ public class ConfigSlot {
 
 
   /**
-   * Method setName
-   *
-   * @param name
+   * @param name the name of this configuration attribute
    */
   public void setName( final String name ) {
     if ( name != null ) {
@@ -101,9 +95,7 @@ public class ConfigSlot {
 
 
   /**
-   * Method getDescription
-   *
-   * @return TODO Complete Documentation
+   * @return the description of this configuration attribute
    */
   public String getDescription() {
     return description;
@@ -113,21 +105,17 @@ public class ConfigSlot {
 
 
   /**
-   * Method setDescription
-   *
-   * @param description
+   * @param desc the description of this configuration attribute
    */
-  public void setDescription( final String description ) {
-    this.description = description;
+  public void setDescription( final String desc ) {
+    this.description = desc;
   }
 
 
 
 
   /**
-   * Method getDefaultValue
-   *
-   * @return TODO Complete Documentation
+   * @return the default value for this configuration attribute
    */
   public Object getDefaultValue() {
     return defaultValue;
@@ -137,21 +125,17 @@ public class ConfigSlot {
 
 
   /**
-   * Method setDefaultValue
-   *
-   * @param val
+   * @param value the default value for this configuration attribute
    */
-  public void setDefaultValue( final Object val ) {
-    this.defaultValue = val;
+  public void setDefaultValue( final Object value ) {
+    this.defaultValue = value;
   }
 
 
 
 
   /**
-   * Get the user-defined message for this slot.
-   *
-   * @return TODO Complete Documentation
+   * @return  the user-defined message for this slot.
    */
   public String getMessage() {
     return message;
@@ -170,11 +154,53 @@ public class ConfigSlot {
    * completed. In such cases, the ability to pass a user-defined message field
    * is useful as in the case where value failed some validity check and the
    * ConfigSlot is passed back to the GUI with the invalid value in the
-   * defaultValue field and an error message in the Message field.</p>
+   * defaultValue field and an error message in the Message field.
    *
    * @param message
    */
   public void setMessage( final String message ) {
     this.message = message;
   }
+
+
+
+
+  /**
+   * @return the type of this slots value
+   */
+  public SlotType getType() {
+    return type;
+  }
+
+
+
+
+  /**
+   * @param type the data type of this slots value
+   */
+  public void setType( SlotType type ) {
+    this.type = type;
+  }
+
+
+
+
+  /**
+   * @return if this is a required configuration attribute
+   */
+  public boolean isRequired() {
+    return required;
+  }
+
+
+
+
+  /**
+   * @param flag true indicates this is a required configuration attribute, 
+   *             false means this is optional
+   */
+  public void setRequired( boolean flag ) {
+    this.required = flag;
+  }
+
 }
