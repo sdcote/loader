@@ -440,6 +440,9 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
    */
   protected void initComponents() {
     List<Config> sections = configuration.getSections( ConfigTag.COMPONENT );
+    if ( sections.size() == 0 ) {
+      Log.debug( LogMsg.createMsg( MSG, "Loader.section_not_found", ConfigTag.COMPONENT ) );
+    }
     for ( Config section : sections ) {
       if ( section != null ) {
         for ( Config cfg : section.getSections() ) {
