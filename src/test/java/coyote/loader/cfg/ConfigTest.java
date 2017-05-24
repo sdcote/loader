@@ -2,6 +2,7 @@ package coyote.loader.cfg;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -106,6 +107,25 @@ public class ConfigTest {
       assertEquals( basename, config.getName() );
     }
     //System.out.println( JSONMarshaler.toFormattedString( config ) );
+  }
+
+
+
+
+  @Test
+  public void testGetString() {
+
+    Config cfg = new Config();
+    cfg.set( "port", "123" );
+
+    // case insensitive by default
+    assertNotNull( cfg.getString( "Port" ) );
+
+    // case sensitive (ignoreCase=false)
+    assertNull( cfg.getString( "Port", false ) );
+
+    // case insensitive (ignoreCase=true)
+    assertNotNull( cfg.getString( "Port", true ) );
   }
 
 }

@@ -495,17 +495,30 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    *         field contained a null value.
    */
   public String getString( String tag ) {
-    // If we have a tag for which to search...
-    if ( StringUtil.isNotBlank( tag ) ) {
-      // Look for the class to load
-      for ( DataField field : getFields() ) {
-        if ( tag.equalsIgnoreCase( field.getName() ) ) {
-          return field.getStringValue();
-        } // name match && a frame
-      } // for
-    } // tag != null
+    return getString( tag, true );
+  }
 
-    // If we got here, there was nothing which matched the given tag
+
+
+
+  /**
+   * Perform a search for the first value with the given name.
+   * 
+   * @param tag the name of the configuration attribute for which to search
+   * @param ignoreCase true to ignore the case of the tag, false for a strict, case sensitive match
+   * 
+   * @return the first value with the given name as a string or null if not 
+   *         configuration field with that name was found, or if the found 
+   *         field contained a null value.
+   */
+  public String getString( String tag, boolean ignoreCase ) {
+    if ( StringUtil.isNotBlank( tag ) ) {
+      for ( DataField field : getFields() ) {
+        if ( tag.equals( field.getName() ) || ( ignoreCase && tag.equalsIgnoreCase( field.getName() ) ) ) {
+          return field.getStringValue();
+        }
+      }
+    }
     return null;
   }
 
