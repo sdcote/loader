@@ -12,6 +12,7 @@
 package coyote.loader.component;
 
 import coyote.commons.GUID;
+import coyote.commons.StringUtil;
 import coyote.dataframe.DataFrame;
 import coyote.loader.Context;
 import coyote.loader.Loader;
@@ -130,6 +131,17 @@ public abstract class AbstractManagedComponent extends ThreadJob implements Mana
 
 
   /**
+   * @see coyote.loader.component.ManagedComponent#setName(java.lang.String)
+   */
+  @Override
+  public void setName( String name ) {
+    componentName = name;
+  }
+
+
+
+
+  /**
    * @see coyote.loader.component.Component#getProfile()
    */
   @Override
@@ -231,7 +243,7 @@ public abstract class AbstractManagedComponent extends ThreadJob implements Mana
    */
   @Override
   public void setId( final String id ) {
-    if ( ( id != null ) && ( id.length() > 0 ) ) {
+    if ( StringUtil.isNotBlank( id ) ) {
       identifier = id;
     }
   }

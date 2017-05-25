@@ -109,6 +109,17 @@ public interface ManagedComponent extends Component {
 
 
   /**
+   * Allows a logical name to be set so the component instance can be addressed 
+   * in monitoring and management operations.
+   * 
+   * @param name the logical name of this component
+   */
+  public void setName( String name );
+
+
+
+
+  /**
    * Allows the framework to set the time the component was started.
    *
    * @param millis Epoch time in milliseconds as is reported by 
