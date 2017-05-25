@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -692,71 +693,77 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   protected void watchdog() {
     setActiveFlag( true );
 
-    Log.info( LogMsg.createMsg( MSG, "Loader.operational" ) );
-    stats.setState( LOADER, RUNNING );
+    stats.setState( LOADER, WAIT_FOR_ACTIVE );
+    List<String> failedToInit = waitForActive( 12000 );
 
-    while ( !isShutdown() ) {
+    if ( failedToInit.size() == 0 ) {
+      Log.info( LogMsg.createMsg( MSG, "Loader.operational" ) );
+      stats.setState( LOADER, RUNNING );
 
-      // Make sure that all this loaders are active, otherwise remove the
-      // reference to them and allow GC to remove them from memory
-      synchronized( components ) {
-        for ( final Iterator<Object> it = components.keySet().iterator(); it.hasNext(); ) {
-          final Object cmpnt = it.next();
-          if ( cmpnt instanceof ManagedComponent ) {
+      while ( !isShutdown() ) {
 
-            // Don't shut down scheduled jobs...they are inactive while they 
-            // are waiting in the scheduler for their next execution.
+        // Make sure that all this loaders are active, otherwise remove the
+        // reference to them and allow GC to remove them from memory
+        synchronized( components ) {
+          for ( final Iterator<Object> it = components.keySet().iterator(); it.hasNext(); ) {
+            final Object cmpnt = it.next();
+            if ( cmpnt instanceof ManagedComponent ) {
 
-            if ( !( cmpnt instanceof ScheduledJob ) && !( (ManagedComponent)cmpnt ).isActive() ) {
-              Log.info( LogMsg.createMsg( MSG, "Loader.removing_inactive_cmpnt", cmpnt.toString() ) );
+              // Don't shut down scheduled jobs...they are inactive while they 
+              // are waiting in the scheduler for their next execution.
 
-              // get a reference to the components configuration
-              final Config config = components.get( cmpnt );
+              if ( !( cmpnt instanceof ScheduledJob ) && !( (ManagedComponent)cmpnt ).isActive() ) {
+                Log.info( LogMsg.createMsg( MSG, "Loader.removing_inactive_cmpnt", cmpnt.toString() ) );
 
-              // communicate the reason for the shutdown
-              DataFrame frame = new DataFrame();
-              frame.put( "Message", "Terminating due to inactivity" );
+                // get a reference to the components configuration
+                final Config config = components.get( cmpnt );
 
-              // try to shut it down properly
-              safeShutdown( (ManagedComponent)cmpnt, frame );
+                // communicate the reason for the shutdown
+                DataFrame frame = new DataFrame();
+                frame.put( "Message", "Terminating due to inactivity" );
 
-              // remove the component
-              it.remove();
+                // try to shut it down properly
+                safeShutdown( (ManagedComponent)cmpnt, frame );
 
-              // re-load the component
-              Object newCmpnt = loadComponent( config );
+                // remove the component
+                it.remove();
 
-              // activate it
-              if ( newCmpnt != null ) {
-                activate( newCmpnt, config );
+                // re-load the component
+                Object newCmpnt = loadComponent( config );
+
+                // activate it
+                if ( newCmpnt != null ) {
+                  activate( newCmpnt, config );
+                }
               }
             }
           }
-        }
 
-        // TODO cycle through all the hangtime objects and check their last 
-        // check-in time. If expired, log the event and restart them like the 
-        // above active check
+          // TODO cycle through all the hangtime objects and check their last 
+          // check-in time. If expired, log the event and restart them like the 
+          // above active check
 
-        // Monitor check-in map size; if it is too large, we have a problem
-        if ( checkin.size() > components.size() ) {
-          Log.fatal( LogMsg.createMsg( MSG, "Loader.check_in_map_size", checkin.size(), components.size() ) );
-        }
+          // Monitor check-in map size; if it is too large, we have a problem
+          if ( checkin.size() > components.size() ) {
+            Log.fatal( LogMsg.createMsg( MSG, "Loader.check_in_map_size", checkin.size(), components.size() ) );
+          }
 
-        // If we have no components which are active, there is not need for this
-        // loader to remain running
-        if ( components.size() == 0 ) {
-          Log.warn( LogMsg.createMsg( MSG, "Loader.no_components" ) );
-          this.shutdown();
-        }
+          // If we have no components which are active, there is not need for this
+          // loader to remain running
+          if ( components.size() == 0 ) {
+            Log.warn( LogMsg.createMsg( MSG, "Loader.no_components" ) );
+            this.shutdown();
+          }
 
-      } // synchronized
+        } // synchronized
 
-      // Yield to other threads and sleep(wait) for a time
-      park( parkTime );
+        // Yield to other threads and sleep(wait) for a time
+        park( parkTime );
 
+      }
+    } else {
+      Log.fatal( "The following " + failedToInit.size() + " components did not initialize within the timeout period:\n" + failedToInit );
     }
-
     stats.setState( LOADER, SHUTDOWN );
     if ( Log.isLogging( Log.DEBUG_EVENTS ) ) {
       Log.debug( LogMsg.createMsg( MSG, "Loader.terminating" ) );
@@ -765,6 +772,34 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
     terminate();
 
     setActiveFlag( false );
+  }
+
+
+
+
+  /**
+   * @param timeout number of miliseconds to wait for all the components to go active 
+   * @return list of components which have not yet reported as active
+   */
+  private List<String> waitForActive( int timeout ) {
+    // Wait for all the components to activate. This prevents us from removing a component in the watchdog thread which is still initializing.
+    long expiry = System.currentTimeMillis() + timeout;
+    List<String> failedToInitialize = null;
+    synchronized( components ) {
+      do {
+        failedToInitialize = new ArrayList<String>();
+        for ( final Iterator<Object> it = components.keySet().iterator(); it.hasNext(); ) {
+          final Object cmpnt = it.next();
+          if ( cmpnt instanceof ManagedComponent && !( cmpnt instanceof ScheduledJob ) && !( (ManagedComponent)cmpnt ).isActive() ) {
+            failedToInitialize.add( cmpnt.toString() );
+          }
+        }
+        park( 500 );
+      }
+      while ( failedToInitialize.size() > 0 && System.currentTimeMillis() < expiry );
+    }
+
+    return failedToInitialize;
   }
 
 

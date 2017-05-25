@@ -24,10 +24,11 @@ import coyote.loader.thread.ThreadPool;
  */
 public interface Loader extends WatchDog {
 
-  public static final Version API_VERSION = new Version( 1, 1, 4, Version.DEVELOPMENT );
+  public static final Version API_VERSION = new Version( 1, 1, 5, Version.DEVELOPMENT );
   public static final String API_NAME = "CoyoteLoader";
   public static final String LOADER = "Loader";
   public static final String INITIALIZING = "Initializing";
+  public static final String WAIT_FOR_ACTIVE = "WaitingForActive";
   public static final String RUNNING = "Watchdog";
   public static final String SHUTDOWN = "Shutdown";
   public static final String TERMINATED = "Terminated";
