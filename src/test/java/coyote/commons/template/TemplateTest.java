@@ -42,6 +42,7 @@ public class TemplateTest {
   public static void setUpBeforeClass() throws Exception {
     symbols.put( "One", 1.02 );
     symbols.put( "Today", new Date() );
+    symbols.put( "Greeting", "Hello World!" );
   }
 
 
@@ -110,45 +111,84 @@ public class TemplateTest {
 
     // Resolve the text
     String formattedText = Template.resolve( text, symbols );
-    assertEquals("Hello World!",formattedText);
+    assertEquals( "Hello World!", formattedText );
 
     text = ">[#Thing.tupper(\"\")#]<-uppered";
     formattedText = Template.resolve( text, symbols );
-    assertEquals("><-uppered",formattedText);
+    assertEquals( "><-uppered", formattedText );
 
     text = ">[#Thing.tupper(\"Boo\")#]<-uppered";
     formattedText = Template.resolve( text, symbols );
-    assertEquals(">BOO<-uppered",formattedText);
-    
+    assertEquals( ">BOO<-uppered", formattedText );
 
     text = ">[#Thing.tupper(hello, something)#]<-wrong parameter count";
     formattedText = Template.resolve( text, symbols );
-    assertEquals("><-wrong parameter count",formattedText);
+    assertEquals( "><-wrong parameter count", formattedText );
 
     text = ">[#Thing.tlower(hello)#]<-unknown method";
     formattedText = Template.resolve( text, symbols );
-    assertEquals("><-unknown method",formattedText);
+    assertEquals( "><-unknown method", formattedText );
 
     text = ">[#NoThing.tupper(hello)#]<-unknown object";
     formattedText = Template.resolve( text, symbols );
-    assertEquals("><-unknown object",formattedText);
+    assertEquals( "><-unknown object", formattedText );
   }
 
-  
+
+
 
   @Test
   public void testEncrypt() {
-    String text ="Biff the WonderDog";
+    String text = "Biff the WonderDog";
     String secret = CipherUtil.encryptString( text );
-    String symbol = SymbolTable.ENCRYPT_PREFIX+"mySecret";
+    String symbol = SymbolTable.ENCRYPT_PREFIX + "mySecret";
     symbols.put( symbol, secret );
-    String template = "[#$"+symbol+"#] saves the day!";
+    String template = "[#$" + symbol + "#] saves the day!";
     String formattedText = Template.resolve( template, symbols );
-    assertEquals("Biff the WonderDog saves the day!",formattedText);    
+    assertEquals( "Biff the WonderDog saves the day!", formattedText );
   }
-  
-  
-  
+
+
+
+
+  @Test
+  public void preProcess() {
+    String text = "\"[#$Greeting#]\" is the [#$type#] example.";
+    String formattedText = Template.resolve( text, symbols );
+    System.out.println( formattedText );
+    assertEquals( "\"Hello World!\" is the  example.", formattedText );
+
+    String preProcessedText = Template.preProcess( text, symbols );
+    System.out.println( preProcessedText );
+    assertEquals( "\"Hello World!\" is the [#$type#] example.", preProcessedText );
+    symbols.put( "type", "standard" );
+    preProcessedText = Template.preProcess( text, symbols );
+    System.out.println( preProcessedText );
+    assertEquals( "\"Hello World!\" is the standard example.", preProcessedText );
+
+    // exists, but null
+    symbols.put( "type", null );
+    preProcessedText = Template.preProcess( text, symbols );
+    System.out.println( preProcessedText );
+    assertEquals( "\"Hello World!\" is the  example.", preProcessedText );
+
+    // does not exist as before
+    symbols.remove( "type" );
+    preProcessedText = Template.preProcess( text, symbols );
+    System.out.println( preProcessedText );
+    assertEquals( "\"Hello World!\" is the [#$type#] example.", preProcessedText );
+
+    text = "[#Thing.hello()#] World!";
+    preProcessedText = Template.preProcess( text, symbols );
+    System.out.println( preProcessedText );
+    assertEquals( "Hello World!", preProcessedText );
+
+    text = "[#Thang.hello()#] World!";
+    preProcessedText = Template.preProcess( text, symbols );
+    System.out.println( preProcessedText );
+    assertEquals( text, preProcessedText );
+  }
+
   /**
    * The objects which can be placed in templates have few limitations. 
    * Only methods which take strings as arguments are called.

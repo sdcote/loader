@@ -69,6 +69,8 @@ public class Template extends StringParser {
   private static final char OP = '(';
   private static final char CP = ')';
   private static final char VAR = '$';
+  private static final char PIPE = '|';
+  private static final String VAR_PREFIX = String.valueOf( VAR );
 
 
 
@@ -151,11 +153,14 @@ public class Template extends StringParser {
    *
    * @param tag the tag this method is to resolve
    * @param symbols The hash of scalar typed data mapped by name
-   * @param cache the hash table of object instances that may provide dynamic data
+   * @param cache the hash table of object instances that may provide dynamic 
+   *        data
+   * @param preprocess true indicates unresolved symbols should remain in the 
+   *        result, false means they should be replaced with an empty string.
    *
    * @return a string representing the data behind the given tag.
    */
-  public static String resolve( String tag, SymbolTable symbols, Hashtable cache ) {
+  public static String resolve( String tag, SymbolTable symbols, Hashtable cache, boolean preprocess ) {
     StringBuffer retval = new StringBuffer();
 
     StringParser parser = new StringParser( tag );
@@ -168,17 +173,39 @@ public class Template extends StringParser {
           break;
         }
 
-        if ( token.startsWith( "$" ) ) {
-
+        if ( token.startsWith( VAR_PREFIX ) ) {
           // if the token contains a vertical pipe character, split the token into the variable key and the format string.
-          int boundry = token.indexOf( '|' );
+          int boundry = token.indexOf( PIPE );
           if ( boundry > 0 ) {
             String key = token.substring( 1, boundry );
             String format = token.substring( boundry + 1 );
-            retval.append( symbols.getString( key, format ) );
-
+            if ( preprocess ) {
+              if ( symbols.containsKey( key ) ) {
+                retval.append( symbols.getString( key, format ) );
+              } else {
+                retval.append( OPEN );
+                retval.append( VAR );
+                retval.append( key );
+                retval.append( PIPE );
+                retval.append( format );
+                retval.append( CLOSE );
+              }
+            } else {
+              retval.append( symbols.getString( key, format ) );
+            }
           } else {
-            retval.append( symbols.getString( token.substring( 1 ) ) );
+            if ( preprocess ) {
+              if ( symbols.containsKey( token.substring( 1 ) ) ) {
+                retval.append( symbols.getString( token.substring( 1 ) ) );
+              } else {
+                retval.append( OPEN );
+                retval.append( VAR );
+                retval.append( token.substring( 1 ) );
+                retval.append( CLOSE );
+              }
+            } else {
+              retval.append( symbols.getString( token.substring( 1 ) ) );
+            }
           }
         } else {
           // Must be a class; use the entire tag when parsing
@@ -261,7 +288,7 @@ public class Template extends StringParser {
                       retval.append( returned.toString() );
                     }
                   } catch ( Exception e ) {
-                    System.out.println( e.getClass().getSimpleName() + ":" + e.getMessage() );
+                    System.out.println( "Template Class Error:" + e.getClass().getSimpleName() + ":" + e.getMessage() );
                     //e.printStackTrace();
                   }
 
@@ -269,6 +296,12 @@ public class Template extends StringParser {
 
               } // if we have a method name to call
 
+            } else {
+              if ( preprocess ) {
+                retval.append( OPEN );
+                retval.append( token );
+                retval.append( CLOSE );
+              }
             } // if object with the name is found
 
           } else {
@@ -284,7 +317,7 @@ public class Template extends StringParser {
 
           } // object key 
 
-        }// variable or object token?
+        } // variable or object token?
 
       } // while parser not EOF
     } catch ( Exception ex ) {
@@ -305,7 +338,7 @@ public class Template extends StringParser {
   public String toString() {
     try {
       // call our static method with our instance attributes
-      return toString( this, symbols, classCache );
+      return toString( this, symbols, classCache, false );
     } catch ( TemplateException te ) {
       System.err.println( te.getMessage() );
       System.err.println( te.getContext() );
@@ -330,7 +363,7 @@ public class Template extends StringParser {
    *
    * @throws TemplateException
    */
-  public static String toString( Template template, SymbolTable symbols, Hashtable cache ) throws TemplateException {
+  public static String toString( Template template, SymbolTable symbols, Hashtable cache, boolean preprocess ) throws TemplateException {
     if ( template != null ) {
       if ( symbols == null ) {
         symbols = new SymbolTable();
@@ -371,7 +404,7 @@ public class Template extends StringParser {
             // OK, now perform our replacement magik
             if ( ( tag != null ) && ( tag.length() > 0 ) ) {
               // resolve the tag using the given symbol table and class cache
-              buffer.append( resolve( tag, symbols, cache ) );
+              buffer.append( resolve( tag, symbols, cache, preprocess ) );
             }
 
           }
@@ -461,7 +494,54 @@ public class Template extends StringParser {
     } else {
       return text;
     }
+  }
 
+
+
+
+  /**
+   * Resolve the template string with the given symbol table, but leave the 
+   * unresolved variables in the template.
+   * 
+   * <p>This enables several passes through the template with different symbol 
+   * tables, each contributing its own symbols to the result. This implies 
+   * that the final pass through the symbol table should be with the resolve 
+   * method to ensure all the template markup is removed.
+   * 
+   * @param text the template text
+   * @param symbols the symbol table to use in resolving the variables
+   * 
+   * @return the resulting string with only the variables existing in the 
+   *         given table resolved and the rest left unchanged.
+   */
+  public static String preProcess( String text, SymbolTable symbols ) {
+    if ( symbols != null && text != null ) {
+      return new Template( text, symbols ).preProcess();
+    } else {
+      return text;
+    }
+  }
+
+
+
+
+  /**
+   * Resolve this template with the given symbol table leaving the unresolved 
+   * variables in the template.
+   * 
+   * @return the resulting string with only the variables existing in the 
+   *         given table resolved and the rest left unchanged.
+   */
+  private String preProcess() {
+    try {
+      // call our static method with our instance attributes
+      return toString( this, symbols, classCache, true );
+    } catch ( TemplateException te ) {
+      System.err.println( te.getMessage() );
+      System.err.println( te.getContext() );
+
+      throw new IllegalArgumentException( "Parser error" );
+    }
   }
 
 }
