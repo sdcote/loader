@@ -155,37 +155,37 @@ public class TemplateTest {
   public void preProcess() {
     String text = "\"[#$Greeting#]\" is the [#$type#] example.";
     String formattedText = Template.resolve( text, symbols );
-    System.out.println( formattedText );
+    //System.out.println( formattedText );
     assertEquals( "\"Hello World!\" is the  example.", formattedText );
 
     String preProcessedText = Template.preProcess( text, symbols );
-    System.out.println( preProcessedText );
+    //System.out.println( preProcessedText );
     assertEquals( "\"Hello World!\" is the [#$type#] example.", preProcessedText );
     symbols.put( "type", "standard" );
     preProcessedText = Template.preProcess( text, symbols );
-    System.out.println( preProcessedText );
+    //System.out.println( preProcessedText );
     assertEquals( "\"Hello World!\" is the standard example.", preProcessedText );
 
     // exists, but null
     symbols.put( "type", null );
     preProcessedText = Template.preProcess( text, symbols );
-    System.out.println( preProcessedText );
+    //System.out.println( preProcessedText );
     assertEquals( "\"Hello World!\" is the  example.", preProcessedText );
 
     // does not exist as before
     symbols.remove( "type" );
     preProcessedText = Template.preProcess( text, symbols );
-    System.out.println( preProcessedText );
+    //System.out.println( preProcessedText );
     assertEquals( "\"Hello World!\" is the [#$type#] example.", preProcessedText );
 
     text = "[#Thing.hello()#] World!";
     preProcessedText = Template.preProcess( text, symbols );
-    System.out.println( preProcessedText );
+    //System.out.println( preProcessedText );
     assertEquals( "Hello World!", preProcessedText );
 
     text = "[#Thang.hello()#] World!";
     preProcessedText = Template.preProcess( text, symbols );
-    System.out.println( preProcessedText );
+    //System.out.println( preProcessedText );
     assertEquals( text, preProcessedText );
   }
 
