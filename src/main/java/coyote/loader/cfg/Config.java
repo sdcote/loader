@@ -295,7 +295,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    * @return the id of this config
    */
   public String getId() {
-    return getAsString( ID_TAG );
+    return getString( ID_TAG );
   }
 
 
@@ -315,7 +315,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    * @return the name of this config
    */
   public String getName() {
-    return getAsString( NAME_TAG );
+    return getString( NAME_TAG );
   }
 
 
@@ -335,7 +335,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    * @return the value of the class tag, if present
    */
   public String getClassName() {
-    return getAsString( CLASS_TAG );
+    return getString( CLASS_TAG );
   }
 
 
