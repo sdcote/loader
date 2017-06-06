@@ -651,6 +651,10 @@ public class ThreadJob implements Runnable {
 
   /**
    * Set whether or not we are in an idle state.
+   * 
+   * <p>When idling, the thread pauses a short time between calls to the 
+   * doWork() method. See ({@link #setIdleWait(long)} for setting the wait
+   * interval.
    *
    * @param flag indicating our idle state.
    */
