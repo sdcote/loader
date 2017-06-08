@@ -11,7 +11,7 @@ package coyote.loader.cfg;
 public class ConfigurationException extends Exception {
 
   /**
-   * 
+   *
    */
   private static final long serialVersionUID = 229675499440617423L;
 
@@ -19,7 +19,7 @@ public class ConfigurationException extends Exception {
 
 
   /**
-   * 
+   *
    */
   public ConfigurationException() {
     super();

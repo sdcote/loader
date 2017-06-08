@@ -33,23 +33,13 @@ public class ConfigSlot {
   /**
    * Constructor ConfigSlot
    *
-   * @param name The name of the attribute slot
-   * @param description A string of descriptive text for the use/meaning of this attribute
-   * @param dflt the default object value of this attribute
+   * @param slot
    */
-  public ConfigSlot( final String name, final String description, final Object dflt ) {
-    if ( name != null ) {
-      this.setName( name );
-      this.setDescription( description );
-      try {
-        new DataField( dflt );
-        this.setDefaultValue( dflt );
-      } catch ( Exception e ) {
-        throw new IllegalArgumentException( "Unsupported default value type: " + e.getMessage() );
-      }
-    } else {
-      throw new IllegalArgumentException( "ConfigSlot name is null" );
-    }
+  public ConfigSlot( final ConfigSlot slot ) {
+    name = slot.name;
+    description = slot.description;
+    type = slot.type;
+    defaultValue = slot.defaultValue;
   }
 
 
@@ -58,57 +48,23 @@ public class ConfigSlot {
   /**
    * Constructor ConfigSlot
    *
-   * @param slot
+   * @param name The name of the attribute slot
+   * @param description A string of descriptive text for the use/meaning of this attribute
+   * @param dflt the default object value of this attribute
    */
-  public ConfigSlot( final ConfigSlot slot ) {
-    this.name = slot.name;
-    this.description = slot.description;
-    this.type = slot.type;
-    this.defaultValue = slot.defaultValue;
-  }
-
-
-
-
-  /**
-   * @return the name of this configuration attribute
-   */
-  public String getName() {
-    return name;
-  }
-
-
-
-
-  /**
-   * @param name the name of this configuration attribute
-   */
-  public void setName( final String name ) {
+  public ConfigSlot( final String name, final String description, final Object dflt ) {
     if ( name != null ) {
-      this.name = name;
+      setName( name );
+      setDescription( description );
+      try {
+        new DataField( dflt );
+        setDefaultValue( dflt );
+      } catch ( final Exception e ) {
+        throw new IllegalArgumentException( "Unsupported default value type: " + e.getMessage() );
+      }
     } else {
       throw new IllegalArgumentException( "ConfigSlot name is null" );
     }
-  }
-
-
-
-
-  /**
-   * @return the description of this configuration attribute
-   */
-  public String getDescription() {
-    return description;
-  }
-
-
-
-
-  /**
-   * @param desc the description of this configuration attribute
-   */
-  public void setDescription( final String desc ) {
-    this.description = desc;
   }
 
 
@@ -125,10 +81,10 @@ public class ConfigSlot {
 
 
   /**
-   * @param value the default value for this configuration attribute
+   * @return the description of this configuration attribute
    */
-  public void setDefaultValue( final Object value ) {
-    this.defaultValue = value;
+  public String getDescription() {
+    return description;
   }
 
 
@@ -139,6 +95,56 @@ public class ConfigSlot {
    */
   public String getMessage() {
     return message;
+  }
+
+
+
+
+  /**
+   * @return the name of this configuration attribute
+   */
+  public String getName() {
+    return name;
+  }
+
+
+
+
+  /**
+   * @return the type of this slots value
+   */
+  public SlotType getType() {
+    return type;
+  }
+
+
+
+
+  /**
+   * @return if this is a required configuration attribute
+   */
+  public boolean isRequired() {
+    return required;
+  }
+
+
+
+
+  /**
+   * @param value the default value for this configuration attribute
+   */
+  public void setDefaultValue( final Object value ) {
+    defaultValue = value;
+  }
+
+
+
+
+  /**
+   * @param desc the description of this configuration attribute
+   */
+  public void setDescription( final String desc ) {
+    description = desc;
   }
 
 
@@ -166,10 +172,25 @@ public class ConfigSlot {
 
 
   /**
-   * @return the type of this slots value
+   * @param name the name of this configuration attribute
    */
-  public SlotType getType() {
-    return type;
+  public void setName( final String name ) {
+    if ( name != null ) {
+      this.name = name;
+    } else {
+      throw new IllegalArgumentException( "ConfigSlot name is null" );
+    }
+  }
+
+
+
+
+  /**
+   * @param flag true indicates this is a required configuration attribute,
+   *             false means this is optional
+   */
+  public void setRequired( final boolean flag ) {
+    required = flag;
   }
 
 
@@ -178,29 +199,8 @@ public class ConfigSlot {
   /**
    * @param type the data type of this slots value
    */
-  public void setType( SlotType type ) {
+  public void setType( final SlotType type ) {
     this.type = type;
-  }
-
-
-
-
-  /**
-   * @return if this is a required configuration attribute
-   */
-  public boolean isRequired() {
-    return required;
-  }
-
-
-
-
-  /**
-   * @param flag true indicates this is a required configuration attribute, 
-   *             false means this is optional
-   */
-  public void setRequired( boolean flag ) {
-    this.required = flag;
   }
 
 }
