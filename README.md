@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/sdcote/loader.svg?branch=master)](https://travis-ci.org/sdcote/loader)
+[![codecov](https://codecov.io/gh/sdcote/loader/branch/master/graph/badge.svg)](https://codecov.io/gh/sdcote/loader)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/4490b4b198894a22b2c19bc44b1ca71b)](https://www.codacy.com/app/sdcote/loader?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=sdcote/loader&amp;utm_campaign=Badge_Grade)
+[![Download](https://api.bintray.com/packages/sdcote/maven/Loader/images/download.png) ](https://bintray.com/sdcote/maven/Loader/_latestVersion)
 
 # Coyote Loader
 
