@@ -16,7 +16,6 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.net.InetAddress;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -292,7 +291,7 @@ private static final int PORT = 7428;
           responseMsg = e.getMessage();
         }
 
-        return Response.createFixedLengthResponse( responseMsg.toString() );
+        return Response.createFixedLengthResponse( responseMsg );
       }
     };
     server.start( HTTPD.SOCKET_READ_TIMEOUT, false );

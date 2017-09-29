@@ -4,10 +4,6 @@
  * This program and the accompanying materials are made available under the
  * terms of the MIT License which accompanies this distribution, and is
  * available at http://creativecommons.org/licenses/MIT/
- *
- * Contributors:
- *   Stephan D. Cote
- *      - Initial concept and implementation
  */
 package coyote.loader.cfg;
 
@@ -18,8 +14,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -70,8 +68,8 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    * @throws IOException if there were problems reading the file
    * @throws ConfigurationException if there were issues creating a configuration object from the data read in from the file.
    */
-  public static Config read( final File file ) throws IOException, ConfigurationException {
-    return Config.read( new FileInputStream( file ) );
+  public static Config read(final File file) throws IOException, ConfigurationException {
+    return Config.read(new FileInputStream(file));
   }
 
 
@@ -89,31 +87,31 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    *
    * @throws ConfigurationException if there were issues creating a configuration object from the data read in from the stream.
    */
-  public static Config read( final InputStream configStream ) throws ConfigurationException {
+  public static Config read(final InputStream configStream) throws ConfigurationException {
     final Config retval = new Config();
 
     final byte[] buffer = new byte[8192];
     int bytesRead;
     final ByteArrayOutputStream output = new ByteArrayOutputStream();
     try {
-      while ( ( bytesRead = configStream.read( buffer ) ) != -1 ) {
-        output.write( buffer, 0, bytesRead );
+      while ((bytesRead = configStream.read(buffer)) != -1) {
+        output.write(buffer, 0, bytesRead);
       }
-    } catch ( final IOException e ) {
-      throw new ConfigurationException( "Could not read configuration stream", e );
+    } catch (final IOException e) {
+      throw new ConfigurationException("Could not read configuration stream", e);
     }
 
     String data = null;
     try {
-      data = new String( output.toByteArray(), "UTF-8" );
-    } catch ( final UnsupportedEncodingException e ) {
-      throw new ConfigurationException( "Could not read UTF-8", e );
+      data = new String(output.toByteArray(), "UTF-8");
+    } catch (final UnsupportedEncodingException e) {
+      throw new ConfigurationException("Could not read UTF-8", e);
     }
 
-    if ( data != null ) {
-      final List<DataFrame> config = JSONMarshaler.marshal( data );
-      if ( ( config.size() > 0 ) && ( config.get( 0 ) != null ) ) {
-        retval.populate( config.get( 0 ) );
+    if (data != null) {
+      final List<DataFrame> config = JSONMarshaler.marshal(data);
+      if ((config.size() > 0) && (config.get(0) != null)) {
+        retval.populate(config.get(0));
       }
     }
 
@@ -135,8 +133,8 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    * @throws IOException if there were problems reading the file
    * @throws ConfigurationException if there were issues creating a configuration object from the data read in from the file.
    */
-  public static Config read( final String filename ) throws IOException, ConfigurationException {
-    return Config.read( new FileInputStream( filename ) );
+  public static Config read(final String filename) throws IOException, ConfigurationException {
+    return Config.read(new FileInputStream(filename));
   }
 
 
@@ -155,16 +153,16 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    * @throws IOException if there were problems reading the file
    * @throws ConfigurationException if there were issues creating a configuration object from the data read in from the URI.
    */
-  public static Config read( final URI uri ) throws IOException, ConfigurationException {
-    if ( StringUtil.isNotBlank( uri.getScheme() ) ) {
-      if ( uri.getScheme().toLowerCase().startsWith( "file" ) ) {
-        return Config.read( new FileInputStream( UriUtil.getFile( uri ) ) );
+  public static Config read(final URI uri) throws IOException, ConfigurationException {
+    if (StringUtil.isNotBlank(uri.getScheme())) {
+      if (uri.getScheme().toLowerCase().startsWith("file")) {
+        return Config.read(new FileInputStream(UriUtil.getFile(uri)));
       } else {
-        return Config.read( uri.toURL().openStream() );
+        return Config.read(uri.toURL().openStream());
       }
     } else {
       // Assume this is a file path
-      return Config.read( new FileInputStream( uri.toString() ) );
+      return Config.read(new FileInputStream(uri.toString()));
     }
   }
 
@@ -193,8 +191,8 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    *
    * @param frame the frame to use as a source of data.
    */
-  public Config( final DataFrame frame ) {
-    populate( frame );
+  public Config(final DataFrame frame) {
+    populate(frame);
   }
 
 
@@ -209,16 +207,16 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    *
    * @throws ConfigurationException if there were issues creating a configuration object from the data read in from the file.
    */
-  public Config( final String data ) throws ConfigurationException {
+  public Config(final String data) throws ConfigurationException {
     try {
-      if ( data != null ) {
-        final List<DataFrame> config = JSONMarshaler.marshal( data );
-        if ( ( config.size() > 0 ) && ( config.get( 0 ) != null ) ) {
-          populate( config.get( 0 ) );
+      if (data != null) {
+        final List<DataFrame> config = JSONMarshaler.marshal(data);
+        if ((config.size() > 0) && (config.get(0) != null)) {
+          populate(config.get(0));
         }
       }
-    } catch ( final MarshalException e ) {
-      throw new ConfigurationException( "Could not read UTF-8", e );
+    } catch (final MarshalException e) {
+      throw new ConfigurationException("Could not read UTF-8", e);
     }
   }
 
@@ -230,13 +228,13 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    *
    * @param slot the reference to the ConfigSlot to add.
    */
-  public void addConfigSlot( final ConfigSlot slot ) {
-    if ( slots == null ) {
+  public void addConfigSlot(final ConfigSlot slot) {
+    if (slots == null) {
       slots = new HashMap();
     }
 
-    if ( slot != null ) {
-      slots.put( slot.getName(), slot );
+    if (slot != null) {
+      slots.put(slot.getName(), slot);
     }
   }
 
@@ -249,7 +247,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    * @return an Iterator over all the ConfigSlot, never returns null;
    */
   public Iterator<ConfigSlot> configSlotIterator() {
-    if ( slots != null ) {
+    if (slots != null) {
       return slots.values().iterator();
     } else {
       return new Vector().iterator();
@@ -271,20 +269,20 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    *          could not be parsed into a boolean.
    * @throws IllegalArgumentException if tag is null or empty.
    */
-  public boolean getBoolean( final String tag ) throws NumberFormatException {
-    if ( StringUtil.isNotEmpty( tag ) ) {
-      for ( final DataField field : getFields() ) {
-        if ( tag.equalsIgnoreCase( field.getName() ) ) {
+  public boolean getBoolean(final String tag) throws NumberFormatException {
+    if (StringUtil.isNotEmpty(tag)) {
+      for (final DataField field : getFields()) {
+        if (tag.equalsIgnoreCase(field.getName())) {
           try {
-            return asBoolean( field.getObjectValue() );
-          } catch ( final DataFrameException e ) {
-            throw new NumberFormatException( e.getMessage() );
+            return asBoolean(field.getObjectValue());
+          } catch (final DataFrameException e) {
+            throw new NumberFormatException(e.getMessage());
           }
         }
       }
-      throw new NumberFormatException( "Tag not found, cannot convert null to boolean" );
+      throw new NumberFormatException("Tag not found, cannot convert null to boolean");
     }
-    throw new IllegalArgumentException( "Tag argument is null or empty" );
+    throw new IllegalArgumentException("Tag argument is null or empty");
   }
 
 
@@ -294,7 +292,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    * @return the value of the class tag, if present
    */
   public String getClassName() {
-    return getString( CLASS_TAG );
+    return getString(CLASS_TAG);
   }
 
 
@@ -308,10 +306,10 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    * @return value ConfigSlot object with the given name or null if it does
    *         not exist
    */
-  public ConfigSlot getConfigSlot( final String name ) {
-    if ( slots != null ) {
-      synchronized( slots ) {
-        return slots.get( name );
+  public ConfigSlot getConfigSlot(final String name) {
+    if (slots != null) {
+      synchronized (slots) {
+        return slots.get(name);
       }
     } else {
       return null;
@@ -332,8 +330,8 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    * @throws NumberFormatException if the field could not be found or if the value
    *          could not be parsed into a double.
    */
-  public double getDouble( final String tag ) throws NumberFormatException {
-    return Double.parseDouble( getString( tag ) );
+  public double getDouble(final String tag) throws NumberFormatException {
+    return Double.parseDouble(getString(tag));
   }
 
 
@@ -362,8 +360,8 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    * @throws NumberFormatException if the field could not be found or if the value
    *          could not be parsed into a float.
    */
-  public float getFloat( final String tag ) throws NumberFormatException {
-    return Float.parseFloat( getString( tag ) );
+  public float getFloat(final String tag) throws NumberFormatException {
+    return Float.parseFloat(getString(tag));
   }
 
 
@@ -373,7 +371,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    * @return the id of this config
    */
   public String getId() {
-    return getString( ID_TAG );
+    return getString(ID_TAG);
   }
 
 
@@ -390,8 +388,8 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    * @throws NumberFormatException if the field could not be found or if the value
    *          could not be parsed into an integer.
    */
-  public int getInt( final String tag ) throws NumberFormatException {
-    return Integer.parseInt( getString( tag ) );
+  public int getInt(final String tag) throws NumberFormatException {
+    return Integer.parseInt(getString(tag));
   }
 
 
@@ -408,8 +406,8 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    * @throws NumberFormatException if the field could not be found or if the value
    *          could not be parsed into a long.
    */
-  public long getLong( final String tag ) throws NumberFormatException {
-    return Long.parseLong( getString( tag ) );
+  public long getLong(final String tag) throws NumberFormatException {
+    return Long.parseLong(getString(tag));
   }
 
 
@@ -419,7 +417,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    * @return the name of this config
    */
   public String getName() {
-    return getString( NAME_TAG );
+    return getString(NAME_TAG);
   }
 
 
@@ -434,15 +432,15 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    *
    * @return The first section with a matching name or null if no section with that name exists
    */
-  public Config getSection( final String tag ) {
+  public Config getSection(final String tag) {
 
     // If we have a tag for which to search...
-    if ( StringUtil.isNotBlank( tag ) ) {
+    if (StringUtil.isNotBlank(tag)) {
       // Look for the class to load
-      for ( final DataField field : getFields() ) {
-        if ( tag.equalsIgnoreCase( field.getName() ) && field.isFrame() ) {
+      for (final DataField field : getFields()) {
+        if (tag.equalsIgnoreCase(field.getName()) && field.isFrame()) {
           final Config cfg = new Config();
-          cfg.populate( (DataFrame)field.getObjectValue() );
+          cfg.populate((DataFrame)field.getObjectValue());
           return cfg;
         } // name match && a frame
       } // for
@@ -465,13 +463,13 @@ public class Config extends DataFrame implements Cloneable, Serializable {
     final List<Config> retval = new ArrayList<Config>();
 
     // Look for the class to load
-    for ( final DataField field : getFields() ) {
-      if ( field.isFrame() ) {
+    for (final DataField field : getFields()) {
+      if (field.isFrame()) {
         final Config cfg = new Config();
-        if ( field.isNotNull() ) {
-          cfg.populate( (DataFrame)field.getObjectValue() );
+        if (field.isNotNull()) {
+          cfg.populate((DataFrame)field.getObjectValue());
         }
-        retval.add( cfg );
+        retval.add(cfg);
       } // name match && a frame
     } // for
 
@@ -491,17 +489,17 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    *
    * @return The list of sections with a matching name. May be empty, but never null;
    */
-  public List<Config> getSections( final String tag ) {
+  public List<Config> getSections(final String tag) {
     final List<Config> retval = new ArrayList<Config>();
 
     // If we have a tag for which to search...
-    if ( StringUtil.isNotBlank( tag ) ) {
+    if (StringUtil.isNotBlank(tag)) {
       // Look for the class to load
-      for ( final DataField field : getFields() ) {
-        if ( tag.equalsIgnoreCase( field.getName() ) && field.isFrame() ) {
+      for (final DataField field : getFields()) {
+        if (tag.equalsIgnoreCase(field.getName()) && field.isFrame()) {
           final Config cfg = new Config();
-          cfg.populate( (DataFrame)field.getObjectValue() );
-          retval.add( cfg );
+          cfg.populate((DataFrame)field.getObjectValue());
+          retval.add(cfg);
         } // name match && a frame
       } // for
     } // tag != null
@@ -524,8 +522,8 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    * @throws NumberFormatException if the field could not be found or if the value
    *          could not be parsed into a short.
    */
-  public short getShort( final String tag ) throws NumberFormatException {
-    return Short.parseShort( getString( tag ) );
+  public short getShort(final String tag) throws NumberFormatException {
+    return Short.parseShort(getString(tag));
   }
 
 
@@ -540,8 +538,8 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    *         configuration field with that name was found, or if the found
    *         field contained a null value.
    */
-  public String getString( final String tag ) {
-    return getString( tag, true );
+  public String getString(final String tag) {
+    return getString(tag, true);
   }
 
 
@@ -557,10 +555,10 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    *         configuration field with that name was found, or if the found
    *         field contained a null value.
    */
-  public String getString( final String tag, final boolean ignoreCase ) {
-    if ( StringUtil.isNotBlank( tag ) ) {
-      for ( final DataField field : getFields() ) {
-        if ( tag.equals( field.getName() ) || ( ignoreCase && tag.equalsIgnoreCase( field.getName() ) ) ) {
+  public String getString(final String tag, final boolean ignoreCase) {
+    if (StringUtil.isNotBlank(tag)) {
+      for (final DataField field : getFields()) {
+        if (tag.equals(field.getName()) || (ignoreCase && tag.equalsIgnoreCase(field.getName()))) {
           return field.getStringValue();
         }
       }
@@ -576,12 +574,10 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    *
    * @param slot The reference to the ConfigSlot to remove.
    */
-  public void removeConfigSlot( final ConfigSlot slot ) {
-    if ( slots == null ) {
-      return;
-    } else {
-      synchronized( slots ) {
-        slots.remove( slot );
+  public void removeConfigSlot(final ConfigSlot slot) {
+    if (slots != null) {
+      synchronized (slots) {
+        slots.remove(slot);
       }
     }
   }
@@ -592,8 +588,8 @@ public class Config extends DataFrame implements Cloneable, Serializable {
   /**
    * @param name the class name to set in this config
    */
-  public void setClassName( final String name ) {
-    put( Config.CLASS_TAG, name );
+  public void setClassName(final String name) {
+    put(Config.CLASS_TAG, name);
   }
 
 
@@ -610,14 +606,14 @@ public class Config extends DataFrame implements Cloneable, Serializable {
   public void setDefaults() {
     final Iterator<ConfigSlot> it = configSlotIterator();
 
-    while ( it.hasNext() ) {
+    while (it.hasNext()) {
       final ConfigSlot slot = it.next();
 
-      if ( slot != null ) {
+      if (slot != null) {
         final Object defaultValue = slot.getDefaultValue();
 
-        if ( defaultValue != null ) {
-          put( slot.getName(), defaultValue );
+        if (defaultValue != null) {
+          put(slot.getName(), defaultValue);
         }
       }
     }
@@ -630,8 +626,8 @@ public class Config extends DataFrame implements Cloneable, Serializable {
   /**
    * @param id the id of the config to set
    */
-  public void setId( final String id ) {
-    this.put( ID_TAG, id );
+  public void setId(final String id) {
+    this.put(ID_TAG, id);
   }
 
 
@@ -640,8 +636,8 @@ public class Config extends DataFrame implements Cloneable, Serializable {
   /**
    * @param name the name of the config to set
    */
-  public void setName( final String name ) {
-    this.put( NAME_TAG, name );
+  public void setName(final String name) {
+    this.put(NAME_TAG, name);
   }
 
 
@@ -651,7 +647,177 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    * @return Formatted, multi-line JSON string representing the record.
    */
   public String toFormattedString() {
-    return JSONMarshaler.toFormattedString( this );
+    return JSONMarshaler.toFormattedString(this);
+  }
+
+
+
+
+  /**
+   * @return a deep copy of this configuration object
+   */
+  public Config copy() {
+    return new Config((DataFrame)super.clone());
+  }
+
+
+
+
+  /**
+   * Return the object value of the named field.
+   *
+   * @param name The name of the field containing the object to retrieve.
+   *
+   * @return The object value of the first occurrence of the named field or null 
+   *         if the field with the given name was not found.
+   */
+  @Override
+  public Object getObject(final String name) {
+    for (int i = 0; i < fields.size(); i++) {
+      final DataField field = fields.get(i);
+      if ((field.getName() != null) && field.getName().equals(name)) {
+        if (DataField.ARRAY == field.getType()) {
+          return getArrayFromFrame((DataFrame)field.getObjectValue());
+        } else if (DataField.FRAMETYPE == field.getType()) {
+          DataFrame frame = (DataFrame)field.getObjectValue();
+          if (frame.isArray()) {
+            return getArrayFromFrame(frame);
+          } else {
+            return frame;
+          }
+        } else {
+          return field.getObjectValue();
+        }
+      }
+    }
+    return null;
+  }
+
+
+
+
+  /**
+   * Return an array of the values from the given frame.
+   * 
+   * <p><strong>NOTE:</strong> The frame should either be an array {@code 
+   * DataFrame.isArray()} of be a frame of all the same type. The first field 
+   * is checked for the type of an array to create an return. If any of the 
+   * remaining fields differ in type, a ClassCastException will be thrown and 
+   * the data will be incomplete.</p>
+   * 
+   * @param frm the frame to convert into an array
+   * 
+   * @return an array of
+   */
+  private Object getArrayFromFrame(DataFrame frm) {
+    Object retval = new Object[0];
+
+    if (frm.getFieldCount() > 0) {
+      DataField fld = frm.getField(0); 
+      switch (fld.getType()) {
+        case DataField.STRING:
+          String[] sarray = new String[frm.getFieldCount()];
+          for (int x = 0; x < sarray.length; x++) {
+            sarray[x] = (String)frm.getObject(x);
+          }
+          retval = sarray;
+          break;
+        case DataField.UDEF:
+          Object[] narray = new Object[frm.getFieldCount()];
+          for (int x = 0; x < narray.length; x++) {
+            narray[x] = null;
+          }
+          retval = narray;
+          break;
+        case DataField.S8:
+        case DataField.BYTEARRAY:
+          byte[] barray = new byte[frm.getFieldCount()];
+          for (int x = 0; x < barray.length; x++) {
+            barray[x] = (byte)frm.getObject(x);
+          }
+          retval = barray;
+          break;
+        case DataField.U8:
+        case DataField.S16:
+          short[] sharray = new short[frm.getFieldCount()];
+          for (int x = 0; x < sharray.length; x++) {
+            sharray[x] = (short)frm.getObject(x);
+          }
+          retval = sharray;
+          break;
+        case DataField.U16:
+        case DataField.S32:
+          int[] iarray = new int[frm.getFieldCount()];
+          for (int x = 0; x < iarray.length; x++) {
+            iarray[x] = (int)frm.getObject(x);
+          }
+          retval = iarray;
+          break;
+        case DataField.U32:
+        case DataField.S64:
+          long[] larray = new long[frm.getFieldCount()];
+          for (int x = 0; x < larray.length; x++) {
+            larray[x] = (long)frm.getObject(x);
+          }
+          retval = larray;
+          break;
+        case DataField.U64:
+          BigInteger[] biarray = new BigInteger[frm.getFieldCount()];
+          for (int x = 0; x < biarray.length; x++) {
+            try {
+              biarray[x] = new BigInteger(frm.getAsString(x));
+            } catch (DataFrameException ignore) {
+              ignore.printStackTrace(); // should not happen
+            }
+          }
+          retval = biarray;
+          break;
+        case DataField.FLOAT:
+          float[] farray = new float[frm.getFieldCount()];
+          for (int x = 0; x < farray.length; x++) {
+            farray[x] = (float)frm.getObject(x);
+          }
+          retval = farray;
+          break;
+        case DataField.DOUBLE:
+          double[] darray = new double[frm.getFieldCount()];
+          for (int x = 0; x < darray.length; x++) {
+            darray[x] = (double)frm.getObject(x);
+          }
+          retval = darray;
+          break;
+        case DataField.BOOLEANTYPE:
+          boolean[] blarray = new boolean[frm.getFieldCount()];
+          for (int x = 0; x < blarray.length; x++) {
+            blarray[x] = (boolean)frm.getObject(x);
+          }
+          retval = blarray;
+          break;
+        case DataField.DATE:
+          Date[] dtarray = new Date[frm.getFieldCount()];
+          for (int x = 0; x < dtarray.length; x++) {
+            dtarray[x] = (Date)frm.getObject(x);
+          }
+          retval = dtarray;
+          break;
+        case DataField.URI:
+          URI[] uarray = new URI[frm.getFieldCount()];
+          for (int x = 0; x < uarray.length; x++) {
+            uarray[x] = (URI)frm.getObject(x);
+          }
+          retval = uarray;
+          break;
+        default:
+          Object[] oarray = new Object[frm.getFieldCount()];
+          for (int x = 0; x < oarray.length; x++) {
+            oarray[x] = frm.getObject(x);
+          }
+          retval = oarray;
+          break;
+      }
+    }
+    return retval;
+
   }
 
 }

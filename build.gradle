@@ -1,17 +1,29 @@
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3"
+  }
+}
+
+
 apply plugin: 'java'
 apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
 apply plugin: 'eclipse'
-apply plugin: 'idea'
 apply plugin: 'jacoco'
 
 
 defaultTasks 'clean', 'build', 'publish', 'fatJar'
 group = 'coyote'
-version = '1.1'
+version = '0.7.2'
 
 ext {
 	title = 'Coyote Loader Framework'
-	provider = 'Coyote Codeworks'
+	provider = 'Coyote Systems'
 	mainClass = 'coyote.loader.Loader'
 }
 jar {
@@ -39,14 +51,15 @@ task fatJar(type: Jar) {
 }
 
 repositories {
+	maven { url "https://dl.bintray.com/sdcote/maven" }
 	mavenLocal()
 	mavenCentral()
 }
 
 
 ext {
-	dataFrameVersion = '1.0'
-	junitVersion = '4.11'
+	dataFrameVersion = '1.0.1'
+	junitVersion = '4.12'
 	httpclientVersion = '4.5.3'
 }
 dependencies {
@@ -111,5 +124,20 @@ jacocoTestReport {
 check.dependsOn jacocoTestReport
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.14'
+    gradleVersion = '4.2'
 }
+
+bintray {
+	user = bintrayUser
+	key = bintrayKey
+	publications = ['mavenJava']
+	pkg {
+		repo = 'maven'
+		name = 'Loader'
+		desc = 'Component loader for 12+ factor apps, containers and cloud native components.'
+		licenses = ['MIT']
+		labels = ['Java', 'Component']
+		vcsUrl = 'https://github.com/sdcote/loader.git'
+	}
+}
+

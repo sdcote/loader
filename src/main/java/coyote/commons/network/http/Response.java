@@ -4,10 +4,8 @@
  * This program and the accompanying materials are made available under the 
  * terms of the MIT License which accompanies this distribution, and is 
  * available at http://creativecommons.org/licenses/MIT/
- *
- * Contributors:
- *   Stephan D. Cote 
  */
+
 package coyote.commons.network.http;
 
 import java.io.BufferedWriter;
@@ -213,7 +211,7 @@ public class Response implements Closeable {
 
     try {
       if ( status == null ) {
-        throw new Error( "sendResponse(): Status can't be null." );
+        throw new Error( "send(): Status can't be null." );
       }
       final PrintWriter pw = new PrintWriter( new BufferedWriter( new OutputStreamWriter( outputStream, new ContentType( mimeType ).getEncoding() ) ), false );
       pw.append( "HTTP/1.1 " ).append( status.getDescription() ).append( " \r\n" );

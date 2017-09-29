@@ -4,10 +4,8 @@
  * This program and the accompanying materials are made available under the 
  * terms of the MIT License which accompanies this distribution, and is 
  * available at http://creativecommons.org/licenses/MIT/
- *
- * Contributors:
- *   Stephan D. Cote 
  */
+
 package coyote.commons.network.http;
 
 /**
@@ -36,6 +34,9 @@ public enum Status implements IStatus {
   RANGE_NOT_SATISFIABLE( 416, "Requested Range Not Satisfiable"), 
   INTERNAL_ERROR( 500, "Internal Server Error"), 
   NOT_IMPLEMENTED( 501, "Not Implemented"), 
+  BAD_GATEWAY( 502, "Bad Gateway"), 
+  UNAVAILABLE( 503, "Service Unavailable"), 
+  GATEWAY_TIMEOUT( 504, "Gateway Timeout"), 
   UNSUPPORTED_HTTP_VERSION( 505, "HTTP Version Not Supported");
 
   private final int requestStatus;
