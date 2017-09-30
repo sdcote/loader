@@ -55,13 +55,13 @@ public class WebServer extends AbstractLoader {
   public static final String NAME = WebServer.class.getSimpleName();
 
   /** The default port on which this listens */
-  private static final int DEFAULT_PORT = 80;
+  protected static final int DEFAULT_PORT = 80;
 
   /** The port on which we should bind as specified from the command line - overrides all, even configuration file */
-  private int bindPort = -1;
+  protected int bindPort = -1;
 
   /** Our main server */
-  private HTTPDRouter server = null;
+  protected HTTPDRouter server = null;
 
   /** Server on a normal port which sends a redirect to our main server. (E.g., any http: requests are redirected to https:) */
   private HTTPD redirectServer = null;
@@ -70,25 +70,25 @@ public class WebServer extends AbstractLoader {
   public static final Version VERSION = new Version(0, 0, 3, Version.DEVELOPMENT);
 
   // the port on which this server listens, defaults to 80
-  private static final String PORT = "Port";
+  protected static final String PORT = "Port";
 
   // Perform a redirect for all requests to this port to the port on which we are listening. Normally set to 80 when the port is 443
-  private static final String REDIRECT_PORT = "RedirectPort";
+  protected static final String REDIRECT_PORT = "RedirectPort";
 
   // indicates SSL should be enabled; automatically enable when port=443
-  private static final String SECURESERVER = "SecureServer";
+  protected static final String SECURESERVER = "SecureServer";
 
-  private static final String ENABLE_ARM = "EnableARM";
-  private static final String ENABLE_GAUGES = "EnableGauges";
-  private static final String ENABLE_TIMING = "EnableTiming";
+  protected static final String ENABLE_ARM = "EnableARM";
+  protected static final String ENABLE_GAUGES = "EnableGauges";
+  protected static final String ENABLE_TIMING = "EnableTiming";
 
   // mapping attributes
-  private static final String MAPPINGS = "Mappings";
-  private static final String CLASS = "Class";
-  private static final String PRIORITY = "Priority";
+  protected static final String MAPPINGS = "Mappings";
+  protected static final String CLASS = "Class";
+  protected static final String PRIORITY = "Priority";
 
   // command line argument for the port on which we should bind
-  private static final String PORT_ARG = "-p";
+  protected static final String PORT_ARG = "-p";
 
 
 
