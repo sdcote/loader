@@ -192,6 +192,7 @@ public class MimeType {
     MIMES.add(new MimeType("gif", "image/gif", true));
     MIMES.add(new MimeType("gl", "video/gl", true));
     MIMES.add(new MimeType("gl", "video/x-gl", true));
+    MIMES.add(new MimeType("gradle", "text/plain", false));
     MIMES.add(new MimeType("gsd", "audio/x-gsm", true));
     MIMES.add(new MimeType("gsm", "audio/x-gsm", true));
     MIMES.add(new MimeType("gsp", "application/x-gsp", true));
@@ -314,6 +315,7 @@ public class MimeType {
     MIMES.add(new MimeType("mcf", "image/vasa", true));
     MIMES.add(new MimeType("mcf", "text/mcf", false));
     MIMES.add(new MimeType("mcp", "application/netmc", true));
+    MIMES.add(new MimeType("md", "text/plain", false));
     MIMES.add(new MimeType("mdb", "application/msaccess", true));
     MIMES.add(new MimeType("me", "application/x-troff-me", true));
     MIMES.add(new MimeType("mht", "message/rfc822", true));
@@ -444,6 +446,7 @@ public class MimeType {
     MIMES.add(new MimeType("ppt", "application/x-mspowerpoint", true));
     MIMES.add(new MimeType("ppz", "application/mspowerpoint", true));
     MIMES.add(new MimeType("pre", "application/x-freelance", true));
+    MIMES.add(new MimeType("properties", "text/plain", false));
     MIMES.add(new MimeType("prt", "application/pro_eng", true));
     MIMES.add(new MimeType("ps", "application/postscript", true));
     MIMES.add(new MimeType("psd", "application/octet-stream", true));
@@ -553,7 +556,6 @@ public class MimeType {
     MIMES.add(new MimeType("stp", "application/step", true));
     MIMES.add(new MimeType("sv4cpio", "application/x-sv4cpio", true));
     MIMES.add(new MimeType("sv4crc", "application/x-sv4crc", true));
-    MIMES.add(new MimeType("sv4crc", "application/x-sv4crc", true));
     MIMES.add(new MimeType("svf", "image/vnd.dwg", true));
     MIMES.add(new MimeType("svf", "image/x-dwg", true));
     MIMES.add(new MimeType("svr", "application/x-world", true));
@@ -622,6 +624,7 @@ public class MimeType {
     MIMES.add(new MimeType("vrt", "x-world/x-vrt", true));
     MIMES.add(new MimeType("vrt", "x-world/x-vrt", true));
     MIMES.add(new MimeType("vsd", "application/x-visio", true));
+    MIMES.add(new MimeType("vss", "application/x-visio", true));
     MIMES.add(new MimeType("vst", "application/x-visio", true));
     MIMES.add(new MimeType("vsw", "application/x-visio", true));
     MIMES.add(new MimeType("w60", "application/wordperfect6.0", true));
@@ -630,12 +633,10 @@ public class MimeType {
     MIMES.add(new MimeType("w6w", "application/msword", true));
     MIMES.add(new MimeType("wav", "audio/wav", true));
     MIMES.add(new MimeType("wav", "audio/x-wav", true));
-    MIMES.add(new MimeType("wav", "audio/x-wav", true));
     MIMES.add(new MimeType("wb1", "application/x-qpro", true));
     MIMES.add(new MimeType("wbmp", "image/vnd.wap.wbmp", true));
     MIMES.add(new MimeType("web", "application/vnd.xara", true));
     MIMES.add(new MimeType("webm", "video/webm", true));
-    MIMES.add(new MimeType("wiz", "application/msword", true));
     MIMES.add(new MimeType("wiz", "application/msword", true));
     MIMES.add(new MimeType("wk1", "application/x-123", true));
     MIMES.add(new MimeType("wmf", "windows/metafile", true));
@@ -646,7 +647,6 @@ public class MimeType {
     MIMES.add(new MimeType("word", "application/msword", true));
     MIMES.add(new MimeType("wp", "application/wordperfect", true));
     MIMES.add(new MimeType("wp5", "application/wordperfect", true));
-    MIMES.add(new MimeType("wp5", "application/wordperfect6.0", true));
     MIMES.add(new MimeType("wp6", "application/wordperfect", true));
     MIMES.add(new MimeType("wpd", "application/wordperfect", true));
     MIMES.add(new MimeType("wpd", "application/x-wpwin", true));
@@ -690,7 +690,6 @@ public class MimeType {
     MIMES.add(new MimeType("xlm", "application/excel", true));
     MIMES.add(new MimeType("xlm", "application/vnd.ms-excel", true));
     MIMES.add(new MimeType("xlm", "application/x-excel", true));
-    MIMES.add(new MimeType("xls", "application/excel", true));
     MIMES.add(new MimeType("xls", "application/excel", true));
     MIMES.add(new MimeType("xls", "application/msexcel", true));
     MIMES.add(new MimeType("xls", "application/vnd.ms-excel", true));
