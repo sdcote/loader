@@ -67,7 +67,7 @@ public class WebServer extends AbstractLoader {
   private HTTPD redirectServer = null;
 
   /** The version of this server. */
-  public static final Version VERSION = new Version(0, 0, 3, Version.DEVELOPMENT);
+  public static final Version VERSION = new Version(0, 0, 4, Version.DEVELOPMENT);
 
   // the port on which this server listens, defaults to 80
   protected static final String PORT = "Port";
@@ -318,7 +318,8 @@ public class WebServer extends AbstractLoader {
     // only start once, this is not foolproof as the active flag is set only
     // when the watchdog loop is entered
     if (!isActive()) {
-
+      Log.info("Listening on port: " + server.getPort());
+      Log.info("Access Control List: " + server.getIpAcl());
       Log.info("Running server with " + server.getMappings().size() + " mappings");
       try {
         server.start(HTTPD.SOCKET_READ_TIMEOUT, false);
