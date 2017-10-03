@@ -315,6 +315,18 @@ public class IpAcl {
 
 
   /**
+   * Returns the number of rules in this access control list.
+   * 
+   * @return the number of rules in this list
+   */
+  public synchronized int size() {
+    return acl.size();
+  }
+
+
+
+
+  /**
    * @return Human readable representation of the ACL
    */
   @Override
