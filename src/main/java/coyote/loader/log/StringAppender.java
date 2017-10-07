@@ -18,7 +18,7 @@ import coyote.commons.StringUtil;
  * and defines event() to write the event to a Writer.
  */
 public class StringAppender extends AbstractLogger {
-  StringBuffer buffer = new StringBuffer();
+  private StringBuffer buffer = new StringBuffer();
 
 
 
