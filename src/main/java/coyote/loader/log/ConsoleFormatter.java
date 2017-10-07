@@ -18,11 +18,6 @@ import coyote.commons.StringUtil;
  */
 public class ConsoleFormatter implements Formatter {
 
-  private static int stackDepth = 6;
-
-
-
-
   /**
    *
    */
@@ -50,7 +45,7 @@ public class ConsoleFormatter implements Formatter {
     if (Log.TRACE.equals(category) || Log.DEBUG.equals(category)) {
       final StackTraceElement[] stack = new Exception().fillInStackTrace().getStackTrace();
 
-      final StackTraceElement elem = stack[(stack.length <= stackDepth) ? stack.length - 1 : stackDepth];
+      final StackTraceElement elem = stack[(stack.length <= Log.getStackDepth()) ? stack.length - 1 : Log.getStackDepth()];
 
       buffer.append(ExceptionUtil.getAbbreviatedClassname(elem.getClassName()));
       buffer.append(".");

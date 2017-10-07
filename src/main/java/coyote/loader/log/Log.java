@@ -66,19 +66,19 @@ public final class Log {
   public static final String FATAL = "FATAL";
 
   /** The category mask for the TRACE category. */
-  public static final long TRACE_EVENTS = LogKernel.getCode( Log.TRACE );
+  public static final long TRACE_EVENTS = LogKernel.getCode(Log.TRACE);
   /** The category mask for the DEBUG category. */
-  public static final long DEBUG_EVENTS = LogKernel.getCode( Log.DEBUG );
+  public static final long DEBUG_EVENTS = LogKernel.getCode(Log.DEBUG);
   /** The category mask for the INFO category. */
-  public static final long INFO_EVENTS = LogKernel.getCode( Log.INFO );
+  public static final long INFO_EVENTS = LogKernel.getCode(Log.INFO);
   /** The category mask for the NOTICE category. */
-  public static final long NOTICE_EVENTS = LogKernel.getCode( Log.NOTICE );
+  public static final long NOTICE_EVENTS = LogKernel.getCode(Log.NOTICE);
   /** The category mask for the WARN category. */
-  public static final long WARN_EVENTS = LogKernel.getCode( Log.WARN );
+  public static final long WARN_EVENTS = LogKernel.getCode(Log.WARN);
   /** The category mask for the ERROR category. */
-  public static final long ERROR_EVENTS = LogKernel.getCode( Log.ERROR );
+  public static final long ERROR_EVENTS = LogKernel.getCode(Log.ERROR);
   /** The category mask for the FATAL category. */
-  public static final long FATAL_EVENTS = LogKernel.getCode( Log.FATAL );
+  public static final long FATAL_EVENTS = LogKernel.getCode(Log.FATAL);
   /** The category mask for all the events. */
   public static final long ALL_EVENTS = -1L;
 
@@ -88,10 +88,39 @@ public final class Log {
    */
   public static final String DEFAULT_LOGGER_NAME = "default";
 
+  /** the number of stack calls to skip to find where messages originate. */
+  private static volatile int stackDepth = 5;
+
   static {
     // are the only logging framework
-    LogKernel.addLogger( LogKernel.DEFAULT_LOGGER_NAME, new NullAppender( Log.INFO_EVENTS | Log.NOTICE_EVENTS | Log.WARN_EVENTS | Log.ERROR_EVENTS | Log.FATAL_EVENTS ) );
+    LogKernel.addLogger(LogKernel.DEFAULT_LOGGER_NAME, new NullAppender(Log.INFO_EVENTS | Log.NOTICE_EVENTS | Log.WARN_EVENTS | Log.ERROR_EVENTS | Log.FATAL_EVENTS));
   } // static initializer
+
+
+
+
+  /**
+   * Access how deep formatters should go into the stack to find the actual 
+   * source of the event.
+   * 
+   * @return the number of stack calls to skip to find where messages originate.
+   */
+  public static int getStackDepth() {
+    return stackDepth;
+  }
+
+
+
+
+  /**
+   * Set how deep frometters should go into the stack to locate the actual 
+   * source of the event.
+   * 
+   * @param depth the number of stack calls to skip to find where messages originate.
+   */
+  public static void setStackDepth(int depth) {
+    Log.stackDepth = depth;
+  }
 
 
 
@@ -104,13 +133,13 @@ public final class Log {
    * @return <code>true</code> if the String is not empty and not null and not
    *         whitespace
    */
-  public static boolean isBlank( String str ) {
+  public static boolean isBlank(String str) {
     int strLen;
-    if ( str == null || ( strLen = str.length() ) == 0 ) {
+    if (str == null || (strLen = str.length()) == 0) {
       return true;
     }
-    for ( int i = 0; i < strLen; i++ ) {
-      if ( ( Character.isWhitespace( str.charAt( i ) ) == false ) ) {
+    for (int i = 0; i < strLen; i++) {
+      if ((Character.isWhitespace(str.charAt(i)) == false)) {
         return false;
       }
     }
@@ -126,8 +155,8 @@ public final class Log {
    * @param name The name of the logger.
    * @param logger The logger to add.
    */
-  public synchronized static void addLogger( final String name, final Logger logger ) {
-    LogKernel.addLogger( name, logger );
+  public synchronized static void addLogger(final String name, final Logger logger) {
+    LogKernel.addLogger(name, logger);
   }
 
 
@@ -139,8 +168,8 @@ public final class Log {
    * @param category The category of the desired log operation 
    * @param event The event to log.
    */
-  public static void append( final long category, final Object event ) {
-    LogKernel.append( category, event, null );
+  public static void append(final long category, final Object event) {
+    LogKernel.append(category, event, null);
   }
 
 
@@ -154,8 +183,8 @@ public final class Log {
    * @param event The event to log.
    * @param cause The cause of the event.
    */
-  public synchronized static void append( final long code, final Object event, final Throwable cause ) {
-    LogKernel.append( code, event, cause );
+  public synchronized static void append(final long code, final Object event, final Throwable cause) {
+    LogKernel.append(code, event, cause);
   }
 
 
@@ -166,8 +195,8 @@ public final class Log {
    *
    * @param event The event to log.
    */
-  public static void append( final Object event ) {
-    LogKernel.append( Log.INFO_EVENTS, event, null );
+  public static void append(final Object event) {
+    LogKernel.append(Log.INFO_EVENTS, event, null);
   }
 
 
@@ -180,8 +209,8 @@ public final class Log {
    * @param category The category of the desired log operation 
    * @param event The event to log.
    */
-  public synchronized static void append( final String category, final Object event ) {
-    LogKernel.append( category, event, null );
+  public synchronized static void append(final String category, final Object event) {
+    LogKernel.append(category, event, null);
   }
 
 
@@ -195,8 +224,8 @@ public final class Log {
    * @param event The event to log.
    * @param cause The exception that caused the log entry. Can be null.
    */
-  public synchronized static void append( final String category, final Object event, final Throwable cause ) {
-    LogKernel.append( Log.getCode( category ), event, null );
+  public synchronized static void append(final String category, final Object event, final Throwable cause) {
+    LogKernel.append(Log.getCode(category), event, null);
   }
 
 
@@ -209,8 +238,8 @@ public final class Log {
    *
    * @param event The event to log
    */
-  public static void debug( final Object event ) {
-    Log.append( Log.DEBUG_EVENTS, event, null );
+  public static void debug(final Object event) {
+    Log.append(Log.DEBUG_EVENTS, event, null);
   }
 
 
@@ -224,8 +253,8 @@ public final class Log {
    * @param event The event to log
    * @param cause The cause of the event.
    */
-  public static void debug( final Object event, final Throwable cause ) {
-    Log.append( Log.DEBUG_EVENTS, event, cause );
+  public static void debug(final Object event, final Throwable cause) {
+    Log.append(Log.DEBUG_EVENTS, event, cause);
   }
 
 
@@ -242,8 +271,8 @@ public final class Log {
    * 
    * @see #enableLogger(String)
    */
-  public static synchronized void disableLogger( final String name ) {
-    LogKernel.disableLogger( name );
+  public static synchronized void disableLogger(final String name) {
+    LogKernel.disableLogger(name);
   }
 
 
@@ -259,8 +288,8 @@ public final class Log {
    * 
    * @see #disableLogger(String)
    */
-  public static synchronized void enableLogger( final String name ) {
-    LogKernel.enableLogger( name );
+  public static synchronized void enableLogger(final String name) {
+    LogKernel.enableLogger(name);
   }
 
 
@@ -273,8 +302,8 @@ public final class Log {
    *
    * @param event
    */
-  public static void error( final Object event ) {
-    Log.append( Log.ERROR_EVENTS, event, null );
+  public static void error(final Object event) {
+    Log.append(Log.ERROR_EVENTS, event, null);
   }
 
 
@@ -288,8 +317,8 @@ public final class Log {
    * @param event The event to log
    * @param cause The cause of the event.
    */
-  public static void error( final Object event, final Throwable cause ) {
-    Log.append( Log.ERROR_EVENTS, event, cause );
+  public static void error(final Object event, final Throwable cause) {
+    Log.append(Log.ERROR_EVENTS, event, cause);
   }
 
 
@@ -302,8 +331,8 @@ public final class Log {
    *
    * @param event
    */
-  public static void fatal( final Object event ) {
-    Log.append( Log.FATAL_EVENTS, event, null );
+  public static void fatal(final Object event) {
+    Log.append(Log.FATAL_EVENTS, event, null);
   }
 
 
@@ -317,8 +346,8 @@ public final class Log {
    * @param event The event to log
    * @param cause The cause of the event.
    */
-  public static void fatal( final Object event, final Throwable cause ) {
-    Log.append( Log.FATAL_EVENTS, event, cause );
+  public static void fatal(final Object event, final Throwable cause) {
+    Log.append(Log.FATAL_EVENTS, event, cause);
   }
 
 
@@ -329,8 +358,8 @@ public final class Log {
    * 
    * @return The category associated with the specified code.
    */
-  public synchronized static String getCategory( final long code ) {
-    return LogKernel.codeToString.get( new Long( code ) );
+  public synchronized static String getCategory(final long code) {
+    return LogKernel.codeToString.get(new Long(code));
   }
 
 
@@ -366,8 +395,8 @@ public final class Log {
    *
    * @return The code for the given category.
    */
-  public static synchronized long getCode( final String category ) {
-    return LogKernel.getCode( category );
+  public static synchronized long getCode(final String category) {
+    return LogKernel.getCode(category);
   }
 
 
@@ -406,8 +435,8 @@ public final class Log {
    *
    * @return The reference to the Logger object with the given name.
    */
-  public synchronized static Logger getLogger( final String name ) {
-    return LogKernel.getLogger( name );
+  public synchronized static Logger getLogger(final String name) {
+    return LogKernel.getLogger(name);
   }
 
 
@@ -454,8 +483,8 @@ public final class Log {
    *
    * @param event
    */
-  public static void info( final Object event ) {
-    Log.append( Log.INFO_EVENTS, event, null );
+  public static void info(final Object event) {
+    Log.append(Log.INFO_EVENTS, event, null);
   }
 
 
@@ -469,8 +498,8 @@ public final class Log {
    * @param event The event to log
    * @param cause The cause of the event.
    */
-  public static void info( final Object event, final Throwable cause ) {
-    Log.append( Log.INFO_EVENTS, event, cause );
+  public static void info(final Object event, final Throwable cause) {
+    Log.append(Log.INFO_EVENTS, event, cause);
   }
 
 
@@ -483,8 +512,8 @@ public final class Log {
    *
    * @param event
    */
-  public static void notice( final Object event ) {
-    Log.append( Log.NOTICE_EVENTS, event, null );
+  public static void notice(final Object event) {
+    Log.append(Log.NOTICE_EVENTS, event, null);
   }
 
 
@@ -498,8 +527,8 @@ public final class Log {
    * @param event The event to log
    * @param cause The cause of the event.
    */
-  public static void notice( final Object event, final Throwable cause ) {
-    Log.append( Log.NOTICE_EVENTS, event, cause );
+  public static void notice(final Object event, final Throwable cause) {
+    Log.append(Log.NOTICE_EVENTS, event, cause);
   }
 
 
@@ -517,8 +546,8 @@ public final class Log {
    * @return true if at least one of the loggers is logging a category defined
    *         by the mask false otherwise
    */
-  public static boolean isLogging( final long mask ) {
-    return LogKernel.isLogging( mask );
+  public static boolean isLogging(final long mask) {
+    return LogKernel.isLogging(mask);
   }
 
 
@@ -533,8 +562,8 @@ public final class Log {
    * @return true if at least one of the loggers is logging a category defined
    *         by the mask false otherwise
    */
-  public static boolean isLogging( final String category ) {
-    return LogKernel.isLogging( category );
+  public static boolean isLogging(final String category) {
+    return LogKernel.isLogging(category);
   }
 
 
@@ -547,8 +576,8 @@ public final class Log {
    * 
    * @return True if the logger is tagged as permanent, false otherwise.
    */
-  public static boolean isPermanent( final String name ) {
-    return LogKernel.isPermanent( name );
+  public static boolean isPermanent(final String name) {
+    return LogKernel.isPermanent(name);
   }
 
 
@@ -567,8 +596,8 @@ public final class Log {
    * 
    * @param name The name to ignore on any remove request.
    */
-  public static void makeLoggerPermanent( final String name ) {
-    LogKernel.makeLoggerPermanent( name );
+  public static void makeLoggerPermanent(final String name) {
+    LogKernel.makeLoggerPermanent(name);
   }
 
 
@@ -597,8 +626,8 @@ public final class Log {
    *
    * @param name The name of the logger.
    */
-  public static synchronized void removeLogger( final String name ) {
-    LogKernel.removeLogger( name );
+  public static synchronized void removeLogger(final String name) {
+    LogKernel.removeLogger(name);
   }
 
 
@@ -619,8 +648,8 @@ public final class Log {
    *
    * @param mask The mask to set to all loggers in the collection.
    */
-  public static synchronized void setMask( final long mask ) {
-    LogKernel.setMask( mask );
+  public static synchronized void setMask(final long mask) {
+    LogKernel.setMask(mask);
   }
 
 
@@ -631,8 +660,8 @@ public final class Log {
    *
    * @param category The category.
    */
-  public synchronized static void startLogging( final String category ) {
-    LogKernel.startLogging( category );
+  public synchronized static void startLogging(final String category) {
+    LogKernel.startLogging(category);
   }
 
 
@@ -643,8 +672,8 @@ public final class Log {
    *
    * @param category The category.
    */
-  public synchronized static void stopLogging( final String category ) {
-    LogKernel.stopLogging( category );
+  public synchronized static void stopLogging(final String category) {
+    LogKernel.stopLogging(category);
   }
 
 
@@ -657,8 +686,8 @@ public final class Log {
    *
    * @param event
    */
-  public static void trace( final Object event ) {
-    Log.append( Log.TRACE_EVENTS, event, null );
+  public static void trace(final Object event) {
+    Log.append(Log.TRACE_EVENTS, event, null);
   }
 
 
@@ -672,8 +701,8 @@ public final class Log {
    * @param event The event to log
    * @param cause The cause of the event.
    */
-  public static void trace( final Object event, final Throwable cause ) {
-    Log.append( Log.TRACE_EVENTS, event, cause );
+  public static void trace(final Object event, final Throwable cause) {
+    Log.append(Log.TRACE_EVENTS, event, cause);
   }
 
 
@@ -686,8 +715,8 @@ public final class Log {
    *
    * @param event
    */
-  public static void warn( final Object event ) {
-    Log.append( Log.WARN_EVENTS, event, null );
+  public static void warn(final Object event) {
+    Log.append(Log.WARN_EVENTS, event, null);
   }
 
 
@@ -701,8 +730,8 @@ public final class Log {
    * @param event The event to log
    * @param cause The cause of the event.
    */
-  public static void warn( final Object event, final Throwable cause ) {
-    Log.append( Log.WARN_EVENTS, event, cause );
+  public static void warn(final Object event, final Throwable cause) {
+    Log.append(Log.WARN_EVENTS, event, cause);
   }
 
 
