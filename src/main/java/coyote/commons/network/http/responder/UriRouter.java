@@ -5,7 +5,6 @@
  * terms of the MIT License which accompanies this distribution, and is
  * available at http://creativecommons.org/licenses/MIT/
  */
-
 package coyote.commons.network.http.responder;
 
 import java.util.ArrayList;
@@ -91,9 +90,9 @@ public class UriRouter {
 
     if (Log.isLogging(HTTPD.EVENT)) {
       if (error404Url == retval) {
-        Log.append(HTTPD.EVENT, "No responder defined for '" + request + "' from " + session.getRemoteIpAddress() + ":" + session.getRemoteIpPort());
+        Log.append(HTTPD.EVENT, "No route mapped to handle request for '" + request + "' from " + session.getRemoteIpAddress() + ":" + session.getRemoteIpPort() + " - method:" + session.getMethod());
       } else {
-        Log.append(HTTPD.EVENT, "Resource '" + retval + "' servicing '" + session.getMethod() + "' request for '" + request + "' from " + session.getRemoteIpAddress() + ":" + session.getRemoteIpPort());
+        Log.append(HTTPD.EVENT, session.getMethod() + " request for '" + request + "' from " + session.getRemoteIpAddress() + ":" + session.getRemoteIpPort() + " handled by resource : " + retval);
       }
     }
     // Have the found (or default 404) URI resource process the session
