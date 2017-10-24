@@ -165,7 +165,7 @@ public class ResourceResponder extends DefaultResponder {
 
   @Override
   public String getText() {
-    return Status.INTERNAL_ERROR.getDescription(); // this should never be called
+    return Status.INTERNAL_ERROR.toString(); // this should never be called
   }
 
 

@@ -214,7 +214,7 @@ public class Response implements Closeable {
         throw new Error( "send(): Status can't be null." );
       }
       final PrintWriter pw = new PrintWriter( new BufferedWriter( new OutputStreamWriter( outputStream, new ContentType( mimeType ).getEncoding() ) ), false );
-      pw.append( "HTTP/1.1 " ).append( status.getDescription() ).append( " \r\n" );
+      pw.append( "HTTP/1.1 " ).append( status.toString() ).append( " \r\n" );
       if ( mimeType != null ) {
         printHeader( pw, HTTP.HDR_CONTENT_TYPE, mimeType );
       }
