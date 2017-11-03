@@ -8,6 +8,7 @@
 
 package coyote.commons.network.http.auth;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -22,6 +23,8 @@ import coyote.commons.StringUtil;
 import coyote.commons.network.http.HTTP;
 import coyote.commons.network.http.HTTPD;
 import coyote.commons.network.http.IHTTPSession;
+import coyote.commons.network.http.SessionManager;
+import coyote.commons.network.http.SessionProfile;
 import coyote.dataframe.DataField;
 import coyote.dataframe.DataFrame;
 import coyote.dataframe.DataFrameException;
@@ -53,6 +56,8 @@ public class GenericAuthProvider implements AuthProvider {
   public static final String USER_SECTION = "Users";
   private static final String MD5 = "MD5";
   private static final String UTF8 = "UTF8";
+  private static final String USERNAME = "UserName";
+  private static final String USERGROUPS = "UserGroups";
 
   public final List<User> userList = new ArrayList<User>();
   private boolean allowNoSSL = false;
@@ -120,6 +125,11 @@ public class GenericAuthProvider implements AuthProvider {
    */
   @Override
   public boolean isAuthenticated(final IHTTPSession session) {
+    boolean retval = false;
+
+    // Make sure there is a session assigned to this request
+    SessionProfile profile = SessionManager.retrieveOrCreate(session.getCookies());
+    retval = setUserData(profile, session);
 
     // all headers are stored in lower case since browsers use different case
     final String authHeader = session.getRequestHeaders().get(HTTP.HDR_AUTHORIZATION.toLowerCase());
@@ -164,7 +174,12 @@ public class GenericAuthProvider implements AuthProvider {
                     // add the user and groups to the session
                     session.setUserName(user.getName());
                     session.setUserGroups(user.getGroups());
-                    return true;
+                    // ... and the profile so we can cache authenticated user name and groups
+                    if (profile != null) {
+                      profile.set(USERNAME, user.getName());
+                      profile.set(USERGROUPS, user.getGroups().toArray(new String[0]));
+                    }
+                    retval = true;
                   }
                 } catch (final UnsupportedEncodingException e) {
                   e.printStackTrace(); // should never happen, tested in static init
@@ -183,12 +198,43 @@ public class GenericAuthProvider implements AuthProvider {
       }
     }
 
-    if (sendAuthRequest) {
-      session.getResponseHeaders().put(HTTP.HDR_WWW_AUTHENTICATE, HTTP.BASIC + " realm=\"Generic Realm\"");
+    if (!retval && sendAuthRequest) {
+      session.getResponseHeaders().put(HTTP.HDR_WWW_AUTHENTICATE, HTTP.BASIC + " realm=\"HTTP Server\"");
     }
 
-    return false;
+    return retval;
+  }
 
+
+
+
+  /**
+   * Copy the user and groups data from the current session profile to the 
+   * HTTP session.
+   * 
+   * @param profile the profile retrieved from the session cookie
+   * @param session the session to contain the username and groups
+   * 
+   * @return true if there is a username associated with the given profile, 
+   *         false if there is no authenticated user data.
+   */
+  private boolean setUserData(SessionProfile profile, IHTTPSession session) {
+    boolean retval = false;
+    if (profile != null && session != null) {
+      Serializable object = profile.get(USERNAME);
+      if (object != null && object instanceof String) {
+        session.setUserName((String)object);
+        if (StringUtil.isNotBlank(session.getUserName())) {
+          retval = true;
+        }
+      }
+
+      object = profile.get(USERGROUPS);
+      if (object != null && object instanceof String[]) {
+        session.setUserGroups(Arrays.asList((String[])object));
+      }
+    }
+    return retval;
   }
 
 

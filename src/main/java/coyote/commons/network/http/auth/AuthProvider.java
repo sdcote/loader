@@ -12,8 +12,14 @@ import coyote.commons.network.http.IHTTPSession;
 
 
 /**
- * Interface to a component capable of prodisinf authentication (AuthN) and
+ * Interface to a component capable of providing authentication (AuthN) and
  * authorization (AuthZ) processing.
+ * 
+ * <p>The process normally involves checking if the connection is secure (e.g. 
+ * SSL) if the resource is annotated to only require secure connections. Next 
+ * the provider is called to check authentication and establish the username 
+ * and groups for the request. Finally, authorization is performed by checking 
+ * if the session is a member of one of the given set of groups.   
  */
 public interface AuthProvider {
 
