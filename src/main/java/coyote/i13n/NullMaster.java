@@ -17,16 +17,6 @@ package coyote.i13n;
 public class NullMaster implements TimerMaster {
 
   /**
-   * @param args
-   */
-  public static void main( final String[] args ) {
-
-  }
-
-
-
-
-  /**
    * @return The name of this timer set.
    */
   @Override
@@ -38,18 +28,24 @@ public class NullMaster implements TimerMaster {
 
 
   @Override
-  public void increase( final long value ) {}
+  public void increase(final long value) {
+    // no-op implementation
+  }
 
 
 
 
   @Override
-  public void start( final Timer mon ) {}
+  public void start(final Timer mon) {
+    // no-op implementation
+  }
 
 
 
 
   @Override
-  public void stop( final Timer mon ) {}
+  public void stop(final Timer mon) {
+    // no-op implementation
+  }
 
 }

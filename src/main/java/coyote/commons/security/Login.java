@@ -32,24 +32,16 @@ import java.util.List;
 public class Login extends PermissionEnabledSubject {
 
   /** The credentials used to authenticate this login */
-  CredentialSet credentials;
+  protected CredentialSet credentials;
 
   /** This logins identifier */
-  String id;
+  protected String id;
 
   /** The principal (entity) of this login. */
-  SecurityPrincipal principal;
+  protected SecurityPrincipal principal;
 
   /** A map of role names this login assumes. */
-  Hashtable<String, Role> roles = new Hashtable<String, Role>();
-
-
-
-
-  /**
-   * Constructor Login
-   */
-  public Login() {}
+  protected Hashtable<String, Role> roles = new Hashtable<String, Role>();
 
 
 

@@ -20,13 +20,13 @@ import coyote.commons.network.http.wsd.WebSocketFrame.OpCode;
 public abstract class WebSocket {
 
   private final List<WebSocketFrame> continuousFrames = new LinkedList<WebSocketFrame>();
-
   private WebSocketFrame.OpCode continuousOpCode = null;
-
   private final IHTTPSession handshakeRequest;
+  private final InputStream in;
+  private OutputStream out;
+  private State state = State.UNCONNECTED;
 
   private final Response handshakeResponse = new Response(Status.SWITCH_PROTOCOL, null, (InputStream)null, 0) {
-
     @Override
     protected void send(final OutputStream out) {
       WebSocket.this.out = out;
@@ -38,19 +38,12 @@ public abstract class WebSocket {
     }
   };
 
-  private final InputStream in;
-
-  private OutputStream out;
-
-  private State state = State.UNCONNECTED;
-
 
 
 
   public WebSocket(final IHTTPSession handshakeRequest) {
     this.handshakeRequest = handshakeRequest;
     in = handshakeRequest.getInputStream();
-
     handshakeResponse.addHeader(WebSocketDaemon.HEADER_UPGRADE, WebSocketDaemon.HEADER_UPGRADE_VALUE);
     handshakeResponse.addHeader(WebSocketDaemon.HEADER_CONNECTION, WebSocketDaemon.HEADER_CONNECTION_VALUE);
   }
@@ -222,8 +215,7 @@ public abstract class WebSocket {
       if (e instanceof WebSocketException) {
         doClose(((WebSocketException)e).getCode(), ((WebSocketException)e).getReason(), false);
       }
-    }
-    finally {
+    } finally {
       doClose(CloseCode.InternalServerError, "Responder terminated without closing the connection.", false);
     }
   }
@@ -236,7 +228,9 @@ public abstract class WebSocket {
    *
    * @param frame The received WebSocket Frame.
    */
-  protected void debugFrameReceived(final WebSocketFrame frame) {}
+  protected void debugFrameReceived(final WebSocketFrame frame) {
+    // used only for debugging
+  }
 
 
 
@@ -247,7 +241,9 @@ public abstract class WebSocket {
    *
    * @param frame The sent WebSocket Frame.
    */
-  protected void debugFrameSent(final WebSocketFrame frame) {}
+  protected void debugFrameSent(final WebSocketFrame frame) {
+    // used only for debugging
+  }
 
 
 

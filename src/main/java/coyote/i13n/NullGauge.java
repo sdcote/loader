@@ -146,7 +146,9 @@ public class NullGauge implements Gauge {
    * @see coyote.i13n.Gauge#reset()
    */
   @Override
-  public void reset() {}
+  public void reset() {
+    // no-op implementation
+  }
 
 
 
@@ -157,7 +159,9 @@ public class NullGauge implements Gauge {
    * @see coyote.i13n.Gauge#update(long)
    */
   @Override
-  public void update( final long val ) {}
+  public void update( final long val ) {
+    // no-op implementation
+  }
 
 
 

@@ -53,6 +53,12 @@ public class Config extends DataFrame implements Cloneable, Serializable {
   /** Serialization identifier */
   private static final long serialVersionUID = -6020161245846637528L;
 
+  /**
+   * A collection of ConfigSlots we use to optionally validate the completeness
+   * of the Config object or to provide default configurations.
+   */
+  private HashMap<String, ConfigSlot> slots = null;
+
 
 
 
@@ -165,12 +171,6 @@ public class Config extends DataFrame implements Cloneable, Serializable {
       return Config.read(new FileInputStream(uri.toString()));
     }
   }
-
-  /**
-   * A collection of ConfigSlots we use to optionally validate the completeness
-   * of the Config object or to provide default configurations.
-   */
-  private HashMap<String, ConfigSlot> slots = null;
 
 
 
@@ -713,7 +713,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
     Object retval = new Object[0];
 
     if (frm.getFieldCount() > 0) {
-      DataField fld = frm.getField(0); 
+      DataField fld = frm.getField(0);
       switch (fld.getType()) {
         case DataField.STRING:
           String[] sarray = new String[frm.getFieldCount()];

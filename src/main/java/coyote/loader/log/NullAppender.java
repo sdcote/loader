@@ -20,20 +20,14 @@ import java.io.Writer;
 public class NullAppender extends AbstractLogger {
 
   /**
-   * Constructor ConsoleAppender
-   */
-  public NullAppender() {}
-
-
-
-
-  /**
    * Construct a WriterLogger that writes to the specified writer with
    * an initial mask value of zero (i.e. does not log any events).
    *
    * @param writer The writer.
    */
-  public NullAppender( final Writer writer ) {}
+  public NullAppender(final Writer writer) {
+    // no-op implementation
+  }
 
 
 
@@ -44,7 +38,9 @@ public class NullAppender extends AbstractLogger {
    *
    * @param mask The initial mask value.
    */
-  public NullAppender( final long mask ) {}
+  public NullAppender(final long mask) {
+    // no-op implementation
+  }
 
 
 
@@ -56,8 +52,8 @@ public class NullAppender extends AbstractLogger {
    * @param writer The writer.
    * @param mask The initial mask value.
    */
-  public NullAppender( final Writer writer, final long mask ) {
-    super( mask );
+  public NullAppender(final Writer writer, final long mask) {
+    super(mask);
   }
 
 
@@ -66,7 +62,9 @@ public class NullAppender extends AbstractLogger {
   /**
    * Initialize the logger.
    */
-  public void initialize() {}
+  public void initialize() {
+    // no-op implementation
+  }
 
 
 
@@ -74,7 +72,9 @@ public class NullAppender extends AbstractLogger {
   /**
    * Terminates the logger.
    */
-  public void terminate() {}
+  public void terminate() {
+    // no-op implementation
+  }
 
 
 
@@ -89,6 +89,8 @@ public class NullAppender extends AbstractLogger {
    * @param event The event.
    * @param cause The exception that caused the log entry. Can be null.
    */
-  public void append( final String category, final Object event, final Throwable cause ) {}
+  public void append(final String category, final Object event, final Throwable cause) {
+    // no-op implementation
+  }
 
 }

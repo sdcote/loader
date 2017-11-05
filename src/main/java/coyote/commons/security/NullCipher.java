@@ -20,16 +20,6 @@ public class NullCipher extends AbstractCipher implements Cipher {
 
 
   /**
-   * Standard no-arg constructor.
-   */
-  public NullCipher() {
-    super();
-  }
-
-
-
-
-  /**
    * Returns the data passed to this method.
    *
    * @param data The data to ignore.

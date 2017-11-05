@@ -32,15 +32,15 @@ public class SimpleMetric {
 
 
 
-  public SimpleMetric( final String name ) {
+  public SimpleMetric(final String name) {
     this.name = name;
   }
 
 
 
 
-  public SimpleMetric( final String name, final String units ) {
-    this( name );
+  public SimpleMetric(final String name, final String units) {
+    this(name);
     this.units = units;
   }
 
@@ -49,7 +49,7 @@ public class SimpleMetric {
 
   @Override
   public Object clone() {
-    final SimpleMetric retval = new SimpleMetric( name );
+    final SimpleMetric retval = new SimpleMetric(name);
     retval.units = units;
     retval.minValue = minValue;
     retval.maxValue = maxValue;
@@ -62,17 +62,17 @@ public class SimpleMetric {
 
 
 
-  private String convertToString( final long value ) {
+  private String convertToString(final long value) {
     final DecimalFormat numberFormat = (DecimalFormat)NumberFormat.getNumberInstance();
-    numberFormat.applyPattern( "#,###,###,###,###,###,###" );
-    return numberFormat.format( value );
+    numberFormat.applyPattern("#,###,###,###,###,###,###");
+    return numberFormat.format(value);
   }
 
 
 
 
   private long getAverage() {
-    if ( samples == 0 ) {
+    if (samples == 0) {
       return 0L;
     }
     return total / samples;
@@ -82,7 +82,7 @@ public class SimpleMetric {
 
 
   public long getAvgValue() {
-    synchronized( name ) {
+    synchronized (name) {
       return getAverage();
     }
   }
@@ -90,7 +90,7 @@ public class SimpleMetric {
 
 
 
-  protected String getDisplayString( final String type, final String value, final String units ) {
+  protected String getDisplayString(final String type, final String value, final String units) {
     return type + "=" + value + " " + units + " ";
   }
 
@@ -98,7 +98,7 @@ public class SimpleMetric {
 
 
   public long getMaxValue() {
-    synchronized( name ) {
+    synchronized (name) {
       return maxValue;
     }
   }
@@ -107,7 +107,7 @@ public class SimpleMetric {
 
 
   public long getMinValue() {
-    synchronized( name ) {
+    synchronized (name) {
       return minValue;
     }
   }
@@ -131,12 +131,12 @@ public class SimpleMetric {
 
   public long getStandardDeviation() {
     long stdDeviation = 0L;
-    if ( samples != 0 ) {
+    if (samples != 0) {
       final long sumOfX = total;
       final int n = samples;
       final int nMinus1 = n <= 1 ? 1 : n - 1;
-      final long numerator = sumOfSquares - ( ( sumOfX * sumOfX ) / n );
-      stdDeviation = (long)Math.sqrt( numerator / nMinus1 );
+      final long numerator = sumOfSquares - ((sumOfX * sumOfX) / n);
+      stdDeviation = (long)Math.sqrt(numerator / nMinus1);
     }
     return stdDeviation;
   }
@@ -159,7 +159,7 @@ public class SimpleMetric {
 
 
   public Metric reset() {
-    synchronized( name ) {
+    synchronized (name) {
       final Metric retval = (Metric)clone();
       minValue = 0L;
       maxValue = 0L;
@@ -173,12 +173,12 @@ public class SimpleMetric {
 
 
 
-  public synchronized void sample( final long value ) {
+  public synchronized void sample(final long value) {
     samples += 1;
-    if ( value < minValue ) {
+    if (value < minValue) {
       minValue = value;
     }
-    if ( value > maxValue ) {
+    if (value > maxValue) {
       maxValue = value;
     }
     total += value;
@@ -188,15 +188,15 @@ public class SimpleMetric {
 
 
 
-  void setName( final String name ) {
+  protected void setName(final String name) {
     this.name = name;
   }
 
 
 
 
-  public void setUnits( final String units ) {
-    synchronized( name ) {
+  public void setUnits(final String units) {
+    synchronized (name) {
       this.units = units;
     }
   }
@@ -206,15 +206,15 @@ public class SimpleMetric {
 
   @Override
   public String toString() {
-    final StringBuffer message = new StringBuffer( name );
-    message.append( ": " );
-    message.append( getDisplayString( "Samples", convertToString( samples ), "" ) );
-    if ( samples > 0 ) {
-      message.append( getDisplayString( "Avg", convertToString( getAverage() ), units ) );
-      message.append( getDisplayString( "Total", convertToString( total ), units ) );
-      message.append( getDisplayString( "Std Dev", convertToString( getStandardDeviation() ), units ) );
-      message.append( getDisplayString( "Min Value", convertToString( minValue ), units ) );
-      message.append( getDisplayString( "Max Value", convertToString( maxValue ), units ) );
+    final StringBuffer message = new StringBuffer(name);
+    message.append(": ");
+    message.append(getDisplayString("Samples", convertToString(samples), ""));
+    if (samples > 0) {
+      message.append(getDisplayString("Avg", convertToString(getAverage()), units));
+      message.append(getDisplayString("Total", convertToString(total), units));
+      message.append(getDisplayString("Std Dev", convertToString(getStandardDeviation()), units));
+      message.append(getDisplayString("Min Value", convertToString(minValue), units));
+      message.append(getDisplayString("Max Value", convertToString(maxValue), units));
     }
     return message.toString();
   }

@@ -11,8 +11,8 @@
  */
 package coyote.commons.network.http;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.Test;
 
 import coyote.commons.GUID;
@@ -23,27 +23,10 @@ import coyote.commons.GUID;
  */
 public class CookieTest {
 
-  /**
-   * @throws java.lang.Exception
-   */
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception {}
-
-
-
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @AfterClass
-  public static void tearDownAfterClass() throws Exception {}
-
-
-
-
   @Test
   public void test() {
-    final Cookie cookie = new Cookie( "test", GUID.randomGUID().toString(), 1 ).setHttpOnly( true ).setDomain( "coyote.systems" ).setSecure( true );
+    final Cookie cookie = new Cookie("test", GUID.randomGUID().toString(), 1).setHttpOnly(true).setDomain("coyote.systems").setSecure(true);
+    assertNotNull(cookie);
   }
 
 }

@@ -703,7 +703,7 @@ public class ThreadPool {
    *
    * @return An array of references to the threadworkers
    */
-  Object[] getThreadWorkers() {
+  protected Object[] getThreadWorkers() {
     if (worker_set != null) {
       return worker_set.toArray();
     }

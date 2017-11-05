@@ -189,14 +189,13 @@ public class GenericAuthProviderTest {
 
       GenericAuthProvider provider = new GenericAuthProvider( cfg );
       assertNotNull( provider );
-      int rounds = provider.getDigestRounds();
-      //System.out.println( "Provider is using "+rounds+" digest Rounds" );
+      //System.out.println( "Provider is using "+provider.getDigestRounds()+" digest Rounds" );
 
       GenericAuthProvider.User user = provider.getUser( "user" );
       assertNotNull( user );
-      String name = user.getName();
-      byte[] barray = user.getPassword();
-      String result = ByteUtil.bytesToHex( barray );
+      //String name = user.getName();
+      //byte[] barray = user.getPassword();
+      //String result = ByteUtil.bytesToHex( barray );
       //System.out.println( "User: "+name+" password: "+result );
 
       // create a mock session
@@ -238,8 +237,8 @@ public class GenericAuthProviderTest {
 
       GenericAuthProvider.User user = provider.getUser( "user" );
       assertNotNull( user );
-      String name = user.getName();
-      byte[] barray = user.getPassword();
+      //String name = user.getName();
+      //byte[] barray = user.getPassword();
 
       // create a mock session
       MockSession session = new MockSession();

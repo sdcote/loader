@@ -100,6 +100,50 @@ public class LogMsg implements Serializable {
    */
   private static BundleBaseName bundleBasenameDefault = new BundleBaseName("LogMsg");
 
+  /**
+   * The resource bundle's base name, used in conjunction with the locale to 
+   * determine which actual resource bundle to find the message in.
+   */
+  private BundleBaseName bundleBaseName;
+
+  /**
+   * The locale used to determine which actual resource bundle to find the 
+   * message in.
+   */
+  private Locale locale;
+
+  /**
+   * The bundle message that was found last.
+   */
+  private String lastMessage;
+
+  /**
+   * The last resource bundle key that was used to get the last message.
+   */
+  private String lastKey;
+
+  /**
+   * The last set of variable arguments that was used to get the last message. 
+   * 
+   * <p>This may be <code>null</code> if this instance never retreived a 
+   * message or this instance was serialized and one or more of the args 
+   * objects was not serializable.<p>
+   */
+  private Object[] lastArgs;
+
+  /**
+   * Localized resource bundle used to look up messages
+   */
+  private transient ResourceBundle bundle;
+
+  /**
+   * A flag used to indicate that the last call to 
+   * {@link #getMsg(String, Object[])} failed to obtain the message 
+   * successfully from the resource bundle. Its an internal flag that is 
+   * allowed to be transient, no need to serialize it.
+   */
+  private transient boolean getFailed;
+
 
 
 
@@ -311,50 +355,6 @@ public class LogMsg implements Serializable {
     LogMsg.bundleBasenameDefault = newDefault;
   }
 
-  /**
-   * The resource bundle's base name, used in conjunction with the locale to 
-   * determine which actual resource bundle to find the message in.
-   */
-  private BundleBaseName bundleBaseName;
-
-  /**
-   * The locale used to determine which actual resource bundle to find the 
-   * message in.
-   */
-  private Locale locale;
-
-  /**
-   * The bundle message that was found last.
-   */
-  private String lastMessage;
-
-  /**
-   * The last resource bundle key that was used to get the last message.
-   */
-  private String lastKey;
-
-  /**
-   * The last set of variable arguments that was used to get the last message. 
-   * 
-   * <p>This may be <code>null</code> if this instance never retreived a 
-   * message or this instance was serialized and one or more of the args 
-   * objects was not serializable.<p>
-   */
-  private Object[] lastArgs;
-
-  /**
-   * Localized resource bundle used to look up messages
-   */
-  private transient ResourceBundle bundle;
-
-  /**
-   * A flag used to indicate that the last call to 
-   * {@link #getMsg(String, Object[])} failed to obtain the message 
-   * successfully from the resource bundle. Its an internal flag that is 
-   * allowed to be transient, no need to serialize it.
-   */
-  private transient boolean getFailed;
-
 
 
 
@@ -397,13 +397,13 @@ public class LogMsg implements Serializable {
       basename = LogMsg.bundleBasenameDefault;
     }
 
-    if (locale == null) {
-      locale = Locale.getDefault();
-    }
-
     getFailed = false;
     bundleBaseName = basename;
-    this.locale = locale;
+    if (locale == null) {
+      this.locale = Locale.getDefault();
+    } else {
+      this.locale = locale;
+    }
     bundle = null;
     lastMessage = null;
     lastKey = null;
@@ -455,20 +455,18 @@ public class LogMsg implements Serializable {
     // If bundle was not yet set, we've either never retreived a message or
     // we've been serialized to another VM or someone set a new locale. In 
     // either of these cases, we need to get the message again.
-    if (bundle == null) {
-      // Note that if the last args is null, that means the deserialization of 
-      // the args failed. In this case, we don't want to get the message since 
-      // we've now lost some of the message data. We will rely on the last 
-      // message that hopefully contains all the data, albeit in a different 
-      // locale (but at least the data isn't lost).
-      if (lastArgs != null) {
-        final String lastMessageBackup = lastMessage;
+    // Note that if the last args is null, that means the deserialization of 
+    // the args failed. In this case, we don't want to get the message since 
+    // we've now lost some of the message data. We will rely on the last 
+    // message that hopefully contains all the data, albeit in a different 
+    // locale (but at least the data isn't lost).
+    if (bundle == null && lastArgs != null) {
+      final String lastMessageBackup = lastMessage;
 
-        getMsg(lastKey, lastArgs);
+      getMsg(lastKey, lastArgs);
 
-        if (getFailed) {
-          lastMessage = lastMessageBackup;
-        }
+      if (getFailed) {
+        lastMessage = lastMessageBackup;
       }
     }
 
@@ -590,7 +588,7 @@ public class LogMsg implements Serializable {
    * @throws IOException
    * @throws ClassNotFoundException
    */
-  private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+  private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
     // set our transient fields
     bundle = null;
     getFailed = false;
@@ -632,12 +630,14 @@ public class LogMsg implements Serializable {
    * locale will be set
    */
   public void setLocale(Locale locale) {
+    Locale lcl = locale;
+
     if (locale == null) {
-      locale = Locale.getDefault();
+      lcl = Locale.getDefault();
     }
 
-    if (!locale.equals(getLocale())) {
-      this.locale = locale;
+    if (!lcl.equals(getLocale())) {
+      this.locale = lcl;
 
       // since the locale has changed the current bundle is no longer valid
       bundle = null;
@@ -682,7 +682,7 @@ public class LogMsg implements Serializable {
    *
    * @throws IOException
    */
-  private void writeObject(final java.io.ObjectOutputStream out) throws IOException {
+  private void writeObject(final ObjectOutputStream out) throws IOException {
     out.writeObject(bundleBaseName);
     out.writeObject(locale);
     out.writeObject(lastMessage);

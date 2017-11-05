@@ -34,11 +34,11 @@ public class FileUtilCopyTest {
   private static File testDir = null;
 
   private static final boolean RECURSE = true;
-  private static final boolean NO_RECURSE = false;
+  //private static final boolean NO_RECURSE = false;
   private static final boolean PRESERVE = true;
   private static final boolean NO_PRESERVE = false;
   private static final boolean KEEPDATE = true;
-  private static final boolean NO_KEEPDATE = false;
+  //private static final boolean NO_KEEPDATE = false;
   private static final boolean OVERWRITE = true;
   private static final boolean NO_OVERWRITE = false;
   private static final boolean RENAME = true;

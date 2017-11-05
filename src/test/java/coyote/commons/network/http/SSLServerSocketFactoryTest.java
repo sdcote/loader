@@ -134,10 +134,10 @@ public class SSLServerSocketFactoryTest {
     final HttpTrace httphead = new HttpTrace( "https://localhost:" + port + "/" );
     final HttpResponse response = httpclient.execute( httphead );
     response.getEntity();
-    Assert.assertEquals( 200, response.getStatusLine().getStatusCode() );
+    assertEquals( 200, response.getStatusLine().getStatusCode() );
 
-    Assert.assertEquals( port, testServer.getListeningPort() );
-    Assert.assertTrue( testServer.isAlive() );
+    assertEquals( port, testServer.getListeningPort() );
+    assertTrue( testServer.isAlive() );
   }
 
 }

@@ -28,7 +28,7 @@ public class ServerRunnable implements Runnable {
   private final HTTPD httpd;
   private final int timeout;
   protected IOException bindException;
-  boolean isBoundToPort = false;
+  protected boolean isBoundToPort = false;
 
 
 

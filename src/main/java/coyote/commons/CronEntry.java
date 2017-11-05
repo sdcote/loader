@@ -40,28 +40,28 @@ import java.util.TreeSet;
  */
 public class CronEntry {
   private static final String ANY = "*";
-  private static final String SUN = "Sun"; // 0
-  private static final String MON = "Mon"; // 1
-  private static final String TUE = "Tue"; // 2
-  private static final String WED = "Wed"; // 3
-  private static final String THU = "Thu"; // 4
-  private static final String FRI = "Fri"; // 5
-  private static final String SAT = "Sat"; // 6
-
-  private static final String WEEKDAYS = "W"; // 1-5
-
-  private static final String JAN = "Jan"; // 1
-  private static final String FEB = "Feb"; // 2
-  private static final String MAR = "MAR"; // 3
-  private static final String APR = "Apr"; // 4
-  private static final String MAY = "May"; // 5
-  private static final String JUN = "Jun"; // 6
-  private static final String JUL = "Jul"; // 7
-  private static final String AUG = "Aug"; // 8
-  private static final String SEP = "Sep"; // 9
-  private static final String OCT = "Oct"; // 10
-  private static final String NOV = "Nov"; // 11
-  private static final String DEC = "Dec"; // 12
+//  private static final String SUN = "Sun"; // 0
+//  private static final String MON = "Mon"; // 1
+//  private static final String TUE = "Tue"; // 2
+//  private static final String WED = "Wed"; // 3
+//  private static final String THU = "Thu"; // 4
+//  private static final String FRI = "Fri"; // 5
+//  private static final String SAT = "Sat"; // 6
+//
+//  private static final String WEEKDAYS = "W"; // 1-5
+//
+//  private static final String JAN = "Jan"; // 1
+//  private static final String FEB = "Feb"; // 2
+//  private static final String MAR = "MAR"; // 3
+//  private static final String APR = "Apr"; // 4
+//  private static final String MAY = "May"; // 5
+//  private static final String JUN = "Jun"; // 6
+//  private static final String JUL = "Jul"; // 7
+//  private static final String AUG = "Aug"; // 8
+//  private static final String SEP = "Sep"; // 9
+//  private static final String OCT = "Oct"; // 10
+//  private static final String NOV = "Nov"; // 11
+//  private static final String DEC = "Dec"; // 12
 
   static final protected int MAX_MINUTES_IN_HOUR = 59;
   static final protected int MAX_HOURS_IN_DAY = 23;

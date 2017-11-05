@@ -33,23 +33,20 @@ import java.util.StringTokenizer;
  */
 public class IpInterface {
   public static IpAddress DEFAULT_NETMASK;
-  final private static char[] hexArray = "0123456789ABCDEF".toCharArray();
+  private static final char[] hexArray = "0123456789ABCDEF".toCharArray();
   /** Flag indicating the interfaces have been populated for the platform. */
   private static boolean initializedFlag = false;
   private static final ArrayList<IpInterface> interfaces = new ArrayList<IpInterface>();
   private static InetAddress localAddress = null;
-  static String[] errArray = new String[0];
+  protected static String[] errArray = new String[0];
 
-  static String[] outArray = new String[0];
-  static IpInterface primaryInterface = null;
-  IpAddress address = null;
-
-  String displayName = null;
-  String name = null;
-
-  NetworkInterface netInterface = null;
-
-  IpAddress netmask = null;
+  protected static String[] outArray = new String[0];
+  protected static IpInterface primaryInterface = null;
+  protected IpAddress address = null;
+  protected String displayName = null;
+  protected String name = null;
+  protected NetworkInterface netInterface = null;
+  protected IpAddress netmask = null;
 
   static {
     try {

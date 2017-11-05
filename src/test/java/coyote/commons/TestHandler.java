@@ -19,7 +19,6 @@ import coyote.commons.network.http.Response;
 import coyote.commons.network.http.Status;
 import coyote.commons.network.http.responder.DefaultResponder;
 import coyote.commons.network.http.responder.Resource;
-import coyote.loader.cfg.Config;
 
 
 /**
@@ -32,20 +31,18 @@ public class TestHandler extends DefaultResponder {
 
 
   @Override
-  public Response get( final Resource resource, final Map<String, String> urlParams, final IHTTPSession session ) {
+  public Response get(final Resource resource, final Map<String, String> urlParams, final IHTTPSession session) {
 
     // These initialization parameters always exist
-    WebServer loader = resource.initParameter( 0, WebServer.class );
-    Config config = resource.initParameter( 1, Config.class );
+    // WebServer loader = resource.initParameter(0, WebServer.class);
+    // Config config = resource.initParameter(1, Config.class);
 
     // if there are more, then assume the next one is our test data
-    if ( resource.getInitParameterLength() > 2 ) {
-      if ( resource.initParameter( 2, Object.class ) instanceof String ) {
-        testData = resource.initParameter( 2, String.class );
-      }
+    if (resource.getInitParameterLength() > 2 && resource.initParameter(2, Object.class) instanceof String) {
+      testData = resource.initParameter(2, String.class);
     }
 
-    return Response.createFixedLengthResponse( getStatus(), getMimeType(), getText() );
+    return Response.createFixedLengthResponse(getStatus(), getMimeType(), getText());
   }
 
 

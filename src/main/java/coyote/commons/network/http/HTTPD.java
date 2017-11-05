@@ -55,68 +55,50 @@ import coyote.loader.log.Log;
 public abstract class HTTPD {
   public static final String CLASS = "HTTPD";
   public static final long EVENT = Log.getCode(CLASS);
-
   private static final String CONTENT_DISPOSITION_REGEX = "([ |\t]*Content-Disposition[ |\t]*:)(.*)";
-
-  static final Pattern CONTENT_DISPOSITION_PATTERN = Pattern.compile(CONTENT_DISPOSITION_REGEX, Pattern.CASE_INSENSITIVE);
-
+  protected static final Pattern CONTENT_DISPOSITION_PATTERN = Pattern.compile(CONTENT_DISPOSITION_REGEX, Pattern.CASE_INSENSITIVE);
   private static final String CONTENT_TYPE_REGEX = "([ |\t]*content-type[ |\t]*:)(.*)";
-
-  static final Pattern CONTENT_TYPE_PATTERN = Pattern.compile(CONTENT_TYPE_REGEX, Pattern.CASE_INSENSITIVE);
-
+  protected static final Pattern CONTENT_TYPE_PATTERN = Pattern.compile(CONTENT_TYPE_REGEX, Pattern.CASE_INSENSITIVE);
   private static final String CONTENT_DISPOSITION_ATTRIBUTE_REGEX = "[ |\t]*([a-zA-Z]*)[ |\t]*=[ |\t]*['|\"]([^\"^']*)['|\"]";
-
-  static final Pattern CONTENT_DISPOSITION_ATTRIBUTE_PATTERN = Pattern.compile(CONTENT_DISPOSITION_ATTRIBUTE_REGEX);
-
+  protected static final Pattern CONTENT_DISPOSITION_ATTRIBUTE_PATTERN = Pattern.compile(CONTENT_DISPOSITION_ATTRIBUTE_REGEX);
   /**
    * Maximum time to wait on Socket.getInputStream().read() (in milliseconds)
    * This is required as the Keep-Alive HTTP connections would otherwise block
    * the socket reading thread forever (or as long the browser is open).
    */
   public static final int SOCKET_READ_TIMEOUT = 5000;
-
   /** 
    * Our IP address Access Control List. It is set to deny everything unless 
    * addresses match the entries in this list. 
    */
-  final IpAcl acl = new IpAcl(IpAcl.DENY);
-
+  protected final IpAcl acl = new IpAcl(IpAcl.DENY);
   /**
    * This is our Denial of Service tracker. It keeps a list of times a request
    * is made and if requests come in to frequently from an address or network,
    * the server can perform remediation such as blacklisting throttling and  of
    * course security event notification.
    */
-  final OperationFrequency dosTable = new OperationFrequency();
-
+  protected final OperationFrequency dosTable = new OperationFrequency();
   /**
    * The component responsible for providing authentication and authorization
    * processing for the server.
    */
   protected AuthProvider authProvider = new DefaultAuthProvider();
-
   /**
    * Pseudo-Parameter to use to store the actual query string in the
    * parameters map for later re-processing.
    */
   protected static final String QUERY_STRING_PARAMETER = "Httpd.QUERY_STRING";
   private static final String MIMETYPE_RESOURCE = "httpd/mimetypes.properties";
-
   /** Hashtable mapping file extension to MIME type */
   protected static Map<String, String> MIME_TYPES;
-
   final String hostname;
   final int myPort;
-
-  volatile ServerSocket myServerSocket;
-
+  protected volatile ServerSocket myServerSocket;
   private ServerSocketFactory serverSocketFactory = new DefaultServerSocketFactory();
-
   private Thread myThread;
-
   protected Executor asyncRunner;
-
-  CacheManagerFactory cacheManagerFactory;
+  protected CacheManagerFactory cacheManagerFactory;
 
 
 

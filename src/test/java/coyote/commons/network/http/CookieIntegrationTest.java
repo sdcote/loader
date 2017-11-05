@@ -21,9 +21,9 @@ public class CookieIntegrationTest extends IntegrationTestBase<CookieIntegration
 
   public static class CookieTestServer extends HTTPD {
 
-    List<Cookie> cookiesReceived = new ArrayList<Cookie>();
+    protected List<Cookie> cookiesReceived = new ArrayList<Cookie>();
 
-    List<Cookie> cookiesToSend = new ArrayList<Cookie>();
+    protected List<Cookie> cookiesToSend = new ArrayList<Cookie>();
 
 
 
