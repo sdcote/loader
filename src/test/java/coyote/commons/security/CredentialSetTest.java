@@ -146,6 +146,8 @@ public class CredentialSetTest {
     CredentialSet creds = new CredentialSet() //
         .add(CredentialSet.PRIVATEKEY, PRIVATEKEY) //
         .add(CredentialSet.PASSWORD, PASSWORD);
+
+    assertNotNull(creds);
   }
 
 }

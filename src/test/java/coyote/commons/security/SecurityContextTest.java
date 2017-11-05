@@ -11,6 +11,8 @@
  */
 package coyote.commons.security;
 
+import static org.junit.Assert.assertNotNull;
+
 //import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,25 +36,25 @@ public class SecurityContextTest {
   public static void setUpBeforeClass() throws Exception {
 
     // Create a generic security context
-    context = new GenericSecurityContext( "Demo" );
+    context = new GenericSecurityContext("Demo");
 
     // Add some roles to the context
-    Role role = new Role( ADMIN_ROLE );
+    Role role = new Role(ADMIN_ROLE);
 
     // specify the permission for this role
-    role.addPermission( new Permission( "ticket", Permission.CREATE ) );
+    role.addPermission(new Permission("ticket", Permission.CREATE));
 
     // add the role to the context
-    context.add( role );
+    context.add(role);
 
     // Add some logins to the context
-    Login login = new Login( new GenericSecurityPrincipal( "ID:12345", "user1" ), new CredentialSet( CredentialSet.PASSWORD, "SeCr3t" ) );
+    Login login = new Login(new GenericSecurityPrincipal("ID:12345", "user1"), new CredentialSet(CredentialSet.PASSWORD, "SeCr3t"));
 
     // add a role to the login
-    login.addRole( role );
+    login.addRole(role);
 
     // Add the login to the context
-    context.add( login );
+    context.add(login);
   }
 
 
@@ -67,8 +69,9 @@ public class SecurityContextTest {
     Login login = null;
 
     // the most common use case: username with a set of credentials
-    login = context.getLogin( "user1", new CredentialSet( CredentialSet.PASSWORD, "SeCr3t" ) );
-    System.out.println( login );
+    login = context.getLogin("user1", new CredentialSet(CredentialSet.PASSWORD, "SeCr3t"));
+    //System.out.println(login);
+    assertNotNull(login);
   }
 
 }

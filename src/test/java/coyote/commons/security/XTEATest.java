@@ -16,7 +16,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
 
-import org.junit.AfterClass;
 import org.junit.Test;
 
 
@@ -24,15 +23,6 @@ import org.junit.Test;
  * 
  */
 public class XTEATest {
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @AfterClass
-  public static void tearDownAfterClass() throws Exception {}
-
-
-
 
   /**
    * This shows the basic use case for XTEA ciphering.
@@ -50,12 +40,12 @@ public class XTEATest {
 
     // Initialize the cipher with our secret key here we just use the UTF16 
     // encoding of our key string
-    cipher.init( secret.getBytes( "UTF16" ) ); // use UTF8 if you want 1 byte per character
+    cipher.init(secret.getBytes("UTF16")); // use UTF8 if you want 1 byte per character
 
     // Encrypt the text with the UTF16 encoded bytes our our clear text string 
-    byte[] cipherdata = cipher.encrypt( cleartext.getBytes( "UTF16" ) );
+    byte[] cipherdata = cipher.encrypt(cleartext.getBytes("UTF16"));
 
-    System.out.println("Data has been converted into "+cipherdata.length+" bytes of data");
+    // System.out.println("Data has been converted into "+cipherdata.length+" bytes of data");
 
     // - - - Decrypt the data - - - 
 
@@ -63,16 +53,16 @@ public class XTEATest {
     Cipher cipher2 = new XTEACipher();
 
     // Initialize the second cipher with our secret key
-    cipher2.init( secret.getBytes( "UTF16" ) );
+    cipher2.init(secret.getBytes("UTF16"));
 
     // Decrypt the data  
-    byte[] cleardata = cipher2.decrypt( cipherdata );
+    byte[] cleardata = cipher2.decrypt(cipherdata);
 
-    String newtext = new String( cleardata, "UTF16" );
+    String newtext = new String(cleardata, "UTF16");
 
-    System.out.println( cleartext );
-    System.out.println( newtext );
-    assertEquals( cleartext, newtext );
+    // System.out.println( cleartext );
+    // System.out.println( newtext );
+    assertEquals(cleartext, newtext);
 
   }
 

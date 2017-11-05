@@ -233,30 +233,26 @@ public class GenericAuthProvider implements AuthProvider {
 
     // find the user with the given name
     final User user = getUser(username);
-    if (user != null) {
-      // we found a user
-      if (StringUtil.isNotBlank(password)) {
-        try {
-          // digest the given password
-          final byte[] barray = digest(password.getBytes(UTF8));
+    if (user != null && StringUtil.isNotBlank(password)) {
+      try {
+        // digest the given password
+        final byte[] barray = digest(password.getBytes(UTF8));
 
-          if (user.passwordMatches(barray)) {
-            Log.append(HTTPD.EVENT, "Successful authentication for '" + username + "'");
-            // add the user and groups to the session
-            session.setUserName(user.getName());
-            session.setUserGroups(user.getGroups());
-            // ... and the profile so we can cache the authenticated user name and groups
-            if (profile != null) {
-              profile.set(USERNAME, user.getName());
-              profile.set(USERGROUPS, user.getGroups().toArray(new String[0]));
-            }
-            retval = true;
+        if (user.passwordMatches(barray)) {
+          Log.append(HTTPD.EVENT, "Successful authentication for '" + username + "'");
+          // add the user and groups to the session
+          session.setUserName(user.getName());
+          session.setUserGroups(user.getGroups());
+          // ... and the profile so we can cache the authenticated user name and groups
+          if (profile != null) {
+            profile.set(USERNAME, user.getName());
+            profile.set(USERGROUPS, user.getGroups().toArray(new String[0]));
           }
-        } catch (final UnsupportedEncodingException e) {
-          e.printStackTrace(); // should never happen, tested in static init
+          retval = true;
         }
-
-      } // null, empty or blank passwords are not supported/allowed
+      } catch (final UnsupportedEncodingException e) {
+        e.printStackTrace(); // should never happen, tested in static init
+      }
 
     } // we found a user with that name
 

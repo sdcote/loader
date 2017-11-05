@@ -18,7 +18,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -44,26 +43,17 @@ public class RoleTest {
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
     // Add some roles to the context
-    subject = new Role( SYSADM, DESC );
+    subject = new Role(SYSADM, DESC);
 
     // specify the permissions for this role
-    subject.addPermission( new Permission( TICKET, Permission.CREATE ) );
-    subject.addPermission( new Permission( TICKET, Permission.READ ) );
-    subject.addPermission( new Permission( TICKET, Permission.ASSIGN ) );
-    subject.addPermission( new Permission( TICKET, Permission.CLOSE ) );
+    subject.addPermission(new Permission(TICKET, Permission.CREATE));
+    subject.addPermission(new Permission(TICKET, Permission.READ));
+    subject.addPermission(new Permission(TICKET, Permission.ASSIGN));
+    subject.addPermission(new Permission(TICKET, Permission.CLOSE));
 
-    subject.addPermission( new Permission( USER, Permission.CREATE ) );
-    subject.addPermission( new Permission( USER, Permission.READ ) );
+    subject.addPermission(new Permission(USER, Permission.CREATE));
+    subject.addPermission(new Permission(USER, Permission.READ));
   }
-
-
-
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @AfterClass
-  public static void tearDownAfterClass() throws Exception {}
 
 
 
@@ -73,8 +63,8 @@ public class RoleTest {
    */
   @Test
   public void testRoleString() {
-    Role role = new Role( "user" );
-    assertNotNull( role );
+    Role role = new Role("user");
+    assertNotNull(role);
   }
 
 
@@ -85,8 +75,8 @@ public class RoleTest {
    */
   @Test
   public void testRoleStringString() {
-    Role role = new Role( "user", "Generic user role" );
-    assertNotNull( role );
+    Role role = new Role("user", "Generic user role");
+    assertNotNull(role);
   }
 
 
@@ -98,8 +88,8 @@ public class RoleTest {
   @Test
   public void testGetName() {
     String name = subject.getName();
-    assertNotNull( name );
-    assertEquals( SYSADM, name );
+    assertNotNull(name);
+    assertEquals(SYSADM, name);
   }
 
 
@@ -111,8 +101,8 @@ public class RoleTest {
   @Test
   public void testGetDescription() {
     String desc = subject.getDescription();
-    assertNotNull( desc );
-    assertEquals( DESC, desc );
+    assertNotNull(desc);
+    assertEquals(DESC, desc);
   }
 
 
@@ -123,10 +113,10 @@ public class RoleTest {
    */
   @Test
   public void testSetDescription() {
-    Role role = new Role( "user", "Generic user role" );
+    Role role = new Role("user", "Generic user role");
     String desc = role.getDescription();
-    assertNotNull( desc );
-    assertEquals( desc, "Generic user role" );
+    assertNotNull(desc);
+    assertEquals(desc, "Generic user role");
   }
 
 
@@ -137,8 +127,9 @@ public class RoleTest {
    */
   @Test
   public void testAddPermissionStringLong() {
-    Role role = new Role( "user", "Generic user role" );
-    role.addPermission( "ticket", Permission.CREATE );
+    Role role = new Role("user", "Generic user role");
+    role.addPermission("ticket", Permission.CREATE);
+    assertTrue(role.getPermissions().size() == 1);
   }
 
 
@@ -149,8 +140,9 @@ public class RoleTest {
    */
   @Test
   public void testAddPermissionPermission() {
-    Role role = new Role( "user", "Generic user role" );
-    role.addPermission( new Permission( "ticket", Permission.CREATE ) );
+    Role role = new Role("user", "Generic user role");
+    role.addPermission(new Permission("ticket", Permission.CREATE));
+    assertTrue(role.getPermissions().size() == 1);
   }
 
 
@@ -161,7 +153,7 @@ public class RoleTest {
    */
   @Test
   public void testAllows() {
-    assertTrue( subject.allows( TICKET, Permission.CREATE ) );
+    assertTrue(subject.allows(TICKET, Permission.CREATE));
   }
 
 
@@ -173,11 +165,11 @@ public class RoleTest {
   @Test
   public void testGetPermissions() {
     List<Permission> perms = subject.getPermissions();
-    assertNotNull( perms );
-    assertTrue( perms.size() == 2 );
+    assertNotNull(perms);
+    assertTrue(perms.size() == 2);
 
-    assertTrue( subject.allows( USER, Permission.CREATE ) );
-    assertTrue( subject.allows( USER, Permission.READ ) );
+    assertTrue(subject.allows(USER, Permission.CREATE));
+    assertTrue(subject.allows(USER, Permission.READ));
 
   }
 
