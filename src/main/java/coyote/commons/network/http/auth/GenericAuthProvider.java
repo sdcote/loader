@@ -14,7 +14,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import coyote.commons.ByteUtil;
@@ -23,8 +25,8 @@ import coyote.commons.StringUtil;
 import coyote.commons.network.http.HTTP;
 import coyote.commons.network.http.HTTPD;
 import coyote.commons.network.http.IHTTPSession;
-import coyote.commons.network.http.SessionManager;
 import coyote.commons.network.http.SessionProfile;
+import coyote.commons.network.http.SessionProfileManager;
 import coyote.dataframe.DataField;
 import coyote.dataframe.DataFrame;
 import coyote.dataframe.DataFrameException;
@@ -128,7 +130,7 @@ public class GenericAuthProvider implements AuthProvider {
     boolean retval = false;
 
     // Make sure there is a session assigned to this request
-    SessionProfile profile = SessionManager.retrieveOrCreate(session.getCookies());
+    SessionProfile profile = SessionProfileManager.retrieveOrCreateProfile(session);
     retval = setUserData(profile, session);
 
     // all headers are stored in lower case since browsers use different case
@@ -160,34 +162,44 @@ public class GenericAuthProvider implements AuthProvider {
               password = null;
             }
 
+            Map<String, String> creds = new HashMap<String, String>();
+            creds.put(AuthProvider.USERNAME, username);
+            creds.put(AuthProvider.PASSWORD, password);
+
+            retval = authenticate(session, creds);
+
+            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
             // find the user with the given name
-            final User user = getUser(username);
-            if (user != null) {
-              Log.append(HTTPD.EVENT, "Successful authentication for '" + username + "'");
-              // we found a user
-              if (StringUtil.isNotBlank(password)) {
-                try {
-                  // digest the given password
-                  final byte[] barray = digest(password.getBytes(UTF8));
+            //            final User user = getUser(username);
+            //            if (user != null) {
+            //              // we found a user
+            //              if (StringUtil.isNotBlank(password)) {
+            //                try {
+            //                  // digest the given password
+            //                  final byte[] barray = digest(password.getBytes(UTF8));
+            //
+            //                  if (user.passwordMatches(barray)) {
+            //                    Log.append(HTTPD.EVENT, "Successful authentication for '" + username + "'");
+            //                    // add the user and groups to the session
+            //                    session.setUserName(user.getName());
+            //                    session.setUserGroups(user.getGroups());
+            //                    // ... and the profile so we can cache authenticated user name and groups
+            //                    if (profile != null) {
+            //                      profile.set(USERNAME, user.getName());
+            //                      profile.set(USERGROUPS, user.getGroups().toArray(new String[0]));
+            //                    }
+            //                    retval = true;
+            //                  }
+            //                } catch (final UnsupportedEncodingException e) {
+            //                  e.printStackTrace(); // should never happen, tested in static init
+            //                }
+            //
+            //              } // null, empty or blank passwords are not supported/allowed
+            //
+            //            } // we found a user with that name
 
-                  if (user.passwordMatches(barray)) {
-                    // add the user and groups to the session
-                    session.setUserName(user.getName());
-                    session.setUserGroups(user.getGroups());
-                    // ... and the profile so we can cache authenticated user name and groups
-                    if (profile != null) {
-                      profile.set(USERNAME, user.getName());
-                      profile.set(USERGROUPS, user.getGroups().toArray(new String[0]));
-                    }
-                    retval = true;
-                  }
-                } catch (final UnsupportedEncodingException e) {
-                  e.printStackTrace(); // should never happen, tested in static init
-                }
-
-              } // null, empty or blank passwords are not supported/allowed
-
-            } // we found a user with that name
+            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
           } // null tokens???
         } else {
@@ -201,6 +213,52 @@ public class GenericAuthProvider implements AuthProvider {
     if (!retval && sendAuthRequest) {
       session.getResponseHeaders().put(HTTP.HDR_WWW_AUTHENTICATE, HTTP.BASIC + " realm=\"HTTP Server\"");
     }
+
+    return retval;
+  }
+
+
+
+
+  /**
+   * @see coyote.commons.network.http.auth.AuthProvider#authenticate(coyote.commons.network.http.IHTTPSession, java.util.Map)
+   */
+  @Override
+  public boolean authenticate(IHTTPSession session, Map<String, String> credentials) {
+    boolean retval = false;
+    String username = credentials.get(AuthProvider.USERNAME);
+    String password = credentials.get(AuthProvider.PASSWORD);
+
+    SessionProfile profile = SessionProfileManager.retrieveOrCreateProfile(session);
+
+    // find the user with the given name
+    final User user = getUser(username);
+    if (user != null) {
+      // we found a user
+      if (StringUtil.isNotBlank(password)) {
+        try {
+          // digest the given password
+          final byte[] barray = digest(password.getBytes(UTF8));
+
+          if (user.passwordMatches(barray)) {
+            Log.append(HTTPD.EVENT, "Successful authentication for '" + username + "'");
+            // add the user and groups to the session
+            session.setUserName(user.getName());
+            session.setUserGroups(user.getGroups());
+            // ... and the profile so we can cache the authenticated user name and groups
+            if (profile != null) {
+              profile.set(USERNAME, user.getName());
+              profile.set(USERGROUPS, user.getGroups().toArray(new String[0]));
+            }
+            retval = true;
+          }
+        } catch (final UnsupportedEncodingException e) {
+          e.printStackTrace(); // should never happen, tested in static init
+        }
+
+      } // null, empty or blank passwords are not supported/allowed
+
+    } // we found a user with that name
 
     return retval;
   }

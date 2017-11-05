@@ -11,6 +11,8 @@
  */
 package coyote.commons.network.http.auth;
 
+import java.util.Map;
+
 import coyote.commons.network.http.IHTTPSession;
 
 
@@ -99,6 +101,17 @@ public class TestAuthProvider implements AuthProvider {
 
   public void allowAllAuthorizations() {
     allowAuthorizations = true;
+  }
+
+
+
+
+  /**
+   * @see coyote.commons.network.http.auth.AuthProvider#authenticate(coyote.commons.network.http.IHTTPSession, java.util.Map)
+   */
+  @Override
+  public boolean authenticate(IHTTPSession session, Map<String, String> credentials) {
+    return true;
   }
 
 }

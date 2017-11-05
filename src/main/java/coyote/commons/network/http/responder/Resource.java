@@ -276,6 +276,9 @@ public class Resource {
 
 
 
+  /**
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
     return description;
@@ -297,6 +300,16 @@ public class Resource {
       matcher = PARAM_PATTERN.matcher(patternUri);
     }
     return Pattern.compile(patternUri);
+  }
+
+
+
+
+  /**
+   * @return the authentication and authorization provider for this resource
+   */
+  public AuthProvider getAuthProvider() {
+    return authProvider;
   }
 
 }

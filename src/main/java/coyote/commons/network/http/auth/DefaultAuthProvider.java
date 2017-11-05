@@ -8,6 +8,8 @@
 
 package coyote.commons.network.http.auth;
 
+import java.util.Map;
+
 import coyote.commons.network.http.IHTTPSession;
 
 
@@ -45,6 +47,17 @@ public class DefaultAuthProvider implements AuthProvider {
    */
   @Override
   public boolean isSecureConnection(final IHTTPSession session) {
+    return false;
+  }
+
+
+
+
+  /**
+   * @see coyote.commons.network.http.auth.AuthProvider#authenticate(coyote.commons.network.http.IHTTPSession, java.util.Map)
+   */
+  @Override
+  public boolean authenticate(IHTTPSession session, Map<String, String> credentials) {
     return false;
   }
 

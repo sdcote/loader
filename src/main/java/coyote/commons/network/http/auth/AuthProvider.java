@@ -8,6 +8,8 @@
 
 package coyote.commons.network.http.auth;
 
+import java.util.Map;
+
 import coyote.commons.network.http.IHTTPSession;
 
 
@@ -22,6 +24,11 @@ import coyote.commons.network.http.IHTTPSession;
  * if the session is a member of one of the given set of groups.   
  */
 public interface AuthProvider {
+  public static final String USERNAME = "username";
+  public static final String PASSWORD = "password";
+
+
+
 
   /**
    * Perform authentication of the identity represented in the given session.
@@ -68,5 +75,23 @@ public interface AuthProvider {
    *         otherwise.
    */
   boolean isSecureConnection(IHTTPSession session);
+
+
+
+
+  /**
+   * This is a generic utility method to authenticate a set of credentials and
+   * populate the given session with the results (username and group list).
+   * 
+   * <p>This is useful for other components (like login responders) to perform 
+   * authentication with credentials gathered external to the HTTP request.
+   *  
+   * @param session the HTTP session to authenticate
+   * @param credentials the map of credentials (e.g. username and password) to 
+   *        authenticate.
+   * 
+   * @return true if the authentication was successful, false otherwise.
+   */
+  boolean authenticate(IHTTPSession session, Map<String, String> credentials);
 
 }

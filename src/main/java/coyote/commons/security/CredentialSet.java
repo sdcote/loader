@@ -47,6 +47,7 @@ public class CredentialSet {
 
   // Password key
   public static final String PASSWORD = "password";
+
   // Private key for encryption
   public static final String PRIVATEKEY = "privatekey";
 
@@ -158,7 +159,23 @@ public class CredentialSet {
 
     try {
       add(name, value.getBytes(UTF8));
-    } catch (final UnsupportedEncodingException e) {}
+    } catch (final UnsupportedEncodingException e) {
+      // ignore
+    }
+  }
+
+
+
+
+  public CredentialSet add(final String name, final String value) {
+    if (name != null && value != null) {
+      try {
+        add(name, value.getBytes(UTF8));
+      } catch (final UnsupportedEncodingException e) {
+        // ignore
+      }
+    }
+    return this;
   }
 
 
@@ -173,7 +190,7 @@ public class CredentialSet {
    * @param name The name of the credential
    * @param bytes the bytes representing the credential
    */
-  public void add(final String name, final byte[] bytes) {
+  public CredentialSet add(final String name, final byte[] bytes) {
     byte[] val = bytes;
 
     if (_rounds > 0) {
@@ -192,6 +209,7 @@ public class CredentialSet {
 
     // add the data
     _credentials.put(name, val);
+    return this;
   }
 
 
@@ -288,4 +306,5 @@ public class CredentialSet {
   public int size() {
     return _credentials.size();
   }
+
 }
