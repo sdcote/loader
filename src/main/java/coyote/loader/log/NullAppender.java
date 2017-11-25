@@ -20,32 +20,6 @@ import java.io.Writer;
 public class NullAppender extends AbstractLogger {
 
   /**
-   * Construct a WriterLogger that writes to the specified writer with
-   * an initial mask value of zero (i.e. does not log any events).
-   *
-   * @param writer The writer.
-   */
-  public NullAppender(final Writer writer) {
-    // no-op implementation
-  }
-
-
-
-
-  /**
-   * Construct a WriterLogger that writes to System.out with an initial mask
-   * value.
-   *
-   * @param mask The initial mask value.
-   */
-  public NullAppender(final long mask) {
-    // no-op implementation
-  }
-
-
-
-
-  /**
    * Construct a WriterLogger that writes to the specified writer with an
    * initial mask value.
    *
@@ -54,6 +28,16 @@ public class NullAppender extends AbstractLogger {
    */
   public NullAppender(final Writer writer, final long mask) {
     super(mask);
+  }
+
+
+
+
+  /**
+   * @param mask The initial mask value.
+   */
+  public NullAppender(long mask) {
+    this(null, mask);
   }
 
 

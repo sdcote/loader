@@ -118,6 +118,7 @@ public class FileAppender extends AbstractLogger {
    * @param cause The exception that caused the log entry. Can be null.
    */
   public void append(final String category, final Object event, final Throwable cause) {
+    preProcess();// useful for subclasses
     if (!targetFile.exists()) {
       try {
         log_writer = new OutputStreamWriter(new FileOutputStream(targetFile.toString(), append));
@@ -154,6 +155,23 @@ public class FileAppender extends AbstractLogger {
       }
     }
   }
+
+
+
+
+  /**
+   * Perform acheck sub-classes can use to perform pre-processing before the 
+   * event is appended to the log.  
+   * <p>This is specifically for the {@link CyclingFileAppender} to perform a
+   * size and time check before writing the event to the log.
+   */
+  protected void preProcess() {
+    // no-op    
+  }
+  
+  
+  
+  
 
 
 
