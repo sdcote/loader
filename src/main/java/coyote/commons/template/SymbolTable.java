@@ -364,7 +364,9 @@ public class SymbolTable extends HashMap {
         return Long.toString(System.currentTimeMillis());
       } else if (symbol.equals("currentSeconds")) {
         return Long.toString(System.currentTimeMillis() / 1000);
-      } else if (symbol.equals("epocTime")) {
+      } else if (symbol.equals("epochTime")) {
+        return Long.toString(System.currentTimeMillis() / 1000);
+      } else if (symbol.equals("unixTime")) {
         return Long.toString(System.currentTimeMillis() / 1000);
       } else if (symbol.equals("rfc822date")) {
         return DateUtil.RFC822Format(new Date());
