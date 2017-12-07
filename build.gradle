@@ -19,7 +19,7 @@ apply plugin: 'jacoco'
 
 defaultTasks 'clean', 'build', 'publish', 'fatJar'
 group = 'coyote'
-version = '0.7.4'
+version = '0.7.5'
 
 ext {
 	title = 'Coyote Loader Framework'
@@ -58,7 +58,7 @@ repositories {
 
 
 ext {
-	dataFrameVersion = '1.0.1'
+	dataFrameVersion = '1.0.2'
 	junitVersion = '4.12'
 	httpclientVersion = '4.5.3'
 }
