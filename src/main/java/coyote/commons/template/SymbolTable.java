@@ -360,35 +360,35 @@ public class SymbolTable extends HashMap {
     if (symbol != null) {
       if (symbol.equals("time")) {
         return DateUtil.toExtendedTime(new Date());
-      } else if (symbol.equals("currentMilliseconds")) {
+      } else if ("currentMilliseconds".equals(symbol)) {
         return Long.toString(System.currentTimeMillis());
-      } else if (symbol.equals("currentSeconds")) {
+      } else if ("currentSeconds".equals(symbol)) {
         return Long.toString(System.currentTimeMillis() / 1000);
-      } else if (symbol.equals("epochTime")) {
+      } else if ("epochTime".equals(symbol)) {
         return Long.toString(System.currentTimeMillis() / 1000);
-      } else if (symbol.equals("unixTime")) {
+      } else if ("unixTime".equals(symbol)) {
         return Long.toString(System.currentTimeMillis() / 1000);
-      } else if (symbol.equals("rfc822date")) {
+      } else if ("rfc822date".equals(symbol)) {
         return DateUtil.RFC822Format(new Date());
-      } else if (symbol.equals("iso8601date")) {
+      } else if ("iso8601date".equals(symbol)) {
         return DateUtil.ISO8601Format(new Date());
-      } else if (symbol.equals("iso8601GMT")) {
+      } else if ("iso8601GMT".equals(symbol)) {
         return DateUtil.ISO8601GMT(new Date());
-      } else if (symbol.equals("CR")) {
+      } else if ("CR".equals(symbol)) {
         return StringUtil.CR;
-      } else if (symbol.equals("NL")) {
+      } else if ("NL".equals(symbol)) {
         return StringUtil.NL;
-      } else if (symbol.equals("CRLF")) {
+      } else if ("CRLF".equals(symbol)) {
         return StringUtil.CRLF;
-      } else if (symbol.equals("FS")) {
+      } else if ("FS".equals(symbol)) {
         return StringUtil.FILE_SEPARATOR;
-      } else if (symbol.equals("PS")) {
+      } else if ("PS".equals(symbol)) {
         return StringUtil.PATH_SEPARATOR;
-      } else if (symbol.equals("HT")) {
+      } else if ("HT".equals(symbol)) {
         return StringUtil.HT;
-      } else if (symbol.equals("NL")) {
+      } else if ("NL".equals(symbol)) {
         return StringUtil.NL;
-      } else if (symbol.equals("symbolDump")) {
+      } else if ("symbolDump".equals(symbol)) {
         return dump();
       }
     }
