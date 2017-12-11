@@ -189,7 +189,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
         try {
           FileUtil.makeDirectory(workingDir);
         } catch (IOException e) {
-          System.err.print("Could not create working directory specified in app.work property: " + workDir + " - " + e.getMessage());
+          System.err.println("Could not create working directory specified in app.work property: " + workDir + " - " + e.getMessage());
         }
       }
 
