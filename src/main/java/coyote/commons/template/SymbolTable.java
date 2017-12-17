@@ -46,6 +46,8 @@ public class SymbolTable extends HashMap {
   // Hash Maps of formatters under the (possibly mistaken) assumption that construction and garbage collection may be more expensive than caching and searching
   private final HashMap<String, DateFormat> dateFormatMap = new HashMap<String, DateFormat>();
   private final HashMap<String, NumberFormat> numberFormatMap = new HashMap<String, NumberFormat>();
+  private static final String TOUPPER = "TOUPPER";
+  private static final String TOLOWER = "TOLOWER";
 
 
 
@@ -179,20 +181,25 @@ public class SymbolTable extends HashMap {
 
         // check to see if there is formatting to be applied to the value
         if (StringUtil.isNotBlank(format)) {
-
-          // apply formatting based on type type of object it is
-          if (retval instanceof Number) {
-            // If retval is numeric, then use a number format
-            return formatNumber((Number)retval, format);
-          } else if (retval instanceof Date) {
-            // if retval is a date, then use a date format
-            return formatDate((Date)retval, format);
-          } else if (retval instanceof String) {
-            // maybe it is a string representation of a number
-            try {
-              return formatNumber(NumberUtil.parse((String)retval), format);
-            } catch (NumberFormatException e) {
-              // whoops, guess not
+          if (TOUPPER.equalsIgnoreCase(format)) {
+            retval.toString().toUpperCase();
+          } else if (TOLOWER.equalsIgnoreCase(format)) {
+            retval.toString().toLowerCase();
+          } else {
+            // apply formatting based on type type of object it is
+            if (retval instanceof Number) {
+              // If retval is numeric, then use a number format
+              return formatNumber((Number)retval, format);
+            } else if (retval instanceof Date) {
+              // if retval is a date, then use a date format
+              return formatDate((Date)retval, format);
+            } else if (retval instanceof String) {
+              // maybe it is a string representation of a number
+              try {
+                return formatNumber(NumberUtil.parse((String)retval), format);
+              } catch (NumberFormatException e) {
+                // whoops, guess not
+              }
             }
           }
         }
