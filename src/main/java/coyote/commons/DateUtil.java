@@ -117,7 +117,9 @@ public class DateUtil {
     for ( String formatString : formatStrings ) {
       try {
         return new SimpleDateFormat( formatString ).parse( text );
-      } catch ( ParseException e ) {}
+      } catch ( ParseException e ) {
+        // ignore failed attempt
+      }
     }
     return null;
   }
