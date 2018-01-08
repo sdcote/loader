@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -310,7 +311,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
                   } else {
                     File file = new File(cval);
                     URI fileUri = FileUtil.getFileURI(file);
-                    if(fileUri != null){
+                    if (fileUri != null) {
                       cval = fileUri.toString();
                     }
                   }
@@ -328,10 +329,32 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
                         // off of app.home
                         String path = System.getProperties().getProperty(APP_HOME);
 
+                        // If no app.home, try the directory the configuration file is in
                         if (StringUtil.isBlank(path)) {
-                          path = System.getProperties().getProperty("user.dir");
+
+                          String cfgUri = System.getProperty(ConfigTag.CONFIG_URI);
+                          if (StringUtil.isNotBlank(cfgUri) && cfgUri.startsWith("file:")) {
+                            try {
+                              File cfgFile = UriUtil.getFile(new URI(cfgUri));
+                              if (cfgFile != null && cfgFile.exists()) {
+                                path = cfgFile.getParent();
+                              } else {
+                                // should not happen
+                                path = System.getProperties().getProperty("user.dir").concat("/loader/log");
+                              }
+                            } catch (URISyntaxException e) {
+                              // should not happen
+                              path = System.getProperties().getProperty("user.dir").concat("/loader/log");
+                            }
+                          } else {
+                            // probably a configuration file read across the network
+                            path = System.getProperties().getProperty("user.dir").concat("/loader/log");
+                          }
+                        } else {
+                          path = path.concat("/log");
                         }
-                        File logdir = new File(path + "/log");
+
+                        File logdir = new File(path);
                         logfile = new File(logdir, logfile.getPath());
                         testUri = FileUtil.getFileURI(logfile);
                         cval = testUri.toString();
@@ -342,7 +365,6 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
                     System.out.println("Bad target URI '" + cval + "'");
                     System.exit(11);
                   }
-
                 }
 
                 // set the validated URI in the target field
