@@ -240,7 +240,14 @@ public class BootStrap extends AbstractLoader {
       if (StringUtil.isBlank(configuration.getName())) {
         configuration.setName(UriUtil.getBase(cfgUri));
       }
-      System.setProperty(ConfigTag.CONFIG_URI, cfgUri.toString());
+      String configUri = cfgUri.toString();
+      System.setProperty(ConfigTag.CONFIG_URI, configUri);
+      if (StringUtil.isNotBlank(configUri) && configUri.startsWith("file:")) {
+        File cfgFile = UriUtil.getFile(cfgUri);
+        if (cfgFile != null && cfgFile.exists()) {
+          System.setProperty(ConfigTag.CONFIG_DIR, cfgFile.getParent());
+        }
+      }
     } catch (IOException | ConfigurationException e) {
       System.err.println(LogMsg.createMsg(MSG, "Loader.error_reading_configuration", cfgUri, e.getLocalizedMessage(), ExceptionUtil.stackTrace(e)));
       System.exit(7);

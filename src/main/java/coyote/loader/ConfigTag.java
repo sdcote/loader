@@ -21,6 +21,9 @@ public class ConfigTag {
   /** Name ({@value}) of the system property containing the URI used to load the configuration. */
   public static final String CONFIG_URI = "cfg.uri";
 
+  /** Name ({@value}) of the system property containing the URI used to load the configuration. */
+  public static final String CONFIG_DIR = "cfg.dir";
+
   /** Name ({@value}) of the system property containing the name of the cipher to use. */
   public static final String CIPHER_NAME = "cipher.name";
 
