@@ -188,7 +188,11 @@ public class Scheduler extends ThreadJob {
             Log.warn(ex.getClass().getName() + " thrown in scheduler loop\r\n" + ExceptionUtil.stackTrace(ex));
           }
 
-          Log.append(SCHED, "Next job '" + nextJob + "' to run at " + nextJob.getExecutionTime() + " (" + new Date(nextJob.getExecutionTime()) + ")");
+          if (nextJob != null) {
+            Log.append(SCHED, "Next job '" + nextJob + "' to run at " + nextJob.getExecutionTime() + " (" + new Date(nextJob.getExecutionTime()) + ")");
+          } else {
+            Log.append(SCHED, "There is no job currently queued next");
+          }
 
         } // 
 
