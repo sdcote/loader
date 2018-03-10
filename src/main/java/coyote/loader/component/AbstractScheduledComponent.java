@@ -54,7 +54,7 @@ public class AbstractScheduledComponent extends ScheduledJob implements ManagedC
    * 
    */
   public AbstractScheduledComponent() {
-    super.setDoWorkOnce( true );
+    super.setDoWorkOnce(true);
   }
 
 
@@ -66,62 +66,62 @@ public class AbstractScheduledComponent extends ScheduledJob implements ManagedC
    * @param config The object containing the configuration attributes.
    */
   @Override
-  public void setConfiguration( final Config config ) {
+  public void setConfiguration(final Config config) {
     configuration = config;
     // Setup the schedule - 
-    List<Config> cfgs = config.getSections( ConfigTag.SCHEDULE );
-    if ( cfgs.size() > 0 ) {
-      Config scheduleCfg = cfgs.get( 0 );
+    List<Config> cfgs = config.getSections(ConfigTag.SCHEDULE);
+    if (cfgs.size() > 0) {
+      Config scheduleCfg = cfgs.get(0);
       cronentry = new CronEntry();
 
       // go through each in order, this allows the user to determine how 
       // attributes are applied by processing them in order they appear and 
       // overwriting previous attributes.
-      for ( DataField field : scheduleCfg.getFields() ) {
-        if ( ConfigTag.PATTERN.equalsIgnoreCase( field.getName() ) ) {
+      for (DataField field : scheduleCfg.getFields()) {
+        if (ConfigTag.PATTERN.equalsIgnoreCase(field.getName())) {
           try {
-            cronentry = CronEntry.parse( field.getStringValue() );
-          } catch ( ParseException e ) {
-            Log.error( LogMsg.createMsg( AbstractLoader.MSG, "Component.schedule_patterm_parse_error", e.getMessage() ) );
+            cronentry = CronEntry.parse(field.getStringValue());
+          } catch (ParseException e) {
+            Log.error(LogMsg.createMsg(AbstractLoader.MSG, "Component.schedule_patterm_parse_error", e.getMessage()));
           }
-        } else if ( ConfigTag.MINUTES.equalsIgnoreCase( field.getName() ) ) {
-          cronentry.setMinutePattern( field.getStringValue() );
-        } else if ( ConfigTag.HOURS.equalsIgnoreCase( field.getName() ) ) {
-          cronentry.setHourPattern( field.getStringValue() );
-        } else if ( ConfigTag.MONTHS.equalsIgnoreCase( field.getName() ) ) {
-          cronentry.setMonthPattern( field.getStringValue() );
-        } else if ( ConfigTag.DAYS.equalsIgnoreCase( field.getName() ) ) {
-          cronentry.setDayPattern( field.getStringValue() );
-        } else if ( ConfigTag.DAYS_OF_WEEK.equalsIgnoreCase( field.getName() ) ) {
-          cronentry.setDayOfWeekPattern( field.getStringValue() );
-        } else if ( ConfigTag.MILLIS.equalsIgnoreCase( field.getName() ) ) {
+        } else if (ConfigTag.MINUTES.equalsIgnoreCase(field.getName())) {
+          cronentry.setMinutePattern(field.getStringValue());
+        } else if (ConfigTag.HOURS.equalsIgnoreCase(field.getName())) {
+          cronentry.setHourPattern(field.getStringValue());
+        } else if (ConfigTag.MONTHS.equalsIgnoreCase(field.getName())) {
+          cronentry.setMonthPattern(field.getStringValue());
+        } else if (ConfigTag.DAYS.equalsIgnoreCase(field.getName())) {
+          cronentry.setDayPattern(field.getStringValue());
+        } else if (ConfigTag.DAYS_OF_WEEK.equalsIgnoreCase(field.getName())) {
+          cronentry.setDayOfWeekPattern(field.getStringValue());
+        } else if (ConfigTag.MILLIS.equalsIgnoreCase(field.getName())) {
           long millis = 0;
           try {
-            millis = Long.parseLong( field.getStringValue() );
-            setExecutionInterval( millis );
-          } catch ( NumberFormatException e ) {
-            Log.error( LogMsg.createMsg( AbstractLoader.MSG, "Component.schedule_interval_parse_error", e.getMessage() ) );
+            millis = Long.parseLong(field.getStringValue());
+            setExecutionInterval(millis);
+          } catch (NumberFormatException e) {
+            Log.error(LogMsg.createMsg(AbstractLoader.MSG, "Component.schedule_interval_parse_error", e.getMessage()));
           }
         }
       }
 
-      if ( cronentry != null ) {
+      if (cronentry != null) {
 
         // Repeat according to the schedule
-        setRepeatable( true );
-        setExecutionTime( cronentry.getNextTime() );
+        setRepeatable(true);
+        setExecutionTime(cronentry.getNextTime());
 
-        if ( Log.isLogging( Log.DEBUG_EVENTS ) ) {
-          Log.debug( cronentry.toString() );
+        if (Log.isLogging(Log.DEBUG_EVENTS)) {
+          Log.debug(cronentry.toString());
         }
       } else {
-        Log.error( LogMsg.createMsg( AbstractLoader.MSG, "Component.schedule_no_cron_entry", getExecutionInterval() ) );
+        Log.error(LogMsg.createMsg(AbstractLoader.MSG, "Component.schedule_no_cron_entry", getExecutionInterval()));
 
         // No schedule, no repeat
-        setRepeatable( false );
+        setRepeatable(false);
 
         // run one second in the future to give initialization time to settle
-        setExecutionTime( System.currentTimeMillis() + 1000 );
+        setExecutionTime(System.currentTimeMillis() + 1000);
       }
 
     }
@@ -136,7 +136,7 @@ public class AbstractScheduledComponent extends ScheduledJob implements ManagedC
    */
   @Override
   public long getExecutionInterval() {
-    if ( cronentry != null ) {
+    if (cronentry != null) {
       return cronentry.getNextInterval();
     } else {
       return super.getExecutionInterval();
@@ -218,8 +218,8 @@ public class AbstractScheduledComponent extends ScheduledJob implements ManagedC
   @Override
   public DataFrame getProfile() {
     final DataFrame retval = new DataFrame();
-    retval.put( CLASS, CLASS );
-    retval.put( "ID", identifier );
+    retval.put(CLASS, CLASS);
+    retval.put("ID", identifier);
 
     return retval;
   }
@@ -273,11 +273,11 @@ public class AbstractScheduledComponent extends ScheduledJob implements ManagedC
     final Config template = new Config();
 
     try {
-      template.setName( ManagedComponent.CLASS );
+      template.setName(ManagedComponent.CLASS);
 
       // define the slots
       // template.addConfigSlot( new ConfigSlot( LogicComponent.ENABLED_TAG, "Flag indicating the component is enabled to run.", new Boolean( true ) ).toString() );
-    } catch ( final Exception ex ) {
+    } catch (final Exception ex) {
       // should always work
     }
 
@@ -302,7 +302,7 @@ public class AbstractScheduledComponent extends ScheduledJob implements ManagedC
    * @see coyote.loader.component.ManagedComponent#setEnabled(boolean)
    */
   @Override
-  public void setEnabled( final boolean flag ) {
+  public void setEnabled(final boolean flag) {
     enabled = flag;
   }
 
@@ -313,8 +313,8 @@ public class AbstractScheduledComponent extends ScheduledJob implements ManagedC
    * @see coyote.loader.component.ManagedComponent#setId(java.lang.String)
    */
   @Override
-  public void setId( final String id ) {
-    if ( ( id != null ) && ( id.length() > 0 ) ) {
+  public void setId(final String id) {
+    if ((id != null) && (id.length() > 0)) {
       identifier = id;
     }
   }
@@ -326,7 +326,7 @@ public class AbstractScheduledComponent extends ScheduledJob implements ManagedC
    * @see coyote.loader.component.ManagedComponent#setStartTime(long)
    */
   @Override
-  public void setStartTime( final long millis ) {
+  public void setStartTime(final long millis) {
     startTime = millis;
   }
 
@@ -357,7 +357,7 @@ public class AbstractScheduledComponent extends ScheduledJob implements ManagedC
    * @see coyote.loader.component.ManagedComponent#shutdown(coyote.dataframe.DataFrame)
    */
   @Override
-  public void shutdown( DataFrame params ) {}
+  public void shutdown(DataFrame params) {}
 
 
 
@@ -366,8 +366,19 @@ public class AbstractScheduledComponent extends ScheduledJob implements ManagedC
    * @see coyote.loader.component.ManagedComponent#setLoader(coyote.loader.Loader)
    */
   @Override
-  public void setLoader( Loader loader ) {
+  public void setLoader(Loader loader) {
     this.loader = loader;
+  }
+
+
+
+
+  /**
+   * @see coyote.loader.component.ManagedComponent#getLoader()
+   */
+  @Override
+  public Loader getLoader() {
+    return loader;
   }
 
 
@@ -377,7 +388,7 @@ public class AbstractScheduledComponent extends ScheduledJob implements ManagedC
    * @see coyote.loader.component.ManagedComponent#setContext(coyote.loader.Context)
    */
   @Override
-  public void setContext( Context context ) {
+  public void setContext(Context context) {
     this.context = context;
   }
 

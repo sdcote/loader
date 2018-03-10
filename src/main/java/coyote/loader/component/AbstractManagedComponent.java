@@ -57,7 +57,7 @@ public abstract class AbstractManagedComponent extends ThreadJob implements Mana
    * @param config The object containing the configuration attributes.
    */
   @Override
-  public void setConfiguration( final Config config ) {
+  public void setConfiguration(final Config config) {
     configuration = config;
   }
 
@@ -134,7 +134,7 @@ public abstract class AbstractManagedComponent extends ThreadJob implements Mana
    * @see coyote.loader.component.ManagedComponent#setName(java.lang.String)
    */
   @Override
-  public void setName( String name ) {
+  public void setName(String name) {
     componentName = name;
   }
 
@@ -147,8 +147,8 @@ public abstract class AbstractManagedComponent extends ThreadJob implements Mana
   @Override
   public DataFrame getProfile() {
     final DataFrame retval = new DataFrame();
-    retval.put( CLASS, CLASS );
-    retval.put( "ID", identifier );
+    retval.put(CLASS, CLASS);
+    retval.put("ID", identifier);
 
     return retval;
   }
@@ -202,11 +202,11 @@ public abstract class AbstractManagedComponent extends ThreadJob implements Mana
     final Config template = new Config();
 
     try {
-      template.setName( ManagedComponent.CLASS );
+      template.setName(ManagedComponent.CLASS);
 
       // define the slots
       // template.addConfigSlot( new ConfigSlot( LogicComponent.ENABLED_TAG, "Flag indicating the component is enabled to run.", new Boolean( true ) ).toString() );
-    } catch ( final Exception ex ) {
+    } catch (final Exception ex) {
       // should always work
     }
 
@@ -231,7 +231,7 @@ public abstract class AbstractManagedComponent extends ThreadJob implements Mana
    * @see coyote.loader.component.ManagedComponent#setEnabled(boolean)
    */
   @Override
-  public void setEnabled( final boolean flag ) {
+  public void setEnabled(final boolean flag) {
     enabled = flag;
   }
 
@@ -242,8 +242,8 @@ public abstract class AbstractManagedComponent extends ThreadJob implements Mana
    * @see coyote.loader.component.ManagedComponent#setId(java.lang.String)
    */
   @Override
-  public void setId( final String id ) {
-    if ( StringUtil.isNotBlank( id ) ) {
+  public void setId(final String id) {
+    if (StringUtil.isNotBlank(id)) {
       identifier = id;
     }
   }
@@ -255,7 +255,7 @@ public abstract class AbstractManagedComponent extends ThreadJob implements Mana
    * @see coyote.loader.component.ManagedComponent#setStartTime(long)
    */
   @Override
-  public void setStartTime( final long millis ) {
+  public void setStartTime(final long millis) {
     startTime = millis;
   }
 
@@ -286,7 +286,7 @@ public abstract class AbstractManagedComponent extends ThreadJob implements Mana
    * @see coyote.loader.component.ManagedComponent#shutdown(coyote.dataframe.DataFrame)
    */
   @Override
-  public void shutdown( DataFrame params ) {}
+  public void shutdown(DataFrame params) {}
 
 
 
@@ -295,8 +295,19 @@ public abstract class AbstractManagedComponent extends ThreadJob implements Mana
    * @see coyote.loader.component.ManagedComponent#setLoader(coyote.loader.Loader)
    */
   @Override
-  public void setLoader( Loader loader ) {
+  public void setLoader(Loader loader) {
     this.loader = loader;
+  }
+
+
+
+
+  /**
+   * @see coyote.loader.component.ManagedComponent#getLoader()
+   */
+  @Override
+  public Loader getLoader() {
+    return loader;
   }
 
 
@@ -306,7 +317,7 @@ public abstract class AbstractManagedComponent extends ThreadJob implements Mana
    * @see coyote.loader.component.ManagedComponent#setContext(coyote.loader.Context)
    */
   @Override
-  public void setContext( Context context ) {
+  public void setContext(Context context) {
     this.context = context;
   }
 

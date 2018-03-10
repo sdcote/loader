@@ -36,7 +36,7 @@ public interface ManagedComponent extends Component {
    * 
    * @param config The object containing the configuration attributes.
    */
-  public void setConfiguration( Config config );
+  public void setConfiguration(Config config);
 
 
 
@@ -46,7 +46,15 @@ public interface ManagedComponent extends Component {
    * 
    * @param loader the Loader managing this component.
    */
-  public void setLoader( Loader loader );
+  public void setLoader(Loader loader);
+
+
+
+
+  /**
+   * @return the loader which loaded this component or null if this is a root loader.
+   */
+  public Loader getLoader();
 
 
 
@@ -92,7 +100,7 @@ public interface ManagedComponent extends Component {
    * @param flag True to enable the component for processing, false to disable 
    *        the component.
    */
-  public void setEnabled( boolean flag );
+  public void setEnabled(boolean flag);
 
 
 
@@ -103,7 +111,7 @@ public interface ManagedComponent extends Component {
    * 
    * @param id The identifier to set in the component.
    */
-  public void setId( String id );
+  public void setId(String id);
 
 
 
@@ -114,7 +122,7 @@ public interface ManagedComponent extends Component {
    * 
    * @param name the logical name of this component
    */
-  public void setName( String name );
+  public void setName(String name);
 
 
 
@@ -125,7 +133,7 @@ public interface ManagedComponent extends Component {
    * @param millis Epoch time in milliseconds as is reported by 
    *        System.currentTimeMillis()
    */
-  public void setStartTime( long millis );
+  public void setStartTime(long millis);
 
 
 
@@ -138,7 +146,7 @@ public interface ManagedComponent extends Component {
    * 
    * @param params Shutdown arguments, can be null.
    */
-  public void shutdown( final DataFrame params );
+  public void shutdown(final DataFrame params);
 
 
 
@@ -160,7 +168,7 @@ public interface ManagedComponent extends Component {
    * @param timeout The number of milliseconds to wait for the main run loop to
    *        be entered.
    */
-  public void waitForActive( long timeout );
+  public void waitForActive(long timeout);
 
 
 
@@ -173,6 +181,6 @@ public interface ManagedComponent extends Component {
    * 
    * @param context the shared operational context this component is to use.
    */
-  public void setContext( Context context );
+  public void setContext(Context context);
 
 }

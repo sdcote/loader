@@ -24,7 +24,7 @@ import coyote.loader.thread.ThreadPool;
  */
 public interface Loader extends WatchDog {
 
-  public static final Version API_VERSION = new Version( 0, 7, 9, Version.GENERAL );
+  public static final Version API_VERSION = new Version(0, 7, 10, Version.GENERAL);
   public static final String API_NAME = "CoyoteLoader";
   public static final String LOADER = "Loader";
   public static final String INITIALIZING = "Initializing";
@@ -70,7 +70,7 @@ public interface Loader extends WatchDog {
    * 
    * @param name the logical name of this loader
    */
-  public void setName( String name );
+  public void setName(String name);
 
 
 
@@ -82,7 +82,7 @@ public interface Loader extends WatchDog {
    * 
    * @throws ConfigurationException if there were problems configuring the loader.
    */
-  public void configure( Config cfg ) throws ConfigurationException;
+  public void configure(Config cfg) throws ConfigurationException;
 
 
 
@@ -178,7 +178,7 @@ public interface Loader extends WatchDog {
    * 
    * @param args command line arguments
    */
-  public void setCommandLineArguments( String[] args );
+  public void setCommandLineArguments(String[] args);
 
 
 
@@ -203,5 +203,21 @@ public interface Loader extends WatchDog {
    * @return the StatBoard for this server.
    */
   public StatBoard getStats();
+
+
+
+
+  /**
+   * @return the loader which loaded this loader or null if this is a root loader.
+   */
+  public Loader getLoader();
+
+
+
+
+  /**
+   * @param loader the loader which loaded this loader.
+   */
+  public void setLoader(Loader loader);
 
 }

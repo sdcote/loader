@@ -384,7 +384,11 @@ public class Scheduler extends ThreadJob {
         mutex.notifyAll();
       }
 
-      Log.append(SCHED, "Job scheduled in list of " + getJobCount() + " jobs; next job '" + nextJob + "' to run at " + new Date(nextJob.getExecutionTime()));
+      if (nextJob != null) {
+        Log.append(SCHED, "Job scheduled in list of " + getJobCount() + " jobs; next job '" + nextJob + "' to run at " + new Date(nextJob.getExecutionTime()));
+      } else {
+        Log.append(SCHED, "Job scheduled in list of " + getJobCount() + " jobs; there is no next job");
+      }
 
       // Make sure we have the threads to process it
       if (threadpool != null) {

@@ -89,6 +89,9 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   /** A symbol table to support basic template functions */
   protected static final SymbolTable symbols = new SymbolTable();
 
+  /** The loader which loaded this loader. Null implies this is the root loader */
+  protected Loader parent = null;
+
 
 
 
@@ -524,11 +527,11 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
           // set the shared operational context all component use to share data
           cmpnt.setContext(getContext());
 
-          // configure the component
-          cmpnt.setConfiguration(config);
-
           // Set this loader as the watchdog if the component is interested 
           cmpnt.setLoader(this);
+
+          // configure the component
+          cmpnt.setConfiguration(config);
 
           // Add it to the components map
           synchronized (components) {
@@ -538,8 +541,10 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
           // return the component
           retval = cmpnt;
         } else if (object instanceof Runnable) {
-          // return the runnable
           retval = (Runnable)object;
+        } else if (object instanceof Loader) {
+          ((Loader)object).setLoader(this);
+          retval = object;
         } else {
           System.err.println(LogMsg.createMsg(MSG, "Loader.class_is_not_logic_component", className));
         }
@@ -995,6 +1000,28 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   @Override
   public StatBoard getStats() {
     return stats;
+  }
+
+
+
+
+  /**
+   * @see coyote.loader.Loader#getLoader()
+   */
+  @Override
+  public Loader getLoader() {
+    return parent;
+  }
+
+
+
+
+  /**
+   * @see coyote.loader.Loader#setLoader(coyote.loader.Loader)
+   */
+  @Override
+  public void setLoader(Loader loader) {
+    parent = loader;
   }
 
 }
