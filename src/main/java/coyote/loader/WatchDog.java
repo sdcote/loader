@@ -29,7 +29,7 @@ public interface WatchDog {
    *  
    * @param component
    */
-  public void checkIn( Object component );
+  public void checkIn(Object component);
 
 
 
@@ -46,6 +46,6 @@ public interface WatchDog {
    * @param component
    * @param cfg The configuration to use when creating a new instance of this component.
    */
-  public void setHangTime( long millis, Object component, Config cfg );
+  public void setHangTime(long millis, Object component, Config cfg);
 
 }

@@ -31,7 +31,7 @@ public interface ContextListener {
    * 
    * @param context the context which is starting.
    */
-  void onStart( Context context );
+  void onStart(Context context);
 
 
 
@@ -50,7 +50,7 @@ public interface ContextListener {
    * 
    * @param context the context which has ended.
    */
-  void onEnd( Context context );
+  void onEnd(Context context);
 
 
 
@@ -64,6 +64,6 @@ public interface ContextListener {
    * 
    * @param event the event which occurred.
    */
-  void onEvent( ContextEvent event );
+  void onEvent(ContextEvent event);
 
 }

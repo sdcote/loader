@@ -54,28 +54,28 @@ public class ResultCode {
 
   public static final HashMap<Integer, String> message = new HashMap<Integer, String>();
 
-  private static final ResourceBundle resbundle = ResourceBundle.getBundle( "ResultCodes", Locale.getDefault() );
+  private static final ResourceBundle resbundle = ResourceBundle.getBundle("ResultCodes", Locale.getDefault());
 
   static {
-    ResultCode.message.put( new Integer( ResultCode.UNKNOWN ), "The API could not determine the problem" );
-    ResultCode.message.put( new Integer( ResultCode.NAK ), "The event was negatively acknowledged" );
-    ResultCode.message.put( new Integer( ResultCode.SHUTDOWN ), "PowerSG API is in a shutdown state" );
-    ResultCode.message.put( new Integer( ResultCode.AUTHENTICATION_FAILURE ), "Authentication Failure" );
-    ResultCode.message.put( new Integer( ResultCode.AUTHORIZATION_FAILURE ), "Authorization Failure" );
-    ResultCode.message.put( new Integer( ResultCode.FUNCTION_NOT_SUPPORTED ), "Function Not Supported" );
-    ResultCode.message.put( new Integer( ResultCode.UNABLE_TO_GET_CONNECTION ), "Unable to receive database connection" );
-    ResultCode.message.put( new Integer( ResultCode.UNABLE_TO_COMMIT ), "Unable to commit to database" );
-    ResultCode.message.put( new Integer( ResultCode.MESSAGE_MISSING_INFO ), "Information required for the operation was not supplied" );
-    ResultCode.message.put( new Integer( ResultCode.REQUEST_TIMED_OUT ), "Request timed-out before receiving a response" );
-    ResultCode.message.put( new Integer( ResultCode.SESSION_LOOKUP_FAILED ), "Session lookup failed" );
-    ResultCode.message.put( new Integer( ResultCode.KEY_LOOKUP_FAILED ), "Key lookup failed" );
-    ResultCode.message.put( new Integer( ResultCode.INVALID_RESPONSE_DATA_FORMAT ), "One or more fields in the response contained data in an unexpected format" );
+    ResultCode.message.put(new Integer(ResultCode.UNKNOWN), "The API could not determine the problem");
+    ResultCode.message.put(new Integer(ResultCode.NAK), "The event was negatively acknowledged");
+    ResultCode.message.put(new Integer(ResultCode.SHUTDOWN), "PowerSG API is in a shutdown state");
+    ResultCode.message.put(new Integer(ResultCode.AUTHENTICATION_FAILURE), "Authentication Failure");
+    ResultCode.message.put(new Integer(ResultCode.AUTHORIZATION_FAILURE), "Authorization Failure");
+    ResultCode.message.put(new Integer(ResultCode.FUNCTION_NOT_SUPPORTED), "Function Not Supported");
+    ResultCode.message.put(new Integer(ResultCode.UNABLE_TO_GET_CONNECTION), "Unable to receive database connection");
+    ResultCode.message.put(new Integer(ResultCode.UNABLE_TO_COMMIT), "Unable to commit to database");
+    ResultCode.message.put(new Integer(ResultCode.MESSAGE_MISSING_INFO), "Information required for the operation was not supplied");
+    ResultCode.message.put(new Integer(ResultCode.REQUEST_TIMED_OUT), "Request timed-out before receiving a response");
+    ResultCode.message.put(new Integer(ResultCode.SESSION_LOOKUP_FAILED), "Session lookup failed");
+    ResultCode.message.put(new Integer(ResultCode.KEY_LOOKUP_FAILED), "Key lookup failed");
+    ResultCode.message.put(new Integer(ResultCode.INVALID_RESPONSE_DATA_FORMAT), "One or more fields in the response contained data in an unexpected format");
 
-    ResultCode.message.put( new Integer( ResultCode.WORKFLOW_NOT_FOUND ), "Workflow not found" );
-    ResultCode.message.put( new Integer( ResultCode.WORKFLOW_LOCKED ), "Workflow is currently locked" );
-    ResultCode.message.put( new Integer( ResultCode.WORKFLOW_NOT_VALID ), "Workflow is not valid" );
-    ResultCode.message.put( new Integer( ResultCode.TASK_ALREADY_ACCEPTED ), "Workflow task has already been accepted" );
-    ResultCode.message.put( new Integer( ResultCode.TASK_NOT_IN_PROPER_STATE ), "Workflow task is not in proper state" );
+    ResultCode.message.put(new Integer(ResultCode.WORKFLOW_NOT_FOUND), "Workflow not found");
+    ResultCode.message.put(new Integer(ResultCode.WORKFLOW_LOCKED), "Workflow is currently locked");
+    ResultCode.message.put(new Integer(ResultCode.WORKFLOW_NOT_VALID), "Workflow is not valid");
+    ResultCode.message.put(new Integer(ResultCode.TASK_ALREADY_ACCEPTED), "Workflow task has already been accepted");
+    ResultCode.message.put(new Integer(ResultCode.TASK_NOT_IN_PROPER_STATE), "Workflow task is not in proper state");
   }
 
 
@@ -102,17 +102,17 @@ public class ResultCode {
    * @return A string representing the message for the result code. Will not 
    *         return a null or empty string even if the code is not known.
    */
-  public static final String getLocalizedMessage( final int code ) {
+  public static final String getLocalizedMessage(final int code) {
     String retval = null;
     try {
-      retval = ResultCode.resbundle.getString( Integer.toString( code ) );
-    } catch ( final Exception e ) {}
+      retval = ResultCode.resbundle.getString(Integer.toString(code));
+    } catch (final Exception e) {}
 
-    if ( ( retval != null ) && ( retval.length() > 0 ) ) {
+    if ((retval != null) && (retval.length() > 0)) {
       return retval;
     }
 
-    return ResultCode.getMessage( code );
+    return ResultCode.getMessage(code);
   }
 
 
@@ -126,11 +126,11 @@ public class ResultCode {
    * @return A string representing the message for the result code. Will not 
    *         return a null or empty string even if the code is not known.
    */
-  public static final String getMessage( final int code ) {
-    if ( ( code > -1 ) && ( code <= ResultCode.message.size() ) ) {
+  public static final String getMessage(final int code) {
+    if ((code > -1) && (code <= ResultCode.message.size())) {
       try {
-        return (String)ResultCode.message.get( new Integer( code ) );
-      } catch ( final Exception e ) {
+        return (String)ResultCode.message.get(new Integer(code));
+      } catch (final Exception e) {
         return "Message code " + code + " is unknown";
       }
     }

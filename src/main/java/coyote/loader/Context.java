@@ -29,7 +29,7 @@ import coyote.commons.template.SymbolTable;
  */
 public interface Context {
 
-  public void addListener( ContextListener listener );
+  public void addListener(ContextListener listener);
 
 
 
@@ -42,7 +42,7 @@ public interface Context {
    * 
    * @return true if there is an object mapped to this key, false otherwise 
    */
-  public boolean contains( String key );
+  public boolean contains(String key);
 
 
 
@@ -70,7 +70,7 @@ public interface Context {
    * 
    * @return the object with that name or null if the named object is not found
    */
-  public Object get( String key );
+  public Object get(String key);
 
 
 
@@ -86,7 +86,7 @@ public interface Context {
    * @return the value of the property, or null if the property was not found 
    *         with the given key of if the key was null or blank.
    */
-  public Object get( String key, boolean usecase );
+  public Object get(String key, boolean usecase);
 
 
 
@@ -103,7 +103,7 @@ public interface Context {
    * @return the string representation of the object with that name or null if 
    *         the named object is not found
    */
-  public String getAsString( String key );
+  public String getAsString(String key);
 
 
 
@@ -122,7 +122,7 @@ public interface Context {
    * @return the string representation of the object with that name or null if 
    *         the named object is not found
    */
-  public String getAsString( String key, boolean usecase );
+  public String getAsString(String key, boolean usecase);
 
 
 
@@ -206,7 +206,7 @@ public interface Context {
    * @param key the name of the object to place
    * @param value the object to place (null results in the object being removed)
    */
-  public void set( String key, Object value );
+  public void set(String key, Object value);
 
 
 
@@ -214,12 +214,12 @@ public interface Context {
   /**
    * @param endTime the endTime to set
    */
-  public void setEndTime( long endTime );
+  public void setEndTime(long endTime);
 
 
 
 
-  public void setError( boolean flag );
+  public void setError(boolean flag);
 
 
 
@@ -229,12 +229,12 @@ public interface Context {
    * 
    * @param msg The message to place in the context.
    */
-  public void setError( String msg );
+  public void setError(String msg);
 
 
 
 
-  public void setListeners( List<ContextListener> listeners );
+  public void setListeners(List<ContextListener> listeners);
 
 
 
@@ -242,7 +242,7 @@ public interface Context {
   /**
    * @param message the message to set
    */
-  public void setMessage( String message );
+  public void setMessage(String message);
 
 
 
@@ -250,7 +250,7 @@ public interface Context {
   /**
    * @param context the parent context to set
    */
-  public void setParent( AbstractContext context );
+  public void setParent(AbstractContext context);
 
 
 
@@ -258,7 +258,7 @@ public interface Context {
   /**
    * @param startTime the startTime to set
    */
-  public void setStartTime( long startTime );
+  public void setStartTime(long startTime);
 
 
 
@@ -266,7 +266,7 @@ public interface Context {
   /**
    * @param status the status to set
    */
-  public void setStatus( String status );
+  public void setStatus(String status);
 
 
 
@@ -274,7 +274,7 @@ public interface Context {
   /**
    * @param symbols the symbols to set in this context
    */
-  public void setSymbols( SymbolTable symbols );
+  public void setSymbols(SymbolTable symbols);
 
 
 

@@ -35,13 +35,13 @@ public class Wedge extends AbstractManagedComponent implements ManagedComponent 
   @Override
   public void initialize() {
     // Make sure to inform operations that this wedge is always running
-    Log.debug( this.getClass().getSimpleName() + " constructed, daemon should always remain active" );
+    Log.debug(this.getClass().getSimpleName() + " constructed, daemon should always remain active");
 
     // pause 5 seconds between calls to doWork()
-    setIdleWait( 5000 );
+    setIdleWait(5000);
 
     // Start out idling
-    setIdle( true );
+    setIdle(true);
   }
 
 
