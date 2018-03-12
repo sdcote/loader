@@ -170,7 +170,7 @@ public class ThreadPool {
     // Set the minimum number of workers to have active at any one time
     if (cfg.contains(MINWORKERS_TAG)) {
       try {
-        setMinThreadCount(cfg.getAsInt(MINWORKERS_TAG));
+        setMinWorkerCount(cfg.getAsInt(MINWORKERS_TAG));
       } catch (DataFrameException e) {}
     }
   }
@@ -273,9 +273,10 @@ public class ThreadPool {
    *
    * @param min
    */
-  public void setMinThreadCount(int min) {
+  public void setMinWorkerCount(int min) {
     configuration.put(MINWORKERS_TAG, new Integer(min).toString());
     minimum_workers = min;
+    checkLoad();
   }
 
 
@@ -490,9 +491,20 @@ public class ThreadPool {
    */
   public int checkLoad() {
 
+    if (Log.isLogging(THREAD)) {
+      if (jobqueue != null) {
+        Log.append(THREAD, "ThreadPool.checkLoad() isRunning:" + isRunning() + " JobQueueSize:" + jobqueue.size() + " Workers:" + worker_set.size() + "(max=" + maximum_workers + ") IdleWorkers:" + idle_set.size());
+      } else {
+        Log.append(THREAD, "ThreadPool.checkLoad() - No JobQueue");
+      }
+    }
+
     if (jobqueue != null) {
-      // if there are more jobs than workers AND we have not reached the max worker size AND all workers are currently running jobs...
-      if (isRunning() && jobqueue.size() > worker_set.size() && worker_set.size() < maximum_workers && idle_set.size() == 0) {
+      if (isRunning() &&
+          worker_set.size() < maximum_workers && // room to grow
+          idle_set.size() == 0 && // all workers busy
+          jobqueue.size() > 0 // jobs to process 
+          ) {
         if (Log.isLogging(THREAD)) {
           Log.append(THREAD, "CheckLoad: Creating a new worker - JobQueue=" + jobqueue.size() + " Workers=" + worker_set.size() + " (max=" + maximum_workers + ") idle workers=" + idle_set.size());
         }
@@ -653,19 +665,16 @@ public class ThreadPool {
    * @throws InterruptedException
    */
   public void handle(ThreadJob job) throws InterruptedException {
-    // If we are not running, we better get started
     if (!isRunning()) {
       start();
     }
 
-    // if there is no job to do...
     if (job == null) {
-      // whine and complain
       Log.warn("ThreadPool.handle() received a null job");
     } else {
-      // otherwise, dunk it in the pool
       try {
         jobqueue.put(job, 5000);
+        Log.append(THREAD, "ThreadPool.handle(ThreadJob) placed job " + job + " in queue - JobQueue size:" + jobqueue.size() + " capacity:" + jobqueue.capacity() + " Workers=" + worker_set.size() + " (max=" + maximum_workers + ") idle workers=" + idle_set.size());
       } catch (InterruptedException e) {
         if (jobqueue.size() == jobqueue.capacity()) {
           Log.error("Could not place job in queue: Queue Full");

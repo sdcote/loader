@@ -117,7 +117,7 @@ public class ThreadPoolTest {
 
     System.out.println( "------------------------------------" );
     pool.setMaxThreadCount( 3 );
-    pool.setMinThreadCount( 2 );
+    pool.setMinWorkerCount( 2 );
 
     try {
       pool.handle( new TestJob( "A" ) );
@@ -143,7 +143,7 @@ public class ThreadPoolTest {
   //@Test
   public void testJobIdle() {
     pool.setMaxThreadCount( 3 );
-    pool.setMinThreadCount( 0 );
+    pool.setMinWorkerCount( 0 );
     pool.setIdleTimeout( 3000L );
     Log.startLogging( Log.DEBUG );
     Log.debug( "Starting idle test" );
@@ -170,7 +170,7 @@ public class ThreadPoolTest {
   //@Test
   public void testWaitFor() {
     pool.setMaxThreadCount( 3 );
-    pool.setMinThreadCount( 0 );
+    pool.setMinWorkerCount( 0 );
 
     try {
       TestJob subject = new TestJob( "SlowStarterC" );

@@ -81,7 +81,7 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    *
    * @param task The task to run when the time comes
    */
-  public ScheduledJob( Runnable task ) {
+  public ScheduledJob(Runnable task) {
     super.work = task;
   }
 
@@ -103,7 +103,7 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    *
    * @param description the description of this job.
    */
-  public void setDescription( String description ) {
+  public void setDescription(String description) {
     this.description = description;
   }
 
@@ -125,7 +125,7 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    *
    * @param name the name of this job
    */
-  public void setName( String name ) {
+  public void setName(String name) {
     this.name = name;
   }
 
@@ -147,7 +147,7 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    *
    * @param executionInterval the number of milliseconds between executions of this job
    */
-  public void setExecutionInterval( long executionInterval ) {
+  public void setExecutionInterval(long executionInterval) {
     this.executionInterval = executionInterval;
   }
 
@@ -169,7 +169,7 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    *
    * @param executionLimit the maximum number of times this job is to run
    */
-  public void setExecutionLimit( long executionLimit ) {
+  public void setExecutionLimit(long executionLimit) {
     this.executionLimit = executionLimit;
   }
 
@@ -180,7 +180,7 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    * @return the epoch time (in milliseconds) when this job is to run
    */
   public long getExecutionTime() {
-    synchronized( mutex ) {
+    synchronized (mutex) {
       return executionTime;
     }
   }
@@ -193,9 +193,9 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    *
    * @param date when this job is to run
    */
-  public void setExecutionTime( Date date ) {
-    if ( date != null ) {
-      synchronized( mutex ) {
+  public void setExecutionTime(Date date) {
+    if (date != null) {
+      synchronized (mutex) {
         executionTime = date.getTime();
       }
     }
@@ -209,9 +209,9 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    *
    * @param cal when this job is supposed to run
    */
-  public void setExecutionTime( Calendar cal ) {
-    if ( cal != null ) {
-      synchronized( mutex ) {
+  public void setExecutionTime(Calendar cal) {
+    if (cal != null) {
+      synchronized (mutex) {
         executionTime = cal.getTime().getTime();
       }
     }
@@ -225,8 +225,8 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    *
    * @param millis the epoch time (in milliseconds) when this job is to run
    */
-  public void setExecutionTime( long millis ) {
-    synchronized( mutex ) {
+  public void setExecutionTime(long millis) {
+    synchronized (mutex) {
       executionTime = millis;
     }
   }
@@ -249,8 +249,8 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    *
    * @param date the date/time which this job is considered too old to run.
    */
-  public void setExpirationTime( Date date ) {
-    if ( date != null ) {
+  public void setExpirationTime(Date date) {
+    if (date != null) {
       expirationTime = date.getTime();
     }
   }
@@ -263,8 +263,8 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    *
    * @param cal the date/time which this job is considered too old to run.
    */
-  public void setExpirationTime( Calendar cal ) {
-    if ( cal != null ) {
+  public void setExpirationTime(Calendar cal) {
+    if (cal != null) {
       expirationTime = cal.getTime().getTime();
     }
   }
@@ -279,7 +279,7 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    * @param millis the epoch time (in milliseconds) which this job is 
    * considered too old to run
    */
-  public void setExpirationTime( long millis ) {
+  public void setExpirationTime(long millis) {
     expirationTime = millis;
   }
 
@@ -294,7 +294,7 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    *         time has not passed or if no expiration time has been set.
    */
   public boolean isExpired() {
-    if ( ( expirationTime > 0 ) && ( System.currentTimeMillis() - this.started_time > expirationTime ) ) {
+    if ((expirationTime > 0) && (System.currentTimeMillis() - this.started_time > expirationTime)) {
       return true;
     }
 
@@ -321,7 +321,7 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    * @param cancelled true if this job has been cancelled (do not run) false if 
    *        this job is otherwise approved to run.
    */
-  public void setCancelled( boolean cancelled ) {
+  public void setCancelled(boolean cancelled) {
     this.cancelled = cancelled;
   }
 
@@ -343,7 +343,7 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    *
    * @param nextJob  the next job to be run after this one
    */
-  public void setNextJob( ScheduledJob nextJob ) {
+  public void setNextJob(ScheduledJob nextJob) {
     this.nextJob = nextJob;
   }
 
@@ -365,7 +365,7 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    *
    * @param previousJob the next job to be run before this job
    */
-  public void setPreviousJob( ScheduledJob previousJob ) {
+  public void setPreviousJob(ScheduledJob previousJob) {
     this.previousJob = previousJob;
   }
 
@@ -393,7 +393,7 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    *
    * @param chainedJob the job to executed immediately after this job completes
    */
-  public void setChainedJob( ScheduledJob chainedJob ) {
+  public void setChainedJob(ScheduledJob chainedJob) {
     this.chainedJob = chainedJob;
   }
 
@@ -404,7 +404,7 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    * @return the number of times this job has been executed
    */
   public long getExecutionCount() {
-    synchronized( mutex ) {
+    synchronized (mutex) {
       return executionCount;
     }
   }
@@ -416,7 +416,7 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    * Increment the job execution counter by 1 (one).
    */
   public void incrementExecutionCount() {
-    synchronized( mutex ) {
+    synchronized (mutex) {
       this.executionCount++;
     }
   }
@@ -429,7 +429,7 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    *         once.
    */
   public boolean isRepeatable() {
-    synchronized( mutex ) {
+    synchronized (mutex) {
       return repeatable;
     }
   }
@@ -443,8 +443,8 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    * @param repeatable true if this job is a recurring job, false if it is to 
    *        be run only once.
    */
-  public void setRepeatable( boolean repeatable ) {
-    synchronized( mutex ) {
+  public void setRepeatable(boolean repeatable) {
+    synchronized (mutex) {
       this.repeatable = repeatable;
     }
   }
@@ -457,7 +457,7 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    *         be (re) added to the scheduler.
    */
   public boolean isEnabled() {
-    synchronized( mutex ) {
+    synchronized (mutex) {
       return enabled;
     }
   }
@@ -471,8 +471,8 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    * @param enabled true if this job is eligible for scheduling, false if it is 
    *        not to be (re) added to the scheduler.
    */
-  public void setEnabled( boolean enabled ) {
-    synchronized( mutex ) {
+  public void setEnabled(boolean enabled) {
+    synchronized (mutex) {
       this.enabled = enabled;
     }
   }
@@ -485,11 +485,13 @@ public class ScheduledJob extends ThreadJob implements Namable, Describable {
    */
   @Override
   public String toString() {
-    if ( name != null && name.trim().length() > 0 ) {
-      return name;
+    StringBuffer b = new StringBuffer();
+    if (name != null && name.trim().length() > 0) {
+      b.append(name);
     } else {
-      return super.toString();
+      b.append(this.getClass().getSimpleName());
     }
+    return b.toString();
   }
 
 }

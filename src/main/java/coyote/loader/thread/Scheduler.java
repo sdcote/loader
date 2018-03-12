@@ -132,14 +132,14 @@ public class Scheduler extends ThreadJob {
           // ScheduledJob referenced by nextJob
           try {
             executionTime = System.currentTimeMillis();
-            Log.append(SCHED, "Execution Time: " + executionTime + " (" + new Date(executionTime) + "):\r\n" + dump());
+            Log.append(SCHED, "========================================\r\nExecution Time: " + executionTime + " (" + new Date(executionTime) + "):\r\nInitial State of Scheduled Jobs Before Removing Next (Target) Job:\r\n" + dump());
 
             // Remove the job from the list and only work with the job which was removed
             ScheduledJob target = remove(nextJob);
 
             if (Log.isLogging(SCHED)) {
               if (nextJob != null) {
-                Log.append(SCHED, "Handling '" + target + "' now - next job '" + nextJob + "' to run at " + new Date(nextJob.getExecutionTime()) + "\r\n" + dump());
+                Log.append(SCHED, "Handling '" + target + "' now - next job '" + nextJob + "' to run at " + new Date(nextJob.getExecutionTime()) + "\r\nState of Jobs After Removing Target (Next) Job:\r\n" + dump());
               } else {
                 Log.append(SCHED, "Handling '" + target + "' now - there is no other job to run\r\n" + dump());
               }
@@ -155,11 +155,6 @@ public class Scheduler extends ThreadJob {
 
                 // Run the Scheduled Job in the thread pool
                 threadpool.handle((ThreadJob)target);
-
-                // / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
-                // We should check that the threadpool does not get too full...
-                // ...but if it does, there is not a lot we can do about it.
-                // / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
 
                 // Increment the execution counter
                 target.incrementExecutionCount();
@@ -177,10 +172,10 @@ public class Scheduler extends ThreadJob {
                   target.setExecutionTime(target.getExecutionInterval() + System.currentTimeMillis());
                   Log.append(SCHED, "Set execution time to " + new Date(target.getExecutionTime()) + " execution time = " + executionTime + ",  target interval = " + target.getExecutionInterval());
                   schedule(target);
-                  Log.append(SCHED, "Scheduled repeating job " + target + " (runs=" + target.getExecutionCount() + " interval=" + target.getExecutionInterval() + ") will run again at " + new Date(target.getExecutionTime()) + "\r\n" + dump());
+                  Log.append(SCHED, "Scheduled repeating job " + target + " (runs=" + target.getExecutionCount() + " interval=" + target.getExecutionInterval() + ") will run again at " + new Date(target.getExecutionTime()) + "\r\nState of Jobs After Rescheduling Target (Next) Job:\r\n" + dump());
                 }
               } else {
-                Log.append(SCHED, "Job " + target + " is not flagged to be repeated, removed from execution list");
+                Log.append(SCHED, "Job " + target + " is not flagged to be repeated, will not be added back to the execution list");
               }
             }
 
@@ -194,12 +189,9 @@ public class Scheduler extends ThreadJob {
             Log.append(SCHED, "There is no job currently queued next");
           }
 
-        } // 
+        } // time is close enought to execution time 
 
-        // It is not time to execute the the next job yet, so exit the method
-        // and let the threadjob check to see if we should shutdown
-
-      } // nextJob !null
+      } // next job != null
 
     } // sync
 
@@ -380,14 +372,10 @@ public class Scheduler extends ThreadJob {
           Log.append(SCHED, "Aaaakkk! Circular Job reference");
         }
 
+        Log.append(SCHED, "Job scheduled in list of " + getJobCount() + " jobs - NextJob: " + nextJob);
+
         // Let everyone know there is a new Job in the scheduler
         mutex.notifyAll();
-      }
-
-      if (nextJob != null) {
-        Log.append(SCHED, "Job scheduled in list of " + getJobCount() + " jobs; next job '" + nextJob + "' to run at " + new Date(nextJob.getExecutionTime()));
-      } else {
-        Log.append(SCHED, "Job scheduled in list of " + getJobCount() + " jobs; there is no next job");
       }
 
       // Make sure we have the threads to process it
@@ -488,4 +476,15 @@ public class Scheduler extends ThreadJob {
 
     return retval.toString();
   }
+
+
+
+
+  /**
+   * @return the reference to the threadpool this scheduler uses
+   */
+  public ThreadPool getThreadpool() {
+    return threadpool;
+  }
+
 }
