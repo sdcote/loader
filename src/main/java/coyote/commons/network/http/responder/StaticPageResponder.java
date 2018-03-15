@@ -17,8 +17,8 @@ import java.util.Map;
 
 import coyote.commons.network.MimeType;
 import coyote.commons.network.http.HTTPD;
-import coyote.commons.network.http.IHTTPSession;
-import coyote.commons.network.http.IStatus;
+import coyote.commons.network.http.HTTPSession;
+import coyote.commons.network.http.Status;
 import coyote.commons.network.http.Response;
 import coyote.commons.network.http.Status;
 
@@ -49,7 +49,7 @@ public class StaticPageResponder extends DefaultResponder {
 
 
   @Override
-  public Response get(final Resource resource, final Map<String, String> urlParams, final IHTTPSession session) {
+  public Response get(final Resource resource, final Map<String, String> urlParams, final HTTPSession session) {
     final String baseUri = resource.getUri();
     String realUri = HTTPDRouter.normalizeUri(session.getUri());
     for (int index = 0; index < Math.min(baseUri.length(), realUri.length()); index++) {
@@ -103,7 +103,7 @@ public class StaticPageResponder extends DefaultResponder {
 
 
   @Override
-  public IStatus getStatus() {
+  public Status getStatus() {
     return Status.OK;
   }
 

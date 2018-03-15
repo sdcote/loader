@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 
-import coyote.commons.network.http.IHTTPSession;
+import coyote.commons.network.http.HTTPSession;
 import coyote.commons.network.http.Response;
 import coyote.commons.network.http.Status;
 import coyote.commons.network.http.wsd.WebSocketDaemon.State;
@@ -21,7 +21,7 @@ public abstract class WebSocket {
 
   private final List<WebSocketFrame> continuousFrames = new LinkedList<WebSocketFrame>();
   private WebSocketFrame.OpCode continuousOpCode = null;
-  private final IHTTPSession handshakeRequest;
+  private final HTTPSession handshakeRequest;
   private final InputStream in;
   private OutputStream out;
   private State state = State.UNCONNECTED;
@@ -41,7 +41,7 @@ public abstract class WebSocket {
 
 
 
-  public WebSocket(final IHTTPSession handshakeRequest) {
+  public WebSocket(final HTTPSession handshakeRequest) {
     this.handshakeRequest = handshakeRequest;
     in = handshakeRequest.getInputStream();
     handshakeResponse.addHeader(WebSocketDaemon.HEADER_UPGRADE, WebSocketDaemon.HEADER_UPGRADE_VALUE);
@@ -64,7 +64,7 @@ public abstract class WebSocket {
 
 
 
-  public IHTTPSession getHandshakeRequest() {
+  public HTTPSession getHandshakeRequest() {
     return handshakeRequest;
   }
 

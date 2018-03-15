@@ -134,7 +134,7 @@ public class SimpleWebServer extends HTTPD {
 
 
 
-  public static Response newFixedLengthResponse(final IStatus status, final String mimeType, final String message) {
+  public static Response newFixedLengthResponse(final Status status, final String mimeType, final String message) {
     final Response response = Response.createFixedLengthResponse(status, mimeType, message);
     response.addHeader("Accept-Ranges", "bytes");
     return response;
@@ -242,7 +242,7 @@ public class SimpleWebServer extends HTTPD {
 
 
 
-  private Response defaultRespond(final Map<String, String> headers, final IHTTPSession session, String uri) {
+  private Response defaultRespond(final Map<String, String> headers, final HTTPSession session, String uri) {
     // Remove URL arguments
     uri = uri.trim().replace(File.separatorChar, '/');
     if (uri.indexOf('?') >= 0) {
@@ -452,7 +452,7 @@ public class SimpleWebServer extends HTTPD {
 
 
 
-  private Response respond(final Map<String, String> headers, final IHTTPSession session, final String uri) {
+  private Response respond(final Map<String, String> headers, final HTTPSession session, final String uri) {
     // First let's handle CORS OPTION query
     Response r;
     if ((cors != null) && Method.OPTIONS.equals(session.getMethod())) {
@@ -471,7 +471,7 @@ public class SimpleWebServer extends HTTPD {
 
 
   @Override
-  public Response serve(final IHTTPSession session) {
+  public Response serve(final HTTPSession session) {
     final Map<String, String> header = session.getRequestHeaders();
     final Map<String, String> parms = session.getParms();
     final String uri = session.getUri();

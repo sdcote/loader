@@ -10,8 +10,8 @@ package coyote.commons.network.http.responder;
 
 import java.util.Map;
 
-import coyote.commons.network.http.IHTTPSession;
-import coyote.commons.network.http.IStatus;
+import coyote.commons.network.http.HTTPSession;
+import coyote.commons.network.http.Status;
 import coyote.commons.network.http.Response;
 import coyote.commons.network.http.Status;
 
@@ -22,7 +22,7 @@ import coyote.commons.network.http.Status;
 public class GeneralResponder extends DefaultResponder {
 
   @Override
-  public Response get(final Resource resource, final Map<String, String> urlParams, final IHTTPSession session) {
+  public Response get(final Resource resource, final Map<String, String> urlParams, final HTTPSession session) {
     final StringBuilder text = new StringBuilder("<html><body>");
     text.append("<h1>Url: ");
     text.append(session.getUri());
@@ -56,7 +56,7 @@ public class GeneralResponder extends DefaultResponder {
 
 
   @Override
-  public IStatus getStatus() {
+  public Status getStatus() {
     return Status.OK;
   }
 

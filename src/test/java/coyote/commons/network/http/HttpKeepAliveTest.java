@@ -59,7 +59,7 @@ public class HttpKeepAliveTest extends HttpServerTest {
           final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
           final DefaultCacheManager tempFileManager = new DefaultCacheManager();
           try {
-            final HTTPSession session = HttpKeepAliveTest.this.testServer.createSession(tempFileManager, inputStream, outputStream);
+            final HTTPSessionImpl session = HttpKeepAliveTest.this.testServer.createSession(tempFileManager, inputStream, outputStream);
             for (int i = 0; i < 2048; i++) {
               requestStream.write(request.getBytes());
               requestStream.flush();

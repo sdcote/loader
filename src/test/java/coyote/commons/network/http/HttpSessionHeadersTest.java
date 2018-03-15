@@ -24,7 +24,7 @@ public class HttpSessionHeadersTest extends HttpServerTest {
     final String[] ipAddresses = { "127.0.0.1", "8.8.8.8", };
     for ( final String ipAddress : ipAddresses ) {
       final InetAddress inetAddress = InetAddress.getByName( ipAddress );
-      final HTTPSession session = testServer.createSession( HttpSessionHeadersTest.TEST_TEMP_FILE_MANAGER, inputStream, outputStream, inetAddress );
+      final HTTPSessionImpl session = testServer.createSession( HttpSessionHeadersTest.TEST_TEMP_FILE_MANAGER, inputStream, outputStream, inetAddress );
       assertEquals( ipAddress, session.getRemoteIpAddress().toString() );
     }
   }

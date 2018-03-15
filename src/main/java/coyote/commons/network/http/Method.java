@@ -13,18 +13,56 @@ package coyote.commons.network.http;
  * back to its enum value.
  */
 public enum Method {
-  GET, PUT, POST, DELETE, HEAD, OPTIONS, TRACE, CONNECT, PATCH, PROPFIND, PROPPATCH, MKCOL, MOVE, COPY, LOCK, UNLOCK;
+  GET("GET"), POST("POST"), HEAD("HEAD"), OPTIONS("OPTIONS"), PUT("PUT"), DELETE("DELETE"), TRACE("TRACE"), CONNECT("CONNECT"), PATCH("PATCH"), PROPFIND("PROPFIND"), PROPPATCH("PROPPATCH"), MKCOL("MKCOL"), MOVE("MOVE"), COPY("COPY"), LOCK("LOCK"), UNLOCK("UNLOCK");
 
-  static Method lookup( final String method ) {
-    if ( method == null ) {
+  private String name;
+
+
+
+
+  static Method lookup(final String method) {
+    if (method == null) {
       return null;
     }
 
     try {
-      return valueOf( method );
-    } catch ( final IllegalArgumentException e ) {
+      return valueOf(method);
+    } catch (final IllegalArgumentException e) {
       // TODO: Log it?
       return null;
     }
   }
+
+
+
+
+  private Method(String s) {
+    name = s;
+  }
+
+
+
+
+  /**
+   * @see java.lang.Enum#toString()
+   */
+  @Override
+  public String toString() {
+    return name;
+  }
+
+
+
+
+  public static Method getMethodByName(String name) {
+    if (name != null) {
+      for (Method method : Method.values()) {
+        if (name.equalsIgnoreCase(method.toString())) {
+          return method;
+        }
+      }
+    }
+    return null;
+  }
+
 }

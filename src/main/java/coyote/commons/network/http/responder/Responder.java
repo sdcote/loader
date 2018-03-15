@@ -10,7 +10,7 @@ package coyote.commons.network.http.responder;
 
 import java.util.Map;
 
-import coyote.commons.network.http.IHTTPSession;
+import coyote.commons.network.http.HTTPSession;
 import coyote.commons.network.http.Response;
 
 
@@ -47,7 +47,7 @@ public interface Responder {
    *
    * @return The response based on this method's processing
    */
-  public Response delete(Resource resource, Map<String, String> urlParams, IHTTPSession session);
+  public Response delete(Resource resource, Map<String, String> urlParams, HTTPSession session);
 
 
 
@@ -61,7 +61,7 @@ public interface Responder {
    *
    * @return The response based on this method's processing
    */
-  public Response get(Resource resource, Map<String, String> urlParams, IHTTPSession session);
+  public Response get(Resource resource, Map<String, String> urlParams, HTTPSession session);
 
 
 
@@ -75,7 +75,7 @@ public interface Responder {
    *
    * @return The response based on this method's processing
    */
-  public Response other(String method, Resource resource, Map<String, String> urlParams, IHTTPSession session);
+  public Response other(String method, Resource resource, Map<String, String> urlParams, HTTPSession session);
 
 
 
@@ -89,7 +89,7 @@ public interface Responder {
    *
    * @return The response based on this method's processing
    */
-  public Response post(Resource resource, Map<String, String> urlParams, IHTTPSession session);
+  public Response post(Resource resource, Map<String, String> urlParams, HTTPSession session);
 
 
 
@@ -103,6 +103,6 @@ public interface Responder {
    *
    * @return The response based on this method's processing
    */
-  public Response put(Resource resource, Map<String, String> urlParams, IHTTPSession session);
+  public Response put(Resource resource, Map<String, String> urlParams, HTTPSession session);
 
 }

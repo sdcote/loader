@@ -114,7 +114,7 @@ public class GenericAuthProviderTest {
 
 
   /**
-   * Test method for {@link coyote.commons.network.http.auth.GenericAuthProvider#isSecureConnection(coyote.commons.network.http.IHTTPSession)}.
+   * Test method for {@link coyote.commons.network.http.auth.GenericAuthProvider#isSecureConnection(coyote.commons.network.http.HTTPSession)}.
    */
   @Ignore
   public void testIsSecureConnection() {
@@ -180,7 +180,7 @@ public class GenericAuthProviderTest {
 
 
   /**
-   * Test method for {@link coyote.commons.network.http.auth.GenericAuthProvider#isAuthenticated(coyote.commons.network.http.IHTTPSession)}.
+   * Test method for {@link coyote.commons.network.http.auth.GenericAuthProvider#isAuthenticated(coyote.commons.network.http.HTTPSession)}.
    */
   @Test
   public void testIsAuthenticated() {
@@ -225,7 +225,7 @@ public class GenericAuthProviderTest {
 
 
   /**
-   * Test method for {@link coyote.commons.network.http.auth.GenericAuthProvider#isAuthorized(coyote.commons.network.http.IHTTPSession, java.lang.String)}.
+   * Test method for {@link coyote.commons.network.http.auth.GenericAuthProvider#isAuthorized(coyote.commons.network.http.HTTPSession, java.lang.String)}.
    */
   @Test
   public void testIsAuthorized() {

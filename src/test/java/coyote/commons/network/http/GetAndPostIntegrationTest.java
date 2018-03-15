@@ -45,7 +45,7 @@ private static final int PORT = NetUtil.getNextAvailablePort( 7428 );
 
 
     @Override
-    public Response serve( final IHTTPSession session ) {
+    public Response serve( final HTTPSession session ) {
       final StringBuilder sb = new StringBuilder( String.valueOf( session.getMethod() ) + ':' + response );
 
       if ( session.getParms().size() > 1 ) {

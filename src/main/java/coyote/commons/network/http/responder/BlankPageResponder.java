@@ -8,7 +8,7 @@
 
 package coyote.commons.network.http.responder;
 
-import coyote.commons.network.http.IStatus;
+import coyote.commons.network.http.Status;
 import coyote.commons.network.http.Status;
 
 
@@ -34,7 +34,7 @@ public class BlankPageResponder extends DefaultResponder {
    * @see coyote.commons.network.http.responder.DefaultResponder#getStatus()
    */
   @Override
-  public IStatus getStatus() {
+  public Status getStatus() {
     return Status.OK;
   }
 

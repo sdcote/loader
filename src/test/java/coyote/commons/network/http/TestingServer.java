@@ -39,7 +39,7 @@ public class TestingServer extends HTTPD {
 
 
   @Override
-  public Response serve( final IHTTPSession session ) {
+  public Response serve( final HTTPSession session ) {
     final Map<String, List<String>> decodedQueryParameters = decodeParameters( session.getQueryParameterString() );
 
     final StringBuilder sb = new StringBuilder();

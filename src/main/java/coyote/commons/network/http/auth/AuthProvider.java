@@ -10,7 +10,7 @@ package coyote.commons.network.http.auth;
 
 import java.util.Map;
 
-import coyote.commons.network.http.IHTTPSession;
+import coyote.commons.network.http.HTTPSession;
 
 
 /**
@@ -46,7 +46,7 @@ public interface AuthProvider {
    * @return true if the data in the given session represents an
    *         authenticated user in the system, false if otherwise.
    */
-  boolean isAuthenticated(IHTTPSession session);
+  boolean isAuthenticated(HTTPSession session);
 
 
 
@@ -61,7 +61,7 @@ public interface AuthProvider {
    * @return true if the session is authenticated and a member of one of the
    *         specified groups, false otherwise.
    */
-  boolean isAuthorized(IHTTPSession session, String groups);
+  boolean isAuthorized(HTTPSession session, String groups);
 
 
 
@@ -74,7 +74,7 @@ public interface AuthProvider {
    * @return true if the session is using secure, encrypted connection, false
    *         otherwise.
    */
-  boolean isSecureConnection(IHTTPSession session);
+  boolean isSecureConnection(HTTPSession session);
 
 
 
@@ -92,6 +92,6 @@ public interface AuthProvider {
    * 
    * @return true if the authentication was successful, false otherwise.
    */
-  boolean authenticate(IHTTPSession session, Map<String, String> credentials);
+  boolean authenticate(HTTPSession session, Map<String, String> credentials);
 
 }

@@ -17,7 +17,7 @@ import coyote.commons.network.IpNetwork;
 import coyote.commons.network.MimeType;
 import coyote.commons.network.http.HTTP;
 import coyote.commons.network.http.HTTPD;
-import coyote.commons.network.http.IHTTPSession;
+import coyote.commons.network.http.HTTPSession;
 import coyote.commons.network.http.Response;
 import coyote.commons.network.http.SecurityResponseException;
 import coyote.commons.network.http.Status;
@@ -524,7 +524,7 @@ public class WebServer extends AbstractLoader {
      * @return the value in the header or null if that header was not found in 
      *         the session.
      */
-    private String findRequestHeaderValue(String name, IHTTPSession session) {
+    private String findRequestHeaderValue(String name, HTTPSession session) {
       if (StringUtil.isNotBlank(name) && session != null && session.getRequestHeaders() != null) {
         final Set<Map.Entry<String, String>> entries = session.getRequestHeaders().entrySet();
         for (Map.Entry<String, String> header : entries) {
@@ -542,10 +542,10 @@ public class WebServer extends AbstractLoader {
      * Take what ever URI was requested and send a 301 (moved permanently) 
      * response with the new url.
      *  
-     * @see coyote.commons.network.http.HTTPD#serve(coyote.commons.network.http.IHTTPSession)
+     * @see coyote.commons.network.http.HTTPD#serve(coyote.commons.network.http.HTTPSession)
      */
     @Override
-    public Response serve(IHTTPSession session) throws SecurityResponseException {
+    public Response serve(HTTPSession session) throws SecurityResponseException {
       String host = findRequestHeaderValue(HTTP.HDR_HOST, session);
       if (StringUtil.isNotBlank(host)) {
         String uri;

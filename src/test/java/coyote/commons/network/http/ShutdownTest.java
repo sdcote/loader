@@ -23,7 +23,7 @@ public class ShutdownTest {
 
 
     @Override
-    public Response serve( final IHTTPSession session ) {
+    public Response serve( final HTTPSession session ) {
       return Response.createFixedLengthResponse( "Whatever" );
     }
   }

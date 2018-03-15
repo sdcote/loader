@@ -11,7 +11,7 @@ package coyote.commons.network.http.responder;
 import java.util.List;
 
 import coyote.commons.network.http.HTTPD;
-import coyote.commons.network.http.IHTTPSession;
+import coyote.commons.network.http.HTTPSession;
 import coyote.commons.network.http.Response;
 import coyote.commons.network.http.SecurityResponseException;
 import coyote.i13n.ArmTransaction;
@@ -152,10 +152,10 @@ public class HTTPDRouter extends HTTPD {
   /**
    * @throws SecurityResponseException if processing the request generated a security exception
    *
-   * @see coyote.commons.network.http.HTTPD#serve(coyote.commons.network.http.IHTTPSession)
+   * @see coyote.commons.network.http.HTTPD#serve(coyote.commons.network.http.HTTPSession)
    */
   @Override
-  public Response serve(final IHTTPSession session) throws SecurityResponseException {
+  public Response serve(final HTTPSession session) throws SecurityResponseException {
     final ArmTransaction arm = stats.startArm(session.getUri() == null ? "" : session.getUri());
 
     try {

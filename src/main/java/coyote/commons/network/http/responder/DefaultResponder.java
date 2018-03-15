@@ -11,8 +11,8 @@ package coyote.commons.network.http.responder;
 import java.io.InputStream;
 import java.util.Map;
 
-import coyote.commons.network.http.IHTTPSession;
-import coyote.commons.network.http.IStatus;
+import coyote.commons.network.http.HTTPSession;
+import coyote.commons.network.http.Status;
 import coyote.commons.network.http.Response;
 
 
@@ -23,7 +23,7 @@ import coyote.commons.network.http.Response;
 public abstract class DefaultResponder extends DefaultStreamResponder {
 
   @Override
-  public Response get(final Resource resource, final Map<String, String> urlParams, final IHTTPSession session) {
+  public Response get(final Resource resource, final Map<String, String> urlParams, final HTTPSession session) {
     return Response.createFixedLengthResponse(getStatus(), getMimeType(), getText());
   }
 
@@ -39,7 +39,7 @@ public abstract class DefaultResponder extends DefaultStreamResponder {
 
 
   @Override
-  public abstract IStatus getStatus();
+  public abstract Status getStatus();
 
 
 

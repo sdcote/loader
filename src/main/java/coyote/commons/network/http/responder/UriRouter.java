@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import coyote.commons.network.http.HTTPD;
-import coyote.commons.network.http.IHTTPSession;
+import coyote.commons.network.http.HTTPSession;
 import coyote.commons.network.http.Response;
 import coyote.commons.network.http.SecurityResponseException;
 import coyote.commons.network.http.auth.AuthProvider;
@@ -72,7 +72,7 @@ public class UriRouter {
    *
    * @throws SecurityResponseException if processing request generated a security exception
    */
-  public Response process(final IHTTPSession session) throws SecurityResponseException {
+  public Response process(final HTTPSession session) throws SecurityResponseException {
 
     final String request = HTTPDRouter.normalizeUri(session.getUri());
 

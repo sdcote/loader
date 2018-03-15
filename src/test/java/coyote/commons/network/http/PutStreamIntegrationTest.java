@@ -27,7 +27,7 @@ public class PutStreamIntegrationTest extends IntegrationTestBase<PutStreamInteg
 
 
     @Override
-    public Response serve( final IHTTPSession session ) {
+    public Response serve( final HTTPSession session ) {
       final Method method = session.getMethod();
       final Map<String, String> headers = session.getRequestHeaders();
       final int contentLength = Integer.parseInt( headers.get( "content-length" ) );

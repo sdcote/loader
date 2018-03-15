@@ -24,7 +24,7 @@ import coyote.commons.network.IpAddress;
 /**
  *
  */
-public class MockSession implements IHTTPSession {
+public class MockSession implements HTTPSession {
   private static final List<String> EMPTY_LIST = new ArrayList<String>( 0 );;
   private final Map<String, String> requestHeaders;
   private final Map<String, String> responseHeaders;
@@ -54,7 +54,7 @@ public class MockSession implements IHTTPSession {
 
 
   /**
-   * @see coyote.commons.network.http.IHTTPSession#execute()
+   * @see coyote.commons.network.http.HTTPSession#execute()
    */
   @Override
   public void execute() throws IOException {}
@@ -63,7 +63,7 @@ public class MockSession implements IHTTPSession {
 
 
   /**
-   * @see coyote.commons.network.http.IHTTPSession#getCookies()
+   * @see coyote.commons.network.http.HTTPSession#getCookies()
    */
   @Override
   public CookieHandler getCookies() {
@@ -74,7 +74,7 @@ public class MockSession implements IHTTPSession {
 
 
   /**
-   * @see coyote.commons.network.http.IHTTPSession#getInputStream()
+   * @see coyote.commons.network.http.HTTPSession#getInputStream()
    */
   @Override
   public InputStream getInputStream() {
@@ -85,7 +85,7 @@ public class MockSession implements IHTTPSession {
 
 
   /**
-   * @see coyote.commons.network.http.IHTTPSession#getMethod()
+   * @see coyote.commons.network.http.HTTPSession#getMethod()
    */
   @Override
   public Method getMethod() {
@@ -96,7 +96,7 @@ public class MockSession implements IHTTPSession {
 
 
   /**
-   * @see coyote.commons.network.http.IHTTPSession#getParms()
+   * @see coyote.commons.network.http.HTTPSession#getParms()
    */
   @Override
   public Map<String, String> getParms() {
@@ -107,7 +107,7 @@ public class MockSession implements IHTTPSession {
 
 
   /**
-   * @see coyote.commons.network.http.IHTTPSession#getQueryParameterString()
+   * @see coyote.commons.network.http.HTTPSession#getQueryParameterString()
    */
   @Override
   public String getQueryParameterString() {
@@ -123,7 +123,7 @@ public class MockSession implements IHTTPSession {
 
 
   /**
-   * @see coyote.commons.network.http.IHTTPSession#getRemoteIpAddress()
+   * @see coyote.commons.network.http.HTTPSession#getRemoteIpAddress()
    */
   @Override
   public IpAddress getRemoteIpAddress() {
@@ -134,7 +134,7 @@ public class MockSession implements IHTTPSession {
 
 
   /**
-   * @see coyote.commons.network.http.IHTTPSession#getRemoteIpPort()
+   * @see coyote.commons.network.http.HTTPSession#getRemoteIpPort()
    */
   @Override
   public int getRemoteIpPort() {
@@ -145,7 +145,7 @@ public class MockSession implements IHTTPSession {
 
 
   /**
-   * @see coyote.commons.network.http.IHTTPSession#getRequestHeaders()
+   * @see coyote.commons.network.http.HTTPSession#getRequestHeaders()
    */
   @Override
   public final Map<String, String> getRequestHeaders() {
@@ -156,7 +156,7 @@ public class MockSession implements IHTTPSession {
 
 
   /**
-   * @see coyote.commons.network.http.IHTTPSession#getResponseHeaders()
+   * @see coyote.commons.network.http.HTTPSession#getResponseHeaders()
    */
   @Override
   public Map<String, String> getResponseHeaders() {
@@ -167,7 +167,7 @@ public class MockSession implements IHTTPSession {
 
 
   /**
-   * @see coyote.commons.network.http.IHTTPSession#getUri()
+   * @see coyote.commons.network.http.HTTPSession#getUri()
    */
   @Override
   public String getUri() {
@@ -178,7 +178,7 @@ public class MockSession implements IHTTPSession {
 
 
   /**
-   * @see coyote.commons.network.http.IHTTPSession#getUserGroups()
+   * @see coyote.commons.network.http.HTTPSession#getUserGroups()
    */
   @Override
   public List<String> getUserGroups() {
@@ -189,7 +189,7 @@ public class MockSession implements IHTTPSession {
 
 
   /**
-   * @see coyote.commons.network.http.IHTTPSession#getUserName()
+   * @see coyote.commons.network.http.HTTPSession#getUserName()
    */
   @Override
   public String getUserName() {
@@ -200,7 +200,7 @@ public class MockSession implements IHTTPSession {
 
 
   /**
-   * @see coyote.commons.network.http.IHTTPSession#isSecure()
+   * @see coyote.commons.network.http.HTTPSession#isSecure()
    */
   @Override
   public boolean isSecure() {
@@ -214,7 +214,7 @@ public class MockSession implements IHTTPSession {
 
 
   /**
-   * @see coyote.commons.network.http.IHTTPSession#setUserGroups(java.util.List)
+   * @see coyote.commons.network.http.HTTPSession#setUserGroups(java.util.List)
    */
   @Override
   public void setUserGroups( final List<String> groups ) {
@@ -229,7 +229,7 @@ public class MockSession implements IHTTPSession {
 
 
   /**
-   * @see coyote.commons.network.http.IHTTPSession#setUserName(java.lang.String)
+   * @see coyote.commons.network.http.HTTPSession#setUserName(java.lang.String)
    */
   @Override
   public void setUserName( final String user ) {
@@ -240,7 +240,7 @@ public class MockSession implements IHTTPSession {
 
 
   /**
-   * @see coyote.commons.network.http.IHTTPSession#parseBody()
+   * @see coyote.commons.network.http.HTTPSession#parseBody()
    */
   @Override
   public Body parseBody() throws IOException, ResponseException {

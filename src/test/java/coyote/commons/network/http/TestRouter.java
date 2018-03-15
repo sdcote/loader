@@ -49,7 +49,7 @@ public class TestRouter extends HTTPDRouter {
 
 
     @Override
-    public IStatus getStatus() {
+    public Status getStatus() {
       return Status.OK;
     }
 
@@ -58,7 +58,7 @@ public class TestRouter extends HTTPDRouter {
   public static class UserResponder extends DefaultResponder {
 
     @Override
-    public Response get( final Resource resource, final Map<String, String> urlParams, final IHTTPSession session ) {
+    public Response get( final Resource resource, final Map<String, String> urlParams, final HTTPSession session ) {
       final String text = getText( urlParams, session );
       final ByteArrayInputStream inp = new ByteArrayInputStream( text.getBytes() );
       final int size = text.getBytes().length;
@@ -77,7 +77,7 @@ public class TestRouter extends HTTPDRouter {
 
 
     @Override
-    public IStatus getStatus() {
+    public Status getStatus() {
       return Status.OK;
     }
 
@@ -92,7 +92,7 @@ public class TestRouter extends HTTPDRouter {
 
 
 
-    public String getText( final Map<String, String> urlParams, final IHTTPSession session ) {
+    public String getText( final Map<String, String> urlParams, final HTTPSession session ) {
       String text = "<html><body>User responder. Method: " + session.getMethod().toString() + "<br>";
       text += "<h1>Uri parameters:</h1>";
       for ( final Map.Entry<String, String> entry : urlParams.entrySet() ) {

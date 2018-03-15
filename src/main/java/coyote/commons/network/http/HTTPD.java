@@ -49,7 +49,7 @@ import coyote.loader.log.Log;
 /**
  * This is the core of the HTTP Server.
  * 
- * <p>This class should be sub-classed and the {@link #serve(IHTTPSession)} 
+ * <p>This class should be sub-classed and the {@link #serve(HTTPSession)} 
  * method overridden to serve the request.
  */
 public abstract class HTTPD {
@@ -495,7 +495,7 @@ public abstract class HTTPD {
    * @return HTTP response, see class Response for details
    * @throws SecurityResponseException if processing the request generated a security exception
    */
-  public Response serve(final IHTTPSession session) throws SecurityResponseException {
+  public Response serve(final HTTPSession session) throws SecurityResponseException {
     final Method method = session.getMethod();
     if (!Method.TRACE.equals(method)) {
       try {

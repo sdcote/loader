@@ -14,8 +14,8 @@ import java.util.Map;
 import coyote.commons.StringUtil;
 import coyote.commons.network.MimeType;
 import coyote.commons.network.http.HTTPD;
-import coyote.commons.network.http.IHTTPSession;
-import coyote.commons.network.http.IStatus;
+import coyote.commons.network.http.HTTPSession;
+import coyote.commons.network.http.Status;
 import coyote.commons.network.http.Response;
 import coyote.commons.network.http.Status;
 import coyote.loader.log.Log;
@@ -44,10 +44,10 @@ public class ClassloadingResponder extends DefaultResponder {
   /**
    * retrieve the requested resource from the class path.
    *
-   * @see coyote.commons.network.http.responder.DefaultResponder#get(coyote.commons.network.http.responder.Resource, java.util.Map, coyote.commons.network.http.IHTTPSession)
+   * @see coyote.commons.network.http.responder.DefaultResponder#get(coyote.commons.network.http.responder.Resource, java.util.Map, coyote.commons.network.http.HTTPSession)
    */
   @Override
-  public Response get(final Resource resource, final Map<String, String> urlParams, final IHTTPSession session) {
+  public Response get(final Resource resource, final Map<String, String> urlParams, final HTTPSession session) {
 
     final String baseUri = resource.getUri(); // the regex matcher URL
 
@@ -123,7 +123,7 @@ public class ClassloadingResponder extends DefaultResponder {
 
 
   @Override
-  public IStatus getStatus() {
+  public Status getStatus() {
     return Status.OK;
   }
 

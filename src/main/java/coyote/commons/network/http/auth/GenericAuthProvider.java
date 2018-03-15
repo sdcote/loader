@@ -24,7 +24,7 @@ import coyote.commons.CipherUtil;
 import coyote.commons.StringUtil;
 import coyote.commons.network.http.HTTP;
 import coyote.commons.network.http.HTTPD;
-import coyote.commons.network.http.IHTTPSession;
+import coyote.commons.network.http.HTTPSession;
 import coyote.commons.network.http.SessionProfile;
 import coyote.commons.network.http.SessionProfileManager;
 import coyote.dataframe.DataField;
@@ -123,10 +123,10 @@ public class GenericAuthProvider implements AuthProvider {
 
 
   /**
-   * @see coyote.commons.network.http.auth.AuthProvider#isAuthenticated(coyote.commons.network.http.IHTTPSession)
+   * @see coyote.commons.network.http.auth.AuthProvider#isAuthenticated(coyote.commons.network.http.HTTPSession)
    */
   @Override
-  public boolean isAuthenticated(final IHTTPSession session) {
+  public boolean isAuthenticated(final HTTPSession session) {
     boolean retval = false;
 
     // Make sure there is a session assigned to this request
@@ -221,10 +221,10 @@ public class GenericAuthProvider implements AuthProvider {
 
 
   /**
-   * @see coyote.commons.network.http.auth.AuthProvider#authenticate(coyote.commons.network.http.IHTTPSession, java.util.Map)
+   * @see coyote.commons.network.http.auth.AuthProvider#authenticate(coyote.commons.network.http.HTTPSession, java.util.Map)
    */
   @Override
-  public boolean authenticate(IHTTPSession session, Map<String, String> credentials) {
+  public boolean authenticate(HTTPSession session, Map<String, String> credentials) {
     boolean retval = false;
     String username = credentials.get(AuthProvider.USERNAME);
     String password = credentials.get(AuthProvider.PASSWORD);
@@ -272,7 +272,7 @@ public class GenericAuthProvider implements AuthProvider {
    * @return true if there is a username associated with the given profile, 
    *         false if there is no authenticated user data.
    */
-  private boolean setUserData(SessionProfile profile, IHTTPSession session) {
+  private boolean setUserData(SessionProfile profile, HTTPSession session) {
     boolean retval = false;
     if (profile != null && session != null) {
       Serializable object = profile.get(USERNAME);
@@ -295,10 +295,10 @@ public class GenericAuthProvider implements AuthProvider {
 
 
   /**
-   * @see coyote.commons.network.http.auth.AuthProvider#isAuthorized(coyote.commons.network.http.IHTTPSession, java.lang.String)
+   * @see coyote.commons.network.http.auth.AuthProvider#isAuthorized(coyote.commons.network.http.HTTPSession, java.lang.String)
    */
   @Override
-  public boolean isAuthorized(final IHTTPSession session, final String groups) {
+  public boolean isAuthorized(final HTTPSession session, final String groups) {
     final String username = session.getUserName();
     final User user = getUser(username);
     if (user != null) {
@@ -317,10 +317,10 @@ public class GenericAuthProvider implements AuthProvider {
 
 
   /**
-   * @see coyote.commons.network.http.auth.AuthProvider#isSecureConnection(coyote.commons.network.http.IHTTPSession)
+   * @see coyote.commons.network.http.auth.AuthProvider#isSecureConnection(coyote.commons.network.http.HTTPSession)
    */
   @Override
-  public boolean isSecureConnection(final IHTTPSession session) {
+  public boolean isSecureConnection(final HTTPSession session) {
     // we can configure the auth provider to ignore the SSL check on many of
     // the responders when the deployment does not have valid SSL certificates,
     // such as in development and testing.

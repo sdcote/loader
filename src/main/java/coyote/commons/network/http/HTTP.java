@@ -85,4 +85,23 @@ public class HTTP {
   public static final String GZIP = "gzip";
   public static final String BASIC = "Basic";
 
+  public static final String METHOD_GET = "GET";
+  public static final String METHOD_POST = "POST";
+  public static final String METHOD_HEAD = "HEAD";
+  public static final String METHOD_OPTIONS = "OPTIONS";
+  public static final String METHOD_PUT = "PUT";
+  public static final String METHOD_DELETE = "DELETE";
+  public static final String METHOD_TRACE = "TRACE";
+  public static final String METHOD_CONNECT = "CONNECT";
+  public static final String METHOD_PATCH = "PATCH";
+  public static final String METHOD_PROPFIND = "PROPFIND";
+  public static final String METHOD_PROPPATCH = "PROPPATCH";
+  public static final String METHOD_MKCOL = "MKCOL";
+  public static final String METHOD_MOVE = "MOVE";
+  public static final String METHOD_COPY = "COPY";
+  public static final String METHOD_LOCK = "LOCK";
+  public static final String METHOD_UNLOCK = "UNLOCK";
+
+
+
 }

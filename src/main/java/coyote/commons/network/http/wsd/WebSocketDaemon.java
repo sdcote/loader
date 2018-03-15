@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 import coyote.commons.network.MimeType;
 import coyote.commons.network.http.HTTPD;
-import coyote.commons.network.http.IHTTPSession;
+import coyote.commons.network.http.HTTPSession;
 import coyote.commons.network.http.Response;
 import coyote.commons.network.http.SecurityResponseException;
 import coyote.commons.network.http.Status;
@@ -98,7 +98,7 @@ public abstract class WebSocketDaemon extends HTTPD {
 
 
   @Override
-  public Response serve(final IHTTPSession session) throws SecurityResponseException {
+  public Response serve(final HTTPSession session) throws SecurityResponseException {
     final Map<String, String> headers = session.getRequestHeaders();
     if (isWebsocketRequested(session)) {
       if (!WebSocketDaemon.HEADER_WEBSOCKET_VERSION_VALUE.equalsIgnoreCase(headers.get(WebSocketDaemon.HEADER_WEBSOCKET_VERSION))) {
@@ -138,7 +138,7 @@ public abstract class WebSocketDaemon extends HTTPD {
 
 
 
-  protected boolean isWebsocketRequested(final IHTTPSession session) {
+  protected boolean isWebsocketRequested(final HTTPSession session) {
     final Map<String, String> headers = session.getRequestHeaders();
     final String upgrade = headers.get(WebSocketDaemon.HEADER_UPGRADE);
     final boolean isCorrectConnection = isWebSocketConnectionHeader(headers);
@@ -149,12 +149,12 @@ public abstract class WebSocketDaemon extends HTTPD {
 
 
 
-  protected abstract WebSocket openWebSocket(IHTTPSession handshake);
+  protected abstract WebSocket openWebSocket(HTTPSession handshake);
 
 
 
 
-  protected Response serveHttp(final IHTTPSession session) throws SecurityResponseException {
+  protected Response serveHttp(final HTTPSession session) throws SecurityResponseException {
     return super.serve(session);
   }
 

@@ -65,7 +65,7 @@ public class SessionProfileManager {
    * @param sessionId the identifier of the session to remove
    * @param session the session profile from which the identifier should be removed.
    */
-  public static void destroyProfile(final String sessionId, final IHTTPSession session) {
+  public static void destroyProfile(final String sessionId, final HTTPSession session) {
     profileMap.remove(sessionId);
     final CookieHandler cookies = session.getCookies();
     if (cookies != null) {
@@ -158,7 +158,7 @@ public class SessionProfileManager {
    * @return the session associated with the identifier found in the cookies,
    *         or the new session. Will return null if the session is null.
    */
-  public static synchronized SessionProfile retrieveOrCreateProfile(final IHTTPSession session) {
+  public static synchronized SessionProfile retrieveOrCreateProfile(final HTTPSession session) {
     SessionProfile retval = null;
     if (session != null) {
       final CookieHandler cookies = session.getCookies();

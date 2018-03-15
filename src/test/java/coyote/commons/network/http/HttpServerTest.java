@@ -64,22 +64,22 @@ private static final int PORT = 7428;
 
 
 
-    public HTTPSession createSession( final CacheManager tempFileManager, final InputStream inputStream, final OutputStream outputStream ) {
-      return new HTTPSession( this, tempFileManager, inputStream, outputStream, false );
+    public HTTPSessionImpl createSession( final CacheManager tempFileManager, final InputStream inputStream, final OutputStream outputStream ) {
+      return new HTTPSessionImpl( this, tempFileManager, inputStream, outputStream, false );
     }
 
 
 
 
-    public HTTPSession createSession( final CacheManager tempFileManager, final InputStream inputStream, final OutputStream outputStream, final InetAddress inetAddress ) {
-      return new HTTPSession( this, tempFileManager, inputStream, outputStream, inetAddress, myPort, false );
+    public HTTPSessionImpl createSession( final CacheManager tempFileManager, final InputStream inputStream, final OutputStream outputStream, final InetAddress inetAddress ) {
+      return new HTTPSessionImpl( this, tempFileManager, inputStream, outputStream, inetAddress, myPort, false );
     }
 
 
 
 
     @Override
-    public Response serve( final IHTTPSession session ) {
+    public Response serve( final HTTPSession session ) {
       uri = session.getUri();
       method = session.getMethod();
       header = session.getRequestHeaders();
@@ -150,7 +150,7 @@ private static final int PORT = 7428;
   protected ByteArrayOutputStream invokeServer( final String request ) {
     final ByteArrayInputStream inputStream = new ByteArrayInputStream( request.getBytes() );
     final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    final HTTPSession session = testServer.createSession( tempFileManager, inputStream, outputStream );
+    final HTTPSessionImpl session = testServer.createSession( tempFileManager, inputStream, outputStream );
     try {
       session.execute();
     } catch ( final IOException e ) {
@@ -208,7 +208,7 @@ private static final int PORT = 7428;
 
 
         @Override
-        public Response serve( final IHTTPSession session ) {
+        public Response serve( final HTTPSession session ) {
           final StringBuilder responseMsg = new StringBuilder();
 
           try {
@@ -275,7 +275,7 @@ private static final int PORT = 7428;
 
 
       @Override
-      public Response serve( final IHTTPSession session ) {
+      public Response serve( final HTTPSession session ) {
         String responseMsg = "pass";
 
         try {

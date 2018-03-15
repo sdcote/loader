@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 import coyote.commons.StringUtil;
 import coyote.commons.network.MimeType;
 import coyote.commons.network.http.HTTPD;
-import coyote.commons.network.http.IHTTPSession;
+import coyote.commons.network.http.HTTPSession;
 import coyote.commons.network.http.Response;
 import coyote.commons.network.http.SecurityResponseException;
 import coyote.commons.network.http.Status;
@@ -182,7 +182,7 @@ public class Resource {
 
 
 
-  public Response process(final Map<String, String> urlParams, final IHTTPSession session) throws SecurityResponseException {
+  public Response process(final Map<String, String> urlParams, final HTTPSession session) throws SecurityResponseException {
     String error = "Error: Problems while processing URI resource";
     Auth authAnnotation = null;
 
@@ -200,7 +200,7 @@ public class Resource {
           final Responder responder = (Responder)object;
 
           // determine which method to call
-          final Class[] params = {Resource.class, Map.class, IHTTPSession.class};
+          final Class[] params = {Resource.class, Map.class, HTTPSession.class};
           Method method = null;
           switch (session.getMethod()) {
             case GET:
@@ -216,7 +216,7 @@ public class Resource {
               method = responderClass.getMethod("delete", params);
               break;
             default:
-              method = responderClass.getMethod("other", String.class, Resource.class, Map.class, IHTTPSession.class);
+              method = responderClass.getMethod("other", String.class, Resource.class, Map.class, HTTPSession.class);
               break;
           }
 

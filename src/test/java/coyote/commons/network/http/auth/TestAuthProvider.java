@@ -13,7 +13,7 @@ package coyote.commons.network.http.auth;
 
 import java.util.Map;
 
-import coyote.commons.network.http.IHTTPSession;
+import coyote.commons.network.http.HTTPSession;
 
 
 /**
@@ -29,10 +29,10 @@ public class TestAuthProvider implements AuthProvider {
 
 
   /**
-   * @see coyote.commons.network.http.auth.AuthProvider#isSecureConnection(coyote.commons.network.http.IHTTPSession)
+   * @see coyote.commons.network.http.auth.AuthProvider#isSecureConnection(coyote.commons.network.http.HTTPSession)
    */
   @Override
-  public boolean isSecureConnection( IHTTPSession session ) {
+  public boolean isSecureConnection( HTTPSession session ) {
 
     return allowConnections;
   }
@@ -41,10 +41,10 @@ public class TestAuthProvider implements AuthProvider {
 
 
   /**
-   * @see coyote.commons.network.http.auth.AuthProvider#isAuthenticated(coyote.commons.network.http.IHTTPSession)
+   * @see coyote.commons.network.http.auth.AuthProvider#isAuthenticated(coyote.commons.network.http.HTTPSession)
    */
   @Override
-  public boolean isAuthenticated( IHTTPSession session ) {
+  public boolean isAuthenticated( HTTPSession session ) {
 
     return allowAuthentications;
   }
@@ -53,10 +53,10 @@ public class TestAuthProvider implements AuthProvider {
 
 
   /**
-   * @see coyote.commons.network.http.auth.AuthProvider#isAuthorized(coyote.commons.network.http.IHTTPSession, java.lang.String)
+   * @see coyote.commons.network.http.auth.AuthProvider#isAuthorized(coyote.commons.network.http.HTTPSession, java.lang.String)
    */
   @Override
-  public boolean isAuthorized( IHTTPSession session, String groups ) {
+  public boolean isAuthorized( HTTPSession session, String groups ) {
 
     return allowAuthorizations;
   }
@@ -107,10 +107,10 @@ public class TestAuthProvider implements AuthProvider {
 
 
   /**
-   * @see coyote.commons.network.http.auth.AuthProvider#authenticate(coyote.commons.network.http.IHTTPSession, java.util.Map)
+   * @see coyote.commons.network.http.auth.AuthProvider#authenticate(coyote.commons.network.http.HTTPSession, java.util.Map)
    */
   @Override
-  public boolean authenticate(IHTTPSession session, Map<String, String> credentials) {
+  public boolean authenticate(HTTPSession session, Map<String, String> credentials) {
     return true;
   }
 

@@ -40,7 +40,7 @@ public class Response implements Closeable {
   /**
    * HTTP status code after processing, e.g. "200 OK", Status.OK
    */
-  private IStatus status;
+  private Status status;
 
   /**
    * MIME type of content, e.g. "text/html"
@@ -94,7 +94,7 @@ public class Response implements Closeable {
   /**
    * Creates a fixed length response if totalBytes&gt;=0, otherwise chunked.
    */
-  public Response( final IStatus status, final String mimeType, final InputStream data, final long totalBytes ) {
+  public Response( final Status status, final String mimeType, final InputStream data, final long totalBytes ) {
     this.status = status;
     this.mimeType = mimeType;
     if ( data == null ) {
@@ -176,7 +176,7 @@ public class Response implements Closeable {
 
 
 
-  public IStatus getStatus() {
+  public Status getStatus() {
     return status;
   }
 
@@ -369,7 +369,7 @@ public class Response implements Closeable {
 
 
 
-  public void setStatus( final IStatus status ) {
+  public void setStatus( final Status status ) {
     this.status = status;
   }
 
@@ -379,7 +379,7 @@ public class Response implements Closeable {
   /**
    * Create a response with unknown length (using HTTP 1.1 chunking).
    */
-  public static Response createChunkedResponse( final IStatus status, final String mimeType, final InputStream data ) {
+  public static Response createChunkedResponse( final Status status, final String mimeType, final InputStream data ) {
     return new Response( status, mimeType, data, -1 );
   }
 
@@ -389,7 +389,7 @@ public class Response implements Closeable {
   /**
    * Create a response with known length.
    */
-  public static Response createFixedLengthResponse( final IStatus status, final String mimeType, final InputStream data, final long totalBytes ) {
+  public static Response createFixedLengthResponse( final Status status, final String mimeType, final InputStream data, final long totalBytes ) {
     return new Response( status, mimeType, data, totalBytes );
   }
 
@@ -399,7 +399,7 @@ public class Response implements Closeable {
   /**
    * Create a text response with known length.
    */
-  public static Response createFixedLengthResponse( final IStatus status, final String mimeType, final String txt ) {
+  public static Response createFixedLengthResponse( final Status status, final String mimeType, final String txt ) {
     ContentType contentType = new ContentType( mimeType );
     if ( txt == null ) {
       return createFixedLengthResponse( status, mimeType, new ByteArrayInputStream( new byte[0] ), 0 );

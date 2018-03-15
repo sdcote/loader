@@ -11,7 +11,7 @@ package coyote.commons.network.http;
 /**
  * Some HTTP response status codes
  */
-public enum Status implements IStatus {
+public enum Status {
   SWITCH_PROTOCOL(101, "Switching Protocols"), //
   OK(200, "OK"), //
   CREATED(201, "Created"), // 
@@ -107,7 +107,6 @@ public enum Status implements IStatus {
 
 
 
-  @Override
   public String getDescription() {
     return description;
   }
@@ -115,7 +114,6 @@ public enum Status implements IStatus {
 
 
 
-  @Override
   public int getRequestStatus() {
     return requestStatus;
   }

@@ -41,7 +41,7 @@ public class GZipIntegrationTest extends IntegrationTestBase<GZipIntegrationTest
 
 
     @Override
-    public Response serve( final IHTTPSession session ) {
+    public Response serve( final HTTPSession session ) {
       return response;
     }
 
