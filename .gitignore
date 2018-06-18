@@ -34,6 +34,7 @@ out/*
 *.iml
 *.ipr
 *.iws
+.idea/
 
 # Testing Artifacts #
 #####################
@@ -54,4 +55,3 @@ logback.xml
 *.war
 *.ear
 !gradle/wrapper/gradle-wrapper.jar
-
