@@ -36,7 +36,7 @@ import coyote.commons.network.http.responder.HTTPDRouter;
 public class AuthProviderTest {
 
   private static HTTPDRouter server = null;
-  private static int port = 62611;
+  private static int port = 62618;
   private static final TestAuthProvider AUTH_PROVIDER = new TestAuthProvider();
 
 
@@ -69,7 +69,7 @@ public class AuthProviderTest {
         }
       }
     } catch ( IOException ioe ) {
-      fail( "could not start server" );
+      fail( "could not start server:"+ioe );
     }
   }
 

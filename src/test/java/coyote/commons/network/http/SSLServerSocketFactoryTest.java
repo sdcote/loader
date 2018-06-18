@@ -42,7 +42,7 @@ import coyote.commons.NetUtil;
  */
 public class SSLServerSocketFactoryTest {
   private static TestingServer testServer = null;
-  private static int port = 62611;
+  private static int port = 62619;
 
 
 
