@@ -125,7 +125,7 @@ jacocoTestReport {
 check.dependsOn jacocoTestReport
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.8'
+    gradleVersion = '4.2'
 }
 
 bintray {
