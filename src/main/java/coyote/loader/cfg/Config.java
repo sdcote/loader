@@ -433,19 +433,17 @@ public class Config extends DataFrame implements Cloneable, Serializable {
    * @return The first section with a matching name or null if no section with that name exists
    */
   public Config getSection(final String tag) {
-
-    // If we have a tag for which to search...
     if (StringUtil.isNotBlank(tag)) {
-      // Look for the class to load
       for (final DataField field : getFields()) {
         if (tag.equalsIgnoreCase(field.getName()) && field.isFrame()) {
           final Config cfg = new Config();
-          cfg.populate((DataFrame)field.getObjectValue());
+          if(field.isNotNull()& field.isFrame()) {
+            cfg.populate((DataFrame) field.getObjectValue());
+          }
           return cfg;
         } // name match && a frame
       } // for
     } // tag != null
-
     return null;
   }
 
