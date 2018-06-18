@@ -30,6 +30,10 @@ csharp/
 
 # Other IDE Artifacts #
 /.nb-gradle/profiles/private/
+out/*
+*.iml
+*.ipr
+*.iws
 
 # Testing Artifacts #
 #####################
