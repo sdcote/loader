@@ -451,16 +451,16 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
             try {
               retval.setConfig(cfg);
             } catch (Exception e) {
-              Log.error(LogMsg.createMsg(MSG, "Loader.could_not_configure_logger {} - {} : {}", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
+              Log.error(LogMsg.createMsg(MSG, "Loader.could_not_configure_logger", object.getClass().getName(), e.getClass().getSimpleName(), e.getMessage()));
             }
           } else {
-            Log.warn(LogMsg.createMsg(MSG, "Loader.instance_is_not_a_logger of {} is not configurable", className));
+            Log.warn(LogMsg.createMsg(MSG, "Loader.instance_is_not_a_logger", className));
           }
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-          Log.error(LogMsg.createMsg(MSG, "Loader.Could not instantiate {} reason: {} - {}", className, e.getClass().getName(), e.getMessage()));
+          Log.error(LogMsg.createMsg(MSG, "Loader.logger_instantiation_error", className, e.getClass().getName(), e.getMessage()));
         }
       } else {
-        Log.error(LogMsg.createMsg(MSG, "Loader.Configuration frame did not contain a class name"));
+        Log.error(LogMsg.createMsg(MSG, "Loader.logger_configuration_did_not_contain_a_classname"));
       }
     }
 
