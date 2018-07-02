@@ -343,11 +343,6 @@ public class IpNetwork extends IpAddress {
 
 
 
-  /*public IpAddress[] getIpAddressesInNetwork()
-   {
-   IpAddress baseIpAddress = this.applyNetMask( netmask );
-   IpAddress broadCastAddress = this.getBroadcastAddress();
-   }*/
 
   /**
    * @return The string representation of the network in CIDR format.
@@ -355,26 +350,7 @@ public class IpNetwork extends IpAddress {
   @Override
   public String toString() {
     final StringBuffer buf = new StringBuffer();
-    final short[] addr = getOctets();
 
-    int last = addr.length - 1;
-
-    // Find the last occurrence of a non-zero segment
-    for (; addr[last] == 0; last--) {
-      ;
-    }
-
-    // Concatenate the segments up to and including the last non-zero value
-    for (int i = 0; i <= last; i++) {
-      buf.append(addr[i]);
-
-      if (i != last) {
-        buf.append('.');
-      }
-    }
-
-    // Delimit the bitmask size
-    buf.append('/');
 
     // Figure out the number of bits set in the mask
     final short[] mask = netmask.getOctets();
@@ -384,11 +360,33 @@ public class IpNetwork extends IpAddress {
       for (int x = 0; x < IpNetwork.BITS.length; x++) {
         if (IpNetwork.BITS[x] == element) {
           bitcount += x;
-
           break;
         }
       }
     }
+
+    int last;
+    if (bitcount <= 8) {
+      last = 0;
+    } else if (bitcount > 8 && bitcount <= 16) {
+      last = 1;
+    } else if (bitcount > 16 && bitcount <= 24) {
+      last = 2;
+    } else {
+      last = 3;
+    }
+
+    final short[] addr = getOctets();
+    for (int i = 0; i <= last; i++) {
+      buf.append(addr[i]);
+      if (i != last) {
+        buf.append('.');
+      }
+    }
+
+    // Delimit the bitmask size
+    buf.append('/');
+
 
     // append the number of bits in the mask
     buf.append(bitcount);

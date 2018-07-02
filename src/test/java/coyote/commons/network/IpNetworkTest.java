@@ -12,6 +12,7 @@
 package coyote.commons.network;
 
 //import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -126,6 +127,18 @@ public class IpNetworkTest {
       ipaddresscount++;
     }
     assertTrue( ipaddresscount == 65534 );
+  }
+
+  @Test
+  public void CidrFormat() throws IpAddressException {
+    IpNetwork network = new IpNetwork("10.2/26");
+    assertEquals("10.2.0.0/26", network.toString());
+    network = new IpNetwork("10.2.0/24");
+    assertEquals("10.2.0/24", network.toString());
+    network = new IpNetwork("10.2/12");
+    assertEquals("10.2/12", network.toString());
+    network = new IpNetwork("10.2/8");
+    assertEquals("10/8", network.toString());
   }
 
 }
