@@ -24,19 +24,19 @@ import coyote.loader.thread.ThreadPool;
  */
 public interface Loader extends WatchDog {
 
-  public static final Version API_VERSION = new Version(0, 7, 15, Version.GENERAL);
-  public static final String API_NAME = "CoyoteLoader";
-  public static final String LOADER = "Loader";
-  public static final String INITIALIZING = "Initializing";
-  public static final String WAIT_FOR_ACTIVE = "WaitingForActive";
-  public static final String RUNNING = "Watchdog";
-  public static final String SHUTDOWN = "Shutdown";
-  public static final String TERMINATED = "Terminated";
-  public static final String ENCRYPT_PREFIX = "ENC:";
+  Version API_VERSION = new Version(0, 7, 16, Version.GENERAL);
+  String API_NAME = "CoyoteLoader";
+  String LOADER = "Loader";
+  String INITIALIZING = "Initializing";
+  String WAIT_FOR_ACTIVE = "WaitingForActive";
+  String RUNNING = "Watchdog";
+  String SHUTDOWN = "Shutdown";
+  String TERMINATED = "Terminated";
+  String ENCRYPT_PREFIX = "ENC:";
 
-  public static final String APP_HOME = "app.home";
-  public static final String APP_WORK = "app.work";
-  public static final String ENCRYPT = "encrypt";
+  String APP_HOME = "app.home";
+  String APP_WORK = "app.work";
+  String ENCRYPT = "encrypt";
 
 
 
@@ -50,7 +50,7 @@ public interface Loader extends WatchDog {
    * 
    * @return a unique physical identifier for this instance.
    */
-  public String getId();
+  String getId();
 
 
 
@@ -60,7 +60,7 @@ public interface Loader extends WatchDog {
    * 
    * @return a logical identifier for this instance.
    */
-  public String getName();
+  String getName();
 
 
 
@@ -70,7 +70,7 @@ public interface Loader extends WatchDog {
    * 
    * @param name the logical name of this loader
    */
-  public void setName(String name);
+  void setName(String name);
 
 
 
@@ -82,7 +82,7 @@ public interface Loader extends WatchDog {
    * 
    * @throws ConfigurationException if there were problems configuring the loader.
    */
-  public void configure(Config cfg) throws ConfigurationException;
+  void configure(Config cfg) throws ConfigurationException;
 
 
 
@@ -95,7 +95,7 @@ public interface Loader extends WatchDog {
    * 
    * @return the currently set configuration 
    */
-  public Config getConfig();
+  Config getConfig();
 
 
 
@@ -108,7 +108,7 @@ public interface Loader extends WatchDog {
    * 
    * @return the currently set operational context for this loader 
    */
-  public Context getContext();
+  Context getContext();
 
 
 
@@ -121,7 +121,7 @@ public interface Loader extends WatchDog {
    * loaders will daemonize and this call will return immediately. In such 
    * cases, the loader will terminate when the JVM terminates.</p>
    */
-  public void start();
+  void start();
 
 
 
@@ -133,7 +133,7 @@ public interface Loader extends WatchDog {
    * 
    * @return Return the watchdog component.
    */
-  public WatchDog getWatchdog();
+  WatchDog getWatchdog();
 
 
 
@@ -145,7 +145,7 @@ public interface Loader extends WatchDog {
    * 
    * @return the Scheduler for this loader.
    */
-  public Scheduler getScheduler();
+  Scheduler getScheduler();
 
 
 
@@ -155,7 +155,7 @@ public interface Loader extends WatchDog {
    * 
    * @return The ThreadPool object used by this loader.
    */
-  public ThreadPool getThreadPool();
+  ThreadPool getThreadPool();
 
 
 
@@ -163,7 +163,7 @@ public interface Loader extends WatchDog {
   /**
    * Called by the shutdown hook when the JVM terminates.
    */
-  public void shutdown();
+  void shutdown();
 
 
 
@@ -178,7 +178,7 @@ public interface Loader extends WatchDog {
    * 
    * @param args command line arguments
    */
-  public void setCommandLineArguments(String[] args);
+  void setCommandLineArguments(String[] args);
 
 
 
@@ -187,7 +187,7 @@ public interface Loader extends WatchDog {
    * Initialize the symbol table in the context with system properties and 
    * other useful data.
    */
-  public void initSymbolTable();
+  void initSymbolTable();
 
 
 
@@ -202,7 +202,7 @@ public interface Loader extends WatchDog {
    * 
    * @return the StatBoard for this server.
    */
-  public StatBoard getStats();
+  StatBoard getStats();
 
 
 
@@ -210,7 +210,7 @@ public interface Loader extends WatchDog {
   /**
    * @return the loader which loaded this loader or null if this is a root loader.
    */
-  public Loader getLoader();
+  Loader getLoader();
 
 
 
@@ -218,6 +218,6 @@ public interface Loader extends WatchDog {
   /**
    * @param loader the loader which loaded this loader.
    */
-  public void setLoader(Loader loader);
+  void setLoader(Loader loader);
 
 }
