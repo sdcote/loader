@@ -456,7 +456,7 @@ public class TestResponders {
 
   @Test
   public void testNotImplementedResponderGetStatus() {
-    assertEquals( "NotImplementedResponder#getStatus should return OK status", Status.OK, new NotImplementedResponder().getStatus() );
+    assertEquals( "NotImplementedResponder#getStatus should return OK status", Status.NOT_IMPLEMENTED, new NotImplementedResponder().getStatus() );
   }
 
 
