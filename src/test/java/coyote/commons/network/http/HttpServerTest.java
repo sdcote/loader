@@ -203,10 +203,6 @@ private static final int PORT = 7428;
     try {
       server = new HTTPD( testPort ) {
 
-
-
-
-
         @Override
         public Response serve( final HTTPSession session ) {
           final StringBuilder responseMsg = new StringBuilder();

@@ -23,6 +23,7 @@ import coyote.commons.network.http.SecurityResponseException;
 import coyote.commons.network.http.Status;
 import coyote.commons.network.http.auth.GenericAuthProvider;
 import coyote.commons.network.http.responder.HTTPDRouter;
+import coyote.commons.template.Template;
 import coyote.dataframe.DataField;
 import coyote.dataframe.DataFrame;
 import coyote.dataframe.DataFrameException;
@@ -50,12 +51,19 @@ import coyote.loader.log.LogMsg;
  * <p>All routes and handlers are specified in the configuration. This does 
  * not serve anything by default.
  */
-public class WebServer extends AbstractLoader {
+public class WebServer extends AbstractLoader implements Loader {
+
   /** Tag used in various class identifying locations. */
   public static final String NAME = WebServer.class.getSimpleName();
 
   /** The default port on which this listens */
   protected static final int DEFAULT_PORT = 80;
+
+  /** Prefix for command line arguments in the symbol table */
+  public static final String COMMAND_LINE_ARG_PREFIX = "cmd.arg.";
+
+  /** Prefix for environment variables in the symbol table */
+  public static final String ENVIRONMENT_VAR_PREFIX = "env.";
 
   /** The port on which we should bind as specified from the command line - overrides all, even configuration file */
   protected int bindPort = -1;
@@ -69,25 +77,25 @@ public class WebServer extends AbstractLoader {
   /** The version of this server. */
   public static final Version VERSION = new Version(0, 0, 4, Version.DEVELOPMENT);
 
-  // the port on which this server listens, defaults to 80
+  /** The port on which this server listens, defaults to 80 */
   protected static final String PORT = "Port";
 
-  // Perform a redirect for all requests to this port to the port on which we are listening. Normally set to 80 when the port is 443
+  /** Perform a redirect for all requests to this port to the port on which we are listening. Normally set to 80 when the port is 443 */
   protected static final String REDIRECT_PORT = "RedirectPort";
 
-  // indicates SSL should be enabled; automatically enable when port=443
-  protected static final String SECURESERVER = "SecureServer";
+  /** Indicates SSL should be enabled; automatically enable when port=443 */
+  protected static final String SECURE_SERVER = "SecureServer";
 
   protected static final String ENABLE_ARM = "EnableARM";
   protected static final String ENABLE_GAUGES = "EnableGauges";
   protected static final String ENABLE_TIMING = "EnableTiming";
 
-  // mapping attributes
-  protected static final String MAPPINGS = "Mappings";
+  // Endpoint attributes
+  protected static final String ENDPOINTS = "Endpoints";
   protected static final String CLASS = "Class";
   protected static final String PRIORITY = "Priority";
 
-  // command line argument for the port on which we should bind
+  /** command line argument for the port on which we should bind. */
   protected static final String PORT_ARG = "-p";
 
 
@@ -99,6 +107,17 @@ public class WebServer extends AbstractLoader {
   @Override
   public void configure(Config cfg) throws ConfigurationException {
     super.configure(cfg);
+
+    // store the command line arguments in the symbol table of the engine
+    for (int x = 0; x < commandLineArguments.length; x++) {
+      symbols.put(COMMAND_LINE_ARG_PREFIX + x, commandLineArguments[x]);
+    }
+
+    // store environment variables in the symbol table
+    Map<String, String> env = System.getenv();
+    for (String envName : env.keySet()) {
+      symbols.put(ENVIRONMENT_VAR_PREFIX + envName, env.get(envName));
+    }
 
     // command line argument override all other configuration settings
     parseArgs(getCommandLineArguments());
@@ -112,7 +131,7 @@ public class WebServer extends AbstractLoader {
 
       if (cfg.containsIgnoreCase(PORT)) {
         try {
-          port = cfg.getInt(PORT);
+          port = Integer.parseInt(Template.resolve(cfg.getString(PORT), symbols));
           port = NetUtil.validatePort(port);
           if (port == 0) {
             Log.error("Configured port of " + port + " is not a valid port (out of range) - ignoring");
@@ -126,8 +145,8 @@ public class WebServer extends AbstractLoader {
 
       if (cfg.containsIgnoreCase(REDIRECT_PORT)) {
         try {
-          redirectport = cfg.getInt(REDIRECT_PORT);
-          redirectport = NetUtil.validatePort(redirectport);
+          redirectport = Integer.parseInt(Template.resolve(cfg.getString(REDIRECT_PORT), symbols));
+          redirectport = NetUtil.validatePort(port);
           if (redirectport == 0) {
             Log.error("Configured port of " + redirectport + " is not a valid port (out of range) - ignoring");
             redirectport = 0;
@@ -142,7 +161,7 @@ public class WebServer extends AbstractLoader {
 
       boolean secureServer;
       try {
-        secureServer = cfg.getAsBoolean(SECURESERVER);
+        secureServer = cfg.getAsBoolean(SECURE_SERVER);
       } catch (DataFrameException e1) {
         secureServer = false;
       }
@@ -153,7 +172,7 @@ public class WebServer extends AbstractLoader {
         port = bindPort;
       }
 
-      // create a server with the default mappings
+      // create a server with the default endpoints
       server = new HTTPDRouter(port);
 
       if (port == 443 || secureServer) {
@@ -187,11 +206,11 @@ public class WebServer extends AbstractLoader {
         server.removeRoute("/");
         server.removeRoute("/index.html");
 
-        List<Config> mapsections = cfg.getSections(MAPPINGS);
-        for (Config section : mapsections) {
+        List<Config> endpoints = cfg.getSections(ENDPOINTS);
+        for (Config section : endpoints) {
           for (DataField field : section.getFields()) {
             if (field.getName() != null && field.isFrame()) {
-              loadMapping(field.getName(), new Config((DataFrame)field.getObjectValue()));
+              loadEndpoint(field.getName(), new Config((DataFrame)field.getObjectValue()));
             }
           }
         }
@@ -223,7 +242,7 @@ public class WebServer extends AbstractLoader {
           redirectServer = new RedirectServer(redirectport);
         }
 
-        Log.info("Configured server with " + server.getMappings().size() + " mappings");
+        Log.info("Configured server with " + server.getMappings().size() + " endpoints");
       }
     } else {
       Log.fatal("No configuration passed to server");
@@ -260,14 +279,14 @@ public class WebServer extends AbstractLoader {
 
 
   /**
-   * Load the mapping represented in the given configuration into the server.
+   * Load the endpoint represented in the given configuration into the server.
    * 
    * <p>Init Parameter:<ol><li>this server<li>configuration
    * 
    * @param route the route regex to map in the router
    * @param config the configuration of the route handler with at least a class attribute
    */
-  private void loadMapping(String route, Config config) {
+  private void loadEndpoint(String route, Config config) {
     // if we have a route
     if (StringUtil.isNotEmpty(route)) {
       // pull out the class name
@@ -279,7 +298,7 @@ public class WebServer extends AbstractLoader {
         try {
           priority = config.getAsInt(PRIORITY);
         } catch (DataFrameException e) {
-          Log.warn("Problems parsing mapping priority into a numeric value for rout '" + route + "' using default");
+          Log.warn("Problems parsing endpoint priority into a numeric value for route '" + route + "' using default");
         }
       }
 
@@ -295,13 +314,13 @@ public class WebServer extends AbstractLoader {
             server.addRoute(route, clazz, this, config);
           }
         } catch (Exception e) {
-          Log.warn("Problems adding route mapping '" + route + "', handler: " + className + " Reason:" + e.getClass().getSimpleName());
+          Log.warn("Problems adding endpoint route '" + route + "', handler: " + className + " Reason:" + e.getClass().getSimpleName());
         }
       } else {
-        Log.warn("No class defined in mapping for '" + route + "' - " + config);
+        Log.warn("No class defined in endpoint for '" + route + "' - " + config);
       }
     } else {
-      Log.warn("No route specified in mapping for " + config);
+      Log.warn("No route specified in endpoint for " + config);
     }
   }
 
@@ -320,7 +339,7 @@ public class WebServer extends AbstractLoader {
     if (!isActive()) {
       Log.info("Listening on port: " + server.getPort());
       Log.info("Access Control List: " + server.getIpAcl());
-      Log.info("Running server with " + server.getMappings().size() + " mappings");
+      Log.info("Running server with " + server.getMappings().size() + " endpoints");
       try {
         server.start(HTTPD.SOCKET_READ_TIMEOUT, false);
       } catch (IOException ioe) {
@@ -470,7 +489,7 @@ public class WebServer extends AbstractLoader {
    * can manage. Initialize it, continually calling doWork() while the loader
    * is running then call terminate() when the loader shuts down.
    */
-  private class Wedge extends AbstractManagedComponent implements ManagedComponent {
+  protected class Wedge extends AbstractManagedComponent implements ManagedComponent {
 
     @Override
     public void initialize() {
@@ -500,7 +519,7 @@ public class WebServer extends AbstractLoader {
    * Listens on a particular port and sends a redirect for the same URL to the 
    * secure port.
    */
-  private class RedirectServer extends HTTPD {
+  protected class RedirectServer extends HTTPD {
     private static final String HTTP_SCHEME = "http://";
     private static final String HTTPS_SCHEME = "https://";
 
