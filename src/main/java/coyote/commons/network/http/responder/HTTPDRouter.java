@@ -84,6 +84,26 @@ public class HTTPDRouter extends HTTPD {
 
 
 
+  /**
+   * Set the responder for resource not found (i.e. 404) events.
+   * @param responder the responder which will return the desired HTTP response
+   */
+  public void setNotFoundResponder(final Class<?> responder) {
+    router.setNotFoundResponder(responder);
+  }
+
+
+
+
+  /**
+   * Set the responder for method not implemented (i.e. 501) events.
+   * @param responder the responder which will return the desired HTTP response
+   */
+  public void setNotImplementedResponder(final Class<?> responder) {
+    router.setNotImplementedResponder(responder);
+  }
+
+
 
   /**
    * Add a responder for the given URL pattern.

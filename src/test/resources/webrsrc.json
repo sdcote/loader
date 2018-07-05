@@ -6,6 +6,12 @@
     "/(.)+": { "Class": "coyote.commons.network.http.responder.ResourceResponder", "root": "content", "RedirectOnIndexedDir": false, "Priority": 32767  }
   },
 
+  "Resources": {
+    "name1": { "class": "someclass", "cfgParam": "somevalue" },
+    "name2": { "class": "anotherclass", "cfgParam": "somevalue" },
+    "name3": { "class": "anyclass", "cfgParam": "somevalue" }
+  },
+
   "Logging": {
     "StandardOutput": {"categories": "trace, debug, notice, info, httpd"},
     "StandardError": {"categories": "warn, error, fatal"}

@@ -1,5 +1,8 @@
 {
   "Class" : "coyote.commons.WebServer",
+  "EnableARM" : true,
+  "EnableGauges" : true,
+  "EnableTiming" : true,
 
   "Endpoints": {
     "/": { "Class": "coyote.commons.network.http.responder.ResourceResponder", "root": "content", "RedirectOnIndexedDir": false, "Priority": 32767  },

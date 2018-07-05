@@ -1,6 +1,22 @@
 {
   "Class" : "coyote.commons.WebServer",
 
+  "Auth": {
+    "Users":[
+      {
+        "ENC:Name" : "v2UeWqKIv6ph2u35/7iI4joYLUE4U6iH",
+        "ENC:Password" : "6ntFRYIIv7wyh75cRgqlNzgAdPz/K2mz",
+        "ENC:Groups" : "0HR3uyUplj+VLJTNJTyyUh1VuD36N6nJ0gAADuFsHVENVTBmspLMs0gkTdMFuOYF"
+      }
+    ],
+    "AllowUnsecuredConnections": true,
+    "SendAuthRequestOnFailure": true
+  },
+
+  "IPACL": {
+    "default": "deny"
+  },
+
   "Endpoints": {
     "/": { "Class": "coyote.commons.network.http.responder.ResourceResponder", "root": "content", "RedirectOnIndexedDir": false, "Priority": 32767  },
     "/(.)+": { "Class": "coyote.commons.network.http.responder.ResourceResponder", "root": "content", "RedirectOnIndexedDir": false, "Priority": 32767  }

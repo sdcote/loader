@@ -8,6 +8,8 @@
 package coyote.commons;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,8 +23,11 @@ import coyote.commons.network.http.HTTPSession;
 import coyote.commons.network.http.Response;
 import coyote.commons.network.http.SecurityResponseException;
 import coyote.commons.network.http.Status;
+import coyote.commons.network.http.auth.AuthProvider;
 import coyote.commons.network.http.auth.GenericAuthProvider;
+import coyote.commons.network.http.responder.Error404Responder;
 import coyote.commons.network.http.responder.HTTPDRouter;
+import coyote.commons.network.http.responder.NotImplementedResponder;
 import coyote.commons.template.Template;
 import coyote.dataframe.DataField;
 import coyote.dataframe.DataFrame;
@@ -74,9 +79,6 @@ public class WebServer extends AbstractLoader implements Loader {
   /** Server on a normal port which sends a redirect to our main server. (E.g., any http: requests are redirected to https:) */
   private HTTPD redirectServer = null;
 
-  /** The version of this server. */
-  public static final Version VERSION = new Version(0, 0, 4, Version.DEVELOPMENT);
-
   /** The port on which this server listens, defaults to 80 */
   protected static final String PORT = "Port";
 
@@ -94,6 +96,8 @@ public class WebServer extends AbstractLoader implements Loader {
   protected static final String ENDPOINTS = "Endpoints";
   protected static final String CLASS = "Class";
   protected static final String PRIORITY = "Priority";
+
+  protected static final String RESOURCES = "Resources";
 
   /** command line argument for the port on which we should bind. */
   protected static final String PORT_ARG = "-p";
@@ -183,13 +187,25 @@ public class WebServer extends AbstractLoader implements Loader {
         }
       }
 
-      // At this point the servers are up, but nothing is being served.
-      // Configure security, and add handlers; in that order
-
       if (cfg != null) {
         Config sectn = cfg.getSection(GenericAuthProvider.AUTH_SECTION);
         if (sectn != null) {
-          server.setAuthProvider(new GenericAuthProvider(sectn));
+          if (sectn.containsIgnoreCase(CLASS)) {
+            String classname = sectn.getString(CLASS);
+            if (StringUtil.isNotBlank(classname)) {
+              Object authobj = loadComponent(sectn);
+              if (authobj instanceof AuthProvider) {
+                server.setAuthProvider((AuthProvider) authobj);
+              } else {
+                Log.error("Configured auth proficer class '" + classname + "' is not a valid AuthProvider instance");
+              }
+            } else {
+              Log.error("No auth class specified, using default");
+              server.setAuthProvider(new GenericAuthProvider(sectn));
+            }
+          } else {
+            server.setAuthProvider(new GenericAuthProvider(sectn));
+          }
         }
 
         // configure the IPACL with any found configuration data; 
@@ -199,12 +215,19 @@ public class WebServer extends AbstractLoader implements Loader {
         // Configure Denial of Service frequency tables
         server.configDosTables(cfg.getSection(ConfigTag.FREQUENCY));
 
-        // Add the default routes to ensure basic operation
-        server.addDefaultRoutes();
+        // Add the required responders to ensure basic operation
+        server.setNotImplementedResponder(NotImplementedResponder.class);
+        server.setNotFoundResponder(Error404Responder.class);
 
-        // remove the root handlers, the configuration will contain our handlers
-        server.removeRoute("/");
-        server.removeRoute("/index.html");
+        // Load the resources
+        List<Config> resources = cfg.getSections(RESOURCES);
+        for (Config section : resources) {
+          for (DataField field : section.getFields()) {
+            if (field.getName() != null && field.isFrame()) {
+              loadResource(field.getName(), new Config((DataFrame)field.getObjectValue()));
+            }
+          }
+        }
 
         List<Config> endpoints = cfg.getSections(ENDPOINTS);
         for (Config section : endpoints) {
@@ -236,7 +259,7 @@ public class WebServer extends AbstractLoader implements Loader {
         }
 
         // Set our version in the stats board
-        getStats().setVersion(NAME, VERSION);
+        getStats().setVersion(NAME, Loader.API_VERSION);
 
         if (redirectport > 0) {
           redirectServer = new RedirectServer(redirectport);
@@ -325,6 +348,38 @@ public class WebServer extends AbstractLoader implements Loader {
   }
 
 
+  /**
+   * Add the named configuration as a web server resource.
+   * @param name name of the resource for binding to the loader context
+   * @param config the configuration for the resource.
+   */
+  private void loadResource(String name, Config config) {
+    if (StringUtil.isNotBlank(name)) {
+      String className = config.getString(ConfigTag.CLASS);
+      if (StringUtil.isNotBlank(className)) {
+        try {
+          Class<?> clazz = Class.forName(className);
+          Constructor<?> ctor = clazz.getConstructor();
+          Object object = ctor.newInstance();
+          if (object instanceof ManagedComponent) {
+            ManagedComponent component = (ManagedComponent) object;
+            component.setContext(getContext());
+            component.setLoader(this);
+            component.setConfiguration(config);
+            getContext().set(name,component);
+          } else {
+            Log.error("Resource is not a managed component");
+          }
+        } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+          Log.error("Could not create an instance of resource '" + className + "' - " + e.getClass().getName() + ": " + e.getMessage());
+        }
+      } else {
+        Log.error("No resource class specified: " + config.toString());
+      }
+    } else {
+      Log.error("Cannot add unnamed resource");
+    }
+  }
 
 
   /**
@@ -377,16 +432,12 @@ public class WebServer extends AbstractLoader implements Loader {
         activate(wedge, getConfig());
       }
 
-      Log.info(LogMsg.createMsg(MSG, "Loader.components_initialized"));
+      Log.trace(LogMsg.createMsg(MSG, "Loader.components_initialized"));
 
       final StringBuffer b = new StringBuffer(NAME);
       b.append(" v");
-      b.append(VERSION.toString());
-      b.append(" initialized - Loader:");
-      b.append(Loader.API_NAME);
-      b.append(" v");
       b.append(Loader.API_VERSION);
-      b.append(" - Runtime: ");
+      b.append(" initialized - Runtime: ");
       b.append(System.getProperty("java.version"));
       b.append(" (");
       b.append(System.getProperty("java.vendor"));
@@ -400,15 +451,12 @@ public class WebServer extends AbstractLoader implements Loader {
       b.append(")");
       Log.info(b);
 
-      // enter a loop performing watchdog and maintenance functions
-      watchdog();
+      watchdog(); // thread loops here while server is operational
 
-      // The watchdog loop has exited, so we are done processing
       terminateComponents();
 
-      Log.info(LogMsg.createMsg(MSG, "Loader.terminated"));
+      Log.info("Webserver terminated.");
 
-      // Rename the thread back to what it was called before we were being run
       Thread.currentThread().setName(oldName);
     }
   }

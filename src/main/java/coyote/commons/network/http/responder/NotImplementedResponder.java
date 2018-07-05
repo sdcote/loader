@@ -24,7 +24,7 @@ public class NotImplementedResponder extends DefaultResponder {
 
   @Override
   public Status getStatus() {
-    return Status.OK;
+    return Status.NOT_IMPLEMENTED;
   }
 
 
