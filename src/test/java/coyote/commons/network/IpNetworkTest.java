@@ -130,7 +130,7 @@ public class IpNetworkTest {
   }
 
   @Test
-  public void CidrFormat() throws IpAddressException {
+  public void cidrFormat() throws IpAddressException {
     IpNetwork network = new IpNetwork("10.2/26");
     assertEquals("10.2.0.0/26", network.toString());
     network = new IpNetwork("10.2.0/24");
