@@ -2,10 +2,7 @@ package coyote.commons.network.http.responder;
 
 import coyote.commons.StringUtil;
 import coyote.commons.network.MimeType;
-import coyote.commons.network.http.Body;
-import coyote.commons.network.http.HTTP;
-import coyote.commons.network.http.HTTPSession;
-import coyote.commons.network.http.ResponseException;
+import coyote.commons.network.http.*;
 import coyote.dataframe.DataFrame;
 import coyote.dataframe.marshal.JSONMarshaler;
 import coyote.dataframe.marshal.MarshalException;
@@ -22,31 +19,34 @@ public abstract class ServiceResponder extends DefaultResponder implements Respo
     /**
      * Create a dataframe out of the body of the request in the given session.
      *
+     * <p>This method will use the value of the Content-type entity header to assist in parsing the request body.</p>
+     *
+     * <p>A null return value implies errors in parsing the body or the data frame and the caller can return a
+     * "Bad Request" to the requester indicating a problem with the body of the request.</p>
+     *
      * @param session the session containing the request.
-     * @return a data frame populated with the data in the body or an empty data frame if no body was in the session.
-     * @throws IllegalArgumentException if there were problems parsing the body
+     * @return a data frame populated with the data in the body, an empty data frame if no body was in the session or
+     * null if there were errors parsing the body or the data.
      */
-    protected DataFrame marshalBody(HTTPSession session) throws IllegalArgumentException {
+    protected DataFrame marshalBody(HTTPSession session) {
         DataFrame retval = null;
         Body body = null;
         try {
             body = session.parseBody();
-        } catch (IOException | ResponseException e1) {
-            throw new IllegalArgumentException("Problems parsing request body: " + e1.getMessage());
+        } catch (IOException | ResponseException e) {
+            Log.error("Exception parsing request body: "+e.getClass().getSimpleName()+": "+e.getMessage());
         }
 
         if (body != null && body.size() > 0) {
             try {
                 retval = parseBody(body, session);
+                if (retval == null) {
+                    retval = new DataFrame();
+                }
             } catch (final Exception e) {
-                throw new IllegalArgumentException("Problems parsing body data: " + e.getMessage());
+                Log.error("Exception parsing body data: "+e.getClass().getSimpleName()+": "+e.getMessage());
             }
         }
-
-        if (retval == null) {
-            retval = new DataFrame();
-        }
-
         return retval;
     }
 
@@ -138,5 +138,21 @@ public abstract class ServiceResponder extends DefaultResponder implements Respo
         return retval;
     }
 
+    @Override
+    public String getMimeType() {
+        return MimeType.JSON.toString();
+    }
+
+
+    @Override
+    public Status getStatus() {
+        return Status.OK;
+    }
+
+
+    @Override
+    public String getText() {
+        throw new IllegalStateException("This method should not be called");
+    }
 
 }
