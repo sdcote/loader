@@ -73,7 +73,7 @@ public class ConfigTest {
 
     try {
       int value = cfg.getInt("PORT");
-      assertTrue(value == 123);
+      assertEquals(123, value);
     } catch (NumberFormatException e) {
       fail("Could not retrieve as an integer");
     }
@@ -83,14 +83,18 @@ public class ConfigTest {
       int value = cfg.getInt("FAIL");
       fail("Should have thrown an exception");
 
-      value = cfg.getInt("NotThere");
+      cfg.getInt("NotThere");
       fail("Should have thrown an exception - null value");
-    } catch (NumberFormatException e) {}
+    } catch (NumberFormatException ignore) {
+      // ignore the exception
+    }
 
     try {
       int value = cfg.getInt("NotThere");
       fail("Should have thrown an exception - not found");
-    } catch (NumberFormatException e) {}
+    } catch (NumberFormatException ignore) {
+      // ignore the exception
+    }
 
   }
 
