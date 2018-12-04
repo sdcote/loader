@@ -1,0 +1,58 @@
+{
+	"Class": "coyote.dx.Service",
+	
+	"Manager" : {
+		"Port": 443,
+		"Auth": {
+			"Users" : [ 
+				{ 
+				  "EncryptedName" : "cNcvHrSlDEeVLJTNJTyyUkgkTdMFuOYF", 
+				  "EncryptedPassword" : "GfqGEXtR5jkyh75cRgqlNzgAdPz/K2mz", 
+				  "EncryptedGroups" : "02vnj/GyZwndbwd5zoXpjbievElMHAu1UnVMDb1VaHU="
+				}
+			]
+		},
+		"IPACL" : {
+			"default" : "deny",
+			"127.0.0.1" : "allow",
+			"172.28.147.6/0" : "allow",
+			"192.168/16" : "allow",
+			"10/8" : "deny"
+		}
+	},
+
+	"Job" : {
+		"Name" : "Simple",
+		"Schedule": { "Minutes": "*/5" },
+		
+		"Reader" : {
+			"class" : "CsvReader",
+			"source" : "[#$app.home#]/demo/users.csv",
+			"header" : true
+		},
+
+		"Writer" : {
+			"class" : "FlatFileWriter",
+			"target" : "users.txt",
+			"fields" : {
+				"Role" : { "start" : 0, "length" : 6 },
+				"FirstName" : { "start" : 7, "length" : 11 },
+				"LastName" : { "start" : 19, "length" : 16 },
+				"MiddleInitial" : { "start" : 36, "length" : 1 }
+			}    
+		}
+	},
+
+	"Component": [
+		{"Class": "coyote.demo.CheckIn", "uri":"http://coyote.systems/api/checkin"}
+	],
+
+	"Logging": {
+		"FileAppender": { "target": "batch.log", "categories": "info, notice" },
+		"FileAppender": { "target": "error.log", "categories": "notice, warn, error, fatal" },
+		"CyclingFileAppender": { "target": "debug.log", "categories": "trace, debug, error, fatal, warn", "generations": 10, "maxsize": "2MB", "enabled": true },
+		"CyclingFileAppender": { "target": "scheduler.log", "categories": "scheduler, thread", "generations": 10, "maxsize": "2MB", "enabled": false  },
+		"CyclingFileAppender": { "target": "httpd.log", "categories": "httpd", "generations": 7, "interval": "1d", "cycletime": "00:03", "maxsize": "10MB", "enabled": false }
+	}
+
+}
