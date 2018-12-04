@@ -12,6 +12,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 //import static org.junit.Assert.*;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import coyote.commons.GUID;
@@ -96,7 +97,7 @@ public class ConfigTest {
 
 
 
-  @Test
+  @Ignore
   public void readFromNetwork() throws URISyntaxException, IOException, ConfigurationException {
     URI cfgUri = new URI("http://coyote.systems/device/ou812");
     Config config = Config.read(cfgUri);
