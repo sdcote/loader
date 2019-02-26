@@ -225,9 +225,9 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
         }
       });
     } catch (java.lang.NoSuchMethodError nsme) {
-      // Ignore
+      // Ignore - should not happen
     } catch (Throwable e) {
-      // Ignore
+      // Ignore - should not happen
     }
   }
 
@@ -241,11 +241,20 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   public void configure(Config cfg) throws ConfigurationException {
     configuration = cfg;
 
-    // Fill the symbol table with system properties
+    // Fill the symbol table with runtime values
+    symbols.readEnvironmentVariables();
+
+    // System properties override environment variables
     symbols.readSystemProperties();
+
+    // Replace all values in the configuration with symbols - runtime variables
+    configuration  = new Config(Template.preProcess(configuration.toString(),symbols));
 
     // setup logging as soon as we can
     initLogging();
+
+    // Allow the subclass to perform configuration and initialization processing
+    onConfiguration();
   }
 
 
@@ -1025,5 +1034,21 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   public void setLoader(Loader loader) {
     parent = loader;
   }
+
+
+
+
+  /**
+   * Any loader subclass may override this method to perform configuration
+   * related processing here.
+   *
+   * <p>This is called immediately after the base class is configured. This
+   * way, subclasses don't have to override the configure(Config) method and
+   * call super.configure(Config).</p>
+   *
+   * @throws ConfigurationException
+   */
+  public void onConfiguration() throws ConfigurationException {}
+
 
 }
