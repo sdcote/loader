@@ -5,7 +5,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3"
+    classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.1"
   }
 }
 
@@ -123,10 +123,6 @@ jacocoTestReport {
    	}
 }
 check.dependsOn jacocoTestReport
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.2'
-}
 
 bintray {
 	user = bintrayUser
