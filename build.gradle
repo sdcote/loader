@@ -125,6 +125,7 @@ jacocoTestReport {
 check.dependsOn jacocoTestReport
 
 bintray {
+	// these are defined in gradle.properties ... in gradle_home 
 	user = bintrayUser
 	key = bintrayKey
 	publications = ['mavenJava']
