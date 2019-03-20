@@ -1,23 +1,11 @@
 /*
  * Copyright (c) 2015 Stephan D. Cote' - All rights reserved.
- * 
- * This program and the accompanying materials are made available under the 
- * terms of the MIT License which accompanies this distribution, and is 
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which accompanies this distribution, and is
  * available at http://creativecommons.org/licenses/MIT/
  */
 package coyote.loader;
-
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
 import coyote.commons.FileUtil;
 import coyote.commons.GUID;
@@ -41,58 +29,89 @@ import coyote.loader.thread.Scheduler;
 import coyote.loader.thread.ThreadJob;
 import coyote.loader.thread.ThreadPool;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.*;
+
 
 /**
- * 
+ *
  */
 public abstract class AbstractLoader extends ThreadJob implements Loader, Runnable {
 
   public static final BundleBaseName MSG;
+
   static {
     MSG = new BundleBaseName("LoaderMsg");
   }
 
-  /** Constant to assist in determining the full class name of loggers */
+  /**
+   * Constant to assist in determining the full class name of loggers
+   */
   private static final String LOGGER_PKG = Log.class.getPackage().getName();
 
-  /** The command line arguments used to invoke the loader */
+  /**
+   * The command line arguments used to invoke the loader
+   */
   protected String[] commandLineArguments = null;
 
-  /** A map of all the component configurations keyed by their instance */
+  /**
+   * A map of all the component configurations keyed by their instance
+   */
   protected final HashMap<Object, Config> components = new HashMap<Object, Config>();
 
-  /** A map of components to when they last checked in...helps detect hung components. */
+  /**
+   * A map of components to when they last checked in...helps detect hung components.
+   */
   protected final HashMap<Object, Long> checkin = new HashMap<Object, Long>();
 
-  /** A map of components to the interval to when they should be considered hung and should be restarted. */
+  /**
+   * A map of components to the interval to when they should be considered hung and should be restarted.
+   */
   protected final HashMap<Object, Long> hangtime = new HashMap<Object, Long>();
 
-  /** The time to pause (sleep) between idle loop cycles (dflt=3000ms) */
+  /**
+   * The time to pause (sleep) between idle loop cycles (dflt=3000ms)
+   */
   protected long parkTime = 3000;
 
-  /** Our configuration */
+  /**
+   * Our configuration
+   */
   protected Config configuration = new Config();
 
-  /** Our very simple thread pool */
+  /**
+   * Our very simple thread pool
+   */
   protected final ThreadPool threadpool = new ThreadPool();
 
   protected Scheduler scheduler = null;
 
   private final Context context = new LoaderContext();
 
-  /** The component responsible for tracking operational statistics for all the components in this runtime */
+  /**
+   * The component responsible for tracking operational statistics for all the components in this runtime
+   */
   protected final StatBoard stats = new StatBoardImpl();
 
-  /** Logical identifier for this instance. May not be unique across the system.*/
+  /**
+   * Logical identifier for this instance. May not be unique across the system.
+   */
   protected String instanceName = null;
 
-  /** A symbol table to support basic template functions */
+  /**
+   * A symbol table to support basic template functions
+   */
   protected static final SymbolTable symbols = new SymbolTable();
 
-  /** The loader which loaded this loader. Null implies this is the root loader */
+  /**
+   * The loader which loaded this loader. Null implies this is the root loader
+   */
   protected Loader parent = null;
-
-
 
 
   /**
@@ -104,8 +123,6 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   }
 
 
-
-
   /**
    * @see coyote.loader.Loader#getName()
    */
@@ -113,8 +130,6 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   public String getName() {
     return instanceName;
   }
-
-
 
 
   /**
@@ -126,8 +141,6 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   }
 
 
-
-
   /**
    * Default constructor for all loaders
    */
@@ -135,8 +148,6 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
     stats.setVersion(Loader.API_NAME, Loader.API_VERSION);
     stats.setState(LOADER, INITIALIZING);
   }
-
-
 
 
   protected static void confirmAppHome() {
@@ -168,8 +179,6 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
     }
 
   }
-
-
 
 
   protected static void confirmAppWork() {
@@ -204,11 +213,9 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   }
 
 
-
-
   /**
    * Add a shutdown hook into the JVM to help us shut everything down nicely.
-   * 
+   *
    * @param loader The loader to terminate
    */
   protected static void registerShutdownHook(final Loader loader) {
@@ -232,8 +239,6 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   }
 
 
-
-
   /**
    * @see coyote.loader.Loader#configure(coyote.loader.cfg.Config)
    */
@@ -248,7 +253,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
     symbols.readSystemProperties();
 
     // Replace all values in the configuration with symbols - runtime variables
-    configuration  = new Config(Template.preProcess(configuration.toString(),symbols));
+    configuration = new Config(Template.preProcess(configuration.toString(), symbols));
 
     // setup logging as soon as we can
     initLogging();
@@ -258,12 +263,10 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   }
 
 
-
-
   /**
    * Load loggers for the entire process.
-   * 
-   * <p>This looks for a section named logging in the main loader and loads the 
+   *
+   * <p>This looks for a section named logging in the main loader and loads the
    * loggers from there.</p>
    */
   private void initLogging() {
@@ -286,7 +289,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
         // each logger is a frame
         if (field.isFrame()) {
 
-          DataFrame cfgFrame = (DataFrame)field.getObjectValue();
+          DataFrame cfgFrame = (DataFrame) field.getObjectValue();
           // we need named sections, not arrays
           if (StringUtil.isNotBlank(field.getName())) {
 
@@ -442,8 +445,6 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   }
 
 
-
-
   private static Logger createLogger(Config cfg) {
     Logger retval = null;
     if (cfg != null) {
@@ -456,7 +457,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
           Object object = ctor.newInstance();
 
           if (object instanceof Logger) {
-            retval = (Logger)object;
+            retval = (Logger) object;
             try {
               retval.setConfig(cfg);
             } catch (Exception e) {
@@ -477,15 +478,13 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   }
 
 
-
-
   /**
-   * Cycle through the configuration and load all the components defined 
+   * Cycle through the configuration and load all the components defined
    * therein.
-   * 
-   * <p>This looks for a section named {@code Components} or {@code Component} 
-   * and treat each section as a component configuration. This will of course 
-   * require at least one attribute ({@code Class}) which defines the class of 
+   *
+   * <p>This looks for a section named {@code Components} or {@code Component}
+   * and treat each section as a component configuration. This will of course
+   * require at least one attribute ({@code Class}) which defines the class of
    * the object to load and configure.</p>
    */
   protected void initComponents() {
@@ -505,20 +504,17 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   }
 
 
-
-
   /**
    * This will use the configuration to load and configure the component
-   * 
-   * <p>This is normally called in two locations: when the loader first runs 
-   * (from {@link #initComponents()}) and in the {@link #watchdog()} method 
-   * which will shutdown an inactive / hung component and restart a fresh one 
+   *
+   * <p>This is normally called in two locations: when the loader first runs
+   * (from {@link #initComponents()}) and in the {@link #watchdog()} method
+   * which will shutdown an inactive / hung component and restart a fresh one
    * in its place.</p>
-   *   
+   *
    * @param config The configuration of the component to load
-   * 
-   * @return the loaded managed component or null if none was specified in the 
-   *         configuration
+   * @return the loaded managed component or null if none was specified in the
+   * configuration
    */
   protected Object loadComponent(Config config) {
     Object retval = null;
@@ -533,7 +529,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
         Object object = ctor.newInstance();
 
         if (object instanceof ManagedComponent) {
-          ManagedComponent cmpnt = (ManagedComponent)object;
+          ManagedComponent cmpnt = (ManagedComponent) object;
 
           // set the shared operational context all component use to share data
           cmpnt.setContext(getContext());
@@ -552,9 +548,9 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
           // return the component
           retval = cmpnt;
         } else if (object instanceof Runnable) {
-          retval = (Runnable)object;
+          retval = object;
         } else if (object instanceof Loader) {
-          ((Loader)object).setLoader(this);
+          ((Loader) object).setLoader(this);
           retval = object;
         } else {
           System.err.println(LogMsg.createMsg(MSG, "Loader.class_is_not_logic_component", className));
@@ -573,45 +569,43 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   }
 
 
-
-
   /**
    * Activate (start, run, whatever) this component as is appropriate for the
    * Loader and the instance of the object.
-   * 
-   * <p>It is expected that specialized Loaders will override this method and 
-   * activate the component based on the needs of the application and the type 
+   *
+   * <p>It is expected that specialized Loaders will override this method and
+   * activate the component based on the needs of the application and the type
    * of object it is.</p>
-   * 
-   * <p>In some cases, the Loader may need to check the configuration for 
-   * licensing data to determine if the object is allowed to run. If not, the 
+   *
+   * <p>In some cases, the Loader may need to check the configuration for
+   * licensing data to determine if the object is allowed to run. If not, the
    * component may be removed from the Loader instance.
-   * 
-   * <p>The default behavior of this class is to check to see if it is a 
-   * {@code ScheduledJob} and if so, place it in the scheduler. Otherwise, the 
-   * object is run in the thread pool if it is a {@code ThreadJob} or 
+   *
+   * <p>The default behavior of this class is to check to see if it is a
+   * {@code ScheduledJob} and if so, place it in the scheduler. Otherwise, the
+   * object is run in the thread pool if it is a {@code ThreadJob} or
    * implements {@code Runnable}.</p>
-   *  
+   *
    * @param component the component to activate
-   * @param config the Configuration used to create and configure the object.
+   * @param config    the Configuration used to create and configure the object.
    */
   protected void activate(Object component, Config config) {
     if (component != null) {
       if (component instanceof ScheduledJob) {
         Log.trace("Loading " + component.getClass().getName() + " in the scheduler");
-        getScheduler().schedule((ScheduledJob)component);
+        getScheduler().schedule((ScheduledJob) component);
         Thread.yield(); // allow component to run
       } else if (component instanceof ThreadJob) {
         try {
           Log.trace("Loading " + component.getClass().getName() + " in the threadpool");
-          getThreadPool().handle((ThreadJob)component);
+          getThreadPool().handle((ThreadJob) component);
           Thread.yield(); // allow component to run
         } catch (InterruptedException e) {
           Log.error(LogMsg.createMsg(MSG, "Loader.activation_threadjob_error", e.getMessage()));
         }
       } else if (component instanceof Runnable) {
         Log.trace("Running " + component.getClass().getName() + " in the threadpool");
-        getThreadPool().run((Runnable)component);
+        getThreadPool().run((Runnable) component);
         Thread.yield(); // allow component to run
       } else {
         Log.error(LogMsg.createMsg(MSG, "Loader.activation_unrecognized_error", component.getClass().getName()));
@@ -622,15 +616,13 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   }
 
 
-
-
   /**
    * Terminate/shutdown the given component and remove it from the loader.
-   * 
-   * <p>This method will attempt to shutdown the component and then remove it 
+   *
+   * <p>This method will attempt to shutdown the component and then remove it
    * from the list of managed components.</p>
-   * 
-   * @param component The component to terminate and remove from the list of managed components. 
+   *
+   * @param component The component to terminate and remove from the list of managed components.
    */
   protected void removeComponent(Object component) {
     if (component != null) {
@@ -639,9 +631,9 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
       DataFrame frame = new DataFrame();
       frame.put("Message", "Managed Removal");
       if (component instanceof ManagedComponent) {
-        safeShutdown((ManagedComponent)component, frame);
+        safeShutdown((ManagedComponent) component, frame);
       } else if (component instanceof ThreadJob) {
-        ((ThreadJob)component).shutdown(); // May not work as expected
+        ((ThreadJob) component).shutdown(); // May not work as expected
       }
       synchronized (components) {
         if (components.remove(component) != null) {
@@ -654,22 +646,20 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   }
 
 
-
-
   /**
-   * 
+   *
    */
   protected void terminateComponents() {
     DataFrame frame = new DataFrame();
     frame.put("Message", "Normal termination");
 
     synchronized (components) {
-      for (final Iterator<Object> it = components.keySet().iterator(); it.hasNext();) {
+      for (final Iterator<Object> it = components.keySet().iterator(); it.hasNext(); ) {
         final Object cmpnt = it.next();
         if (cmpnt instanceof ManagedComponent) {
-          safeShutdown((ManagedComponent)cmpnt, frame);
+          safeShutdown((ManagedComponent) cmpnt, frame);
         } else if (cmpnt instanceof ThreadJob) {
-          ((ThreadJob)cmpnt).shutdown(); // May not work as expected
+          ((ThreadJob) cmpnt).shutdown(); // May not work as expected
         }
 
         // remove the component
@@ -677,8 +667,6 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
       }
     }
   }
-
-
 
 
   /**
@@ -689,8 +677,6 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   }
 
 
-
-
   /**
    * @param parkTime the parkTime to set
    */
@@ -699,18 +685,15 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   }
 
 
-
-
   /**
    * Shut the component down in a separate thread.
-   * 
+   *
    * <p>This is a way to ensure that the calling thread does not get hung in a
    * deadlocked component while trying to shutdown a component.</p>
-   * 
-   * @param cmpnt the managed component to terminate
-   * @param frame the dataframe which contains any additional information 
-   *        relating to the shutdown request. This may be null.
    *
+   * @param cmpnt the managed component to terminate
+   * @param frame the dataframe which contains any additional information
+   *              relating to the shutdown request. This may be null.
    * @return the Thread in which the shutdown is occurring.
    */
   protected Thread safeShutdown(final ManagedComponent cmpnt, final DataFrame frame) {
@@ -729,16 +712,14 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   }
 
 
-
-
   /**
    * The main execution loop.
-   * 
-   * <p>This is where the thread spends its time monitoring components it has 
+   *
+   * <p>This is where the thread spends its time monitoring components it has
    * loaded and performing housekeeping operations.</p>
-   * 
-   * <p>While it is called a watchdog, this does not detect when a component is 
-   * hung. The exact API for components to "pet the dog" is still in the 
+   *
+   * <p>While it is called a watchdog, this does not detect when a component is
+   * hung. The exact API for components to "pet the dog" is still in the
    * works.</p>
    */
   protected void watchdog() {
@@ -756,14 +737,14 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
         // Make sure that all this loaders are active, otherwise remove the
         // reference to them and allow GC to remove them from memory
         synchronized (components) {
-          for (final Iterator<Object> it = components.keySet().iterator(); it.hasNext();) {
+          for (final Iterator<Object> it = components.keySet().iterator(); it.hasNext(); ) {
             final Object cmpnt = it.next();
             if (cmpnt instanceof ManagedComponent) {
 
               // Don't shut down scheduled jobs...they are inactive while they 
               // are waiting in the scheduler for their next execution.
 
-              if (!(cmpnt instanceof ScheduledJob) && !((ManagedComponent)cmpnt).isActive()) {
+              if (!(cmpnt instanceof ScheduledJob) && !((ManagedComponent) cmpnt).isActive()) {
                 Log.info(LogMsg.createMsg(MSG, "Loader.removing_inactive_cmpnt", cmpnt.toString()));
 
                 // get a reference to the components configuration
@@ -774,7 +755,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
                 frame.put("Message", "Terminating due to inactivity");
 
                 // try to shut it down properly
-                safeShutdown((ManagedComponent)cmpnt, frame);
+                safeShutdown((ManagedComponent) cmpnt, frame);
 
                 // remove the component
                 it.remove();
@@ -826,10 +807,8 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   }
 
 
-
-
   /**
-   * @param timeout number of miliseconds to wait for all the components to go active 
+   * @param timeout number of miliseconds to wait for all the components to go active
    * @return list of components which have not yet reported as active
    */
   private List<String> waitForActive(int timeout) {
@@ -839,9 +818,9 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
     synchronized (components) {
       do {
         failedToInitialize = new ArrayList<String>();
-        for (final Iterator<Object> it = components.keySet().iterator(); it.hasNext();) {
+        for (final Iterator<Object> it = components.keySet().iterator(); it.hasNext(); ) {
           final Object cmpnt = it.next();
-          if (cmpnt instanceof ManagedComponent && !(cmpnt instanceof ScheduledJob) && !((ManagedComponent)cmpnt).isActive()) {
+          if (cmpnt instanceof ManagedComponent && !(cmpnt instanceof ScheduledJob) && !((ManagedComponent) cmpnt).isActive()) {
             failedToInitialize.add(cmpnt.toString());
           }
         }
@@ -854,8 +833,6 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   }
 
 
-
-
   /**
    * @see coyote.loader.Loader#checkIn(java.lang.Object)
    */
@@ -863,8 +840,6 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   public void checkIn(Object component) {
     checkin.put(component, new Long(System.currentTimeMillis()));
   }
-
-
 
 
   /**
@@ -876,8 +851,6 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   }
 
 
-
-
   /**
    * @see coyote.loader.Loader#getWatchdog()
    */
@@ -885,8 +858,6 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   public WatchDog getWatchdog() {
     return this;
   }
-
-
 
 
   /**
@@ -909,8 +880,6 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   }
 
 
-
-
   /**
    * @see coyote.loader.Loader#start()
    */
@@ -918,8 +887,6 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   public void start() {
     // do-nothing implementation
   }
-
-
 
 
   /**
@@ -931,8 +898,6 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   }
 
 
-
-
   /**
    * @return the command line arguments used to invoke this loader
    */
@@ -941,10 +906,8 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   }
 
 
-
-
   /**
-   * Initialize the symbol table in the context with system properties and 
+   * Initialize the symbol table in the context with system properties and
    * other useful data.
    */
   public void initSymbolTable() {
@@ -961,16 +924,12 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   }
 
 
-
-
   /**
    * @param args the command line arguments to set
    */
   public void setCommandLineArguments(String[] args) {
     commandLineArguments = args;
   }
-
-
 
 
   /**
@@ -985,8 +944,6 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   }
 
 
-
-
   /**
    * @see coyote.loader.Loader#getContext()
    */
@@ -996,24 +953,20 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   }
 
 
-
-
   /**
    * Access instrumentation services for this loader.
-   * 
-   * <p>This enables tracking operational statistics for all components in the 
+   *
+   * <p>This enables tracking operational statistics for all components in the
    * runtime.
-   * 
-   * <p>Statistics tracking is disabled by default but can be toggled antime. 
-   * 
+   *
+   * <p>Statistics tracking is disabled by default but can be toggled antime.
+   *
    * @return the StatBoard for this server.
    */
   @Override
   public StatBoard getStats() {
     return stats;
   }
-
-
 
 
   /**
@@ -1025,8 +978,6 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   }
 
 
-
-
   /**
    * @see coyote.loader.Loader#setLoader(coyote.loader.Loader)
    */
@@ -1034,8 +985,6 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   public void setLoader(Loader loader) {
     parent = loader;
   }
-
-
 
 
   /**
@@ -1048,7 +997,8 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
    *
    * @throws ConfigurationException
    */
-  public void onConfiguration() throws ConfigurationException {}
+  public void onConfiguration() throws ConfigurationException {
+  }
 
 
 }
