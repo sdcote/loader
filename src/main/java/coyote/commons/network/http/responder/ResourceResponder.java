@@ -40,8 +40,8 @@ public class ResourceResponder extends DefaultResponder {
 
   private static final String DEFAULT_ROOT = "content";
   private boolean redirectOnIndexedDir = false;
-  private static final String ROOT_TAG = "Root";
-  private static final String REDIRECT_TAG = "RedirectOnIndexedDir";
+  public static final String ROOT_TAG = "Root";
+  public static final String REDIRECT_TAG = "RedirectOnIndexedDir";
 
   // The class loader object associated with this Class
   ClassLoader cLoader = this.getClass().getClassLoader();
