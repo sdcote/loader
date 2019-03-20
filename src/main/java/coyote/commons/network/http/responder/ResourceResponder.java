@@ -18,6 +18,7 @@ import coyote.commons.network.http.HTTPSession;
 import coyote.commons.network.http.Status;
 import coyote.commons.network.http.Response;
 import coyote.commons.network.http.Status;
+import coyote.loader.cfg.Config;
 import coyote.loader.log.Log;
 
 
@@ -39,6 +40,8 @@ public class ResourceResponder extends DefaultResponder {
 
   private static final String DEFAULT_ROOT = "content";
   private boolean redirectOnIndexedDir = false;
+  private static final String ROOT_TAG = "Root";
+  private static final String REDIRECT_TAG = "RedirectOnIndexedDir";
 
   // The class loader object associated with this Class
   ClassLoader cLoader = this.getClass().getClassLoader();
@@ -48,6 +51,10 @@ public class ResourceResponder extends DefaultResponder {
 
   @Override
   public Response get(final Resource resource, final Map<String, String> urlParams, final HTTPSession session) {
+    // These initialization parameters always exist
+    // WebServer loader = resource.initParameter(0, WebServer.class);
+    Config config = resource.initParameter(1, Config.class);
+
 
     final String baseUri = resource.getUri(); // the regex matcher URL
 
@@ -62,7 +69,7 @@ public class ResourceResponder extends DefaultResponder {
     }
 
     // Retrieve the base directory in the classpath for our search
-    String parentdirectory = resource.initParameter(0, String.class);
+    String parentdirectory = config.getAsString(ROOT_TAG);
     try {
       if (StringUtil.isBlank(parentdirectory)) {
         parentdirectory = DEFAULT_ROOT;
@@ -76,7 +83,7 @@ public class ResourceResponder extends DefaultResponder {
     // served instead
     if (resource.getInitParameterLength() > 1) {
       try {
-        redirectOnIndexedDir = resource.initParameter(1, Boolean.class);
+        redirectOnIndexedDir = config.getAsBoolean(REDIRECT_TAG);
       } catch (final Exception e) {
         Log.append(HTTPD.EVENT, "ResourceResponder initialization error: Redirect On Indexed Directory: " + e.getMessage() + " - defaulting to true");
       }
