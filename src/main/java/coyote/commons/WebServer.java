@@ -113,12 +113,6 @@ public class WebServer extends AbstractLoader implements Loader {
       symbols.put(COMMAND_LINE_ARG_PREFIX + x, commandLineArguments[x]);
     }
 
-    // store environment variables in the symbol table
-    Map<String, String> env = System.getenv();
-    for (String envName : env.keySet()) {
-      symbols.put(envName, env.get(envName));
-    }
-
     // command line argument override all other configuration settings
     parseArgs(getCommandLineArguments());
 
