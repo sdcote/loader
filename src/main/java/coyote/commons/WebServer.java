@@ -1,28 +1,16 @@
 /*
  * Copyright (c) 2017 Stephan D. Cote' - All rights reserved.
- * 
- * This program and the accompanying materials are made available under the 
- * terms of the MIT License which accompanies this distribution, and is 
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which accompanies this distribution, and is
  * available at http://creativecommons.org/licenses/MIT/
  */
 package coyote.commons;
 
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import coyote.commons.network.IpAddress;
 import coyote.commons.network.IpNetwork;
 import coyote.commons.network.MimeType;
-import coyote.commons.network.http.HTTP;
-import coyote.commons.network.http.HTTPD;
-import coyote.commons.network.http.HTTPSession;
-import coyote.commons.network.http.Response;
-import coyote.commons.network.http.SecurityResponseException;
-import coyote.commons.network.http.Status;
+import coyote.commons.network.http.*;
 import coyote.commons.network.http.auth.AuthProvider;
 import coyote.commons.network.http.auth.GenericAuthProvider;
 import coyote.commons.network.http.responder.Error404Responder;
@@ -42,68 +30,76 @@ import coyote.loader.component.ManagedComponent;
 import coyote.loader.log.Log;
 import coyote.loader.log.LogMsg;
 
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 
 /**
  * This starts a configurable web server.
- * 
+ *
  * <p>This is a specialization of a Loader which loads a HTTP server and keeps
  * it running in memory.
- * 
- * <p>As an extension of the AbstractLoader, this also supports the loading of 
- * components, all of which will have a reference to this loader/webserver so 
+ *
+ * <p>As an extension of the AbstractLoader, this also supports the loading of
+ * components, all of which will have a reference to this loader/webserver so
  * it can use this as a coordination point for operations if necessary.
- * 
- * <p>All routes and handlers are specified in the configuration. This does 
+ *
+ * <p>All routes and handlers are specified in the configuration. This does
  * not serve anything by default.
  */
 public class WebServer extends AbstractLoader implements Loader {
 
-  /** Tag used in various class identifying locations. */
+  /**
+   * Tag used in various class identifying locations.
+   */
   public static final String NAME = WebServer.class.getSimpleName();
-
-  /** The default port on which this listens */
-  protected static final int DEFAULT_PORT = 80;
-
-  /** Prefix for command line arguments in the symbol table */
+  /**
+   * Prefix for command line arguments in the symbol table
+   */
   public static final String COMMAND_LINE_ARG_PREFIX = "cmd.arg.";
-
-  /** Prefix for environment variables in the symbol table */
-  public static final String ENVIRONMENT_VAR_PREFIX = "env.";
-
-  /** The port on which we should bind as specified from the command line - overrides all, even configuration file */
-  protected int bindPort = -1;
-
-  /** Our main server */
-  protected HTTPDRouter server = null;
-
-  /** Server on a normal port which sends a redirect to our main server. (E.g., any http: requests are redirected to https:) */
-  private HTTPD redirectServer = null;
-
-  /** The port on which this server listens, defaults to 80 */
+  /**
+   * The default port on which this listens
+   */
+  protected static final int DEFAULT_PORT = 80;
+  /**
+   * The port on which this server listens, defaults to 80
+   */
   protected static final String PORT = "Port";
-
-  /** Perform a redirect for all requests to this port to the port on which we are listening. Normally set to 80 when the port is 443 */
+  /**
+   * Perform a redirect for all requests to this port to the port on which we are listening. Normally set to 80 when the port is 443
+   */
   protected static final String REDIRECT_PORT = "RedirectPort";
-
-  /** Indicates SSL should be enabled; automatically enable when port=443 */
+  /**
+   * Indicates SSL should be enabled; automatically enable when port=443
+   */
   protected static final String SECURE_SERVER = "SecureServer";
-
   protected static final String ENABLE_ARM = "EnableARM";
   protected static final String ENABLE_GAUGES = "EnableGauges";
   protected static final String ENABLE_TIMING = "EnableTiming";
-
-  // Endpoint attributes
   protected static final String ENDPOINTS = "Endpoints";
   protected static final String CLASS = "Class";
   protected static final String PRIORITY = "Priority";
-
   protected static final String RESOURCES = "Resources";
-
-  /** command line argument for the port on which we should bind. */
+  /**
+   * command line argument for the port on which we should bind.
+   */
   protected static final String PORT_ARG = "-p";
-
-
-
+  /**
+   * The port on which we should bind as specified from the command line - overrides all, even configuration file
+   */
+  protected int bindPort = -1;
+  /**
+   * Our main server
+   */
+  protected HTTPDRouter server = null;
+  /**
+   * Server on a normal port which sends a redirect to our main server. (E.g., any http: requests are redirected to https:)
+   */
+  private HTTPD redirectServer = null;
 
   /**
    * @see coyote.loader.AbstractLoader#configure(coyote.loader.cfg.Config)
@@ -120,7 +116,7 @@ public class WebServer extends AbstractLoader implements Loader {
     // store environment variables in the symbol table
     Map<String, String> env = System.getenv();
     for (String envName : env.keySet()) {
-      symbols.put(ENVIRONMENT_VAR_PREFIX + envName, env.get(envName));
+      symbols.put(envName, env.get(envName));
     }
 
     // command line argument override all other configuration settings
@@ -158,9 +154,7 @@ public class WebServer extends AbstractLoader implements Loader {
         } catch (NumberFormatException e) {
           redirectport = 0;
           Log.error("RedirectPort configuration option was not a valid integer - ignoring");
-
         }
-
       }
 
       boolean secureServer;
@@ -224,7 +218,7 @@ public class WebServer extends AbstractLoader implements Loader {
         for (Config section : resources) {
           for (DataField field : section.getFields()) {
             if (field.getName() != null && field.isFrame()) {
-              loadResource(field.getName(), new Config((DataFrame)field.getObjectValue()));
+              loadResource(field.getName(), new Config((DataFrame) field.getObjectValue()));
             }
           }
         }
@@ -233,7 +227,7 @@ public class WebServer extends AbstractLoader implements Loader {
         for (Config section : endpoints) {
           for (DataField field : section.getFields()) {
             if (field.getName() != null && field.isFrame()) {
-              loadEndpoint(field.getName(), new Config((DataFrame)field.getObjectValue()));
+              loadEndpoint(field.getName(), new Config((DataFrame) field.getObjectValue()));
             }
           }
         }
@@ -270,10 +264,7 @@ public class WebServer extends AbstractLoader implements Loader {
     } else {
       Log.fatal("No configuration passed to server");
     } // if there is a cfg
-
   }
-
-
 
 
   /**
@@ -299,14 +290,12 @@ public class WebServer extends AbstractLoader implements Loader {
   }
 
 
-
-
   /**
    * Load the endpoint represented in the given configuration into the server.
-   * 
+   *
    * <p>Init Parameter:<ol><li>this server<li>configuration
-   * 
-   * @param route the route regex to map in the router
+   *
+   * @param route  the route regex to map in the router
    * @param config the configuration of the route handler with at least a class attribute
    */
   private void loadEndpoint(String route, Config config) {
@@ -350,7 +339,8 @@ public class WebServer extends AbstractLoader implements Loader {
 
   /**
    * Add the named configuration as a web server resource.
-   * @param name name of the resource for binding to the loader context
+   *
+   * @param name   name of the resource for binding to the loader context
    * @param config the configuration for the resource.
    */
   private void loadResource(String name, Config config) {
@@ -366,7 +356,7 @@ public class WebServer extends AbstractLoader implements Loader {
             component.setContext(getContext());
             component.setLoader(this);
             component.setConfiguration(config);
-            getContext().set(name,component);
+            getContext().set(name, component);
           } else {
             Log.error("Resource is not a managed component");
           }
@@ -384,7 +374,7 @@ public class WebServer extends AbstractLoader implements Loader {
 
   /**
    * Start the components running.
-   * 
+   *
    * @see coyote.loader.AbstractLoader#start()
    */
   @Override
@@ -462,18 +452,16 @@ public class WebServer extends AbstractLoader implements Loader {
   }
 
 
-
-
   /**
    * Shut everything down when the JRE terminates.
-   * 
+   *
    * <p>There is a shutdown hook registered with the JRE when this Service is
-   * loaded. The shutdown hook will call this method when the JRE is 
+   * loaded. The shutdown hook will call this method when the JRE is
    * terminating so that the Service can terminate any long-running processes.
-   * 
-   * <p>Note: this is different from {@code close()} but {@code shutdown()} 
+   *
+   * <p>Note: this is different from {@code close()} but {@code shutdown()}
    * will normally result in {@code close()} being invoked at some point.
-   * 
+   *
    * @see coyote.loader.thread.ThreadJob#shutdown()
    */
   @Override
@@ -491,14 +479,12 @@ public class WebServer extends AbstractLoader implements Loader {
   }
 
 
-
-
   /**
    * Add the given IP address to the server blacklist.
-   * 
-   * <p>This results in any TCP connection from this address being dropped by 
+   *
+   * <p>This results in any TCP connection from this address being dropped by
    * the HTTPD server before any HTTP processing.
-   * 
+   *
    * @param address The address to ban from this server
    */
   public synchronized void blacklist(IpAddress address) {
@@ -506,14 +492,12 @@ public class WebServer extends AbstractLoader implements Loader {
   }
 
 
-
-
   /**
    * Add the given IP network to the server blacklist.
-   * 
-   * <p>This results in any TCP connection from any address in this network 
+   *
+   * <p>This results in any TCP connection from any address in this network
    * being dropped by the HTTPD server before any HTTP processing.
-   * 
+   *
    * @param network The address to ban from this server
    */
   public synchronized void blacklist(IpNetwork network) {
@@ -531,9 +515,69 @@ public class WebServer extends AbstractLoader implements Loader {
   //
 
   /**
+   * @return the port on which this server is listening or 0 if the server is not running.
+   */
+  public int getPort() {
+    if (server != null)
+      return server.getPort();
+    else
+      return 0;
+  }
+
+  /**
+   * Add a handler at the given route.
+   *
+   * <p>This is intended for the programmatic or embedded use of the server in
+   * code.
+   *
+   * @param route      the route regular expression
+   * @param handler    the handler class
+   * @param initParams initialization parameters
+   */
+  void addHandler(final String route, final Class<?> handler, final Object... initParams) {
+    Object[] params;
+    if (initParams != null) {
+      params = new Object[initParams.length + 2];
+      params[0] = this;
+      params[1] = new Config();
+      for (int x = 0; x < initParams.length; x++) {
+        params[x + 2] = initParams[x];
+      }
+    } else {
+      params = new Object[]{this, new Config()};
+    }
+
+    server.addRoute(route, 100, handler, params);
+  }
+
+  /**
+   * Run the server in a separate thread.
+   *
+   * @return the thread in which the server is running
+   */
+  public Thread execute() {
+    shutdown = false;
+    Thread serverThread = new Thread(new Runnable() {
+      @Override
+      public void run() {
+        start();
+      }
+    });
+
+    // start the thread running, calling this server start()
+    serverThread.start();
+    try {
+      Thread.yield();
+      Thread.sleep(200);
+    } catch (InterruptedException e) {
+    }
+    return serverThread;
+  }
+
+  /**
    * Keep the server watchdog busy if there are no components to run.
-   * 
-   * <p>BTW, This is an example of the simplest runnable component a Loader 
+   *
+   * <p>BTW, This is an example of the simplest runnable component a Loader
    * can manage. Initialize it, continually calling doWork() while the loader
    * is running then call terminate() when the loader shuts down.
    */
@@ -546,14 +590,10 @@ public class WebServer extends AbstractLoader implements Loader {
     }
 
 
-
-
     @Override
     public void doWork() {
       // no-op method
     }
-
-
 
 
     @Override
@@ -564,7 +604,7 @@ public class WebServer extends AbstractLoader implements Loader {
   }
 
   /**
-   * Listens on a particular port and sends a redirect for the same URL to the 
+   * Listens on a particular port and sends a redirect for the same URL to the
    * secure port.
    */
   protected class RedirectServer extends HTTPD {
@@ -572,24 +612,19 @@ public class WebServer extends AbstractLoader implements Loader {
     private static final String HTTPS_SCHEME = "https://";
 
 
-
-
     public RedirectServer(int port) {
       super(port);
     }
 
 
-
-
     /**
-     * Perform a case insensitive search for a header with a given name and 
+     * Perform a case insensitive search for a header with a given name and
      * return its value if found.
-     * 
-     * @param name the name of the request header to query
+     *
+     * @param name    the name of the request header to query
      * @param session the session containing the request headers
-     * 
-     * @return the value in the header or null if that header was not found in 
-     *         the session.
+     * @return the value in the header or null if that header was not found in
+     * the session.
      */
     private String findRequestHeaderValue(String name, HTTPSession session) {
       if (StringUtil.isNotBlank(name) && session != null && session.getRequestHeaders() != null) {
@@ -603,12 +638,10 @@ public class WebServer extends AbstractLoader implements Loader {
     }
 
 
-
-
     /**
-     * Take what ever URI was requested and send a 301 (moved permanently) 
+     * Take what ever URI was requested and send a 301 (moved permanently)
      * response with the new url.
-     *  
+     *
      * @see coyote.commons.network.http.HTTPD#serve(coyote.commons.network.http.HTTPSession)
      */
     @Override
@@ -629,74 +662,6 @@ public class WebServer extends AbstractLoader implements Loader {
       return super.serve(session);
     }
 
-  }
-
-
-
-
-  /**
-   * @return the port on which this server is listening or 0 if the server is not running.
-   */
-  public int getPort() {
-    if (server != null)
-      return server.getPort();
-    else
-      return 0;
-  }
-
-
-
-
-  /**
-   * Add a handler at the given route.
-   * 
-   * <p>This is intended for the programmatic or embedded use of the server in 
-   * code. 
-   * 
-   * @param route the route regular expression
-   * @param handler the handler class
-   * @param initParams initialization parameters
-   */
-  void addHandler(final String route, final Class<?> handler, final Object... initParams) {
-    Object[] params;
-    if (initParams != null) {
-      params = new Object[initParams.length + 2];
-      params[0] = this;
-      params[1] = new Config();
-      for (int x = 0; x < initParams.length; x++) {
-        params[x + 2] = initParams[x];
-      }
-    } else {
-      params = new Object[]{this, new Config()};
-    }
-
-    server.addRoute(route, 100, handler, params);
-  }
-
-
-
-
-  /**
-   * Run the server in a separate thread.
-   * 
-   * @return the thread in which the server is running
-   */
-  public Thread execute() {
-    shutdown = false;
-    Thread serverThread = new Thread(new Runnable() {
-      @Override
-      public void run() {
-        start();
-      }
-    });
-
-    // start the thread running, calling this server start()
-    serverThread.start();
-    try {
-      Thread.yield();
-      Thread.sleep(200);
-    } catch (InterruptedException e) {}
-    return serverThread;
   }
 
 }
