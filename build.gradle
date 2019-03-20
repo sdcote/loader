@@ -5,7 +5,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3"
+    classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.1"
   }
 }
 
@@ -20,7 +20,7 @@ apply plugin: 'jacoco'
 
 defaultTasks 'clean', 'build', 'publish', 'fatJar'
 group = 'coyote'
-version = '0.7.16'
+version = '0.7.17'
 
 ext {
 	title = 'Coyote Loader Framework'
@@ -124,11 +124,8 @@ jacocoTestReport {
 }
 check.dependsOn jacocoTestReport
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.2'
-}
-
 bintray {
+	// these are defined in gradle.properties ... in gradle_home 
 	user = bintrayUser
 	key = bintrayKey
 	publications = ['mavenJava']

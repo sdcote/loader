@@ -12,11 +12,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Properties;
+import java.util.*;
 
 import coyote.commons.ArrayUtil;
 import coyote.commons.CipherUtil;
@@ -269,6 +265,19 @@ public class SymbolTable extends HashMap {
 
 
   /**
+   * Read all the environment variables into the SymbolTable.
+   */
+  public synchronized void readEnvironmentVariables() {
+    Map<String, String> env = System.getenv();
+    for (String envName : env.keySet()) {
+      put(envName, env.get(envName));
+    }
+  }
+
+
+
+
+  /**
    * Remove the given set of properties from the symbol table.
    *
    * @param props The properties to remove
@@ -300,6 +309,7 @@ public class SymbolTable extends HashMap {
    */
   private void cleanse() {
     remove("http.proxyPassword");
+    remove("https.proxyPassword");
   }
 
 
