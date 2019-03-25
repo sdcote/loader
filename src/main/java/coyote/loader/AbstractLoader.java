@@ -151,8 +151,11 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
 
   protected static void confirmAppHome() {
-    // see if there is a system property with a shared configuration directory
-    String path = System.getProperties().getProperty(APP_HOME);
+    // see if there is an environment variable or a system property with a shared configuration directory
+    String path = System.getenv().get(APP_HOME);
+    if( StringUtil.isNotBlank(System.getProperties().getProperty(APP_HOME))) {
+      path = System.getProperties().getProperty(APP_HOME);
+    }
 
     // if there is a application home directory specified
     if (StringUtil.isNotBlank(path)) {
@@ -182,7 +185,10 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
 
   protected static void confirmAppWork() {
-    String path = System.getProperties().getProperty(APP_WORK);
+    String path = System.getenv().get(APP_WORK);
+    if( StringUtil.isNotBlank(System.getProperties().getProperty(APP_WORK))) {
+      path = System.getProperties().getProperty(APP_WORK);
+    }
 
     if (StringUtil.isNotBlank(path)) {
 
