@@ -20,7 +20,7 @@ apply plugin: 'jacoco'
 
 defaultTasks 'clean', 'build', 'publish', 'fatJar'
 group = 'coyote'
-version = '0.7.19'
+version = '0.7.20'
 
 ext {
 	title = 'Coyote Loader Framework'
