@@ -152,10 +152,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
   protected static void confirmAppHome() {
     // see if there is an environment variable or a system property with a shared configuration directory
-    String path = System.getenv().get(APP_HOME);
-    if( StringUtil.isNotBlank(System.getProperties().getProperty(APP_HOME))) {
-      path = System.getProperties().getProperty(APP_HOME);
-    }
+    String path = getAppHome();
 
     // if there is a application home directory specified
     if (StringUtil.isNotBlank(path)) {
@@ -185,10 +182,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
 
   protected static void confirmAppWork() {
-    String path = System.getenv().get(APP_WORK);
-    if( StringUtil.isNotBlank(System.getProperties().getProperty(APP_WORK))) {
-      path = System.getProperties().getProperty(APP_WORK);
-    }
+    String path = getAppWork();
 
     if (StringUtil.isNotBlank(path)) {
 
@@ -350,7 +344,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
                         // as a loader, we use app.home as our home directory 
                         // and therefore logging should be in a "log" directory 
                         // off of app.home
-                        String path = System.getProperties().getProperty(APP_HOME);
+                        String path = getAppHome();
 
                         // If no app.home, try the directory the configuration file is in
                         if (StringUtil.isBlank(path)) {
@@ -1006,5 +1000,48 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
   public void onConfiguration() throws ConfigurationException {
   }
 
+
+  /**
+   * This returns the value of app.home from either the environment variables
+   * or the system properties, with the system properties overriding the
+   * environment variables.
+   *
+   * @return The value of app.home from either the environment variables or
+   * system properties or null if neither are defined.
+   */
+  protected static String getAppHome() {
+    return getVariable(APP_HOME);
+  }
+
+
+  /**
+   * This returns the value of app.home from either the environment variables
+   * or the system properties, with the system properties overriding the
+   * environment variables.
+   *
+   * @return The value of app.home from either the environment variables or
+   * system properties or null if neither are defined.
+   */
+  protected static String getAppWork() {
+    return getVariable(APP_WORK);
+  }
+
+
+  /**
+   * Returns the value from either the environment variables or the system
+   * properties with the system properties taking precedence over environment
+   * variables.
+   *
+   * @param variable the name of the variable to lookup
+   * @return The value from either the environment variables or system
+   * properties or null if neither are defined.
+   */
+  private static String getVariable(String variable) {
+    String retval = System.getenv().get(variable);
+    if (StringUtil.isNotBlank(System.getProperties().getProperty(variable))) {
+      retval = System.getProperties().getProperty(variable);
+    }
+    return retval;
+  }
 
 }

@@ -433,7 +433,7 @@ public class BootStrap extends AbstractLoader {
             if (!localfile.isAbsolute()) {
 
               // see if there is a system property with a shared configuration directory
-              String path = System.getProperties().getProperty(APP_HOME);
+              String path = getAppHome();
 
               // if there is a application home directory specified
               if (StringUtil.isNotBlank(path)) {
