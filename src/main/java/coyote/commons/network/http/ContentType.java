@@ -42,7 +42,7 @@ class ContentType {
       contentType = "";
       encoding = "UTF-8";
     }
-    if ( MULTIPART_FORM_DATA_HEADER.equalsIgnoreCase( contentType ) ) {
+    if ( isMultipart() ) {
       boundary = getDetailFromContentHeader( contentTypeHeader, BOUNDARY_PATTERN, null, 2 );
     } else {
       boundary = null;
