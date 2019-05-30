@@ -240,21 +240,8 @@ public class CipherUtil {
    * @see #encipher(String, String, String)
    */
   public static String decipher( final String cipherText, final String cipherName, final String key ) {
-
-    byte[] iv = null;
-
-    if ( ( key != null ) && ( key.length() > 0 ) ) {
-      iv = decode( key );
-    } else {
-      iv = CipherUtil.DEFAULT_IV;
-    }
-
-    Cipher cipher = null;
-    if ( ( cipherName != null ) && ( cipherName.trim().length() > 0 ) ) {
-      cipher = getCipher( cipherName );
-    } else {
-      cipher = getCipher();
-    }
+    byte[] iv = getInitializationVector(key);
+    Cipher cipher = getNamedCipher(cipherName);
     return decipher( cipherText, cipher, 4, iv );
   }
 
@@ -504,26 +491,52 @@ public class CipherUtil {
    * @see #decipher(String, String, String)
    */
   public static String encipher( final String plainText, final String cipherName, final String key ) {
-    byte[] iv = null;
-
-    if ( ( key != null ) && ( key.length() > 0 ) ) {
-      iv = decode( key );
-    } else {
-      iv = CipherUtil.DEFAULT_IV;
-    }
+    byte[] iv = getInitializationVector(key);
+    Cipher cipher = getNamedCipher(cipherName);
 
     // generate 4 random bytes as a salt
     final byte[] saltParam = new byte[SALT_SIZE];
     random.nextBytes( saltParam );
 
-    Cipher cipher = null;
-    if ( ( cipherName != null ) && ( cipherName.trim().length() > 0 ) ) {
-      cipher = getCipher( cipherName );
-    } else {
-      cipher = getCipher();
-    }
-
     return CipherUtil.encipher( plainText, cipher, saltParam, iv );
+  }
+
+
+
+
+  /**
+   * Get the named cipher or the default cipher if no name id given.
+   *
+   * @param cipherName the name of the cipher to use
+   * @return the named cipher or the default cipher of no name was specified or null if the named cipher is not supported.
+   */
+  private static Cipher getNamedCipher(String cipherName) {
+    Cipher retval;
+    if ( ( cipherName != null ) && ( cipherName.trim().length() > 0 ) ) {
+      retval = getCipher( cipherName );
+    } else {
+      retval = getCipher();
+    }
+    return retval;
+  }
+
+
+
+
+  /**
+   * Return the bytes represented by the base64 key.
+   *
+   * @param key base64 encoded string
+   * @return the bytes represented by the base64 string or the default IV if the key was null or empty.
+   */
+  private static byte[] getInitializationVector(String key) {
+    byte[] retval;
+    if ( ( key != null ) && ( key.length() > 0 ) ) {
+      retval = decode( key );
+    } else {
+      retval = CipherUtil.DEFAULT_IV;
+    }
+    return retval;
   }
 
 
