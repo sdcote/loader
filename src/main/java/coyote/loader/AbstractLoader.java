@@ -401,10 +401,10 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
             // create the logger
             Logger logger = createLogger(loggerConfiguration);
-
+            String name = null;
             if (logger != null) {
               // Get the name of the logger
-              String name = loggerConfiguration.getString(ConfigTag.NAME);
+              name = loggerConfiguration.getString(ConfigTag.NAME);
 
               // If there is no name, try looking for an ID
               if (StringUtil.isBlank(name)) {
@@ -423,7 +423,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
                 System.exit(11);
               }
             } else {
-              System.err.println(LogMsg.createMsg(MSG, "Loader.Could not create an instance of the specified logger"));
+              System.err.println(LogMsg.createMsg(MSG, "Loader.could_not_create_an_instance_of_the_specified_logger",name));
               System.exit(11);
             }
 
