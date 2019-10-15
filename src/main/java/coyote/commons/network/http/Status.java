@@ -46,7 +46,7 @@ public enum Status {
   URI_TOO_LONG(414, "URI Too Long"), //
   UNSUPPORTED_MEDIA(415, "Unsupported Media Type"), //
   RANGE_NOT_SATISFIABLE(416, "Requested Range Not Satisfiable"), // 
-  EXPECTION_FAILED(417, "Expectation Failed"), //
+  EXPECTATION_FAILED(417, "Expectation Failed"), //
   TEAPOT(418, "I'm a teapot"), //
   MISDIRECTED(421, "Misdirected Request"), //
   UNPROCESSABLE(422, "Unprocessable Entity"), //
