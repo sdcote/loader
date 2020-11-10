@@ -269,7 +269,7 @@ public class TimingMaster implements TimerMaster {
    */
   private long getStandardDeviation() {
     long stdDeviation = 0;
-    if ( hits != 0 ) {
+    if ( hits > 1 ) {
       final long sumOfX = total;
       final int n = hits;
       final int nMinus1 = ( n <= 1 ) ? 1 : n - 1; // avoid 0 divides;

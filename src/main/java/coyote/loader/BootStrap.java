@@ -7,23 +7,19 @@
  */
 package coyote.loader;
 
+import coyote.commons.*;
+import coyote.loader.cfg.Config;
+import coyote.loader.cfg.ConfigurationException;
+import coyote.loader.log.ConsoleAppender;
+import coyote.loader.log.Log;
+import coyote.loader.log.LogMsg;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
-
-import coyote.commons.CipherUtil;
-import coyote.commons.ExceptionUtil;
-import coyote.commons.FileUtil;
-import coyote.commons.StringUtil;
-import coyote.commons.UriUtil;
-import coyote.loader.cfg.Config;
-import coyote.loader.cfg.ConfigurationException;
-import coyote.loader.log.ConsoleAppender;
-import coyote.loader.log.Log;
-import coyote.loader.log.LogMsg;
 
 
 /**
@@ -79,8 +75,10 @@ public class BootStrap extends AbstractLoader {
    */
   private static void encrypt(String[] args) {
     String token = null;
-    String key = System.getProperty(ConfigTag.CIPHER_KEY, CipherUtil.getKey(CipherUtil.CIPHER_KEY));
-    String cipherName = System.getProperty(ConfigTag.CIPHER_NAME, CipherUtil.CIPHER_NAME);
+
+    String key = getEnvironmentOrProperty(ConfigTag.CIPHER_KEY, CipherUtil.CIPHER_KEY);
+    String cipherName = getEnvironmentOrProperty(ConfigTag.CIPHER_NAME, CipherUtil.CIPHER_NAME);
+
     if (args.length < 2) {
       System.err.println("Nothing to encrypt");
       return;
@@ -116,6 +114,29 @@ public class BootStrap extends AbstractLoader {
   }
 
 
+  /**
+   * Return the value in either the named environment variable or system
+   * property, returning the given default value if neither are found.
+   *
+   * <p>The system property takes precedence over the environment variable.</p>
+   *
+   * @param tag the name of the environment variable or system property to
+   *            locate.
+   * @param defaultValue The default value to return if neither ar found.
+   *
+   * @return The value found, or the default value.
+   */
+  private static String getEnvironmentOrProperty(String tag, String defaultValue) {
+    String retval = defaultValue;
+    String envVar = System.getenv(tag);
+    String sysProp = System.getProperty(tag);
+    if (StringUtil.isNotBlank(sysProp)) {
+      retval = sysProp;
+    } else if (StringUtil.isNotBlank(envVar)) {
+      retval = envVar;
+    }
+    return retval;
+  }
 
 
   /**

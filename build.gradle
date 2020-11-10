@@ -8,7 +8,7 @@ buildscript {
 }
 
 plugins {
-	id "com.jfrog.bintray" version "1.7"
+	id "com.jfrog.bintray" version "1.8.5"
 }
 apply plugin: 'java'
 apply plugin: 'maven-publish'
@@ -17,7 +17,7 @@ apply plugin: 'jacoco'
 
 defaultTasks 'clean', 'build', 'publish', 'fatJar'
 group = 'coyote'
-version = '0.7.21'
+version = '0.7.22'
 
 ext {
 	title = 'Coyote Loader Framework'
