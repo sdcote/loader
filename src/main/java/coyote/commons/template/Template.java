@@ -71,19 +71,23 @@ public class Template extends StringParser {
 
 
 
-
   /**
-   * Get the object with the given name from the cache.
+   * Get the object with the given name from the given cache or the static cache.
+   *
+   * <p>The given cache takes precedence over the static cache.</p>
    *
    * @param name The name of the object to retrieve.
+   * @param cache The cache to check. takes precedence over the static cache.
    *
    * @return the object with the given name or null if not found.
    */
-  public static Object get(final String name) {
+  public static Object get(final String name,final Hashtable cache) {
+    Object retval = null;
     if ((name != null) && (name.length() > 0)) {
-      return staticCache.get(name);
+      if (cache != null) retval = cache.get(name);
+      if( retval == null) retval = staticCache.get(name);
     }
-    return null;
+    return retval;
   }
 
 
@@ -116,13 +120,42 @@ public class Template extends StringParser {
 
 
   /**
+   * Put an object in the static class cache for use in template resolution.
+   *
+   * @param obj the object to cache statically
+   */
+  public static void putStatic(final Object obj) {
+    if (obj != null) {
+      staticCache.put(obj.getClass().getName(), obj);
+    }
+  }
+
+
+
+
+  /**
+   * Put an object in the static class cache for use in template resolution.
+   *
+   * @param obj the object to cache statically
+   * @param name name of the class to place in the template
+   */
+  public static void putStatic(final String name, final Object obj) {
+    if ((obj != null) && (name != null) && (name.length() > 0)) {
+      staticCache.put(name, obj);
+    }
+  }
+
+
+
+
+  /**
    * Put an object in the class cache for use in template resolution
    *
    * @param obj the object to cache
    */
-  public static void put(final Object obj) {
+  public void put(final Object obj) {
     if (obj != null) {
-      staticCache.put(obj.getClass().getName(), obj);
+      classCache.put(obj.getClass().getName(), obj);
     }
   }
 
@@ -135,9 +168,9 @@ public class Template extends StringParser {
    * @param obj the object to cache
    * @param name name of the class to place in the template
    */
-  public static void put(final String name, final Object obj) {
+  public void put(final String name, final Object obj) {
     if ((obj != null) && (name != null) && (name.length() > 0)) {
-      staticCache.put(name, obj);
+      classCache.put(name, obj);
     }
   }
 
@@ -161,7 +194,7 @@ public class Template extends StringParser {
    */
   public static String resolve(final String text, final SymbolTable symbols) {
     if ((symbols != null) && (text != null)) {
-      return new Template(text, symbols).toString();
+      return new Template(text, symbols).convertToString();
     } else {
       return text;
     }
@@ -245,7 +278,7 @@ public class Template extends StringParser {
             String[] arguments = EMPTY_ARGS;
 
             // get the object by the key
-            final Object obj = Template.get(objectKey);
+            final Object obj = Template.get(objectKey,cache);
 
             if (obj != null) {
               // parse out the method to call - It should be within parentheses
@@ -333,7 +366,7 @@ public class Template extends StringParser {
             // we just have an object
 
             // get the object by the key
-            final Object obj = Template.get(token);
+            final Object obj = Template.get(token,cache);
 
             // If we have an object with that name call its toString method
             if (obj != null) {
@@ -363,14 +396,14 @@ public class Template extends StringParser {
    * @param template The string representing the template data
    * @param symbols the SymbolTable to us when resolving tokens
    * @param cache the class cache to use when looking up class references
-   * @param preprocess to to leave unresolved variables in place, false
+   * @param preprocess to leave unresolved variables in place, false
    *        replaces unresolved variables with an empty string.
    *
    * @return a string representing the fully-resolved template.
    *
    * @throws TemplateException
    */
-  public static String toString(final Template template, SymbolTable symbols, final Hashtable cache, final boolean preprocess) throws TemplateException {
+  public static String convertToString(final Template template, SymbolTable symbols, final Hashtable cache, final boolean preprocess) throws TemplateException {
     if (template != null) {
       if (symbols == null) {
         symbols = new SymbolTable();
@@ -512,16 +545,16 @@ public class Template extends StringParser {
    *
    * @return the String representing the resolved template.
    */
-  @Override
-  public String toString() {
+  public String convertToString() {
     try {
       // call our static method with our instance attributes
-      return toString(this, symbols, classCache, false);
+      return convertToString(this, symbols, classCache, false);
     } catch (final TemplateException te) {
       System.err.println(te.getMessage());
       System.err.println(te.getContext());
 
       throw new IllegalArgumentException("Parser error");
+
     }
   }
 
@@ -538,7 +571,7 @@ public class Template extends StringParser {
   private String preProcess() {
     try {
       // call our static method with our instance attributes
-      return toString(this, symbols, classCache, true);
+      return convertToString(this, symbols, classCache, true);
     } catch (final TemplateException te) {
       System.err.println(te.getMessage());
       System.err.println(te.getContext());

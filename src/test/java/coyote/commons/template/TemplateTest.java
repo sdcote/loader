@@ -99,13 +99,13 @@ public class TemplateTest {
 
 
   @Test
-  public void testObjects() {
+  public void testStaticObjects() {
 
     // Create a new object to place in the template
     Thing thing = new Thing();
 
-    // Place it in the template with the name of "Thing"
-    Template.put("Thing", thing);
+    // Place it in the static template cache with the name of "Thing"
+    Template.putStatic("Thing", thing);
 
     // Create a template which call a method on the object
     String text = "[#Thing.hello()#] World!";
@@ -133,6 +133,29 @@ public class TemplateTest {
     text = ">[#NoThing.tupper(hello)#]<-unknown object";
     formattedText = Template.resolve(text, symbols);
     assertEquals("><-unknown object", formattedText);
+
+    Template template = new Template("[#Thing2.hello()#] World!");
+    template.put("Thing2",new Thing2());
+    System.out.println( Template.resolve(text, symbols));
+  }
+
+
+
+  @Test
+  public void testCachedObjects() {
+    Thing thing = new Thing();
+    Template.putStatic("Thing", thing);
+
+    String text = "[#Thing2.hello()#] World!";
+    Template template = new Template(text);
+    template.put("Thing2",new Thing2());
+    String formattedText = template.convertToString();
+    assertEquals("Hello2 World!", formattedText);
+
+    // when resolving from the static instance, the class cache is not available
+    formattedText = Template.resolve(text, symbols);
+    assertEquals(" World!", formattedText);
+
   }
 
 
@@ -250,6 +273,15 @@ public class TemplateTest {
       } else {
         return "";
       }
+    }
+
+  }
+
+  class Thing2 {
+    Thing2() {}
+
+    public String hello() {
+      return "Hello2";
     }
 
   }
