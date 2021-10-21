@@ -7,15 +7,12 @@ buildscript {
   }
 }
 
-plugins {
-	id "com.jfrog.bintray" version "1.8.5"
-}
 apply plugin: 'java'
 apply plugin: 'maven-publish'
 apply plugin: 'jacoco'
 
 
-defaultTasks 'clean', 'build', 'publish', 'fatJar'
+defaultTasks 'clean', 'build', 'fatJar'
 group = 'coyote'
 version = '0.7.22'
 
@@ -49,14 +46,13 @@ task fatJar(type: Jar) {
 }
 
 repositories {
-	maven { url "https://dl.bintray.com/sdcote/maven" }
 	mavenLocal()
 	mavenCentral()
 }
 
 
 ext {
-	dataFrameVersion = '1.0.6'
+	dataFrameVersion = '1.0.5'
 	junitVersion = '4.12'
 	httpclientVersion = '4.5.3'
 }
@@ -120,19 +116,4 @@ jacocoTestReport {
    	}
 }
 check.dependsOn jacocoTestReport
-
-bintray {
-	// these are defined in gradle.properties ... in gradle_home 
-	user = bintrayUser
-	key = bintrayKey
-	publications = ['mavenJava']
-	pkg {
-		repo = 'maven'
-		name = 'Loader'
-		desc = 'Component loader for 12+ factor apps, containers and cloud native components.'
-		licenses = ['MIT']
-		labels = ['Java', 'Component']
-		vcsUrl = 'https://github.com/sdcote/loader.git'
-	}
-}
 
