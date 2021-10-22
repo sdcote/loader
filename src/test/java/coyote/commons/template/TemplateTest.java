@@ -161,6 +161,21 @@ public class TemplateTest {
 
 
 
+  /**
+   * This tests the case where the last dot in the toke might be an argument name (e.g. "user.dir")
+   */
+  @Test
+  public void testDottedArgument() {
+    String text = "[#Thing2.hello(my.friend)#] World!";
+    Template template = new Template(text);
+    template.put("Thing2",new Thing2());
+    String formattedText = template.convertToString();
+    assertEquals("Hello2-my.friend World!", formattedText);
+  }
+
+
+
+
   @Test
   public void testEncrypt() {
     String text = "Biff the WonderDog";
@@ -279,10 +294,12 @@ public class TemplateTest {
 
   class Thing2 {
     Thing2() {}
-
     public String hello() {
       return "Hello2";
     }
-
+    public String hello(String text) {
+      return "Hello2-"+text;
+    }
   }
+
 }

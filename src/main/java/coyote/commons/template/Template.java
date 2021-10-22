@@ -267,12 +267,15 @@ public class Template extends StringParser {
           }
         } else {
           // Must be a class; use the entire tag when parsing
+          int pindx = tag.lastIndexOf(OP);
 
-          // the last dotted token is always assumed to be a method name
-          int indx = tag.lastIndexOf(DOT);
-          if (indx != -1) {
+          if (pindx != -1) {
+            // looks like a method
+            String body = tag.substring(0,pindx);
+            // the last dotted token is always assumed to be a method name
+            int indx = body.lastIndexOf(DOT);
             // we have an object key and a method
-            final String objectKey = tag.substring(0, indx);
+            final String objectKey = body.substring(0, indx);
             final String methodToken = tag.substring(indx + 1);
             String methodName = null;
             String[] arguments = EMPTY_ARGS;
