@@ -12,9 +12,9 @@ apply plugin: 'maven-publish'
 apply plugin: 'jacoco'
 
 
-defaultTasks 'clean', 'build', 'fatJar'
+defaultTasks 'clean', 'build', 'fatJar', 'publish'
 group = 'coyote'
-version = '0.7.22'
+version = '0.7.23'
 
 ext {
 	title = 'Coyote Loader Framework'
