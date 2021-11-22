@@ -54,6 +54,7 @@ public class DateUtil {
       "HH:mm:ss.SSS",
       "HH:mm:ss",
       "HH:mm",
+      "d/MMM/y:H:m:s Z", // Apache log format
       "M/y", 
       "M-y", 
       "M/d/y", 
