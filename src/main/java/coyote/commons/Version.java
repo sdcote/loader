@@ -25,10 +25,10 @@ public class Version {
   public static final short BETA = 3;
   /** Alpha testing release. */
   public static final short ALPHA = 2;
-  /** Active development; pre-testing, not released to anyone outside of the development team. */
+  /** Active development; pre-testing, not released to anyone outside the development team. */
   public static final short DEVELOPMENT = 1;
 
-  /** Proof of Concept phase; pre-development, not released to anyone outside of the lab. */
+  /** Proof of Concept phase; pre-development, not released to anyone outside the lab. */
   public static final short EXPERIMENTAL = 0;
   private static final String[] releaseNames = {"exp", "dev", "alpha", "beta", "ga"};
 
@@ -105,7 +105,7 @@ public class Version {
    *
    * @param level the release level to represent.
    *
-   * @return human readable string representation of the release level
+   * @return human-readable string representation of the release level
    */
   public static String getReleaseString(final short level) {
     if (level < GENERAL) {

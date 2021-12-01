@@ -20,6 +20,7 @@ The loader solves several of our problems for our scalable 12-factor application
 The encryption is completely pluggable, allowing any library to be used through a simple interface. The encryption algorithm and keys can be specified in environment variables, another tenant of a 12-factor application.
 
 Environment variables are leveraged in the configuration and templating tools further reducing the reliance on file systems and assisting the developer ensure each environment is (development, test, quality assurance, certification, production, etc.) are configured correctly and project artifacts such as configuration files do not "point" to the wrong locations or backing services.
+
 Loggers tie into backing log streams allowing further independence from the ephemeral file systems used in many cloud infrastructures. While you can use a local file system by default, it is rather easy to send log events externally by simply using a different appender, configured (of course) through environment variables.
 
 The Loader uses a set of JRE shutdown hooks to help ensure graceful shutdown when the SIGTERM event is caught. The Loader then calls the shutdown and terminate methods on all the components giving them a chance to gracefully terminate and will help the application handler life in the cloud as applications are terminated and moved to support scaling operations.
@@ -31,7 +32,7 @@ Coyote Loader allows us to create 12-factor applications which maximize automati
 
 This is a prototyping project which will be used to drive a loader for a set of IoT (Internet of Things) projects. It therefore must support traditional platforms (e.g. server installations) and the restricted resources of embedded systems. It therefore must not rely on classes or libraries which may not be available in JRE images with limited libraries. 
 
-  * Small Footprint - Forego larger, general purpose libraries for for simple, purpose driven code. Resources spent on storing unused code are resources taken away from application data.
+  * Small Footprint - Forego larger, general purpose libraries for simple, purpose driven code. Resources spent on storing unused code are resources taken away from application data.
   * Portability - Usable on as many publicly available embedded systems platforms as possible. If it runs Java, it should be able to run this loader.
   * Simplicity over Elegance - Maintainability of the code is key to stable systems, this project uses simple concepts and plainly written code (and comments) so bugs are easier to spot and fix.
   * Security Built-In, not Bolted-On, working in the utilities industry has made it clear that security should be first on your requirements list and development plan.
