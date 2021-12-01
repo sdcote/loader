@@ -24,7 +24,7 @@ import coyote.loader.thread.ThreadPool;
  */
 public interface Loader extends WatchDog {
 
-  Version API_VERSION = new Version(0, 7, 21, Version.GENERAL);
+  Version API_VERSION = new Version(0, 7, 22, Version.GENERAL);
   String API_NAME = "CoyoteLoader";
   String LOADER = "Loader";
   String INITIALIZING = "Initializing";
