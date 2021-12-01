@@ -40,8 +40,10 @@ public class BootStrap extends AbstractLoader {
   protected static final String DEBUG_ARG = "-d";
   protected static final String INFO_ARG = "-v";
   protected static final String TRACE_ARG = "-t";
-  private static final String VERSION_ARG = "-version";
-  private static final String HELP_ARG = "-help";
+  private static final String VERSION_ARG = "--version";
+  private static final String HELP_ARG = "--help";
+  private static final String VERSION_ARG2 = "-v";
+  private static final String HELP_ARG2 = "-h";
 
   private static final String JSON_EXT = ".json";
 
@@ -159,7 +161,6 @@ public class BootStrap extends AbstractLoader {
         encrypt(args);
         System.exit(0);
       } else {
-
         boolean abort = false;
         for (int x = 0; x < args.length; x++) {
           if (DEBUG_ARG.equalsIgnoreCase(args[x])) {
@@ -168,10 +169,10 @@ public class BootStrap extends AbstractLoader {
             Log.startLogging(Log.INFO);
           } else if (TRACE_ARG.equalsIgnoreCase(args[x])) {
             Log.startLogging(Log.TRACE);
-          } else if (VERSION_ARG.equalsIgnoreCase(args[x])) {
+          } else if (VERSION_ARG.equalsIgnoreCase(args[x]) || VERSION_ARG2.equalsIgnoreCase(args[x])) {
             showVersion();
             abort = true;
-          } else if (HELP_ARG.equalsIgnoreCase(args[x])) {
+          } else if (HELP_ARG.equalsIgnoreCase(args[x]) || HELP_ARG2.equalsIgnoreCase(args[x])) {
             showHelp();
             abort = true;
           } else {
