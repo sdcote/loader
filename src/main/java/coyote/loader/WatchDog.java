@@ -27,7 +27,7 @@ public interface WatchDog {
    * with the watchdog, it will not assume you are frozen and in need of 
    * restart.</p> 
    *  
-   * @param component
+   * @param component The component checking in
    */
   public void checkIn(Object component);
 
@@ -42,8 +42,8 @@ public interface WatchDog {
    * before attempting a restart and the configuration to be used when creating 
    * a new instance of the component.</p>
    * 
-   * @param millis
-   * @param component
+   * @param millis the number of milliseconds to wait
+   * @param component the component being watched
    * @param cfg The configuration to use when creating a new instance of this component.
    */
   public void setHangTime(long millis, Object component, Config cfg);

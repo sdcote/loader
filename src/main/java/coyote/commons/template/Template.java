@@ -404,7 +404,7 @@ public class Template extends StringParser {
    *
    * @return a string representing the fully-resolved template.
    *
-   * @throws TemplateException
+   * @throws TemplateException if there was a problem with the template
    */
   public static String convertToString(final Template template, SymbolTable symbols, final Hashtable cache, final boolean preprocess) throws TemplateException {
     if (template != null) {
@@ -468,7 +468,7 @@ public class Template extends StringParser {
   /**
    * Constructor Template
    *
-   * @param string
+   * @param string the string to be interpolated
    */
   public Template(final String string) {
     super(string);
@@ -480,8 +480,8 @@ public class Template extends StringParser {
   /**
    * Constructor Template
    *
-   * @param string
-   * @param symbols
+   * @param string the string to be interpolated
+   * @param symbols the symbol table used for interpolation
    */
   public Template(final String string, final SymbolTable symbols) {
     super(string);
@@ -493,10 +493,10 @@ public class Template extends StringParser {
 
 
   /**
-   * Method addSymbol
+   * Add a name-value pair to the symbol table
    *
-   * @param name
-   * @param value
+   * @param name name of the symbol to add
+   * @param value value of the symbol to add
    */
   public void addSymbol(final String name, final Object value) {
     if ((name != null) && (value != null)) {
@@ -522,7 +522,7 @@ public class Template extends StringParser {
   /**
    * Method mergeSymbols
    *
-   * @param table
+   * @param table the table of values to add to this table
    */
   public void mergeSymbols(final SymbolTable table) {
     symbols.merge(table);
@@ -534,7 +534,7 @@ public class Template extends StringParser {
   /**
    * Method setSymbols
    *
-   * @param symbols
+   * @param symbols the table with which to replace the symbols.
    */
   public void setSymbols(final SymbolTable symbols) {
     Template.symbols = symbols;

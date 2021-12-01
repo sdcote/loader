@@ -559,9 +559,9 @@ public class ThreadJob implements Runnable {
   /**
    * Sleep for a while.
    *
-   * @param millis
+   * @param millis How long to sleep in milliseconds
    *
-   * @throws InterruptedException
+   * @throws InterruptedException if any thread has interrupted the current thread.
    */
   public void sleep(final long millis) throws InterruptedException {
     Thread.sleep(millis);
@@ -573,10 +573,10 @@ public class ThreadJob implements Runnable {
   /**
    * Sleep for a while.
    *
-   * @param millis
-   * @param nanos
+   * @param millis How long to sleep in milliseconds
+   * @param nanos additional nanoseconds to sleep
    *
-   * @throws InterruptedException
+   * @throws InterruptedException  if any thread has interrupted the current thread.
    */
   public void sleep(final long millis, final int nanos) throws InterruptedException {
     Thread.sleep(millis, nanos);
@@ -760,7 +760,7 @@ public class ThreadJob implements Runnable {
    *
    * @see #getThread
    *
-   * @param millis
+   * @param millis the time to wait in milliseconds
    */
   public void join(final long millis) {
     if (current_thread != null) {

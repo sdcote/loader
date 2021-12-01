@@ -19,7 +19,7 @@ public interface Describable {
   /**
    * Method setDescription
    * 
-   * @param desc
+   * @param desc the descriptions to set
    */
   public void setDescription( String desc );
 }
