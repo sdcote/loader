@@ -101,9 +101,9 @@ public class ConfigTest {
 
 
 
-  @Test
+  @Ignore
   public void readFromNetwork() throws URISyntaxException, IOException, ConfigurationException {
-    URI cfgUri = new URI("http://github.com/sdcote/loader/blob/master/src/test/resources/ou812");
+    URI cfgUri = new URI("https://raw.githubusercontent.com/sdcote/loader/master/src/test/resources/ou812");
     Config config = Config.read(cfgUri);
     assertNotNull(config);
     if (StringUtil.isBlank(config.getName())) {
