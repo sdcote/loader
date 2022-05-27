@@ -8,17 +8,15 @@
 
 package coyote.commons.template;
 
+import java.io.File;
+import java.net.URI;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import coyote.commons.ArrayUtil;
-import coyote.commons.CipherUtil;
-import coyote.commons.DateUtil;
-import coyote.commons.NumberUtil;
-import coyote.commons.StringUtil;
+import coyote.commons.*;
 import coyote.loader.Loader;
 
 
@@ -44,6 +42,7 @@ public class SymbolTable extends HashMap {
   private final HashMap<String, NumberFormat> numberFormatMap = new HashMap<String, NumberFormat>();
   private static final String TOUPPER = "TOUPPER";
   private static final String TOLOWER = "TOLOWER";
+  private static final String TOURI = "TOURI";
 
 
 
@@ -131,7 +130,7 @@ public class SymbolTable extends HashMap {
    * Return the String value of the named symbol from the table.
    *
    * <p>If the symbol starts with the "encoded" prefix, use the CipherUtil to
-   * decrypt the value before returning it. This way, the the symbol table
+   * decrypt the value before returning it. This way, the symbol table
    * contains the encrypted value and only gets decrypted when referenced.
    * This should reduce the exposure of the protected value.
    *
@@ -181,8 +180,10 @@ public class SymbolTable extends HashMap {
             retval.toString().toUpperCase();
           } else if (TOLOWER.equalsIgnoreCase(format)) {
             retval.toString().toLowerCase();
+          } else if (TOURI.equalsIgnoreCase(format)) {
+            return formatURI(retval.toString());
           } else {
-            // apply formatting based on type type of object it is
+            // apply formatting based on the type of object it is
             if (retval instanceof Number) {
               // If retval is numeric, then use a number format
               return formatNumber((Number)retval, format);
@@ -340,6 +341,26 @@ public class SymbolTable extends HashMap {
     } else {
       return "";
     }
+  }
+
+
+  /**
+   * Format the given text as a URL, assuming it is a file/directory reference.
+   *
+   * @param text the text to format
+   *
+   * @return the formatted URI string or an empty string if the text is null
+   */
+  private String formatURI(final String text) {
+    String retval = "";
+    if (text != null) {
+      File file = new File(text);
+      URI fileUri = FileUtil.getFileURI(file);
+      if (fileUri != null) {
+        retval = fileUri.toString();
+      }
+    }
+    return retval;
   }
 
 

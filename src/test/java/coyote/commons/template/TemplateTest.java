@@ -16,8 +16,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.net.URI;
 import java.util.Date;
 
+import coyote.commons.UriUtil;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -44,6 +46,7 @@ public class TemplateTest {
     symbols.put("One", 1.02);
     symbols.put("Today", new Date());
     symbols.put("Greeting", "Hello World!");
+    symbols.readSystemProperties();
   }
 
 
@@ -93,6 +96,18 @@ public class TemplateTest {
     String formattedText = Template.resolve(text, symbols);
     //System.out.println(formattedText);
     assertTrue(formattedText.length() == 8);
+  }
+
+
+
+
+  @Test
+  public void testUriFormat() {
+    String text = "[#$user.dir|toURI#]";
+    String formattedText = Template.resolve(text, symbols);
+    System.out.println(formattedText);
+    URI uri = URI.create(formattedText);
+    assertTrue(UriUtil.isFile(uri));
   }
 
 
