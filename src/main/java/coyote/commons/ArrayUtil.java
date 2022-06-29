@@ -496,4 +496,28 @@ public final class ArrayUtil {
     return null;
   }
 
+
+
+
+  /**
+   * A very simple method to print a formatted array.
+   *
+   * @param array the array to dump into a formatted string.
+   * @return a string with each of the array values in a comma separated list or NULL of the passed array is null.
+   */
+  public static String toString(Object[] array) {
+    StringBuffer b = new StringBuffer();
+    if( array != null){
+      b.append('[');
+      for(int x=0;x< array.length;x++){
+        b.append(array[x].toString());
+        if( x+1 < array.length) b.append(", ");
+      }
+      b.append(']');
+    }else{
+      b.append("NULL");
+    }
+    return b.toString();
+  }
+
 }

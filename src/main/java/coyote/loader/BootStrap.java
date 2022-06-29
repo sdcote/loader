@@ -151,7 +151,7 @@ public class BootStrap extends AbstractLoader {
    * 
    * @param args The command line arguments passed to the main method
    */
-  private static void parseArgs(String[] args) {
+  private static void parseArgs(final String[] args) {
 
     // Get the URI to our configuration from either the command line or the system properties
     if (args != null && args.length > 0) {
@@ -187,6 +187,7 @@ public class BootStrap extends AbstractLoader {
           System.exit(0);
         }
       }
+      Log.debug(LogMsg.createMsg(MSG, "Loader.parsed_cli_args",ArrayUtil.toString(args) ));
     }
 
     // Make sure we have a configuration 
