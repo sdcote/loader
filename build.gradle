@@ -1,6 +1,5 @@
 buildscript {
   repositories {
-	  jcenter()
 	  maven {
 		  url "https://plugins.gradle.org/m2/"
 	  }
@@ -14,7 +13,7 @@ apply plugin: 'jacoco'
 
 defaultTasks 'clean', 'build', 'fatJar', 'publish'
 group = 'coyote'
-version = '0.7.23'
+version = '0.8.0'
 
 ext {
 	title = 'Coyote Loader Framework'
@@ -37,8 +36,9 @@ task fatJar(type: Jar) {
 		'Implementation-Version' : version
 	}
 	baseName = project.name + '-all'
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 	from {
-		configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } 
+		configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
 	}{
 		exclude "META-INF/*.RSA"
 	}
@@ -59,12 +59,12 @@ ext {
 dependencies {
 
 	// Abstract Data Type
-	compile "coyote:DataFrame:$dataFrameVersion"
+	implementation "coyote:DataFrame:$dataFrameVersion"
 	
 	// UnitTesting
-	testCompile "junit:junit:$junitVersion"	
-	testCompile "org.apache.httpcomponents:httpclient:$httpclientVersion"
-	testCompile "org.apache.httpcomponents:httpmime:$httpclientVersion"
+	testImplementation "junit:junit:$junitVersion"
+	testImplementation "org.apache.httpcomponents:httpclient:$httpclientVersion"
+	testImplementation "org.apache.httpcomponents:httpmime:$httpclientVersion"
 
 }
 
