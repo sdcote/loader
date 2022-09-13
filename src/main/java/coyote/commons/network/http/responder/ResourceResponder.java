@@ -12,11 +12,9 @@ import java.net.URL;
 import java.util.Map;
 
 import coyote.commons.StringUtil;
+import coyote.commons.WebServer;
 import coyote.commons.network.MimeType;
-import coyote.commons.network.http.HTTPD;
-import coyote.commons.network.http.HTTPSession;
-import coyote.commons.network.http.Status;
-import coyote.commons.network.http.Response;
+import coyote.commons.network.http.*;
 import coyote.commons.network.http.Status;
 import coyote.loader.cfg.Config;
 import coyote.loader.log.Log;
@@ -52,8 +50,8 @@ public class ResourceResponder extends DefaultResponder {
   @Override
   public Response get(final Resource resource, final Map<String, String> urlParams, final HTTPSession session) {
     // These initialization parameters always exist
-    // WebServer loader = resource.initParameter(0, WebServer.class);
-    Config config = resource.initParameter(1, Config.class);
+    HTTPDRouter router = resource.initParameter(0, HTTPDRouter.class);
+    Config configuration = resource.initParameter(1, Config.class);
 
 
     final String baseUri = resource.getUri(); // the regex matcher URL
@@ -69,7 +67,7 @@ public class ResourceResponder extends DefaultResponder {
     }
 
     // Retrieve the base directory in the classpath for our search
-    String parentdirectory = config.getAsString(ROOT_TAG);
+    String parentdirectory = configuration.getAsString(ROOT_TAG);
     try {
       if (StringUtil.isBlank(parentdirectory)) {
         parentdirectory = DEFAULT_ROOT;
@@ -79,11 +77,11 @@ public class ResourceResponder extends DefaultResponder {
     }
 
     // Check if we should send a 301 redirect when the request is for a
-    // directory and we found an index file in that location which can be
+    // directory, and we found an index file in that location which can be
     // served instead
     if (resource.getInitParameterLength() > 1) {
       try {
-        redirectOnIndexedDir = config.getAsBoolean(REDIRECT_TAG);
+        redirectOnIndexedDir = configuration.getAsBoolean(REDIRECT_TAG);
       } catch (final Exception e) {
         Log.append(HTTPD.EVENT, "ResourceResponder initialization error: Redirect On Indexed Directory: " + e.getMessage() + " - defaulting to true");
       }
@@ -114,7 +112,12 @@ public class ResourceResponder extends DefaultResponder {
           Log.append(HTTPD.EVENT, "There does not appear to be an index file in the content root (" + parentdirectory + ") of the classpath.");
         }
         Log.append(HTTPD.EVENT, "404 NOT FOUND - '" + coreRequest + "'");
-        return new Error404Responder().get(resource, urlParams, session);
+        try {
+          return router.get404Resource().process(urlParams, session);
+        } catch (SecurityResponseException e) {
+          Log.error("Could not send 404 response", e);
+          return new Error404Responder().get(resource, urlParams, session);
+        }
       } else {
         if (redirectOnIndexedDir) {
           // We need to send a 301, indicating the new (proper) URL to use
@@ -139,8 +142,12 @@ public class ResourceResponder extends DefaultResponder {
       // if we have no URL, the class loader could not find the resource
       if (rsc == null) {
         Log.append(HTTPD.EVENT, "404 NOT FOUND - '" + coreRequest + "' LOCAL: " + localPath);
-        return new Error404Responder().get(resource, urlParams, session);
-      } else {
+        try {
+          return router.get404Resource().process(urlParams, session);
+        } catch (SecurityResponseException e) {
+          Log.error("Could not send 404 response", e);
+          return new Error404Responder().get(resource, urlParams, session);
+        }      } else {
         // Success - Found the resource -
         try {
           return Response.createChunkedResponse(Status.OK, HTTPD.getMimeTypeForFile(localPath), cLoader.getResourceAsStream(localPath));

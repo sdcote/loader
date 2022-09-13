@@ -27,6 +27,7 @@ import coyote.loader.log.Log;
  */
 public class UriRouter {
 
+
   private Resource error404Url;
 
   private final List<Resource> mappings;
@@ -166,6 +167,10 @@ public class UriRouter {
         break;
       }
     }
+  }
+
+  public Resource getNotFoundResource() {
+    return error404Url;
   }
 
 }

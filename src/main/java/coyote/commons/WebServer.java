@@ -13,9 +13,7 @@ import coyote.commons.network.MimeType;
 import coyote.commons.network.http.*;
 import coyote.commons.network.http.auth.AuthProvider;
 import coyote.commons.network.http.auth.GenericAuthProvider;
-import coyote.commons.network.http.responder.Error404Responder;
-import coyote.commons.network.http.responder.HTTPDRouter;
-import coyote.commons.network.http.responder.NotImplementedResponder;
+import coyote.commons.network.http.responder.*;
 import coyote.commons.template.Template;
 import coyote.dataframe.DataField;
 import coyote.dataframe.DataFrame;
@@ -45,7 +43,7 @@ import java.util.Set;
  * it running in memory.
  *
  * <p>As an extension of the AbstractLoader, this also supports the loading of
- * components, all of which will have a reference to this loader/webserver so
+ * components, all of which will have a reference to this loader/webserver, so
  * it can use this as a coordination point for operations if necessary.
  *
  * <p>All routes and handlers are specified in the configuration. This does
@@ -330,6 +328,9 @@ public class WebServer extends AbstractLoader implements Loader {
     }
   }
 
+  public Resource get404Resource(){
+    return server.get404Resource();
+  }
 
   /**
    * Add the named configuration as a web server resource.

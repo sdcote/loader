@@ -24,7 +24,7 @@ import coyote.i13n.StatBoardImpl;
  * request URI.
  *
  * <p>This allows the server to implement a pluggable approach to handling
- * requests. For example, it is possible to implement micro services with
+ * requests. For example, it is possible to implement microservices with
  * simple classes.
  */
 public class HTTPDRouter extends HTTPD {
@@ -200,4 +200,15 @@ public class HTTPDRouter extends HTTPD {
       stats = instance;
     }
   }
+
+
+
+
+  /**
+   * @return the resource set as the default 404 handler.
+   */
+  public Resource get404Resource() {
+    return router.getNotFoundResource();
+  }
+
 }
