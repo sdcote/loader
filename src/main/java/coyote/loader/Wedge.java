@@ -34,6 +34,8 @@ public class Wedge extends AbstractManagedComponent implements ManagedComponent 
    */
   @Override
   public void initialize() {
+    setStartTime(System.currentTimeMillis());
+
     // Make sure to inform operations that this wedge is always running
     Log.debug(this.getClass().getSimpleName() + " constructed, daemon should always remain active");
 
