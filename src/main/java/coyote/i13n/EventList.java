@@ -19,12 +19,12 @@ import java.util.LinkedList;
  */
 public class EventList {
   /** The maximum number of events to keep in our Event list. */
-  private static int _maxEvents = 1000;
+  private  int _maxEvents = 1000;
   private final Object _lock = new Object();
 
   private volatile long _nextEventSequence = 0;
 
-  static LinkedList<AppEvent> _list = new LinkedList<AppEvent>();
+   LinkedList<AppEvent> _list = new LinkedList<AppEvent>();
 
 
 
@@ -105,7 +105,6 @@ public class EventList {
    * @return A sequenced event with the appropriate values filled-in.
    */
   public synchronized AppEvent createEvent( final String appid, final String sysid, final String cmpid, final String msg, final int sv, final int maj, final int min, final String cat ) {
-
     final AppEvent retval = new AppEvent( nextSequence(), appid, sysid, cmpid, msg, sv, maj, min, cat, this );
     add( retval );
     return retval;
@@ -172,8 +171,8 @@ public class EventList {
   /**
    * @return  Returns the maximum number of events to keep in the list.
    */
-  public static int getMaxEvents() {
-    return EventList._maxEvents;
+  public  int getMaxEvents() {
+    return _maxEvents;
   }
 
 
@@ -231,7 +230,7 @@ public class EventList {
    *
    * @param max  The maximum number of events to keep.
    */
-  public static void setMaxEvents( final int max ) {
+  public synchronized void setMaxEvents( final int max ) {
     _maxEvents = max;
     while ( _list.size() > _maxEvents ) {
       _list.removeFirst();

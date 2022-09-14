@@ -77,7 +77,7 @@ public class Tabs {
    */
   private static final HashMap componentMap = new HashMap();
 
-  static final EventList eventList = new EventList();
+  private final EventList eventList = new EventList();
   private static final HashMap masterTimers = new HashMap();
   private static final HashMap armMasters = new HashMap();
   private static final HashMap counters = new HashMap();
@@ -170,7 +170,7 @@ public class Tabs {
    * <p>A separate thread is created to run this logic so the processing does 
    * not take too long in the callers thread of execution.</p>
    */
-  public static void archiveLogs() {
+  public void archiveLogs() {
     final Thread archiver = new Thread("TabsLogArchiver") {
       public void run() {
         Calendar cal = GregorianCalendar.getInstance();
@@ -226,7 +226,7 @@ public class Tabs {
             } // file exists
           } // for each child in the metric dir list
         } // if metric dir has children
-        Tabs.createEvent(null, null, "Tabs", "Log archiving completed", 0, 0, 0, "INFO");
+        createEvent(null, null, "Tabs", "Log archiving completed", 0, 0, 0, "INFO");
       }
     };
     archiver.setDaemon(false);
@@ -250,8 +250,8 @@ public class Tabs {
    * 
    * @return The sequence number of the event created.
    */
-  public static long createEvent(final String appid, final String sysid, final String cmpid, final String msg, final int sv, final int maj, final int min, final String cat) {
-    final AppEvent event = Tabs.eventList.createEvent(appid, sysid, cmpid, msg, sv, maj, min, cat);
+  public long createEvent(final String appid, final String sysid, final String cmpid, final String msg, final int sv, final int maj, final int min, final String cat) {
+    final AppEvent event = eventList.createEvent(appid, sysid, cmpid, msg, sv, maj, min, cat);
     // return Tabs.oamManager.sendEvent( event );
     return event.getSequence();
   }
@@ -616,8 +616,8 @@ public class Tabs {
 
 
 
-  public static int getEventListSize() {
-    return Tabs.eventList.getSize();
+  public int getEventListSize() {
+    return eventList.getSize();
   }
 
 
@@ -942,8 +942,8 @@ public class Tabs {
   /**
    * @return Returns the maximum number of events to keep in the MIB.
    */
-  static int getMaxEvents() {
-    return EventList.getMaxEvents();
+  public  int getMaxEvents() {
+    return eventList.getMaxEvents();
   }
 
 
@@ -1263,8 +1263,8 @@ public class Tabs {
    * @return The identifier of the event created. This can later be used to 
    *         retrieve the event from the event list.  
    */
-  public static long process(final Throwable t) {
-    return Tabs.process(t, null, null, null, null);
+  public long process(final Throwable t) {
+    return process(t, null, null, null, null);
   }
 
 
@@ -1282,8 +1282,8 @@ public class Tabs {
    * @return The identifier of the event created. This can later be used to 
    *         retrieve the event from the event list.  
    */
-  public static long process(final Throwable t, final String info) {
-    return Tabs.process(t, info, null, null, null);
+  public long process(final Throwable t, final String info) {
+    return process(t, info, null, null, null);
   }
 
 
@@ -1304,9 +1304,9 @@ public class Tabs {
    * @return The identifier of the event created. This can later be used to 
    *         retrieve the event from the event list.  
    */
-  public static long process(final Throwable t, final String info, final String appId, final String sysId, final String cmpId) {
+  public long process(final Throwable t, final String info, final String appId, final String sysId, final String cmpId) {
     // create an event from the exception
-    final AppEvent event = Tabs.eventList.createEvent(appId, sysId, cmpId, info, AppEvent.WARNING, 0, 0, "EXCEPTION");
+    final AppEvent event = eventList.createEvent(appId, sysId, cmpId, info, AppEvent.WARNING, 0, 0, "EXCEPTION");
 
     final StringBuffer b = new StringBuffer();
     if (info != null) {
@@ -1583,8 +1583,8 @@ public class Tabs {
    * 
    * @param max The maximum number of events to keep.
    */
-  static void setMaxEvents(final int max) {
-    EventList.setMaxEvents(max);
+  public void setMaxEvents(final int max) {
+    eventList.setMaxEvents(max);
   }
 
 

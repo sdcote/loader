@@ -156,7 +156,7 @@ public class GaugeBase extends NullGauge {
   public GaugeBase( final String name ) {
     super( name );
 
-    // Prime the one minute sample array
+    // Prime the one-minute sample array
     final Node start = new Node( 0, 0, null );
     lastMinuteNode = start;
     for ( int x = 0; x < 59; x++ ) {

@@ -10,7 +10,7 @@ public class EventListStepper {
 
   public static void main(String[] args) {
     EventList list = new EventList();
-    EventList.setMaxEvents(2);
+    list.setMaxEvents(2);
 
     AppEvent alert0 = list.createEvent("Zero");
     AppEvent alert1 = list.createEvent("One");

@@ -758,4 +758,22 @@ public interface StatBoard {
    * @return the best guess to the IP address of the host.
    */
   InetAddress getHostIpAddress();
-}
+
+
+  /**
+   * Create an event in the statistics board.
+   *
+   * @param appId Application identifier (e.g. Circuit Provisioning)
+   * @param sysId System identifier (e.g. Reporting)
+   * @param cmpId Component Identifier (e.g. ABB Recloser Driver)
+   * @param msg A description of the event (e.g. 'Could not connect to field device')
+   * @param severity The severity of the event (e.g. 1=Normal, 2=Warning, 3=Minor, 4=Major, 5=Critical, and 0=Indeterminate)
+   * @param majorCode Major code describing the event. This is like a classification or general category of the event.
+   * @param minorCode Minor code of the event. This provides fine-grained identification of the event when combined with the major code.
+   * @param category The classification of the event (e.g. 'Network Error')
+   *
+   * @return the event sequence number.
+   */
+  public long createEvent(final String appId, final String sysId, final String cmpId, final String msg, final int severity, final int majorCode, final int minorCode, final String category);
+
+  }

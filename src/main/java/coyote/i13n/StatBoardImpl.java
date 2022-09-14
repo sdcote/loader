@@ -25,7 +25,7 @@ import coyote.commons.Version;
  * This is the default implementation of a statistics board.
  *
  * <p>Some find it useful to make this globally accessible so that many
- * different components can use this in a coordinated manner.
+ * components can use this in a coordinated manner.
  */
 public class StatBoardImpl implements StatBoard {
 
@@ -73,6 +73,8 @@ public class StatBoardImpl implements StatBoard {
   /** Map of gauges by their name */
   private final HashMap<String, Gauge> gauges = new HashMap<String, Gauge>();
 
+  /** Events that occurred. */
+  private final EventList eventList = new EventList();
 
 
 
@@ -1273,6 +1275,52 @@ public class StatBoardImpl implements StatBoard {
     } catch (Exception ex) {}
 
     return name;
+  }
+
+
+
+
+  /**
+   * @return the number of events in the event list.
+   */
+  public int getEventListSize() {
+    return eventList.getSize();
+  }
+
+
+
+
+  /**
+   * Set the maximum number of events to keep in the stats board.
+   *
+   * @param max The maximum number of events to keep.
+   */
+  public void setMaxEvents(final int max) {
+    eventList.setMaxEvents(max);
+  }
+
+
+
+
+  /**
+   * Create an event in the statistics board.
+   *
+   * @param appId Application identifier (e.g. Circuit Provisioning)
+   * @param sysId System identifier (e.g. Reporting)
+   * @param cmpId Component Identifier (e.g. ABB Recloser Driver)
+   * @param msg A description of the event (e.g. 'Could not connect to field device')
+   * @param severity The severity of the event (e.g. 1=Normal, 2=Warning, 3=Minor, 4=Major, 5=Critical, and 0=Indeterminate)
+   * @param majorCode Major code describing the event. This is like a classification or general category of the event.
+   * @param minorCode Minor code of the event. This provides fine-grained identification of the event when combined with the major code.
+   * @param category The classification of the event (e.g. 'Network Error')
+   *
+   * @return the event sequence number.
+   */
+  @Override
+  public long createEvent(final String appId, final String sysId, final String cmpId, final String msg, final int severity, final int majorCode, final int minorCode, final String category) {
+    final AppEvent event = eventList.createEvent(appId, sysId, cmpId, msg, severity, majorCode, minorCode, category);
+    final long retval = event.getSequence();
+    return retval;
   }
 
 }

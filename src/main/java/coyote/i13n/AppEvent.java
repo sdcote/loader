@@ -113,20 +113,22 @@ public class AppEvent {
 
   /**
    * Constructor used by parsers when constructing an event foreign to this
-   * runtime.
+   * runtime. For example, when an event is received from the network and
+   * created locally.
    *
    * <p>There is no reference to a list and the sequence number is NOT
-   * automatically assigned.
+   * automatically assigned. All parameters must be provided in the
+   * constructor.
    *
-   * @param seq the sequence of this event in the scorecard.
-   * @param appid
-   * @param sysid
-   * @param cmpid
-   * @param msg
-   * @param sv
-   * @param maj
-   * @param min
-   * @param cls
+   * @param seq the sequence of this event in the event list.
+   * @param appid Application identifier (e.g. Circuit Provisioning)
+   * @param sysid System identifier (e.g. Reporting)
+   * @param cmpid Component Identifier (e.g. ABB Recloser Driver)
+   * @param msg A description of the event (e.g. 'Could not connect to field device')
+   * @param sv The severity of the event (e.g. 1=Normal, 2=Warning, 3=Minor, 4=Major, 5=Critical, and 0=Indeterminate)
+   * @param maj Major code describing the event. This is like a classification or general category of the event.
+   * @param min Minor code of the event. This provides fine-grained identification of the event when combined with the major code.
+   * @param cls The classification of the event (e.g. 'Network Error')
    */
   public AppEvent( final long seq, final String appid, final String sysid, final String cmpid, final String msg, final int sv, final int maj, final int min, final String cls ) {
     _time = System.currentTimeMillis();
@@ -148,14 +150,14 @@ public class AppEvent {
   /**
    * This constructs an event with all the fields populated.
    *
-   * <p>It is expected that the scorecard will generate this event when asked and populate some of the attributes of this class for the caller.
+   * <p>It is expected that the scorecard will generate this event when asked and populate some attributes of this class for the caller.
    *
-   * @param seq the sequence of this event in the scorecard.
+   * @param seq the sequence of this event in the event list.
    * @param appid Application identifier (e.g. Circuit Provisioning)
    * @param sysid System identifier (e.g. Reporting)
    * @param cmpid Component Identifier (e.g. ABB Recloser Driver)
    * @param msg A description of the event (e.g. 'Could not connect to field device')
-   * @param sv The severity of the event (e.g. 5 for 'critical')
+   * @param sv The severity of the event (e.g. 1=Normal, 2=Warning, 3=Minor, 4=Major, 5=Critical, and 0=Indeterminate)
    * @param maj Major code describing the event. This is like a classification or general category of the event.
    * @param min Minor code of the event. This provides fine-grained identification of the event when combined with the major code.
    * @param cls The classification of the event (e.g. 'Network Error')
@@ -173,7 +175,6 @@ public class AppEvent {
     _seq = seq;
     _sev = sv;
     _lst = list;
-
   }
 
 
