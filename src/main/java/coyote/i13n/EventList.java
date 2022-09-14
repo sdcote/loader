@@ -11,7 +11,9 @@
  */
 package coyote.i13n;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 
 /**
@@ -163,6 +165,25 @@ public class EventList {
 
   public synchronized AppEvent getLast() {
     return _list.getLast();
+  }
+
+
+
+
+  /**
+   * Gets a mutable list of the events in this list.
+   *
+   * <p>The list is mutable, but the events are references to the actual event
+   * entries. Changing an AppEvent will change the entry in this list.</p>
+   *
+   * @return a list of AppEvents representing all the events in this list.
+   */
+  public synchronized List<AppEvent> getEvents() {
+    List<AppEvent> retval = new ArrayList<>();
+    for (AppEvent event: _list){
+      retval.add(event);
+    }
+    return retval;
   }
 
 

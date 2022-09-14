@@ -10,12 +10,7 @@ package coyote.i13n;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import coyote.commons.DateUtil;
 import coyote.commons.Version;
@@ -1321,6 +1316,22 @@ public class StatBoardImpl implements StatBoard {
     final AppEvent event = eventList.createEvent(appId, sysId, cmpId, msg, severity, majorCode, minorCode, category);
     final long retval = event.getSequence();
     return retval;
+  }
+
+
+
+
+  /**
+   * Gets a mutable list of the events in this board.
+   *
+   * <p>The list is mutable, but the events are references to the actual event
+   * entries. Changing an AppEvent will change the entry in this list.</p>
+   *
+   * @return a list of AppEvents representing all the events in this board.
+   */
+  @Override
+  public List<AppEvent> getEvents() {
+    return eventList.getEvents();
   }
 
 }
