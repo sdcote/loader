@@ -94,6 +94,17 @@ public class HTTPDRouter extends HTTPD {
 
 
 
+  /**
+   * Set the responder for resource not found (i.e. 404) events.
+   * @param responder the responder which will return the desired HTTP response
+   * @param initParams the array of objects to pass to the responder upon instantiation
+   */
+  public void setNotFoundResponder(final Class<?> responder, final Object... initParams) {
+    router.setNotFoundResponder(responder, initParams);
+  }
+
+
+
 
   /**
    * Set the responder for method not implemented (i.e. 501) events.
@@ -110,7 +121,7 @@ public class HTTPDRouter extends HTTPD {
    *
    * @param urlPattern RegEx pattern describing the URL to match
    * @param responder The class to be instantiated to handle the connection
-   * @param initParams the array of objects to pass to the responder upon in
+   * @param initParams the array of objects to pass to the responder upon instantiation
    */
   public void addRoute(final String urlPattern, final Class<?> responder, final Object... initParams) {
     router.addRoute(urlPattern, 100, responder, authProvider, initParams);

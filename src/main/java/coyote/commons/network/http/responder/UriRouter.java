@@ -28,6 +28,9 @@ import coyote.loader.log.Log;
 public class UriRouter {
 
 
+  /**
+   * The resource that handles 404 events. This allows customized Not Found pages.
+   */
   private Resource error404Url;
 
   private final List<Resource> mappings;
@@ -102,14 +105,35 @@ public class UriRouter {
 
 
 
-
+  /**
+   * Set the responder for resource not found (i.e. 404) events.
+   *
+   * @param responder the responder which will return the desired HTTP response
+   */
   public void setNotFoundResponder(final Class<?> responder) {
     error404Url = new Resource(null, 100, responder, null);
   }
 
 
 
+  /**
+   * Set the responder for resource not found (i.e. 404) events.
+   *
+   * @param responder the responder which will return the desired HTTP response
+   * @param initParams the array of objects to pass to the responder upon instantiation
+   */
+  public void setNotFoundResponder(final Class<?> responder, final Object... initParams) {
+    error404Url = new Resource(null, 100, responder, null, initParams);
+  }
 
+
+
+
+  /**
+   * Set the responder for resource not implemented (i.e. 501) events.
+   *
+   * @param responder the responder which will return the desired HTTP response
+   */
   public void setNotImplementedResponder(final Class<?> responder) {
     notImplemented = responder;
   }
