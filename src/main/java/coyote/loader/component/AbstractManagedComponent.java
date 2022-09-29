@@ -76,6 +76,17 @@ public abstract class AbstractManagedComponent extends ThreadJob implements Mana
 
 
   /**
+   * @see coyote.loader.component.Component#getComponentId()
+   */
+  @Override
+  public String getComponentId() {
+    return UNKNOWN;
+  }
+
+
+
+
+  /**
    * @see coyote.loader.component.Component#getCategory()
    */
   @Override

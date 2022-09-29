@@ -34,6 +34,14 @@ public interface Component {
 
 
   /**
+   * @return the identifier of the component within the system.
+   */
+  public String getComponentId();
+
+
+
+
+  /**
    * Determine the classification of this component.
    * 
    * <p>This method will return a string that represents this components 
@@ -76,7 +84,7 @@ public interface Component {
 
 
   /**
-   * @return the unique identifier of this component
+   * @return the unique instance identifier of this component.
    */
   public String getId();
 
@@ -134,7 +142,6 @@ public interface Component {
 
 
   /**
-   * 
    * @return The identifier of the system to which this component belongs.
    */
   public String getSystemId();

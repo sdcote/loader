@@ -366,6 +366,16 @@ public class AppEvent {
 
 
 
+  /**
+   * @return true if the event has been cleared, false if not.
+   */
+  public boolean isCleared() {
+    return _clrd != 0;
+  }
+
+
+
+
   @Override
   public String toString() {
     return "Event[" + _cls + "|" + _appId + "|" + _sysId + "|" + _cmpId + "]:" + _seq + ":" + _sev + ":" + ":" + _maj + "." + _min + ":" + _time + ":" + _msg;

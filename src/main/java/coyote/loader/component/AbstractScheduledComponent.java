@@ -158,6 +158,17 @@ public class AbstractScheduledComponent extends ScheduledJob implements ManagedC
 
 
   /**
+   * @see coyote.loader.component.Component#getComponentId()
+   */
+  @Override
+  public String getComponentId() {
+    return UNKNOWN;
+  }
+
+
+
+
+  /**
    * @see coyote.loader.component.Component#getCategory()
    */
   @Override

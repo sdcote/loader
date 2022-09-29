@@ -37,6 +37,17 @@ public abstract class AbstractComponent implements Component {
 
 
   /**
+   * @see coyote.loader.component.Component#getComponentId()
+   */
+  @Override
+  public String getComponentId() {
+    return AbstractComponent.UNKNOWN;
+  }
+
+
+
+
+  /**
    * @see coyote.loader.component.Component#getCategory()
    */
   @Override
@@ -118,8 +129,7 @@ public abstract class AbstractComponent implements Component {
    */
   @Override
   public Context getContext() {
-    // TODO Auto-generated method stub
-    return null;
+    return context;
   }
 
 }
