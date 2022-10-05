@@ -14,6 +14,7 @@ package coyote.loader.component;
 import coyote.commons.GUID;
 import coyote.commons.StringUtil;
 import coyote.dataframe.DataFrame;
+import coyote.loader.ConfigTag;
 import coyote.loader.Context;
 import coyote.loader.Loader;
 import coyote.loader.cfg.Config;
@@ -113,7 +114,9 @@ public abstract class AbstractManagedComponent extends ThreadJob implements Mana
    */
   @Override
   public String getDescription() {
-    return null;
+    String retval = null;
+    if (configuration != null) retval = configuration.getString(ConfigTag.DESCRIPTION_TAG);
+    return retval;
   }
 
 

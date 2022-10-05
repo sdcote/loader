@@ -7,10 +7,7 @@
  */
 package coyote.loader;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import coyote.commons.Assert;
 import coyote.commons.StringUtil;
@@ -191,6 +188,11 @@ public abstract class AbstractContext implements Context {
 
 
 
+  /**
+   * Set the error flag in this context indicating this context is in an error state or not.
+   *
+   * @param flag true to indicate this context is in an error state, false otherwise.
+   */
   public synchronized void setError(boolean flag) {
     errorFlag = flag;
   }
@@ -212,6 +214,11 @@ public abstract class AbstractContext implements Context {
 
 
 
+  /**
+   * Accessor to check if the context is in error.
+   *
+   * @return true if the context is in error, false if not.
+   */
   public synchronized boolean isInError() {
     return errorFlag;
   }
@@ -357,6 +364,11 @@ public abstract class AbstractContext implements Context {
 
 
 
+  /**
+   * Trigger the "onStart" event for the listeners.
+   *
+   * @param context the context to use for the event.
+   */
   protected void fireStart(AbstractContext context) {
     if (parent != null)
       parent.fireStart(context);
@@ -369,6 +381,11 @@ public abstract class AbstractContext implements Context {
 
 
 
+  /**
+   * Trigger the "onEnd" event for the listeners.
+   *
+   * @param context the context to use for the event.
+   */
   protected void fireEnd(AbstractContext context) {
     if (parent != null)
       parent.fireEnd(context);
@@ -398,8 +415,11 @@ public abstract class AbstractContext implements Context {
   }
 
 
-
-
+  /**
+   * Set the given list of listeners as this the listeners for this context.
+   *
+   * @param listeners the list of listeners to use.
+   */
   public synchronized void setListeners(List<ContextListener> listeners) {
     if (listeners != null) {
       this.listeners = listeners;
@@ -407,8 +427,11 @@ public abstract class AbstractContext implements Context {
   }
 
 
-
-
+  /**
+   * Add the given listener to the existing list of listeners.
+   *
+   * @param listener the listener to add.
+   */
   public synchronized void addListener(ContextListener listener) {
     if (listener != null) {
       if (listeners == null) {
@@ -422,7 +445,7 @@ public abstract class AbstractContext implements Context {
 
 
   /**
-   * @see coyote.loader.Context#dump()
+   * @see Context#dump()
    */
   @Override
   public String dump() {
@@ -502,11 +525,39 @@ public abstract class AbstractContext implements Context {
 
 
   /**
-   * @see coyote.loader.Context#contains(java.lang.String)
+   * @see Context#contains(java.lang.String)
    */
   @Override
   public boolean contains(String key) {
     return properties.containsKey(key);
+  }
+
+
+
+
+  /**
+   * @see Context#getKeys()
+   */
+  @Override
+  public Set<String> getKeys(){
+    return properties.keySet();
+  }
+
+
+
+
+  /**
+   * This returns a mutable list of listeners for this context.
+   *
+   * @see Context#getListeners()
+   */
+  @Override
+  public  List<ContextListener> getListeners(){
+    List<ContextListener> retval = new ArrayList<>();
+    synchronized (listeners) {
+      for (ContextListener listener : listeners) retval.add(listener);
+    }
+    return retval;
   }
 
 }

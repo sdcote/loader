@@ -12,6 +12,7 @@
 package coyote.loader;
 
 import java.util.List;
+import java.util.Set;
 
 import coyote.commons.template.SymbolTable;
 
@@ -29,7 +30,7 @@ import coyote.commons.template.SymbolTable;
  */
 public interface Context {
 
-  public void addListener(ContextListener listener);
+  void addListener(ContextListener listener);
 
 
 
@@ -42,7 +43,7 @@ public interface Context {
    * 
    * @return true if there is an object mapped to this key, false otherwise 
    */
-  public boolean contains(String key);
+  boolean contains(String key);
 
 
 
@@ -50,7 +51,7 @@ public interface Context {
   /**
    * @return a dump of all the properties and symbols in this context.
    */
-  public String dump();
+  String dump();
 
 
 
@@ -58,7 +59,7 @@ public interface Context {
   /**
    * Set the end time to now.
    */
-  public void end();
+  void end();
 
 
 
@@ -70,7 +71,7 @@ public interface Context {
    * 
    * @return the object with that name or null if the named object is not found
    */
-  public Object get(String key);
+  Object get(String key);
 
 
 
@@ -86,7 +87,7 @@ public interface Context {
    * @return the value of the property, or null if the property was not found 
    *         with the given key of if the key was null or blank.
    */
-  public Object get(String key, boolean usecase);
+  Object get(String key, boolean usecase);
 
 
 
@@ -103,7 +104,7 @@ public interface Context {
    * @return the string representation of the object with that name or null if 
    *         the named object is not found
    */
-  public String getAsString(String key);
+  String getAsString(String key);
 
 
 
@@ -122,7 +123,7 @@ public interface Context {
    * @return the string representation of the object with that name or null if 
    *         the named object is not found
    */
-  public String getAsString(String key, boolean usecase);
+  String getAsString(String key, boolean usecase);
 
 
 
@@ -130,7 +131,7 @@ public interface Context {
   /**
    * @return the elapsed time in milliseconds from start to end (or now) or 0 if not started. 
    */
-  public long getElapsed();
+  long getElapsed();
 
 
 
@@ -138,7 +139,7 @@ public interface Context {
   /**
    * @return the endTime
    */
-  public long getEndTime();
+  long getEndTime();
 
 
 
@@ -146,7 +147,7 @@ public interface Context {
   /**
    * @return the message
    */
-  public String getMessage();
+  String getMessage();
 
 
 
@@ -154,7 +155,7 @@ public interface Context {
   /**
    * @return the parent context, may be null.
    */
-  public AbstractContext getParent();
+  AbstractContext getParent();
 
 
 
@@ -162,7 +163,7 @@ public interface Context {
   /**
    * @return the startTime
    */
-  public long getStartTime();
+  long getStartTime();
 
 
 
@@ -170,7 +171,7 @@ public interface Context {
   /**
    * @return the status
    */
-  public String getStatus();
+  String getStatus();
 
 
 
@@ -178,12 +179,12 @@ public interface Context {
   /**
    * @return the symbolTable for this context
    */
-  public SymbolTable getSymbols();
+  SymbolTable getSymbols();
 
 
 
 
-  public boolean isInError();
+  boolean isInError();
 
 
 
@@ -195,7 +196,7 @@ public interface Context {
    * 
    * @return true if the context is fine (without error) false if there is a problem.
    */
-  public boolean isNotInError();
+  boolean isNotInError();
 
 
 
@@ -206,7 +207,7 @@ public interface Context {
    * @param key the name of the object to place
    * @param value the object to place (null results in the object being removed)
    */
-  public void set(String key, Object value);
+  void set(String key, Object value);
 
 
 
@@ -214,12 +215,12 @@ public interface Context {
   /**
    * @param endTime the endTime to set
    */
-  public void setEndTime(long endTime);
+  void setEndTime(long endTime);
 
 
 
 
-  public void setError(boolean flag);
+  void setError(boolean flag);
 
 
 
@@ -229,12 +230,12 @@ public interface Context {
    * 
    * @param msg The message to place in the context.
    */
-  public void setError(String msg);
+  void setError(String msg);
 
 
 
 
-  public void setListeners(List<ContextListener> listeners);
+  void setListeners(List<ContextListener> listeners);
 
 
 
@@ -242,7 +243,7 @@ public interface Context {
   /**
    * @param message the message to set
    */
-  public void setMessage(String message);
+  void setMessage(String message);
 
 
 
@@ -250,7 +251,7 @@ public interface Context {
   /**
    * @param context the parent context to set
    */
-  public void setParent(AbstractContext context);
+  void setParent(AbstractContext context);
 
 
 
@@ -258,7 +259,7 @@ public interface Context {
   /**
    * @param startTime the startTime to set
    */
-  public void setStartTime(long startTime);
+  void setStartTime(long startTime);
 
 
 
@@ -266,7 +267,7 @@ public interface Context {
   /**
    * @param status the status to set
    */
-  public void setStatus(String status);
+  void setStatus(String status);
 
 
 
@@ -274,7 +275,7 @@ public interface Context {
   /**
    * @param symbols the symbols to set in this context
    */
-  public void setSymbols(SymbolTable symbols);
+  void setSymbols(SymbolTable symbols);
 
 
 
@@ -282,6 +283,21 @@ public interface Context {
   /**
    * Set the start time to now.
    */
-  public void start();
+  void start();
 
+  
+  
+
+  /**
+   * Access this context key set
+   * 
+   * @return a set of keys to access the contents of this context.
+   */
+  Set<String> getKeys();
+
+
+  /**
+   * @return a list of listeners for this context.
+   */
+  List<ContextListener> getListeners();
 }

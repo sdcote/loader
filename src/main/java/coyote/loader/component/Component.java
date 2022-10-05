@@ -15,6 +15,8 @@ import coyote.dataframe.DataFrame;
 import coyote.loader.Context;
 import coyote.loader.cfg.Config;
 
+import java.util.Set;
+
 
 /**
  * The Component class models a type which can be queried for a variety of 
@@ -211,5 +213,6 @@ public interface Component {
    *         may be null.
    */
   public Context getContext();
-  
-}
+
+
+  }
