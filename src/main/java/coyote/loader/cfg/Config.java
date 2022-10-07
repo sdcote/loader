@@ -149,7 +149,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
   /**
    * Read a configuration from the given URI.
    *
-   * <p>This assumes the URI represents a stream of valid UTF-8 JSON formattted
+   * <p>This assumes the URI represents a stream of valid UTF-8 JSON formatted
    * data.
    *
    * @param uri the URI of the stream to read
@@ -258,7 +258,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
 
 
   /**
-   * Perform a case insensitive search for the first value with the given name
+   * Perform a case-insensitive search for the first value with the given name
    * and returns it as a boolean.
    *
    * @param tag the name of the configuration attribute for which to search
@@ -320,7 +320,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
 
 
   /**
-   * Perform a case insensitive search for the first value with the given name
+   * Perform a case-insensitive search for the first value with the given name
    * and returns it as a double.
    *
    * @param tag the name of the configuration attribute for which to search
@@ -350,7 +350,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
 
 
   /**
-   * Perform a case insensitive search for the first value with the given name
+   * Perform a case-insensitive search for the first value with the given name
    * and returns it as a float.
    *
    * @param tag the name of the configuration attribute for which to search
@@ -378,7 +378,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
 
 
   /**
-   * Perform a case insensitive search for the first value with the given name
+   * Perform a case-insensitive search for the first value with the given name
    * and returns it as an integer.
    *
    * @param tag the name of the configuration attribute for which to search
@@ -396,7 +396,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
 
 
   /**
-   * Perform a case insensitive search for the first value with the given name
+   * Perform a case-insensitive search for the first value with the given name
    * and returns it as a long.
    *
    * @param tag the name of the configuration attribute for which to search
@@ -510,7 +510,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
 
 
   /**
-   * Perform a case insensitive search for the first value with the given name
+   * Perform a case-insensitive search for the first value with the given name
    * and returns it as a short.
    *
    * @param tag the name of the configuration attribute for which to search
@@ -528,7 +528,7 @@ public class Config extends DataFrame implements Cloneable, Serializable {
 
 
   /**
-   * Perform a case insensitive search for the first value with the given name.
+   * Perform a case-insensitive search for the first value with the given name.
    *
    * @param tag the name of the configuration attribute for which to search
    *
@@ -815,7 +815,16 @@ public class Config extends DataFrame implements Cloneable, Serializable {
       }
     }
     return retval;
+  }
 
+
+  /**
+   *  Access the map of configuration slots.
+   *
+    * @return the currently set configuration slots, or null if no slots have been set.
+   */
+  public HashMap<String, ConfigSlot> getSlots(){
+    return slots;
   }
 
 }

@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -171,4 +172,33 @@ public class ConfigTest {
     assertNotNull(obj);
     assertTrue(obj instanceof String[]); // Not DataFrame
   }
+
+
+
+  @Test
+  public void sanitize() throws URISyntaxException, IOException, ConfigurationException {
+    File file = new File("src\\test\\resources\\webauth.json");
+    System.out.println(file.getAbsolutePath());
+    Config config = Config.read(file);
+    assertNotNull(config);
+    ConfigSanitizer.addProtectedFieldName("default");
+    Config cleanConfig = ConfigSanitizer.sanitize(config);
+    assertNotNull(cleanConfig);
+
+    // Test the set protected field name
+    Config aclSection = cleanConfig.getSection("IPACL");
+    assertNotNull(aclSection);
+    String value = aclSection.getString("default");
+    assertEquals(ConfigSanitizer.PROTECTED,value);
+
+    // Test the password in an embedded section
+    Config authSection = cleanConfig.getSection("Auth");
+    Config usersSection = authSection.getSection("Users");
+    for( Config section: usersSection.getSections()){
+      value = section.getString("ENC:Password");
+      assertEquals(ConfigSanitizer.PROTECTED,value);
+    }
+    //System.out.println( JSONMarshaler.toFormattedString( cleanConfig ) );
+  }
+
 }
