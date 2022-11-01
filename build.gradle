@@ -13,7 +13,7 @@ apply plugin: 'jacoco'
 
 defaultTasks 'clean', 'build', 'fatJar', 'publish'
 group = 'coyote'
-version = '0.8.0'
+version = '0.9.0-SNAPSHOT'
 
 ext {
 	title = 'Coyote Loader Framework'
@@ -48,6 +48,14 @@ task fatJar(type: Jar) {
 repositories {
 	mavenLocal()
 	mavenCentral()
+	maven {
+		url = "https://maven.pkg.github.com/sdcote/packages"
+		credentials {
+			// get credentials from 'gradle.properties' if they exist or from the environment
+			username = project.findProperty("USERNAME") ?: System.getenv("secrets.ACTIONS_USER")
+			password = project.findProperty("TOKEN") ?: System.getenv("secrets.ACTIONS_TOKEN")
+		}
+	}
 }
 
 
@@ -59,7 +67,7 @@ ext {
 dependencies {
 
 	// Abstract Data Type
-	implementation "coyote:DataFrame:$dataFrameVersion"
+	implementation "coyote:dataframe:$dataFrameVersion"
 	
 	// UnitTesting
 	testImplementation "junit:junit:$junitVersion"
@@ -106,6 +114,14 @@ publishing {
 	
 	repositories {
 		mavenLocal()
+		maven {
+			url = "https://maven.pkg.github.com/sdcote/packages"
+			credentials {
+				// get credentials from 'gradle.properties' if they exist or from the environment
+				username = project.findProperty("USERNAME") ?: System.getenv("secrets.ACTIONS_USER")
+				password = project.findProperty("TOKEN") ?: System.getenv("secrets.ACTIONS_TOKEN")
+			}
+		}
 	}
 }
 
