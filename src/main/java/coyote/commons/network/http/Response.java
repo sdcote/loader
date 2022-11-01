@@ -113,6 +113,9 @@ public class Response implements Closeable {
 
   /**
    * Adds given line to the header.
+   *
+   * @param name the name of the header
+   * @param value the value of the header
    */
   public void addHeader( final String name, final String value ) {
     header.put( name, value );
@@ -378,6 +381,8 @@ public class Response implements Closeable {
 
   /**
    * Create a response with unknown length (using HTTP 1.1 chunking).
+   *
+   * @return the response
    */
   public static Response createChunkedResponse( final Status status, final String mimeType, final InputStream data ) {
     return new Response( status, mimeType, data, -1 );
@@ -388,6 +393,8 @@ public class Response implements Closeable {
 
   /**
    * Create a response with known length.
+   *
+   * @return the response
    */
   public static Response createFixedLengthResponse( final Status status, final String mimeType, final InputStream data, final long totalBytes ) {
     return new Response( status, mimeType, data, totalBytes );
@@ -398,6 +405,8 @@ public class Response implements Closeable {
 
   /**
    * Create a text response with known length.
+   *
+   * @return the response
    */
   public static Response createFixedLengthResponse( final Status status, final String mimeType, final String txt ) {
     ContentType contentType = new ContentType( mimeType );
@@ -424,6 +433,8 @@ public class Response implements Closeable {
 
   /**
    * Create a text response with known length.
+   *
+   * @return the response
    */
   public static Response createFixedLengthResponse( final String msg ) {
     return createFixedLengthResponse( Status.OK, MimeType.HTML.getType(), msg );

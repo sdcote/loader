@@ -67,6 +67,8 @@ public class Cookie {
 
   /**
    * @param flag true to make the cookie secure
+   *
+   * @return this cookie
    */
   public Cookie setSecure( boolean flag ) {
     secure = flag;
@@ -88,6 +90,8 @@ public class Cookie {
 
   /**
    * @param flag true to make the cookie as HTTP only
+   *
+   * @return this cookie
    */
   public Cookie setHttpOnly( boolean flag ) {
     httpOnly = flag;
@@ -109,6 +113,8 @@ public class Cookie {
 
   /**
    * @param domain the domain to set for this cookie
+   *
+   * @return this cookie
    */
   public Cookie setDomain( String domain ) {
     this.domain = domain;
@@ -126,8 +132,9 @@ public class Cookie {
   }
 
 
-
-
+  /**
+   * @return the header for this cookie
+   */
   public String getHTTPHeader() {
     StringBuffer b = new StringBuffer();
     b.append( String.format( COOKIE_FORMAT, name, value, expiry ) );
@@ -141,8 +148,13 @@ public class Cookie {
   }
 
 
-
-
+  /**
+   * Get the formatted date for the given number of days in the future.
+   *
+   * @param days the number of days in the future to represent
+   *
+   * @return the formatted date for the given number of days in the future.
+   */
   public static String getHTTPTime( final int days ) {
     final Calendar calendar = Calendar.getInstance();
     final SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss z" );

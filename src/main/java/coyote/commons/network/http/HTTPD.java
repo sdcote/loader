@@ -193,6 +193,13 @@ public abstract class HTTPD {
    * Creates an SSLSocketFactory for HTTPS. Pass a loaded KeyStore and an
    * array of loaded KeyManagers. These objects must properly
    * loaded/initialized by the caller.
+   *
+   * @param loadedKeyStore the keystore to use
+   * @param keyManagers the key manager to use
+   *
+   * @return the SSL server socket factory
+   *
+   * @throws IOException if the server socket factory could not be created
    */
   public static SSLServerSocketFactory makeSSLSocketFactory(final KeyStore loadedKeyStore, final KeyManager[] keyManagers) throws IOException {
     SSLServerSocketFactory res = null;
@@ -319,6 +326,8 @@ public abstract class HTTPD {
 
   /**
    * Constructs an HTTP server on given port.
+   *
+   * @param port the port to bind
    */
   public HTTPD(final int port) {
     this(null, port);
@@ -329,6 +338,9 @@ public abstract class HTTPD {
 
   /**
    * Constructs an HTTP server on given hostname and port.
+   *
+   * @param hostname the host name to resolve to determine the IP address on which to listen
+   * @param port the port to bind
    */
   public HTTPD(final String hostname, final int port) {
     this.hostname = hostname;
@@ -526,8 +538,11 @@ public abstract class HTTPD {
   }
 
 
-
-
+  /**
+   * Set the server socket factory in this server
+   *
+   * @param serverSocketFactory the factory to use
+   */
   public void setServerSocketFactory(final ServerSocketFactory serverSocketFactory) {
     this.serverSocketFactory = serverSocketFactory;
   }
@@ -561,6 +576,8 @@ public abstract class HTTPD {
 
   /**
    * Starts the server (in setDaemon(true) mode).
+   *
+   * @throws IOException if the socket is in use.
    */
   public void start(final int timeout) throws IOException {
     start(timeout, true);
@@ -624,7 +641,9 @@ public abstract class HTTPD {
 
 
   /**
-   * @return true if the gzip compression should be used if the client accespts 
+   * @param r the request to query for gzip acceptance
+   *
+   * @return true if the gzip compression should be used if the client accepts
    *         it. Default this option is on for text content and off for 
    *         everything. Override this for custom semantics.
    */
@@ -788,7 +807,8 @@ public abstract class HTTPD {
    *   - Throttle the connection for the amount of milliseconds but allow it after waiting
    *   - FUTURE: Retract shutdown the server for the number of milliseconds then restart
    *   - FUTURE: Terminate terminate the server
-   * @param cfg
+   *
+   * @param cfg the configuration to use
    */
   public void configDosTables(Config cfg) {
     // TODO: Make this work

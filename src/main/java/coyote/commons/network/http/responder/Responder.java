@@ -69,6 +69,7 @@ public interface Responder {
   /**
    * Respond to the HTTP method requests which do not map to get, put, post or delete.
    *
+   * @param method The HTTP method requested
    * @param resource the instance of the Resource which contains our initialization parameters
    * @param urlParams parameters to process
    * @param session the session established with the HTTP server

@@ -65,11 +65,11 @@ public class Resource {
   /**
    * Create a URI Resource
    *
-   * @param uri the
-   * @param priority
-   * @param responder
-   * @param authProvider
-   * @param initParameter
+   * @param uri the uri to which this responder is bound
+   * @param priority the priority compared to other resources at the same URI
+   * @param responder the responder to use
+   * @param authProvider the authentication provider to use
+   * @param initParameter initial parameters
    */
   public Resource(final String uri, final int priority, final Class<?> responder, final AuthProvider authProvider, final Object... initParameter) {
     responderClass = responder;

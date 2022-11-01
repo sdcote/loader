@@ -82,10 +82,12 @@ public interface HTTPSession {
 
 
   /**
-   * Retrive the name of the user associated with this session.
+   * Retrieve the name of the user associated with this session.
    * 
    * <p>This is expected to be populated by the Auth Provider, but it will 
    * usually be null as not all resources will invoke the AuthProvider.
+   *
+   * @return the username for this session.
    */
   String getUserName();
 

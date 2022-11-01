@@ -995,7 +995,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
    * way, subclasses don't have to override the configure(Config) method and
    * call super.configure(Config).</p>
    *
-   * @throws ConfigurationException
+   * @throws ConfigurationException if there is a problem with the configuration settings or operations
    */
   public void onConfiguration() throws ConfigurationException {
   }

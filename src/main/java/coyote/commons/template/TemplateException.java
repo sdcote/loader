@@ -44,8 +44,8 @@ public final class TemplateException extends Exception {
   /**
    * Constructor TemplateException
    *
-   * @param message
-   * @param context
+   * @param message Error message
+   * @param context the data context where the error occurred.
    */
   public TemplateException(final String message, final String context) {
     super(message);
@@ -60,7 +60,7 @@ public final class TemplateException extends Exception {
    * Constructor
    *
    * @param message Error message
-   * @param excptn
+   * @param excptn root exception
    */
   public TemplateException(final String message, final Throwable excptn) {
     super(message, excptn);
@@ -72,7 +72,7 @@ public final class TemplateException extends Exception {
   /**
    * Constructor
    *
-   * @param excptn
+   * @param excptn the underlying exception
    */
   public TemplateException(final Throwable excptn) {
     super(excptn);
@@ -82,7 +82,7 @@ public final class TemplateException extends Exception {
 
 
   /**
-   * @return the context
+   * @return the data context
    */
   public String getContext() {
     return context;
