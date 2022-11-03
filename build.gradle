@@ -51,7 +51,6 @@ repositories {
 	maven {
 		url = "https://maven.pkg.github.com/sdcote/packages"
 		credentials {
-			// get credentials from 'gradle.properties' if they exist or from the environment
 			username = project.findProperty("USERNAME") ?: System.getenv("secrets.ACTIONS_USER")
 			password = project.findProperty("TOKEN") ?: System.getenv("secrets.ACTIONS_TOKEN")
 		}
@@ -117,7 +116,6 @@ publishing {
 		maven {
 			url = "https://maven.pkg.github.com/sdcote/packages"
 			credentials {
-				// get credentials from 'gradle.properties' if they exist or from the environment
 				username = project.findProperty("USERNAME") ?: System.getenv("secrets.ACTIONS_USER")
 				password = project.findProperty("TOKEN") ?: System.getenv("secrets.ACTIONS_TOKEN")
 			}
