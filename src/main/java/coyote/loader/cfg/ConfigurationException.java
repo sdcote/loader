@@ -29,7 +29,7 @@ public class ConfigurationException extends Exception {
 
 
   /**
-   * @param message
+   * @param message the message of the exception
    */
   public ConfigurationException( final String message ) {
     super( message );
@@ -39,8 +39,8 @@ public class ConfigurationException extends Exception {
 
 
   /**
-   * @param message
-   * @param newNested
+   * @param message the message of the exception
+   * @param newNested the cause of the exception
    */
   public ConfigurationException( final String message, final Throwable newNested ) {
     super( message, newNested );
@@ -50,7 +50,7 @@ public class ConfigurationException extends Exception {
 
 
   /**
-   * @param newNested
+   * @param newNested the cause of the exception
    */
   public ConfigurationException( final Throwable newNested ) {
     super( newNested );

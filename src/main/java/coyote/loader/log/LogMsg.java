@@ -125,9 +125,9 @@ public class LogMsg implements Serializable {
   /**
    * The last set of variable arguments that was used to get the last message. 
    * 
-   * <p>This may be <code>null</code> if this instance never retreived a 
+   * <p>This may be <code>null</code> if this instance never retrieved a
    * message or this instance was serialized and one or more of the args 
-   * objects was not serializable.<p>
+   * objects was not serializable.</p>
    */
   private Object[] lastArgs;
 
@@ -585,8 +585,8 @@ public class LogMsg implements Serializable {
    *
    * @param in where to read the serialized stream
    *
-   * @throws IOException
-   * @throws ClassNotFoundException
+   * @throws IOException if there were problems
+   * @throws ClassNotFoundException if there were problems
    */
   private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
     // set our transient fields
@@ -680,7 +680,7 @@ public class LogMsg implements Serializable {
    *
    * @param out where to write the serialized stream
    *
-   * @throws IOException
+   * @throws IOException if there were problems
    */
   private void writeObject(final ObjectOutputStream out) throws IOException {
     out.writeObject(bundleBaseName);

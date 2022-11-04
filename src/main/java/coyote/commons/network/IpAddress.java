@@ -388,15 +388,15 @@ public class IpAddress {
    * Get the DNS name of this address.
    *
    * <p>The name will be calculated the first time this method is called and
-   * its value will be cached for all future accesses.<p>
+   * its value will be cached for all future accesses.</p>
    *
    * <p>It is important to keep in mind that the return value will depend upon
    * this host name resolver. If this IP address is located in a local host
    * resolver file, then the return value will be whatever is specified in that
    * file and a DNS lookup may never take place.</p>
    *
-   * @return The name to which this address resolves on this hosts resolver, or
-   *         null if the address is not valid or in DNS or the hosts resolver.
+   * @return The name to which this address resolves on this host's resolver, or
+   *         null if the address is not valid or in DNS or the host's resolver.
    */
   public String getDnsName() {
     if (dnsName == null) {

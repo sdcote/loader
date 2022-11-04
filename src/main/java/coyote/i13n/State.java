@@ -37,6 +37,8 @@ public class State extends Metric {
 
   /**
    * Create an empty state that can be set to any type initially.
+   *
+   * @param name name of the state
    */
   public State(final String name) {
     super(name);

@@ -200,7 +200,7 @@ public class DateUtil {
    * indicating time zones in North America.
    * </pre>
    *
-   * @param date
+   * @param date the date to format
    *
    * @return the formatted date
    */
@@ -326,7 +326,7 @@ public class DateUtil {
    * @param date the Date object to format
    * @param adjust Adjust the time to standard time by removing the Daylight
    *        Savings Time offset.
-   * @param tz
+   * @param tz the timezone to use
    *
    * @return Properly ISO8601-formatted time string.
    */

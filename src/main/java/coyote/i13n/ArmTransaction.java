@@ -39,6 +39,7 @@ public interface ArmTransaction {
    * decreased by the given amount.
    *
    * @param name The name of the counter to decrease.
+   * @param value the amount to decrease
    *
    * @return The final value of the counter after the operation.
    */
@@ -124,6 +125,7 @@ public interface ArmTransaction {
    * increased by the given amount.
    *
    * @param name The name of the counter to increase.
+   * @param value the amount to decrease
    *
    * @return The final value of the counter after the operation.
    */
@@ -149,7 +151,7 @@ public interface ArmTransaction {
 
 
   /**
-   * @param crid
+   * @param crid correlation identifier
    */
   public void setCRID( String crid );
 

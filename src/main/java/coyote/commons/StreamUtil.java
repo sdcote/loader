@@ -64,7 +64,7 @@ public final class StreamUtil {
    *
    * @return TODO: Finish documentation the number of bytes copied
    *
-   * @throws IOException
+   * @throws IOException if there were problems
    */
   public static final int copy( final InputStream from, final OutputStream to ) throws IOException {
     // write the data
@@ -82,12 +82,12 @@ public final class StreamUtil {
   /**
    * Method copy
    *
-   * @param inputstream
-   * @param outputstream
-   * @param i
-   * @param j
+   * @param inputstream the stream from wich we read
+   * @param outputstream the stream to which we write
+   * @param i index
+   * @param j length of data to be written
    *
-   * @throws IOException
+   * @throws IOException  if there were problems
    */
   public static void copy( final InputStream inputstream, final OutputStream outputstream, final int i, final int j ) throws IOException {
     final byte bytes[] = new byte[j];
@@ -107,11 +107,11 @@ public final class StreamUtil {
   /**
    * Method getBufferedPrintWriter
    *
-   * @param outputstream
+   * @param outputstream the stream to which we write
    *
-   * @return TODO: Finish documentation
+   * @return the writer used
    *
-   * @throws IOException
+   * @throws IOException if there were problems
    */
   public static PrintWriter getBufferedPrintWriter( final OutputStream outputstream ) throws IOException {
     return new PrintWriter( new BufferedWriter( new OutputStreamWriter( outputstream, fileIOEncoding ) ) );
@@ -123,11 +123,11 @@ public final class StreamUtil {
   /**
    * Method getBufferedReader
    *
-   * @param inputstream
+   * @param inputstream the stream to wrap with the new reader
    *
-   * @return TODO: Finish documentation
+   * @return the reader for the stream
    *
-   * @throws IOException
+   * @throws IOException if there were problems
    */
   public static BufferedReader getBufferedReader( final InputStream inputstream ) throws IOException {
     return new BufferedReader( new InputStreamReader( inputstream, fileIOEncoding ) );
@@ -139,11 +139,11 @@ public final class StreamUtil {
   /**
    * Method getCharBufferedPrintWriter
    *
-   * @param outputstream
+   * @param outputstream the output stream to wrap
    *
-   * @return TODO: Finish documentation
+   * @return the writer for the stream
    *
-   * @throws IOException
+   * @throws IOException if there were problems
    */
   public static PrintWriter getCharBufferedPrintWriter( final OutputStream outputstream ) throws IOException {
     return new PrintWriter( new BufferedWriter( new OutputStreamWriter( outputstream ) ) );
@@ -155,11 +155,11 @@ public final class StreamUtil {
   /**
    * Method getCharBufferedReader
    *
-   * @param inputstream
+   * @param inputstream the input stream to read
    *
-   * @return TODO: Finish documentation
+   * @return the reader for the stream
    *
-   * @throws IOException
+   * @throws IOException if there were problems
    */
   public static BufferedReader getCharBufferedReader( final InputStream inputstream ) throws IOException {
     return new BufferedReader( new InputStreamReader( inputstream ) );
@@ -171,9 +171,9 @@ public final class StreamUtil {
   /**
    * Method getEncoding
    *
-   * @param bytes
+   * @param bytes the data to query
    *
-   * @return TODO: Finish documentation
+   * @return name of the encoding
    */
   public static String getEncoding( final byte bytes[] ) {
     if ( isUTF16( bytes ) ) {
@@ -199,11 +199,11 @@ public final class StreamUtil {
   /**
    * Method getReader
    *
-   * @param file
+   * @param file the file to be read
    *
-   * @return TODO: Finish documentation
+   * @return a reader for that file
    *
-   * @throws IOException
+   * @throws IOException if there were problems
    */
   public static Reader getReader( final File file ) throws IOException {
     final FileInputStream fileinputstream = new FileInputStream( file );
@@ -220,11 +220,11 @@ public final class StreamUtil {
   /**
    * Method getReader
    *
-   * @param inputstream
+   * @param inputstream the stream to read
    *
-   * @return TODO: Finish documentation
+   * @return a reader for that stream
    *
-   * @throws IOException
+   * @throws IOException if there were problems
    */
   public static Reader getReader( InputStream inputstream ) throws IOException {
     if ( !( inputstream instanceof BufferedInputStream ) ) {
@@ -246,11 +246,11 @@ public final class StreamUtil {
   /**
    * Method getURL
    *
-   * @param file
+   * @param file the filr to represent as a URL
    *
-   * @return TODO: Finish documentation
+   * @return A URL to the given file
    *
-   * @throws MalformedURLException
+   * @throws MalformedURLException if there were problems
    */
   public static URL getURL( final File file ) throws MalformedURLException {
     String s = file.getAbsolutePath();
@@ -276,13 +276,13 @@ public final class StreamUtil {
   /**
    * Method getWriter
    *
-   * @param file
-   * @param encoding
+   * @param file the file to write
+   * @param encoding the encoding to write
    *
-   * @return TODO: Finish documentation
+   * @return a writer for that file with the given encoding
    *
-   * @throws IOException
-   * @throws UnsupportedEncodingException
+   * @throws IOException if there were problems creating the writer
+   * @throws UnsupportedEncodingException if an invalid encoding was specified
    */
   public static Writer getWriter( final File file, final String encoding ) throws UnsupportedEncodingException, IOException {
     return getWriter( ( ( new FileOutputStream( file ) ) ), encoding );
@@ -294,12 +294,12 @@ public final class StreamUtil {
   /**
    * Method getWriter
    *
-   * @param outputstream
-   * @param encoding
+   * @param outputstream the output stream to wrap
+   * @param encoding the encoding of the data to be written
    *
-   * @return TODO: Finish documentation
+   * @return a writer to the given file using the given encoding
    *
-   * @throws UnsupportedEncodingException
+   * @throws UnsupportedEncodingException if an invalid encoding is specified
    */
   public static Writer getWriter( final OutputStream outputstream, String encoding ) throws UnsupportedEncodingException {
     encoding = normalizeEncoding( encoding );
@@ -345,9 +345,9 @@ public final class StreamUtil {
   /**
    * Method isUTF16
    *
-   * @param abyte0
+   * @param abyte0 the byte to query
    *
-   * @return TODO: Finish documentation
+   * @return true if the byte is UTF-16 encoded
    */
   public static boolean isUTF16( final byte abyte0[] ) {
     if ( abyte0.length < 2 ) {
@@ -363,9 +363,9 @@ public final class StreamUtil {
   /**
    * Method isUTF8
    *
-   * @param string
+   * @param string the string to check
    *
-   * @return TODO: Finish documentation
+   * @return true if the string is UTF-8
    */
   public static boolean isUTF8( final String string ) {
     return ( string == null ) || string.equalsIgnoreCase( "UTF-8" ) || string.equalsIgnoreCase( "UTF8" );
@@ -377,9 +377,9 @@ public final class StreamUtil {
   /**
    * Method listFiles
    *
-   * @param file
+   * @param file the directory to query
    *
-   * @return TODO: Finish documentation
+   * @return an array of files for that directory
    */
   public static File[] listFiles( final File file ) {
     final String as[] = file.list();
@@ -434,11 +434,11 @@ public final class StreamUtil {
   /**
    * Method loadResource
    *
-   * @param s
+   * @param s the URL string of the resource to load
    *
-   * @return TODO: Finish documentation
+   * @return the data of the resource
    *
-   * @throws IOException
+   * @throws IOException if there were problems
    */
   public static byte[] loadResource( final String s ) throws IOException {
     final URL url = new URL( s );
@@ -455,11 +455,11 @@ public final class StreamUtil {
   /**
    * Reads all the characters from the given Reader and generates a String
    *
-   * @param reader
+   * @param reader the source of our string data
    *
-   * @return TODO: Finish documentation
+   * @return the entire contents of the stream as a string
    *
-   * @throws IOException
+   * @throws IOException if there were problems
    */
   public static final String loadString( final Reader reader ) throws IOException {
     // read in the entry data
@@ -484,9 +484,9 @@ public final class StreamUtil {
   /**
    * Method normalizeEncoding
    *
-   * @param encoding
+   * @param encoding the encoding string to check
    *
-   * @return TODO: Finish documentation
+   * @return UTF8 of the encoding is UTF-8
    */
   public static String normalizeEncoding( final String encoding ) {
     return ( ( encoding != null ) && !encoding.equalsIgnoreCase( "UTF-8" ) ) ? encoding : "UTF8";
@@ -498,11 +498,11 @@ public final class StreamUtil {
   /**
    * Method readFully
    *
-   * @param file
+   * @param file the file to read
    *
-   * @return TODO: Finish documentation
+   * @return the data in that file
    *
-   * @throws IOException
+   * @throws IOException if there were problems
    */
   public static byte[] readFully( final File file ) throws IOException {
     final RandomAccessFile randomaccessfile = new RandomAccessFile( file, "r" );
@@ -519,11 +519,11 @@ public final class StreamUtil {
   /**
    * Method readFully
    *
-   * @param inputstream
+   * @param inputstream the stream to read
    *
-   * @return TODO: Finish documentation
+   * @return the data in that stream
    *
-   * @throws IOException
+   * @throws IOException if there were problems
    */
   public static byte[] readFully( final InputStream inputstream ) throws IOException {
     final byte bytes[] = new byte[CHUNK_SIZE];
@@ -547,12 +547,12 @@ public final class StreamUtil {
   /**
    * Method readFully
    *
-   * @param inputstream
-   * @param bytes
-   * @param i
-   * @param j
+   * @param inputstream the source of the data
+   * @param bytes the destination of the data
+   * @param i index
+   * @param j length
    *
-   * @throws IOException
+   * @throws IOException if there were problems
    */
   public static void readFully( final InputStream inputstream, final byte bytes[], final int i, final int j ) throws IOException {
     int l;
@@ -572,12 +572,12 @@ public final class StreamUtil {
   /**
    * Method readFully
    *
-   * @param inputstream
-   * @param i
+   * @param inputstream the source of data
+   * @param i length of data to read
    *
-   * @return TODO: Finish documentation
+   * @return data read from the stream
    *
-   * @throws IOException
+   * @throws IOException if there were problems
    */
   public static byte[] readFully( final InputStream inputstream, final int i ) throws IOException {
     if ( i <= 0 ) {
@@ -608,7 +608,7 @@ public final class StreamUtil {
    * @return the string read in without any CR or LF characters, null if the
    *         stream is EOF or closed
    *         
-   * @throws IOException
+   * @throws IOException if there were problems
    */
   public static String readLine( final InputStream inputstream ) throws IOException {
     final StringBuffer stringbuffer = new StringBuffer();
@@ -639,14 +639,14 @@ public final class StreamUtil {
   /**
    * Method readUpTo
    *
-   * @param inputstream
-   * @param bytes
-   * @param i
-   * @param j
+   * @param inputstream the source of the data
+   * @param bytes destination for the data
+   * @param i index
+   * @param j length
    *
-   * @return TODO: Finish documentation
+   * @return Tnumber of bytes read
    *
-   * @throws IOException
+   * @throws IOException if there were problems
    */
   public static int readUpTo( final InputStream inputstream, final byte bytes[], final int i, final int j ) throws IOException {
     int k = 0;
@@ -675,12 +675,12 @@ public final class StreamUtil {
   /**
    * Method readUpTo
    *
-   * @param inputstream
-   * @param i
+   * @param inputstream the source of the data
+   * @param i length of data to read
    *
-   * @return TODO: Finish documentation
+   * @return the data read in
    *
-   * @throws IOException
+   * @throws IOException if there were problems
    */
   public static byte[] readUpTo( final InputStream inputstream, final int i ) throws IOException {
     if ( i <= 0 ) {
@@ -706,12 +706,12 @@ public final class StreamUtil {
   /**
    * Save the given text out to the given file.
    *
-   * @param filename
-   * @param s1
-   * @param textOut
-   * @param s3
+   * @param filename name of the file to store the text
+   * @param s1 delimiter e.g., '.'
+   * @param textOut the data to save
+   * @param s3 the extension of the file e.g., 'txt'
    *
-   * @throws IOException
+   * @throws IOException if there were problems
    */
   public static void saveFile( final String filename, final String s1, final String textOut, final String s3 ) throws IOException {
     if ( ( filename != null ) && ( filename.length() > 0 ) ) {
@@ -738,11 +738,11 @@ public final class StreamUtil {
   /**
    * Method toString
    *
-   * @param abyte0
+   * @param abyte0 data to be converted into a string
    *
-   * @return TODO: Finish documentation
+   * @return either UTF-16 or UTF-8 encoded string based on the data passed in.
    *
-   * @throws UnsupportedEncodingException
+   * @throws UnsupportedEncodingException if there were problems with the given encoding
    */
   public static String toString( final byte abyte0[] ) throws UnsupportedEncodingException {
     return isUTF16( abyte0 ) ? new String( abyte0, "UTF-16" ) : new String( abyte0, "UTF8" );

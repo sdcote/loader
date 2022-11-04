@@ -48,7 +48,7 @@ public abstract class AbstractLogger implements Logger {
 
 
   /**
-   * @param mask
+   * @param mask the mask for this logger
    */
   public AbstractLogger(final long mask) {
     this.mask = mask;
@@ -104,7 +104,7 @@ public abstract class AbstractLogger implements Logger {
   /**
    * Remove the specified mask from the current mask setting.
    *
-   * @param mask
+   * @param mask the mask to remove
    */
   public synchronized void removeMask(long mask) {
     if (!locked) {

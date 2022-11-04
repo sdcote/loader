@@ -36,7 +36,11 @@ public final class TimingArm extends NullArm {
 
 
   /**
-  * Create a ARM transaction using the given ARM master.
+  * Create an ARM transaction using the given ARM master.
+   *
+   * @param name name of the ARM
+   * @param crid correlation identifier
+   * @param master the ARM master
   */
   public TimingArm( final ArmMaster master, final String name, final String crid ) {
     super( master, name, crid );

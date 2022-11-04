@@ -77,8 +77,8 @@ public class EventList {
    * flagged as an error. All other identifiers will be set to null.
    *
    * @param msg The message text to place within the event.
-   * @param majorcode
-   * @param minorcode
+   * @param majorcode major code
+   * @param minorcode minor code
    *
    * @return A sequenced event with the appropriate values filled-in.
    */

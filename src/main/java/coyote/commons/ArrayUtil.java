@@ -236,8 +236,8 @@ public final class ArrayUtil {
   /**
    * Remove the given object from the given array.
    *
-   * @param array
-   * @param element
+   * @param array the array on which to operate
+   * @param element the element to remove
    *
    * @return a new array with the element removed
    */
@@ -259,8 +259,8 @@ public final class ArrayUtil {
   /**
    * Remove the element at the given position from the given array.
    *
-   * @param oldarray
-   * @param index
+   * @param oldarray the array on which to operate
+   * @param index the positional index of the element to remove
    *
    * @return a new array with the element removed
    */
@@ -328,8 +328,8 @@ public final class ArrayUtil {
    * <p>NOTE that this is not a test for reference equality, but rather value
    * equality.</p>
    *
-   * @param value
-   * @param array
+   * @param value the value for which to search
+   * @param array the array in which to search
    *
    * @return true if the value object is contained within the array, false otherwise.
    */
@@ -341,8 +341,8 @@ public final class ArrayUtil {
 
 
   /**
-   * @param array1
-   * @param array2
+   * @param array1 an array to compare
+   * @param array2 another array to compare
    *
    * @return true if both arrays are equivalent false otherwise
    */
@@ -364,8 +364,8 @@ public final class ArrayUtil {
 
 
   /**
-   * @param object1
-   * @param object2
+   * @param object1 an object to compare
+   * @param object2 another object to compare
    *
    * @return true if both objects are equivalent, false otherwise.
    */
@@ -385,8 +385,8 @@ public final class ArrayUtil {
   /**
    * compare two byte arrays
    *
-   * @param array1
-   * @param array2
+   * @param array1 an array to compare
+   * @param array2 another array to compare
    *
    * @return true if bot arrays are equivalent, false otherwise.
    */

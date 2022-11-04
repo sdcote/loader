@@ -45,9 +45,9 @@ public class ArmMaster {
   /**
    * Convert a float value to a String
    *
-   * @param value
+   * @param value the float value to convert
    *
-   * @return
+   * @return a string representation of the value
    */
   protected static String convertToString( final double value ) {
     final DecimalFormat numberFormat = (DecimalFormat)NumberFormat.getNumberInstance();
@@ -81,7 +81,7 @@ public class ArmMaster {
 
 
   /**
-   * @param name
+   * @param name name of this ARM Master
    */
   public ArmMaster( final String name ) {
     _name = name;
@@ -93,9 +93,9 @@ public class ArmMaster {
   /**
    * Method convertToString
    *
-   * @param value
+   * @param value a long value to convert
    *
-   * @return
+   * @return a string representation of the value
    */
   protected String convertToString( final long value ) {
     final DecimalFormat numberFormat = (DecimalFormat)NumberFormat.getNumberInstance();
@@ -173,11 +173,11 @@ public class ArmMaster {
   /**
    * Method getDisplayString
    *
-   * @param type
-   * @param value
-   * @param units
+   * @param type name of the type
+   * @param value the string value
+   * @param units the units
    *
-   * @return
+   * @return a formatted string of the arguments
    */
   protected String getDisplayString( final String type, final String value, final String units ) {
     return type + "=" + value + " " + units + " ";

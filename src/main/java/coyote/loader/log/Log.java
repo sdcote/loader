@@ -300,7 +300,7 @@ public final class Log {
    *
    * <p>This is equivalent to <tt>log( ERROR_EVENTS, event );</tt></p>
    *
-   * @param event
+   * @param event the event to log
    */
   public static void error(final Object event) {
     Log.append(Log.ERROR_EVENTS, event, null);
@@ -329,7 +329,7 @@ public final class Log {
    *
    * <p>This is equivalent to <tt>log( FATAL_EVENTS, event );</tt></p>
    *
-   * @param event
+   * @param event the event to log
    */
   public static void fatal(final Object event) {
     Log.append(Log.FATAL_EVENTS, event, null);
@@ -355,6 +355,8 @@ public final class Log {
 
   /**
    * Access the name of the given category code.
+   *
+   * @param code the code to retrieve
    * 
    * @return The category associated with the specified code.
    */
@@ -481,7 +483,7 @@ public final class Log {
    *
    * <p>This is equivalent to <tt>log( INFO_EVENTS, event );</tt></p>
    *
-   * @param event
+   * @param event the event to log
    */
   public static void info(final Object event) {
     Log.append(Log.INFO_EVENTS, event, null);
@@ -510,7 +512,7 @@ public final class Log {
    *
    * <p>This is equivalent to <tt>log( NOTICE_EVENTS, event );</tt></p>
    *
-   * @param event
+   * @param event The event to log
    */
   public static void notice(final Object event) {
     Log.append(Log.NOTICE_EVENTS, event, null);
@@ -684,7 +686,7 @@ public final class Log {
    *
    * <p>This is equivalent to <tt>log( TRACE_EVENTS, event );</tt></p>
    *
-   * @param event
+   * @param event The event to log
    */
   public static void trace(final Object event) {
     Log.append(Log.TRACE_EVENTS, event, null);
@@ -713,7 +715,7 @@ public final class Log {
    *
    * <p>This is equivalent to <tt>log( WARN_EVENTS, event );</tt></p>
    *
-   * @param event
+   * @param event The event to log
    */
   public static void warn(final Object event) {
     Log.append(Log.WARN_EVENTS, event, null);

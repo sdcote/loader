@@ -262,9 +262,9 @@ public class ZipUtil {
   /**
    * Method saveFile.
    *
-   * @param filename
-   * @param name
-   * @param target
+   * @param filename name of the archive file
+   * @param name the file entry
+   * @param target the destination fiel
    *
    * @throws IOException if problems were experienced.
    */
@@ -384,8 +384,8 @@ public class ZipUtil {
    *
    * <p>This method is a complement to the deflateFileToFile method.
    *
-   * @param source
-   * @param target
+   * @param source the file to read
+   * @param target the destination file
    *
    * @throws IOException if problems were experienced.
    */
@@ -540,10 +540,10 @@ public class ZipUtil {
    *
    * <p>This method is a complement to the inflateFileToFile method.
    *
-   * @param source
-   * @param target
+   * @param source the source file
+   * @param target the compressed file
    *
-   * @throws IOException
+   * @throws IOException if there were problems
    */
   public static void deflateFileToFile(final File source, final File target) throws IOException {
     final FileOutputStream out = new FileOutputStream(target);
@@ -650,6 +650,7 @@ public class ZipUtil {
    * Unzip an archive into the given directory.
    * 
    * @param source the archive file to decompress
+   * @param destDir  the destination directory
    *  
    * @throws IOException if there were problems decompressing the file
    */

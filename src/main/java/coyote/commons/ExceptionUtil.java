@@ -46,6 +46,8 @@ public class ExceptionUtil {
    * and any nested exceptions therein. This will delegate the event call to
    * the first exception in the chain and return its value.</p>
    *
+   * @param t the exception to query
+   *
    * @return The message of the core exception.
    */
   public static String getRootMessage( final Throwable t ) {
@@ -61,6 +63,8 @@ public class ExceptionUtil {
    * <p>Return the inner-most exception that is wrapped by this and any nested
    * exceptions therein. This will delegate the event call to the first
    * exception in the chain and return its reference.</p>
+   *
+   * @param t the exception to query
    *
    * @return The message of the core exception.
    */
@@ -78,6 +82,8 @@ public class ExceptionUtil {
   /**
    * Dump the exception and its message as a String with the root class, method
    * and line number.
+   *
+   * @param t the exception to format
    *
    * @return String suitable for logging.
    */

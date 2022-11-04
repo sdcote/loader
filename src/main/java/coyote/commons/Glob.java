@@ -159,6 +159,8 @@ public class Glob extends Object {
    * Dump the match specifications.
    * 
    * @param message a message to prefix the dump
+   *
+   * @return the match specifications.
    */
   public String dumpMatchSpecs( final String message ) {
     final StringBuffer b = new StringBuffer( message );

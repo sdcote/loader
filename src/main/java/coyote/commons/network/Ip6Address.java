@@ -66,7 +66,7 @@ public class Ip6Address {
    * return '8888.7000.6600.5000.4440.3300.2222.1100.ip6.int'.
    * </p>
    *
-   * @param address
+   * @param address the address to convert
    * @return A string representing a reverse lookup of the address passed in.
    */
   public static String IPv6ptrQueryString(final String address) {

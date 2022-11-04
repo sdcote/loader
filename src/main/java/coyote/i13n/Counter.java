@@ -35,6 +35,8 @@ public class Counter extends Metric implements Cloneable {
 
   /**
    * Create a counter with a name.
+   *
+   * @param name  the name of this counter
    */
   public Counter( final String name ) {
     super( name );

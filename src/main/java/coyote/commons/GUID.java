@@ -88,6 +88,8 @@ public class GUID {
    * <p>Setting secure to 'true' enables each random number generated to be 
    * cryptographically strong. Secure 'false' defaults to the standard Random 
    * function seeded with a single cryptographically strong random number.</p>
+   *
+   * @param secure true to make the GUID from a secure random number
    */
   public GUID( final boolean secure ) {
     getRandomGUID( secure );

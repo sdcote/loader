@@ -34,7 +34,9 @@ public class TimingTimer extends TimerBase {
 
 
   /**
+   * Constructor
    *
+   * @param master the timing master for this timer
    */
   public TimingTimer( final TimingMaster master ) {
     super( master );

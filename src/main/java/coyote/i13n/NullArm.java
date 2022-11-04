@@ -239,7 +239,7 @@ public class NullArm implements ArmTransaction {
   /**
    * Create a child ARM.
    *
-   * @param name
+   * @param name the name of this transaction
    *
    * @return a new no-op ARM
    */

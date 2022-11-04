@@ -267,6 +267,7 @@ public class Tabs {
    * decreased by the given amount.</p> 
    * 
    * @param tag The name of the counter to decrease.
+   * @param value the amount to decrease
    * 
    * @return The final value of the counter after the operation.
    */
@@ -298,6 +299,8 @@ public class Tabs {
   /**
    * Deactivate a particular class of Application Response Measurement calls 
    * from this point on.
+   *
+   * @param name the name of the ARM to disable
    */
   public static void disableArmClass(final String name) {
     synchronized (Tabs.armMasters) {
@@ -344,6 +347,8 @@ public class Tabs {
 
   /**
    * Activate all Application Response Measurement calls from this point on.
+   *
+   * @param flag true to enable, false to disable
    */
   public static void enableArm(final boolean flag) {
     synchronized (Tabs.armMasters) {
@@ -357,6 +362,8 @@ public class Tabs {
   /**
    * Activate a particular class of Application Response Measurement calls from 
    * this point on.
+   *
+   * @param name the name of the ARM to enable
    */
   public static void enableArmClass(final String name) {
     synchronized (Tabs.armMasters) {
@@ -375,6 +382,8 @@ public class Tabs {
 
   /**
    * Activate all gauges calls from this point on.
+   *
+   * @param flag true to activate all gauges, false disables all gauges
    */
   public static void enableGauges(final boolean flag) {
     synchronized (Tabs.gauges) {
@@ -413,8 +422,10 @@ public class Tabs {
    * 
    * <p>When timing is enabled, functional timers are returned and their 
    * metrics are collected for later reporting. when timing is disabled, null 
-   * timers are be retured each time a timer is requested. This keeps all code 
+   * timers are be returned each time a timer is requested. This keeps all code
    * operational regardless of the runtime status of timing.</p>
+   *
+   * @param flag true to enable timing, false to disable timing
    */
   public static void enableTiming(final boolean flag) {
     synchronized (Tabs.masterTimers) {
@@ -427,6 +438,8 @@ public class Tabs {
 
   /**
    * Get an iterator over all the ARM Masters in the fixture.
+   *
+   * @return an iterator over all the ARMs
    */
   public static Iterator getArmIterator() {
     final ArrayList list = new ArrayList();
@@ -726,6 +739,8 @@ public class Tabs {
 
   /**
    * Get an iterator over all the gauges in the fixture.
+   *
+   * @return an iterator of all the gauges
    */
   public static Iterator getGaugeIterator() {
     final ArrayList list = new ArrayList();
@@ -1100,6 +1115,8 @@ public class Tabs {
 
   /**
    * Get an iterator over all the Master Timers in the fixture.
+   *
+   * @return an iterator over all the timers
    */
   public static Iterator getTimerIterator() {
     final ArrayList list = new ArrayList();
@@ -1224,6 +1241,7 @@ public class Tabs {
    * increased by the given amount.</p> 
    * 
    * @param tag The name of the counter to increase.
+   * @param value the amount to increase
    * 
    * @return The final value of the counter after the operation.
    */

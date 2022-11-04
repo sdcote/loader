@@ -22,7 +22,7 @@ public class RegexUtil {
    * Turn a *-wildcard style glob ("*-all.jar") into a regular expression
    * (^.*\-all\.jar$)
    * 
-   * @param glob
+   * @param glob the pattern to use
    * @param extended true To match bash-like globs, eg. ? for any single-character match, [a-z] for character ranges, and {*.txt, *.csv} for multiple alternatives
    * @param global true to match anywhere false to anchor the match to the beginning and end
    * @param flags additional flags to pass to the pattern compiler

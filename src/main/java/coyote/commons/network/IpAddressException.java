@@ -44,7 +44,7 @@ public final class IpAddressException extends Exception {
    * Constructor
    *
    * @param message Error message
-   * @param excptn
+   * @param excptn root cause for this exception
    */
   public IpAddressException(final String message, final Throwable excptn) {
     super(message, excptn);
@@ -56,7 +56,7 @@ public final class IpAddressException extends Exception {
   /**
    * Constructor
    *
-   * @param excptn
+   * @param excptn root cause for this exception
    */
   public IpAddressException(final Throwable excptn) {
     super(excptn);

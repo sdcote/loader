@@ -58,9 +58,9 @@ public class TimingMaster implements TimerMaster {
   /**
    * Convert a float value to a String
    *
-   * @param value
+   * @param value the value to convert
    *
-   * @return
+   * @return the string representation of the value
    */
   protected static String convertToString( final double value ) {
     final DecimalFormat numberFormat = (DecimalFormat)NumberFormat.getNumberInstance();
@@ -99,7 +99,9 @@ public class TimingMaster implements TimerMaster {
 
 
   /**
+   * Constructor
    *
+   * @param name the name of this timer
    */
   public TimingMaster( final String name ) {
     _name = name;
@@ -111,9 +113,9 @@ public class TimingMaster implements TimerMaster {
   /**
    * Method convertToString
    *
-   * @param value
+   * @param value the value to convert
    *
-   * @return
+   * @return the string representation to convert
    */
   protected String convertToString( final long value ) {
     final DecimalFormat numberFormat = (DecimalFormat)NumberFormat.getNumberInstance();
@@ -220,11 +222,11 @@ public class TimingMaster implements TimerMaster {
   /**
    * Method getDisplayString
    *
-   * @param type
-   * @param value
-   * @param units
+   * @param type type of data
+   * @param value data value
+   * @param units units of measure
    *
-   * @return
+   * @return the formatted value
    */
   protected String getDisplayString( final String type, final String value, final String units ) {
     if ( TimingMaster.NONE.equals( units ) ) {

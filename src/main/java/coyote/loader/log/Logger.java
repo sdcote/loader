@@ -60,7 +60,7 @@ public interface Logger {
   /**
    * Set the mask that defines the events which the logger should log.
    * 
-   * @param  mask
+   * @param  mask the mask for this logger
    */
   public abstract void setMask( long mask );
 

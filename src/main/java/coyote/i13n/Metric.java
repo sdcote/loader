@@ -22,7 +22,9 @@ public class Metric {
 
 
   /**
+   *Constructory
    *
+   * @param name the name of this metric
    */
   public Metric( final String name ) {
     _name = name;

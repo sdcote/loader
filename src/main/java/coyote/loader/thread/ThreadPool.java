@@ -117,9 +117,10 @@ public class ThreadPool {
 
 
   /**
-   * Constructor using a DataCapsule to determine it's configuration
+   * Constructor using a configuration
    *
-   * @param config
+   * @param config the configuration to use
+   *
    * @throws IllegalArgumentException if the configuration is invalid
    */
   public ThreadPool(Config config) throws IllegalArgumentException {
@@ -134,9 +135,9 @@ public class ThreadPool {
   /**
    * Configure the threadpool with the given data capsule
    *
-   * @param cfg
+   * @param cfg the configuration for the pool
    *
-   * @throws IllegalArgumentException
+   * @throws IllegalArgumentException if there were problems
    */
   public void config(Config cfg) throws IllegalArgumentException {
     if (cfg.getName() == null) {
@@ -191,7 +192,7 @@ public class ThreadPool {
   /**
    * Sets the name of the pool.
    *
-   * @param name
+   * @param name the name of this pool
    */
   public void setName(String name) {
     pool_name = name;
@@ -271,7 +272,7 @@ public class ThreadPool {
   /**
    * Set the minimum number of workers for this threadpool.
    *
-   * @param min
+   * @param min number of workers
    */
   public void setMinWorkerCount(int min) {
     configuration.put(MINWORKERS_TAG, new Integer(min).toString());
@@ -297,7 +298,7 @@ public class ThreadPool {
   /**
    * Set the number of milliseconds of inactivity before starting to idle.
    *
-   * @param millis
+   * @param millis milliseconds
    */
   public void setIdleTimeout(long millis) {
     idle_timeout = millis;
@@ -331,7 +332,7 @@ public class ThreadPool {
   /**
    * Set the maximum number of workers for this threadpool.
    *
-   * @param max
+   * @param max number of workers
    */
   public void setMaxThreadCount(int max) {
     configuration.put(MAXWORKERS_TAG, new Integer(max).toString());
@@ -375,7 +376,7 @@ public class ThreadPool {
    * <p>The reasoning behind this is that since the ThreadWorker waited for the
    * entire wait time, it is probably not needed and is wasting CPU time.</p>
    *
-   * @param millis
+   * @param millis milliseconds
    */
   public void setJobWaitTime(int millis) {
     configuration.put(JOBWAIT_TAG, new Integer(millis).toString());
@@ -604,7 +605,7 @@ public class ThreadPool {
    * Join the ThreadPool.
    *
    * Wait for all threads to complete.
-   * @exception java.lang.InterruptedException
+   * @throws java.lang.InterruptedException if there were problems
    */
   final public void join() throws java.lang.InterruptedException {
     while ((worker_set != null) && (worker_set.size() > 0)) {
@@ -641,8 +642,8 @@ public class ThreadPool {
    *
    * @return Job or null if no job available after timeout.
    *
-   * @exception InterruptedException
-   * @exception InterruptedIOException
+   * @throws  InterruptedException if there were problems
+   * @throws  InterruptedIOException if there were problems
    */
   protected ThreadJob getJob(int millis) throws InterruptedException, InterruptedIOException {
     return (ThreadJob)jobqueue.get(millis);
@@ -662,7 +663,7 @@ public class ThreadPool {
    *
    * @param job A ThreadJob object to run.
    *
-   * @throws InterruptedException
+   * @throws InterruptedException if there were problems
    */
   public void handle(ThreadJob job) throws InterruptedException {
     if (!isRunning()) {

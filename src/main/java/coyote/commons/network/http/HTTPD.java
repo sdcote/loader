@@ -222,6 +222,13 @@ public abstract class HTTPD {
    * Creates an SSLSocketFactory for HTTPS. Pass a loaded KeyStore and a
    * loaded KeyManagerFactory. These objects must properly loaded/initialized
    * by the caller.
+   *
+   * @param loadedKeyStore a loaded KeyStore
+   * @param loadedKeyFactory a loaded KeyManagerFactory
+   *
+   * @return a secured server socket factory
+   *
+   * @throws IOException if a problem occurred
    */
   public static SSLServerSocketFactory makeSSLSocketFactory(final KeyStore loadedKeyStore, final KeyManagerFactory loadedKeyFactory) throws IOException {
     try {
@@ -237,6 +244,11 @@ public abstract class HTTPD {
   /**
    * Creates an SSLSocketFactory for HTTPS. Pass a KeyStore resource with your
    * certificate and passphrase
+   *
+   * @param keyAndTrustStoreClasspathPath where the keystore is
+   * @param passphrase the passphrase for the keystore
+   *
+   * @return the secure socket factory
    */
   public static SSLServerSocketFactory makeSSLSocketFactory(final String keyAndTrustStoreClasspathPath, final char[] passphrase) throws IOException {
     try {
@@ -489,6 +501,9 @@ public abstract class HTTPD {
 
   /**
    * Call before {@code start()} to serve over HTTPS instead of HTTP
+   *
+   * @param sslProtocols the protocols to support
+   * @param sslServerSocketFactory the socket factory to use
    */
   public void makeSecure(final SSLServerSocketFactory sslServerSocketFactory, final String[] sslProtocols) {
     serverSocketFactory = new SecureServerSocketFactory(sslServerSocketFactory, sslProtocols);
@@ -576,6 +591,8 @@ public abstract class HTTPD {
 
   /**
    * Starts the server (in setDaemon(true) mode).
+   *
+   * @param timeout timeout to use for socket connections.
    *
    * @throws IOException if the socket is in use.
    */

@@ -164,7 +164,7 @@ public class BlowfishCipher extends AbstractCipher implements Cipher {
   /**
    * Quick demonstration of the blowfish cipher
    *
-   * @param args
+   * @param args command line arguments
    */
   public static void main(final String[] args) {
     final Cipher cipher = new BlowfishCipher();

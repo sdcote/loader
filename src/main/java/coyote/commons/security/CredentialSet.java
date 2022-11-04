@@ -189,6 +189,8 @@ public class CredentialSet {
    *
    * @param name The name of the credential
    * @param bytes the bytes representing the credential
+   *
+   * @return a CredentialSet wraping the data
    */
   public CredentialSet add(final String name, final byte[] bytes) {
     byte[] val = bytes;

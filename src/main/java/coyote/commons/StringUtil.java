@@ -174,6 +174,8 @@ public class StringUtil {
    * 
    * @param str string to search in. Return 0 if this is null.
    * @param sub string to search for. Return 0 if this is null.
+   *
+   * @return the number of occurrences found
    */
   public static int countOccurrencesOf(String str, String sub) {
     if (str == null || sub == null || str.length() == 0 || sub.length() == 0) {
@@ -374,13 +376,15 @@ public class StringUtil {
 
   /**
    * Check that the given CharSequence is neither {@code null} nor of length 0.
+   *
    * Note: Will return {@code true} for a CharSequence that purely consists of whitespace.
-   * <p><pre class="code">
+   * <pre class="code">
    * StringUtil.hasLength(null) = false
    * StringUtil.hasLength("") = false
    * StringUtil.hasLength(" ") = true
    * StringUtil.hasLength("Hello") = true
    * </pre>
+   *
    * @param str the CharSequence to check (may be {@code null})
    * 
    * @return {@code true} if the CharSequence is not null and has length
@@ -674,8 +678,9 @@ public class StringUtil {
   /**
    * Make a string safe to send as part of an HTML message.
    * 
-   * @param string
-   * @return Restored string.
+   * @param string the string to convert
+   *
+   * @return HTML safe string.
    */
   public static final String StringToHTML(final String string) {
     return StringUtil.tokenSubst(StringUtil.HTML_ENTITYREFS, StringUtil.notNull(string), true);
@@ -1085,6 +1090,10 @@ public class StringUtil {
 
 
   /**
+   * Empty strings are converted to null
+   *
+   * @param text the text to check
+   *
    * @return null if string is null or empty
    */
   public static String getNullIfEmpty(final String text) {

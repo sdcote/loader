@@ -53,7 +53,7 @@ public class GaugeBase extends NullGauge {
 
 
   /**
-   * @param args
+   * @param args command line arguments
    */
   public static void main( final String[] args ) {
     final GaugeBase gauge = new GaugeBase();
@@ -152,6 +152,8 @@ public class GaugeBase extends NullGauge {
 
   /**
    * Create a new gauge using the string as its name.
+   *
+   * @param name  name of the gauge
    */
   public GaugeBase( final String name ) {
     super( name );

@@ -36,7 +36,7 @@ public class BlockingQueue {
   /**
    * Constructor.
    *
-   * @param size
+   * @param size the size to allocate default is 255
    */
   public BlockingQueue(int size) {
     capacity = size;
@@ -148,7 +148,7 @@ public class BlockingQueue {
    *
    * @param o Object to place in the queue
    *
-   * @throws InterruptedException
+   * @throws InterruptedException if there were problems
    */
   public void put(Object o) throws InterruptedException {
     synchronized (slots) {
@@ -212,7 +212,7 @@ public class BlockingQueue {
    *
    * @return The next object in the queue.
    *
-   * @throws InterruptedException
+   * @throws InterruptedException if there were problems
    */
   public Object get() throws InterruptedException {
     synchronized (slots) {
@@ -247,7 +247,7 @@ public class BlockingQueue {
    * @param millis the time to wait for a job
    * @return The next object in the queue, or null if timedout.
    *
-   * @throws InterruptedException
+   * @throws InterruptedException if there were problems
    */
   public Object get(long millis) throws InterruptedException {
     synchronized (slots) {
@@ -285,7 +285,7 @@ public class BlockingQueue {
    *
    * @return The next object in the queue, or null if queue is empty.
    *
-   * @throws InterruptedException
+   * @throws InterruptedException if there were problems
    */
   public Object peek() throws InterruptedException {
     synchronized (slots) {
@@ -314,7 +314,7 @@ public class BlockingQueue {
    * @return The next object in the queue, or null if timed-out or queue is
    *         empty.
    *
-   * @throws InterruptedException
+   * @throws InterruptedException if there were problems
    */
   public Object peek(int millis) throws InterruptedException {
     synchronized (slots) {

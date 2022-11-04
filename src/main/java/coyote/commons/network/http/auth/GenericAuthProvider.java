@@ -92,7 +92,7 @@ public class GenericAuthProvider implements AuthProvider {
 
 
   /**
-   * @param cfg
+   * @param cfg the configuration for this provider
    */
   public GenericAuthProvider(final Config cfg) {
     if (cfg != null) {

@@ -238,7 +238,7 @@ public class UriUtil {
   /**
    * Decode String with % encoding.
    *
-   * @param encoded
+   * @param encoded the encoded string
    * 
    * @return Decoded string
    */
@@ -285,7 +285,7 @@ public class UriUtil {
   /**
    * Perform URL encoding.
    *
-   * @param string
+   * @param string the string to encode
    * 
    * @return encoded string.
    */
@@ -566,7 +566,7 @@ public class UriUtil {
    * which can take several seconds!</p>
    *
    *
-   * @param uri
+   * @param uri the URI to parse
    *
    * @return The InetAddress of the host specified in the URI. Will return null
    *         if DNS lookup fails, if the URI reference is null or if no host is
@@ -896,7 +896,7 @@ public class UriUtil {
    * <p>If the URI starts with UDP or one of the other of a short list of
    * schemes that represent a UDP-only service, then this will return true.</p>
    *
-   * @param uri
+   * @param uri the URI to check
    *
    * @return True if the URI represents a UDP scheme, false otherwise or if URL
    *         is null.

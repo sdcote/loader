@@ -33,7 +33,7 @@ public class ConfigSlot {
   /**
    * Constructor ConfigSlot
    *
-   * @param slot
+   * @param slot the slot to copy
    */
   public ConfigSlot( final ConfigSlot slot ) {
     name = slot.name;
@@ -162,7 +162,7 @@ public class ConfigSlot {
    * ConfigSlot is passed back to the GUI with the invalid value in the
    * defaultValue field and an error message in the Message field.
    *
-   * @param message
+   * @param message the description of theis slot
    */
   public void setMessage( final String message ) {
     this.message = message;

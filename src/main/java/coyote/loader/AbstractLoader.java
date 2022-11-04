@@ -647,7 +647,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
 
   /**
-   *
+   * Shutdown each component individually.
    */
   protected void terminateComponents() {
     DataFrame frame = new DataFrame();
@@ -808,7 +808,7 @@ public abstract class AbstractLoader extends ThreadJob implements Loader, Runnab
 
 
   /**
-   * @param timeout number of miliseconds to wait for all the components to go active
+   * @param timeout number of milliseconds to wait for all the components to go active
    * @return list of components which have not yet reported as active
    */
   private List<String> waitForActive(int timeout) {

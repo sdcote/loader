@@ -75,7 +75,7 @@ public class XTEACipher extends AbstractCipher implements Cipher {
    *
    * <p>First, the key is converted to UTF-16 encoding and passed through the
    * Virtual Machines MD5 message digest and the first 16 bytes of the digest
-   * are used to represent the key.<p>
+   * are used to represent the key.</p>
    *
    * <p>Next, the resulting blocked data is run through 32-round Feistel cipher
    * which uses operations from mixed (orthogonal) algebraic groups - XORs and
@@ -186,7 +186,7 @@ public class XTEACipher extends AbstractCipher implements Cipher {
    *
    * <p>First, the key is converted to UTF-16 encoding and passed through the
    * Virtual Machines MD5 message digest and the first 16 bytes of the digest
-   * are used to represent the key.<p>
+   * are used to represent the key.</p>
    *
    * <p>Next the data is padded to 8-byte blocks of data using a PKCS5 DES CBC
    * encryption padding scheme described in section 1.1 of RFC-1423.</p>
@@ -276,7 +276,7 @@ public class XTEACipher extends AbstractCipher implements Cipher {
   /**
    * Quick demonstration of the XTEA cipher
    *
-   * @param args
+   * @param args command line arguments
    */
   public static void main(final String[] args) {
     final Cipher cipher = new XTEACipher();

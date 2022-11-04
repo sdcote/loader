@@ -120,13 +120,13 @@ public final class FileUtil {
 
 
   /**
-   * Open a file , creating it as necessary, and changing its modification time.
+   * Open a file , creating it as necessary, and write data to it.
    *
-   * @param file
-   * @param data
-   * @param backup
+   * @param file the file to open
+   * @param data data to be written to the file
+   * @param backup true creates a backup file
    *
-   * @throws IOException
+   * @throws IOException if a problem occurred
    */
   public final static void append(final File file, final byte[] data, final boolean backup) throws IOException {
     if (!file.exists() || (file.exists() && file.canWrite())) {
@@ -176,9 +176,9 @@ public final class FileUtil {
    * empty directories within that directory. If it finds any, it remove the
    * empty directory and checks again until no empty directories are found.</p>
    *
-   * @param fileName
+   * @param fileName the name of the directory to clean
    *
-   * @throws IOException
+   * @throws IOException if there were problems
    */
   public static void cleanDirs(String fileName) throws IOException {
     if (!fileName.endsWith("/")) {
@@ -425,8 +425,8 @@ public final class FileUtil {
   /**
    * Copy one directory to another.
    *
-   * @param srcDir
-   * @param destDir
+   * @param srcDir the directory to copy from
+   * @param destDir the destination directory
    *
    * @throws IOException if the source directory is invalid (!exists,!Directory or !Readable)
    */
@@ -592,9 +592,12 @@ public final class FileUtil {
 
 
   /**
-   * @param src
-   * @param tgt
-   * @throws IOException
+   * Copies one named directory to another.
+   *
+   * @param src source directory
+   * @param tgt destination directory
+   *
+   * @throws IOException if there were problems
    */
   public static void copyDirectory(final String src, final String tgt) throws IOException {
     FileUtil.copyDirectory(new File(src), new File(tgt));
@@ -834,9 +837,10 @@ public final class FileUtil {
    * interpreted as no limit. Any negative value is interpreted as zero. The
    * default limit is zero.
    *
-   * @param targetFile
-   * @param limit
-   * @throws IOException
+   * @param targetFile the file to copy
+   * @param limit max number of generations to keep
+   *
+   * @throws IOException if there were problems
    */
   public static void createGenerationalBackup(final File targetFile, final int limit) throws IOException {
     File target;
@@ -973,15 +977,16 @@ public final class FileUtil {
 
 
   /**
-   * Delete a file
+   * Delete a file.
    *
-   * @param dataDir
-   * @param fname
+   * The basic use case is this method might be called many times while scanning a directory for files to delete.
    *
-   * @throws IOException
-   * @throws NullPointerException
+   * @param dataDir the parent directory of the file
+   * @param fname the filename
+   *
+   * @throws IOException if there were problems
    */
-  public final static void deleteFile(final String dataDir, final String fname) throws NullPointerException, IOException {
+  public final static void deleteFile(final String dataDir, final String fname) throws IOException {
     final File f = new File(dataDir + FileUtil.FILE_SEPARATOR + fname);
 
     // only delete a file that exists
@@ -1050,8 +1055,8 @@ public final class FileUtil {
    *   tgtFile = formatGenerationalName(tgtFile,generation++);
    * }</pre>
    *
-   * @param tgtFile
-   * @param generation
+   * @param tgtFile the name of the file to use as a start
+   * @param generation the generation of the file
    *
    * @return the generational name, never null, but may be blank
    */
@@ -1231,9 +1236,9 @@ public final class FileUtil {
   /**
    * Return a vector of the file/dir names in any give directory
    *
-   * @param dirName
+   * @param dirName the name of the directory to query
    *
-   * @return TODO Complete Documentation
+   * @return a vector of file names in that directory
    *
    * @throws IOException If the given name is not a directory or if
    */
@@ -1628,10 +1633,10 @@ public final class FileUtil {
   /**
    * Method getJavaClassFile
    *
-   * @param dir
-   * @param classname
+   * @param dir the directory to check
+   * @param classname th name of the class
    *
-   * @return TODO Complete Documentation
+   * @return the file containing the class
    */
   public final static File getJavaClassFile(final File dir, final String classname) {
     File retval = null;
@@ -1654,9 +1659,9 @@ public final class FileUtil {
   /**
    * Method getJavaClassFile
    *
-   * @param classname
+   * @param classname name of the classfile
    *
-   * @return TODO Complete Documentation
+   * @return the file containing the class
    */
   public final static File getJavaClassFile(final String classname) {
     return FileUtil.getJavaClassFile(FileUtil.CURRENT_DIR, classname);
@@ -1668,10 +1673,10 @@ public final class FileUtil {
   /**
    * Method getJavaSourceFile
    *
-   * @param dir
-   * @param classname
+   * @param dir the directory to check
+   * @param classname the name of the class
    *
-   * @return TODO Complete Documentation
+   * @return the file containing the source code
    */
   public final static File getJavaSourceFile(final File dir, final String classname) {
     File retval = null;
@@ -1694,9 +1699,9 @@ public final class FileUtil {
   /**
    * Method getJavaSourceFile
    *
-   * @param classname
+   * @param classname the name of the class to query
    *
-   * @return TODO Complete Documentation
+   * @return file containing the source code for that class
    */
   public final static File getJavaSourceFile(final String classname) {
     return FileUtil.getJavaSourceFile(FileUtil.CURRENT_DIR, classname);
@@ -1977,7 +1982,7 @@ public final class FileUtil {
   /**
    * Main method used for testing and command line operations
    *
-   * @param args
+   * @param args command line arguments
    */
   public static void main(final String[] args) {
     System.out.println("FileUtil Test");
@@ -2091,10 +2096,10 @@ public final class FileUtil {
    * Take a prefix and a relative path and put the two together to make an
    * absolute path.
    *
-   * @param prefix
-   * @param originalPath
+   * @param prefix the prefixe
+   * @param originalPath the relative path
    *
-   * @return TODO Complete Documentation
+   * @return the absolute path
    */
   public static String makeAbsolutePath(String prefix, String originalPath) {
     Assert.notBlank(originalPath, "Original path may not be blank here");
@@ -2127,9 +2132,9 @@ public final class FileUtil {
   /**
    * Create all directories required for this directory reference to be valid
    *
-   * @param dir
+   * @param dir the directory to create
    *
-   * @throws IOException
+   * @throws IOException if there were problems
    */
   public static void makeDirectory(final File dir) throws IOException {
     if (dir == null) {
@@ -2188,7 +2193,7 @@ public final class FileUtil {
    *
    * @param file the file reference
    *
-   * @throws IOException
+   * @throws IOException if there were problems
    */
   public static void makeParentDirectory(final File file) throws IOException {
     if (file == null) {
@@ -2393,7 +2398,7 @@ public final class FileUtil {
    * Replace all the file separator characters (either '/' or '\') with the
    * proper file separator for this platform.
    *
-   * @param path
+   * @param path the path string to normalize
    *
    * @return normalized path
    */
@@ -2413,8 +2418,8 @@ public final class FileUtil {
 
   /**
    * Open a file and return a DataInputStream object
-   *
-   * @param fn
+   * the filename
+   * @param fn filename
    *
    * @return DataInpuStream - stream to use for file data
    */
@@ -2572,9 +2577,9 @@ public final class FileUtil {
   /**
    * Performs a recursive delete of a directory and all its contents.
    *
-   * @param dir
+   * @param dir the directory to remove
    *
-   * @throws IOException
+   * @throws IOException if there were problems
    */
   public static final void removeDir(final File dir) throws IOException {
     final File[] list = dir.listFiles();
@@ -2679,8 +2684,8 @@ public final class FileUtil {
   /**
    * rename a file
    *
-   * @param oldName
-   * @param newName
+   * @param oldName original file name
+   * @param newName name of the new file
    *
    * @return true if succeeded
    */
@@ -2747,10 +2752,10 @@ public final class FileUtil {
   /**
    * Method saveStreamToFile
    *
-   * @param in
-   * @param outFile
+   * @param in the stream
+   * @param outFile the output file
    *
-   * @throws IOException
+   * @throws IOException if there were problems
    */
   public static void saveStreamToFile(final InputStream in, final File outFile) throws IOException {
     FileOutputStream out = null;
@@ -2910,7 +2915,7 @@ public final class FileUtil {
   /**
    * Open a file , creating it as necessary, and changing its modification time.
    *
-   * @param file
+   * @param file the file to touch
    */
   public final static void touch(final File file) {
     try {
@@ -2925,7 +2930,7 @@ public final class FileUtil {
    * Checks to see if the given directory name exists and is a readable
    * directory.
    *
-   * @param directory
+   * @param directory the name of the directory to check
    *
    * @return A directory reference which has been validated as absolute, existing and readable
    */
@@ -2974,10 +2979,10 @@ public final class FileUtil {
   /**
    * Method write
    *
-   * @param file
-   * @param data
+   * @param file the file to write
+   * @param data the data to place in that file
    *
-   * @throws IOException
+   * @throws IOException if there was a problem
    */
   public static void write(final File file, final byte[] data) throws IOException {
     FileUtil.write(file, data, false);
@@ -2987,8 +2992,8 @@ public final class FileUtil {
 
 
   /**
-   * Write the given data to the given file object creating it and it's parent
-   * directiories as necessary.
+   * Write the given data to the given file object creating it, and it's parent
+   * directories as necessary.
    *
    * @param file The file reference to which the data will be written.
    * @param data The data to write to the file.

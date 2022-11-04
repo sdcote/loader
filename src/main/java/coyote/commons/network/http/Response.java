@@ -93,6 +93,11 @@ public class Response implements Closeable {
 
   /**
    * Creates a fixed length response if totalBytes&gt;=0, otherwise chunked.
+   *
+   * @param data data stream
+   * @param mimeType type of data being sent
+   * @param status The status to send
+   * @param totalBytes total length to be sent
    */
   public Response( final Status status, final String mimeType, final InputStream data, final long totalBytes ) {
     this.status = status;
@@ -207,6 +212,8 @@ public class Response implements Closeable {
 
   /**
    * Sends given response to the socket.
+   *
+   * @param outputStream  the stream to which we write
    */
   protected void send( final OutputStream outputStream ) {
     final SimpleDateFormat gmtFrmt = new SimpleDateFormat( "E, d MMM yyyy HH:mm:ss 'GMT'", Locale.US );
@@ -382,6 +389,10 @@ public class Response implements Closeable {
   /**
    * Create a response with unknown length (using HTTP 1.1 chunking).
    *
+   * @param data the input stream with the data to send
+   * @param status the status code to send
+   * @param mimeType the type of data being sent
+   *
    * @return the response
    */
   public static Response createChunkedResponse( final Status status, final String mimeType, final InputStream data ) {
@@ -394,6 +405,11 @@ public class Response implements Closeable {
   /**
    * Create a response with known length.
    *
+   * @param mimeType the type of data being send
+   * @param status the status code to send
+   * @param totalBytes the total number of bytes being sent
+   * @param data the input stream containing the data
+   *
    * @return the response
    */
   public static Response createFixedLengthResponse( final Status status, final String mimeType, final InputStream data, final long totalBytes ) {
@@ -405,6 +421,10 @@ public class Response implements Closeable {
 
   /**
    * Create a text response with known length.
+   *
+   * @param status The status to send
+   * @param mimeType The type of data being sent
+   * @param txt the data to send
    *
    * @return the response
    */
@@ -433,6 +453,8 @@ public class Response implements Closeable {
 
   /**
    * Create a text response with known length.
+   *
+   * @param msg the text to send
    *
    * @return the response
    */

@@ -83,7 +83,7 @@ public class ThreadJob implements Runnable {
 
   /**
    *
-   * @param job
+   * @param job the Runnable work to perform
    */
   public ThreadJob(final Runnable job) {
     work = job;

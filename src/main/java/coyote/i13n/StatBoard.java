@@ -36,6 +36,8 @@ public interface StatBoard {
      * decreased by the given amount.
      *
      * @param name The name of the counter to decrease.
+     * @param value the value to store
+     *
      * @return The final value of the counter after the operation.
      */
     long decrease(String name, long value);
@@ -57,6 +59,8 @@ public interface StatBoard {
     /**
      * Deactivate a particular class of Application Response Measurement calls
      * from this point on.
+     *
+     * @param name the name of the class to disable
      */
     void disableArmClass(final String name);
 
@@ -79,6 +83,8 @@ public interface StatBoard {
 
     /**
      * Activate all Application Response Measurement calls from this point on.
+     *
+     * @param flag true to enable, false to disable
      */
     void enableArm(boolean flag);
 
@@ -86,12 +92,16 @@ public interface StatBoard {
     /**
      * Activate a particular class of Application Response Measurement calls from
      * this point on.
+     *
+     * @param name name of the ARM to enable
      */
     void enableArmClass(String name);
 
 
     /**
      * Activate all gauges calls from this point on.
+     *
+     * @param flag true to enable gauges, false to disable
      */
     void enableGauges(boolean flag);
 
@@ -114,12 +124,16 @@ public interface StatBoard {
      * metrics are collected for later reporting. when timing is disabled, null
      * timers are be returned each time a timer is requested. This keeps all code
      * operational regardless of the runtime status of timing.
+     *
+     * @param flag true to enable, false to disable
      */
     void enableTiming(boolean flag);
 
 
     /**
      * Get an iterator over all the ARM Masters in the statboard.
+     *
+     * @return an iterator over all the ARM masters
      */
     Iterator<ArmMaster> getArmIterator();
 
@@ -131,6 +145,7 @@ public interface StatBoard {
      * static list of counters for later retrieval.
      *
      * @param name The name of the counter to return.
+     *
      * @return The counter with the given name.
      */
     Counter getCounter(String name);
@@ -169,7 +184,9 @@ public interface StatBoard {
      * to the gauge. Always get the appropriate reference to the gauge
      *
      * @param name the name of the gauge to return.
-     * @return Either the
+     *
+     * @return Either the actual gauge with the given nane or a stub
+     *
      * @throws IllegalArgumentException if the name of the gauge is null
      */
     Gauge getGauge(String name);
@@ -183,6 +200,8 @@ public interface StatBoard {
 
     /**
      * Get an iterator over all the gauges in the statboard.
+     *
+     * @return an iterator over all the gauge masters
      */
     Iterator<Gauge> getGaugeIterator();
 
@@ -244,6 +263,8 @@ public interface StatBoard {
 
     /**
      * Get an iterator over all the Master Timers in the statboard.
+     *
+     * @return an iterator over all the timer masters
      */
     Iterator<TimingMaster> getTimerIterator();
 
@@ -251,6 +272,7 @@ public interface StatBoard {
      * Get the master timer with the given name.
      *
      * @param name The name of the master timer to retrieve.
+     *
      * @return The master timer with the given name or null if that timer
      * does not exist.
      */
@@ -277,6 +299,8 @@ public interface StatBoard {
      * increased by the given amount.
      *
      * @param name The name of the counter to increase.
+     * @param value the amount to increase
+     *
      * @return The final value of the counter after the operation.
      */
     long increase(String name, long value);

@@ -39,7 +39,7 @@ public class NullTimer extends TimerBase {
 
 
   /**
-   * @param master
+   * @param master this timers master
    */
   public NullTimer( final TimingMaster master ) {
     super( master );
