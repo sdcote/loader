@@ -11,7 +11,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'jacoco'
 
 
-defaultTasks 'clean', 'build', 'fatJar', 'publish'
+defaultTasks 'clean', 'build', 'fatJar'
 group = 'coyote'
 version = '0.9.0-SNAPSHOT'
 
