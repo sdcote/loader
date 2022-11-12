@@ -782,25 +782,21 @@ class HTTPSessionImpl implements HTTPSession {
   }
 
 
-
-
   /**
    * @see coyote.commons.network.http.HTTPSession#getUserGroups()
    */
   @Override
   public List<String> getUserGroups() {
-    if(usergroups.isEmpty()){
+    if (usergroups == null || usergroups.isEmpty()) {
       SessionProfile profile = SessionProfileManager.retrieveOrCreateProfile(this);
       try {
-        usergroups = (List<String>)profile.get(AuthProvider.USERGROUPS);
+        usergroups = (List<String>) profile.get(AuthProvider.USERGROUPS);
       } catch (Exception ignore) {
         // ignore
       }
     }
     return usergroups;
   }
-
-
 
 
   /**
