@@ -39,6 +39,7 @@ import javax.net.ssl.SSLException;
 import coyote.commons.network.IpAddress;
 import coyote.commons.network.IpAddressException;
 import coyote.commons.network.MimeType;
+import coyote.commons.network.http.auth.AuthProvider;
 import coyote.loader.log.Log;
 
 
@@ -49,7 +50,7 @@ class HTTPSessionImpl implements HTTPSession {
   private static final int MEMORY_STORE_LIMIT = 4096;
   public static final int BUFSIZE = 8192;
   public static final int MAX_HEADER_SIZE = 1024;
-  private static final List<String> EMPTY_LIST = new ArrayList<String>(0);;
+  private static final List<String> EMPTY_LIST = new ArrayList<String>(0);
   private final CacheManager cacheManager;
   private final OutputStream outputStream;
   private final BufferedInputStream inputStream;
@@ -87,8 +88,8 @@ class HTTPSessionImpl implements HTTPSession {
     this.cacheManager = cacheManager;
     this.inputStream = new BufferedInputStream(inputStream, HTTPSessionImpl.BUFSIZE);
     this.outputStream = outputStream;
-    requestHeaders = new HashMap<String, String>();
-    responseHeaders = new HashMap<String, String>();
+    requestHeaders = new HashMap<>();
+    responseHeaders = new HashMap<>();
     secure = secured;
   }
 
@@ -151,7 +152,7 @@ class HTTPSessionImpl implements HTTPSession {
         }
 
         // If there's another token, its protocol version, followed by HTTP headers.
-        // NOTE: this now forces header names lower case since they are case 
+        // NOTE: this now forces header names lower case since they are case-
         // insensitive and vary by client.
         if (st.hasMoreTokens()) {
           protocolVersion = st.nextToken();
@@ -754,6 +755,14 @@ class HTTPSessionImpl implements HTTPSession {
    */
   @Override
   public String getUserName() {
+    if(username == null){
+      SessionProfile profile = SessionProfileManager.retrieveOrCreateProfile(this);
+      try {
+        username = (String)profile.get(AuthProvider.USERNAME);
+      } catch (Exception ignore) {
+        // ignore
+      }
+    }
     return username;
   }
 
@@ -780,6 +789,14 @@ class HTTPSessionImpl implements HTTPSession {
    */
   @Override
   public List<String> getUserGroups() {
+    if(usergroups == null){
+      SessionProfile profile = SessionProfileManager.retrieveOrCreateProfile(this);
+      try {
+        usergroups = (List<String>)profile.get(AuthProvider.USERGROUPS);
+      } catch (Exception ignore) {
+        // ignore
+      }
+    }
     return usergroups;
   }
 

@@ -44,7 +44,7 @@ import coyote.loader.log.Log;
  * passwords from malicious components, core dumps and follows recommended
  * safe coding practices for password handling.
  *
- * <p><b>NOTE:</b> User and Group name matching is case sensitive. It is
+ * <p><b>NOTE:</b> User and Group name matching is case-sensitive. It is
  * recommended to normalize all user and group names by hand. (e.g. always
  * specify names in lower case.)
  */
@@ -58,9 +58,6 @@ public class GenericAuthProvider implements AuthProvider {
   public static final String USER_SECTION = "Users";
   private static final String MD5 = "MD5";
   private static final String UTF8 = "UTF8";
-  private static final String USERNAME = "UserName";
-  private static final String USERGROUPS = "UserGroups";
-
   public final List<User> userList = new ArrayList<User>();
   private boolean allowNoSSL = false;
 
@@ -168,39 +165,6 @@ public class GenericAuthProvider implements AuthProvider {
 
             retval = authenticate(session, creds);
 
-            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-            // find the user with the given name
-            //            final User user = getUser(username);
-            //            if (user != null) {
-            //              // we found a user
-            //              if (StringUtil.isNotBlank(password)) {
-            //                try {
-            //                  // digest the given password
-            //                  final byte[] barray = digest(password.getBytes(UTF8));
-            //
-            //                  if (user.passwordMatches(barray)) {
-            //                    Log.append(HTTPD.EVENT, "Successful authentication for '" + username + "'");
-            //                    // add the user and groups to the session
-            //                    session.setUserName(user.getName());
-            //                    session.setUserGroups(user.getGroups());
-            //                    // ... and the profile so we can cache authenticated user name and groups
-            //                    if (profile != null) {
-            //                      profile.set(USERNAME, user.getName());
-            //                      profile.set(USERGROUPS, user.getGroups().toArray(new String[0]));
-            //                    }
-            //                    retval = true;
-            //                  }
-            //                } catch (final UnsupportedEncodingException e) {
-            //                  e.printStackTrace(); // should never happen, tested in static init
-            //                }
-            //
-            //              } // null, empty or blank passwords are not supported/allowed
-            //
-            //            } // we found a user with that name
-
-            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
           } // null tokens???
         } else {
           Log.append(HTTPD.EVENT, "No authentication data received for '" + authType + "' from " + session.getRemoteIpAddress() + ":" + session.getRemoteIpPort());
@@ -243,7 +207,7 @@ public class GenericAuthProvider implements AuthProvider {
           // add the user and groups to the session
           session.setUserName(user.getName());
           session.setUserGroups(user.getGroups());
-          // ... and the profile so we can cache the authenticated user name and groups
+          // ... and the profile so we can cache the authenticated username and groups
           if (profile != null) {
             profile.set(USERNAME, user.getName());
             profile.set(USERGROUPS, user.getGroups().toArray(new String[0]));

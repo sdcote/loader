@@ -249,6 +249,8 @@ public abstract class HTTPD {
    * @param passphrase the passphrase for the keystore
    *
    * @return the secure socket factory
+   *
+   * @throws IOException if there are problems
    */
   public static SSLServerSocketFactory makeSSLSocketFactory(final String keyAndTrustStoreClasspathPath, final char[] passphrase) throws IOException {
     try {

@@ -7,6 +7,8 @@
  */
 package coyote.commons.network.http;
 
+import coyote.loader.log.Log;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -28,7 +30,7 @@ import java.util.Random;
  * session can be stored in the profile to maintain state between requests.
  *
  * <p>All profile values must be serializable as the entire map of profiles
- * may be serialized to storage for persistance between restarts.
+ * may be serialized to storage for persistence between restarts.
  */
 public class SessionProfileManager {
   private static File sessionFile = new File("./.sessions");
@@ -59,17 +61,20 @@ public class SessionProfileManager {
 
 
   /**
-   * Remove the identified session from the manager and its identifier from
+   * Remove the profile for this session from the manager and its identifier from
    * the cookies.
    *
-   * @param sessionId the identifier of the session to remove
-   * @param session the session profile from which the identifier should be removed.
+   * @param session the session for which the profile is to be removed.
    */
-  public static void destroyProfile(final String sessionId, final HTTPSession session) {
-    profileMap.remove(sessionId);
-    final CookieHandler cookies = session.getCookies();
-    if (cookies != null) {
-      cookies.delete(SESSION_COOKIE);
+  public static void destroyProfile(final HTTPSession session) {
+    if (session != null) {
+      final CookieHandler cookies = session.getCookies();
+      if (cookies != null) {
+        String token = cookies.read(SESSION_COOKIE);
+        if (token != null) {
+          profileMap.remove(token);
+        }
+      }
     }
   }
 

@@ -26,7 +26,7 @@ import coyote.commons.network.http.HTTPSession;
 public interface AuthProvider {
   public static final String USERNAME = "username";
   public static final String PASSWORD = "password";
-
+  public static final String USERGROUPS = "usergroups";
 
 
 
