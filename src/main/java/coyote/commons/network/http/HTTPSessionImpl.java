@@ -789,7 +789,7 @@ class HTTPSessionImpl implements HTTPSession {
    */
   @Override
   public List<String> getUserGroups() {
-    if(usergroups == null){
+    if(usergroups.isEmpty()){
       SessionProfile profile = SessionProfileManager.retrieveOrCreateProfile(this);
       try {
         usergroups = (List<String>)profile.get(AuthProvider.USERGROUPS);

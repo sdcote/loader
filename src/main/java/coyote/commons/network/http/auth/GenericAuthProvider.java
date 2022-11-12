@@ -209,8 +209,8 @@ public class GenericAuthProvider implements AuthProvider {
           session.setUserGroups(user.getGroups());
           // ... and the profile so we can cache the authenticated username and groups
           if (profile != null) {
-            profile.set(USERNAME, user.getName());
-            profile.set(USERGROUPS, user.getGroups().toArray(new String[0]));
+            profile.set(AuthProvider.USERNAME, user.getName());
+            profile.set(AuthProvider.USERGROUPS, user.getGroups().toArray(new String[0]));
           }
           retval = true;
         }
