@@ -791,8 +791,9 @@ class HTTPSessionImpl implements HTTPSession {
       SessionProfile profile = SessionProfileManager.retrieveOrCreateProfile(this);
       try {
         usergroups = (List<String>) profile.get(AuthProvider.USERGROUPS);
+        if (usergroups == null) usergroups = EMPTY_LIST;
       } catch (Exception ignore) {
-        // ignore
+        usergroups = EMPTY_LIST;
       }
     }
     return usergroups;
